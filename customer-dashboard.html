@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고객 마이 페이지 - beautycat (뷰티+에티켓)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ff2d92', // beautycat 메인 핑크
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        }
+                    },
+                    fontFamily: {
+                        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
+                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif; }
+        
+        body {
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .sidebar-item:hover { background-color: #fdf2f8; }
+        .sidebar-item.active { background-color: #fce7f3; border-right: 3px solid #ff2d92; }
+        
+        /* 강남언니 스타일 카드 */
+        .unni-card {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 버튼 스타일 */
+        .btn-primary {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 12px 24px;
+        }
+        
+        .btn-primary:hover {
+            background: #e6297f;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Mobile Optimized Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <span class="text-xl">🐱</span>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
+                            <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <!-- 홈으로 가기 버튼 -->
+                    <a href="index.html" class="p-2 text-gray-600 hover:text-primary-500 transition-colors" title="홈으로 가기">
+                        <i class="fas fa-home text-xl"></i>
+                    </a>
+                    
+                    <!-- 모바일 알림 -->
+                    <button id="notification-btn" class="relative p-2 text-gray-600 hover:text-primary-500">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    
+                    <!-- 모바일 메뉴 버튼 -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-600 hover:text-primary-500">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    
+                    <!-- 데스크톱 프로필 -->
+                    <div class="hidden md:flex relative" id="profile-dropdown">
+                        <button onclick="toggleProfileMenu()" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg">
+                            <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-2">
+                                <i class="fas fa-user text-primary-600"></i>
+                            </div>
+                            <span id="user-name" class="font-medium">고객님</span>
+                            <i class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                        
+                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50">
+                            <a href="#" onclick="showSection('profile')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <i class="fas fa-user mr-2"></i>프로필 설정
+                            </a>
+                            <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <i class="fas fa-home mr-2"></i>홈으로
+                            </a>
+                            <div class="border-t border-gray-100 mt-2 pt-2">
+                                <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>로그아웃
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-4 py-3 space-y-2">
+                <a href="index.html" onclick="closeMobileMenu()" 
+                   class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-home mr-3"></i>홈
+                </a>
+                <button onclick="showSection('dashboard'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl bg-pink-50 text-pink-600 font-medium flex items-center">
+                    <i class="fas fa-tachometer-alt mr-3"></i>마이 페이지
+                </button>
+                <button onclick="showSection('consultations'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-comments mr-3"></i>상담 내역
+                </button>
+                <button onclick="showSection('quotes'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-file-invoice mr-3"></i>견적서 관리
+                </button>
+                <button onclick="showSection('profile'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-user mr-3"></i>프로필 설정
+                </button>
+                <div class="border-t border-gray-200 pt-3 mt-3">
+                    <button onclick="logout()" 
+                            class="w-full text-left px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 flex items-center">
+                        <i class="fas fa-sign-out-alt mr-3"></i>로그아웃
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+                            <a href="#" onclick="showSection('profile')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>프로필 관리
+                            </a>
+                            <a href="#" onclick="showSection('settings')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>설정
+                            </a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>로그아웃
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Announcement Alert Bar -->
+    <div id="announcement-alert" class="hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between py-2">
+                <div class="flex items-center">
+                    <i class="fas fa-bullhorn mr-3"></i>
+                    <span id="announcement-alert-text" class="text-sm font-medium"></span>
+                </div>
+                <button onclick="closeAnnouncementAlert()" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-sm border-r">
+            <div class="p-4">
+                <div class="flex items-center mb-6">
+                    <img id="sidebar-profile-image" src="https://via.placeholder.com/48" alt="프로필" class="w-12 h-12 rounded-full mr-3">
+                    <div>
+                        <div id="sidebar-user-name" class="font-semibold text-gray-900">고객님</div>
+                        <div class="text-sm text-gray-500">고객 회원</div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="px-2">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#" onclick="showSection('dashboard')" 
+                           class="sidebar-item active flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="dashboard">
+                            <i class="fas fa-home mr-3 text-primary-500"></i>
+                            마이 페이지
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('consultations')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="consultations">
+                            <i class="fas fa-comments mr-3 text-primary-500"></i>
+                            내 상담 내역
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('quotes')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="quotes">
+                            <i class="fas fa-file-invoice-dollar mr-3 text-primary-500"></i>
+                            견적서 관리
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('favorites')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="favorites">
+                            <i class="fas fa-heart mr-3 text-primary-500"></i>
+                            관심 샵
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('reviews')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="reviews">
+                            <i class="fas fa-star mr-3 text-primary-500"></i>
+                            리뷰 관리
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('profile')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="profile">
+                            <i class="fas fa-user mr-3 text-primary-500"></i>
+                            프로필 관리
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="handleNewConsultation()" class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors">
+                            <i class="fas fa-plus mr-3 text-green-500"></i>
+                            새 견적 신청
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-hidden">
+            <div class="h-full overflow-y-auto">
+                
+                <!-- 마이 페이지 섹션 -->
+                <div id="dashboard-section" class="content-section p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">마이 페이지</h1>
+                        <p class="text-gray-600">내 상담 현황을 한눈에 확인하세요</p>
+                    </div>
+
+                    <!-- 통계 카드 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-comments text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="total-consultations">0</div>
+                                    <div class="text-sm text-gray-500">총 상담 건수</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="pending-consultations">0</div>
+                                    <div class="text-sm text-gray-500">진행 중</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-file-invoice-dollar text-green-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="received-quotes">0</div>
+                                    <div class="text-sm text-gray-500">받은 견적서</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="completed-consultations">0</div>
+                                    <div class="text-sm text-gray-500">완료</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 최근 활동 및 새로운 견적서 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 최근 상담 내역 -->
+                        <div class="unni-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900">최근 상담 내역</h2>
+                                <a href="#" onclick="showSection('consultations')" class="text-pink-600 hover:text-pink-700 text-sm">전체보기</a>
+                            </div>
+                            <div id="recent-consultations" class="space-y-4">
+                                <!-- 동적으로 로드됩니다 -->
+                            </div>
+                        </div>
+
+                        <!-- 새로운 견적서 -->
+                        <div class="unni-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900">새로운 견적서</h2>
+                                <a href="#" onclick="showSection('quotes')" class="text-pink-600 hover:text-pink-700 text-sm">전체보기</a>
+                            </div>
+                            <div id="recent-quotes" class="space-y-4">
+                                <!-- 동적으로 로드됩니다 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 상담 내역 섹션 -->
+                <div id="consultations-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">내 상담 내역</h1>
+                        <p class="text-gray-600">신청한 상담의 진행 상황을 확인하고 관리하세요</p>
+                    </div>
+
+                    <!-- 필터 및 검색 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                        <div class="flex flex-wrap gap-4 items-center">
+                            <div>
+                                <select id="status-filter" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                    <option value="">전체 상태</option>
+                                    <option value="pending">대기 중</option>
+                                    <option value="in_progress">진행 중</option>
+                                    <option value="matched">매칭 완료</option>
+                                    <option value="completed">완료</option>
+                                    <option value="cancelled">취소됨</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" id="search-consultations" placeholder="지역이나 프로그램으로 검색..."
+                                       class="border border-gray-300 rounded-lg px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            </div>
+                            <button onclick="filterConsultations()" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-search mr-2"></i>검색
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 상담 내역 목록 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b">
+                            <h2 class="text-xl font-semibold text-gray-900">상담 목록</h2>
+                        </div>
+                        <div id="consultations-list" class="divide-y divide-gray-200">
+                            <!-- 동적으로 로드됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 견적서 관리 섹션 -->
+                <div id="quotes-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">견적서 관리</h1>
+                        <p class="text-gray-600">받은 견적서를 비교하고 최적의 선택을 하세요</p>
+                    </div>
+
+                    <!-- 견적서 통계 -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="unni-card p-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2" id="total-quotes">0</div>
+                                <div class="text-gray-600">총 견적서</div>
+                            </div>
+                        </div>
+                        <div class="unni-card p-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-green-600 mb-2" id="new-quotes">0</div>
+                                <div class="text-gray-600">새로운 견적서</div>
+                            </div>
+                        </div>
+                        <div class="unni-card p-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-purple-600 mb-2" id="accepted-quotes">0</div>
+                                <div class="text-gray-600">수락한 견적서</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 견적서 목록 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b">
+                            <h2 class="text-xl font-semibold text-gray-900">견적서 목록</h2>
+                        </div>
+                        <div id="quotes-list" class="divide-y divide-gray-200">
+                            <!-- 동적으로 로드됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 관심 샵 섹션 -->
+                <div id="favorites-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">관심 샵</h1>
+                        <p class="text-gray-600">관심있는 피부관리실을 저장하고 관리하세요</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                        <i class="fas fa-heart text-gray-300 text-6xl mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">아직 관심 샵이 없습니다</h3>
+                        <p class="text-gray-500 mb-6">상담을 통해 마음에 드는 피부관리실을 관심 샵으로 추가해보세요</p>
+                        <button onclick="handleNewConsultation()" class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg inline-block">
+                            견적 신청하러 가기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 프로필 관리 섹션 -->
+                <div id="profile-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">프로필 관리</h1>
+                        <p class="text-gray-600">개인정보를 수정하고 계정을 관리하세요</p>
+                    </div>
+
+                    <div class="max-w-2xl">
+                        <div class="unni-card p-6">
+                            <form id="profile-form" class="space-y-6">
+                                <div class="text-center mb-6">
+                                    <img id="profile-edit-image" src="https://via.placeholder.com/96" alt="프로필" class="w-24 h-24 rounded-full mx-auto mb-4">
+                                    <button type="button" class="text-pink-600 hover:text-pink-700 text-sm">프로필 사진 변경</button>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
+                                        <input type="text" id="profile-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                                        <input type="tel" id="profile-phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                                    <input type="email" id="profile-email" disabled class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500">
+                                    <p class="text-xs text-gray-500 mt-1">이메일은 변경할 수 없습니다</p>
+                                </div>
+
+                                <div class="flex justify-end space-x-4">
+                                    <button type="button" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                        취소
+                                    </button>
+                                    <button type="submit" class="px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg">
+                                        저장하기
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 리뷰 관리 섹션 -->
+                <div id="reviews-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">리뷰 관리</h1>
+                        <p class="text-gray-600">이용한 피부관리실에 대한 리뷰를 작성하고 관리하세요</p>
+                    </div>
+
+                    <!-- 리뷰 작성 가능한 상담 목록 -->
+                    <div class="bg-white rounded-lg shadow-sm mb-8">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">리뷰 작성 대기</h3>
+                            <p class="text-sm text-gray-500">완료된 상담에 대해 리뷰를 작성해보세요</p>
+                        </div>
+                        <div class="divide-y divide-gray-200" id="pending-reviews-list">
+                            <!-- 리뷰 작성 대기 목록이 로드됩니다 -->
+                        </div>
+                    </div>
+
+                    <!-- 작성한 리뷰 목록 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">작성한 리뷰</h3>
+                            <p class="text-sm text-gray-500">내가 작성한 리뷰 목록입니다</p>
+                        </div>
+                        <div class="divide-y divide-gray-200" id="my-reviews-list">
+                            <!-- 작성한 리뷰 목록이 로드됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 리뷰 작성 모달 -->
+    <div id="review-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">리뷰 작성</h3>
+                <button onclick="closeReviewModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="review-form" class="space-y-6">
+                <input type="hidden" id="review-consultation-id">
+                <input type="hidden" id="review-shop-id">
+                
+                <!-- 샵 정보 -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-900 mb-2" id="review-shop-name"></h4>
+                    <p class="text-sm text-gray-600" id="review-treatment-type"></p>
+                </div>
+                
+                <!-- 전체 평점 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">전체 만족도 *</label>
+                    <div class="flex items-center space-x-2">
+                        <div class="star-rating" data-rating="0">
+                            <i class="fas fa-star star" data-value="1"></i>
+                            <i class="fas fa-star star" data-value="2"></i>
+                            <i class="fas fa-star star" data-value="3"></i>
+                            <i class="fas fa-star star" data-value="4"></i>
+                            <i class="fas fa-star star" data-value="5"></i>
+                        </div>
+                        <span class="text-sm text-gray-600" id="overall-rating-text">평점을 선택해주세요</span>
+                    </div>
+                </div>
+                
+                <!-- 세부 평점 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">서비스 품질</label>
+                        <select id="service-quality" class="w-full p-2 border border-gray-200 rounded-lg">
+                            <option value="">선택해주세요</option>
+                            <option value="5">매우 만족 (5점)</option>
+                            <option value="4">만족 (4점)</option>
+                            <option value="3">보통 (3점)</option>
+                            <option value="2">불만족 (2점)</option>
+                            <option value="1">매우 불만족 (1점)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">가격 만족도</label>
+                        <select id="price-satisfaction" class="w-full p-2 border border-gray-200 rounded-lg">
+                            <option value="">선택해주세요</option>
+                            <option value="5">매우 만족 (5점)</option>
+                            <option value="4">만족 (4점)</option>
+                            <option value="3">보통 (3점)</option>
+                            <option value="2">불만족 (2점)</option>
+                            <option value="1">매우 불만족 (1점)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">시설 청결도</label>
+                        <select id="facility-cleanliness" class="w-full p-2 border border-gray-200 rounded-lg">
+                            <option value="">선택해주세요</option>
+                            <option value="5">매우 만족 (5점)</option>
+                            <option value="4">만족 (4점)</option>
+                            <option value="3">보통 (3점)</option>
+                            <option value="2">불만족 (2점)</option>
+                            <option value="1">매우 불만족 (1점)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">직원 친절도</label>
+                        <select id="staff-kindness" class="w-full p-2 border border-gray-200 rounded-lg">
+                            <option value="">선택해주세요</option>
+                            <option value="5">매우 만족 (5점)</option>
+                            <option value="4">만족 (4점)</option>
+                            <option value="3">보통 (3점)</option>
+                            <option value="2">불만족 (2점)</option>
+                            <option value="1">매우 불만족 (1점)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- 받은 치료 내용 -->
+                <div>
+                    <label for="treatment-received" class="block text-sm font-medium text-gray-700 mb-2">받은 치료 내용</label>
+                    <input type="text" id="treatment-received" 
+                           class="w-full p-3 border border-gray-200 rounded-lg"
+                           placeholder="예: 여드름 압출, 수분관리, 마사지 등">
+                </div>
+                
+                <!-- 리뷰 내용 -->
+                <div>
+                    <label for="review-content" class="block text-sm font-medium text-gray-700 mb-2">리뷰 내용 *</label>
+                    <textarea id="review-content" rows="4" 
+                              class="w-full p-3 border border-gray-200 rounded-lg"
+                              placeholder="이용 경험을 자세히 작성해주세요. 다른 고객들에게 도움이 되는 솔직한 후기를 남겨주세요."></textarea>
+                    <div class="text-sm text-gray-500 mt-1">최소 20자 이상 작성해주세요.</div>
+                </div>
+                
+                <!-- 추천 여부 -->
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="recommend-shop" class="rounded border-gray-300">
+                        <span class="ml-2 text-sm text-gray-700">이 피부관리실을 다른 분들에게 추천합니다</span>
+                    </label>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeReviewModal()" 
+                            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        취소
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600">
+                        리뷰 작성
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 견적서 상세 모달 -->
+    <div id="quote-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="unni-card p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">견적서 상세</h3>
+                <button onclick="closeQuoteDetailModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="quote-detail-content" class="space-y-4">
+                <!-- 견적서 내용이 동적으로 로드됩니다 -->
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-6">
+                <button onclick="closeQuoteDetailModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                    닫기
+                </button>
+                <button onclick="acceptQuote()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                    견적 수락
+                </button>
+                <button onclick="openChat()" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600">
+                    채팅하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/security.js"></script>
+    <script src="js/external-payment.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/customer-dashboard.js"></script>
+</body>
+</html>

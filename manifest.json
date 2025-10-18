@@ -1,0 +1,76 @@
+{
+  "name": "beautycat (뷰티+에티켓) - 피부관리실 견적 플랫폼",
+  "short_name": "beautycat",
+  "description": "피부관리실과 고객을 연결하는 지역 기반 스마트 매칭 플랫폼",
+  "version": "2.0.1",
+  "start_url": "./?source=pwa&v=2.0.1",
+  "display": "standalone", 
+  "background_color": "#ffffff",
+  "theme_color": "#ff2d92",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ko-KR",
+  "categories": ["health", "lifestyle", "beauty"],
+  "icons": [
+    {
+      "src": "icons/icon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "상담 신청",
+      "short_name": "상담신청",
+      "description": "피부관리 상담을 신청합니다",
+      "url": "./#consultation",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "실시간 채팅",
+      "short_name": "채팅",
+      "description": "업체와 실시간으로 채팅합니다",
+      "url": "./chat.html",
+      "icons": [
+        {
+          "src": "icons/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": []
+}

@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피부관리실 마이 페이지 - beautycat (뷰티+에티켓)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fff0f8',
+                            100: '#ffe3f2',
+                            500: '#ff2d92', // beautycat 메인 핑크
+                            600: '#e6297f',
+                            700: '#cc256c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+        .unni-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease;
+        }
+        .unni-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .sidebar-item:hover { background-color: #f8f9fa; }
+        .sidebar-item.active { background-color: #fff0f8; border-right: 3px solid #ff2d92; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between px-4 py-3">
+                
+                <!-- 로고 -->
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <span class="text-xl">🐱</span>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
+                            <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 데스크톱 네비게이션 -->
+                <nav class="hidden lg:flex items-center space-x-6">
+                    <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">마이 페이지</a>
+                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 요청</a>
+                    <a href="#" onclick="showSection('quotes')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 관리</a>
+                    <a href="#" onclick="showSection('shop-info')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 정보</a>
+                    <a href="#" onclick="showSection('reviews')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">리뷰 관리</a>
+                </nav>
+                
+                <!-- 우측 메뉴 -->
+                <div class="flex items-center space-x-3">
+                    <!-- 알림 -->
+                    <button id="notification-btn" class="relative p-2 text-gray-600 hover:text-primary-500 transition-colors">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    
+                    <!-- 데스크톱 프로필 -->
+                    <div class="hidden lg:flex relative" id="profile-dropdown">
+                        <button onclick="toggleProfileMenu()" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg">
+                            <div class="w-8 h-8 bg-primary-50 rounded-full flex items-center justify-center mr-2">
+                                <i class="fas fa-user text-primary-500"></i>
+                            </div>
+                            <span id="user-name" class="font-medium">업체님</span>
+                            <i class="fas fa-chevron-down ml-2"></i>
+                        </button>
+                        
+                        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="#" onclick="showSection('shop-info')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-store mr-2"></i>샵 정보 관리
+                            </a>
+                            <a href="#" onclick="showSection('settings')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>설정
+                            </a>
+                            <div class="border-t border-gray-100"></div>
+                            <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>로그아웃
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 모바일 메뉴 버튼 (항상 맨 우측) -->
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-gray-600 hover:text-primary-500 transition-colors ml-3">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 모바일 네비게이션 메뉴 -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div class="px-4 py-4 space-y-2">
+                <a href="index.html" onclick="closeMobileMenu()" 
+                   class="block px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 font-medium transition-colors">
+                    <i class="fas fa-home mr-3"></i>홈
+                </a>
+                <button onclick="showSection('dashboard'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl bg-primary-50 text-primary-500 font-medium flex items-center">
+                    <i class="fas fa-user mr-3"></i>마이 페이지
+                </button>
+                <button onclick="showSection('consultations'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
+                    <i class="fas fa-comments mr-3"></i>상담 요청
+                </button>
+                <button onclick="showSection('quotes'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
+                    <i class="fas fa-file-invoice mr-3"></i>견적 관리
+                </button>
+                <button onclick="showSection('shop-info'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
+                    <i class="fas fa-store mr-3"></i>샵 정보
+                </button>
+                <button onclick="showSection('reviews'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
+                    <i class="fas fa-star mr-3"></i>리뷰 관리
+                </button>
+                <div class="border-t pt-3 mt-3">
+                    <button onclick="logout()" 
+                            class="w-full text-left px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 flex items-center transition-colors">
+                        <i class="fas fa-sign-out-alt mr-3"></i>로그아웃
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Announcement Alert Bar -->
+    <div id="announcement-alert" class="hidden bg-gradient-to-r from-green-500 to-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between py-2">
+                <div class="flex items-center">
+                    <i class="fas fa-bullhorn mr-3"></i>
+                    <span id="announcement-alert-text" class="text-sm font-medium"></span>
+                </div>
+                <button onclick="closeAnnouncementAlert()" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-sm border-r">
+            <div class="p-4">
+                <div class="flex items-center mb-6">
+                    <img id="sidebar-profile-image" src="https://via.placeholder.com/48" alt="프로필" class="w-12 h-12 rounded-full mr-3">
+                    <div class="flex-1 min-w-0">
+                        <div id="sidebar-shop-name" class="font-semibold text-gray-900 text-sm leading-tight">피부관리실</div>
+                        <div class="text-xs text-gray-500 mt-1">업체 회원</div>
+                    </div>
+                </div>
+                
+                <!-- 업체 상태 -->
+                <div id="shop-status-card" class="mb-6 p-3 rounded-lg">
+                    <!-- 동적으로 로드됩니다 -->
+                </div>
+            </div>
+            
+            <nav class="px-2">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#" onclick="showSection('dashboard')" 
+                           class="sidebar-item active flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="dashboard">
+                            <i class="fas fa-home mr-3 text-primary-500"></i>
+                            마이 페이지
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('consultations')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="consultations">
+                            <i class="fas fa-comments mr-3 text-primary-500"></i>
+                            상담 요청
+                            <span id="new-consultations-badge" class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1 hidden">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('quotes')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="quotes">
+                            <i class="fas fa-file-invoice-dollar mr-3 text-primary-500"></i>
+                            견적 관리
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('analytics')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="analytics">
+                            <i class="fas fa-chart-bar mr-3 text-primary-500"></i>
+                            통계 분석
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('subscription')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="subscription">
+                            <i class="fas fa-credit-card mr-3 text-primary-500"></i>
+                            서비스 이용현황
+                            <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">NEW</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('shop-info')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="shop-info">
+                            <i class="fas fa-store mr-3 text-primary-500"></i>
+                            업체 정보 관리
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('representative-application')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="representative-application">
+                            <i class="fas fa-crown mr-3 text-primary-500"></i>
+                            대표샵 신청
+                            <span id="rep-shop-status-badge" class="ml-auto text-xs px-2 py-1 rounded-full hidden">-</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-hidden">
+            <div class="h-full overflow-y-auto">
+                
+                <!-- 마이 페이지 섹션 -->
+                <div id="dashboard-section" class="content-section p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">마이 페이지</h1>
+                        <p class="text-gray-600">상담 요청 현황과 업체 운영 상태를 확인하세요</p>
+                    </div>
+
+                    <!-- 통계 카드 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-comments text-blue-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="total-consultations">0</div>
+                                    <div class="text-sm text-gray-500">총 상담 요청</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="pending-consultations">0</div>
+                                    <div class="text-sm text-gray-500">대기 중</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-file-invoice-dollar text-green-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="sent-quotes">0</div>
+                                    <div class="text-sm text-gray-500">보낸 견적서</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="unni-card p-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-check-circle text-primary-500 text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-gray-900" id="accepted-quotes">0</div>
+                                    <div class="text-sm text-gray-500">수락된 견적</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 최근 활동 -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 새로운 상담 요청 -->
+                        <div class="unni-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900">새로운 상담 요청</h2>
+                                <a href="#" onclick="showSection('consultations')" class="text-primary-500 hover:text-primary-600 text-sm">전체보기</a>
+                            </div>
+                            <div id="recent-consultations" class="space-y-4">
+                                <!-- 동적으로 로드됩니다 -->
+                            </div>
+                        </div>
+
+                        <!-- 견적 현황 -->
+                        <div class="unni-card p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-xl font-semibold text-gray-900">견적 현황</h2>
+                                <a href="#" onclick="showSection('quotes')" class="text-primary-500 hover:text-primary-600 text-sm">전체보기</a>
+                            </div>
+                            <div id="recent-quotes" class="space-y-4">
+                                <!-- 동적으로 로드됩니다 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 상담 요청 섹션 -->
+                <div id="consultations-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">상담 요청 관리</h1>
+                        <p class="text-gray-600">들어온 상담 요청을 확인하고 견적서를 작성하세요</p>
+                    </div>
+
+                    <!-- 필터 -->
+                    <div class="unni-card p-6 mb-6">
+                        <div class="flex flex-wrap gap-4 items-center">
+                            <div>
+                                <select id="consultation-filter" class="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    <option value="">전체 상태</option>
+                                    <option value="pending">대기 중</option>
+                                    <option value="in_progress">진행 중</option>
+                                    <option value="completed">완료</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" id="search-consultations" placeholder="고객명이나 관리 프로그램으로 검색..."
+                                       class="border border-gray-200 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                            <button onclick="filterConsultations()" class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg">
+                                <i class="fas fa-search mr-2"></i>검색
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 상담 요청 목록 -->
+                    <div class="unni-card">
+                        <div class="p-6 border-b border-gray-100">
+                            <h2 class="text-xl font-semibold text-gray-900">상담 요청 목록</h2>
+                        </div>
+                        <div id="consultations-list" class="divide-y divide-gray-100">
+                            <!-- 동적으로 로드됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 견적 관리 섹션 -->
+                <div id="quotes-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">견적 관리</h1>
+                        <p class="text-gray-600">작성한 견적서의 현황을 확인하고 관리하세요</p>
+                    </div>
+
+                    <!-- 견적서 통계 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="unni-card p-6 text-center">
+                            <div class="text-3xl font-bold text-blue-600 mb-2" id="total-quotes-count">0</div>
+                            <div class="text-gray-600">총 견적서</div>
+                        </div>
+                        <div class="unni-card p-6 text-center">
+                            <div class="text-3xl font-bold text-yellow-600 mb-2" id="pending-quotes-count">0</div>
+                            <div class="text-gray-600">검토 중</div>
+                        </div>
+                        <div class="unni-card p-6 text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2" id="accepted-quotes-count">0</div>
+                            <div class="text-gray-600">수락됨</div>
+                        </div>
+                        <div class="unni-card p-6 text-center">
+                            <div class="text-3xl font-bold text-red-600 mb-2" id="rejected-quotes-count">0</div>
+                            <div class="text-gray-600">거절됨</div>
+                        </div>
+                    </div>
+
+                    <!-- 견적서 목록 -->
+                    <div class="unni-card">
+                        <div class="p-6 border-b border-gray-100">
+                            <h2 class="text-xl font-semibold text-gray-900">견적서 목록</h2>
+                        </div>
+                        <div id="quotes-list" class="divide-y divide-gray-100">
+                            <!-- 동적으로 로드됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 통계 분석 섹션 -->
+                <div id="analytics-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">통계 분석</h1>
+                        <p class="text-gray-600">업체 운영 현황을 분석하고 개선점을 찾아보세요</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 월별 상담 요청 -->
+                        <div class="unni-card p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">월별 상담 요청</h3>
+                            <div class="h-64 flex items-center justify-center text-gray-500">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-line text-4xl mb-2 opacity-50"></i>
+                                    <p>차트 준비 중</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 견적 수락률 -->
+                        <div class="unni-card p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">견적 수락률</h3>
+                            <div class="h-64 flex items-center justify-center text-gray-500">
+                                <div class="text-center">
+                                    <i class="fas fa-chart-pie text-4xl mb-2 opacity-50"></i>
+                                    <p>차트 준비 중</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 서비스 이용 현황 섹션 -->
+                <div id="subscription-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">서비스 이용 현황</h1>
+                        <p class="text-gray-600">beautycat 무료 서비스 기간 및 이용 현황</p>
+                    </div>
+
+                    <!-- 무료 서비스 현황 카드 -->
+                    <div class="unni-card p-6 mb-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-semibold text-gray-900">무료 서비스 현황</h2>
+                            <div id="subscription-status-badge" class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
+                                🎉 무료 이용 중
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                                <div class="text-2xl font-bold text-green-600 mb-1" id="current-plan-name">런칭 기념 무료</div>
+                                <div class="text-sm text-gray-600">현재 서비스</div>
+                            </div>
+                            <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <div class="text-2xl font-bold text-blue-600 mb-1" id="subscription-expires">2026년 5월 30일</div>
+                                <div class="text-sm text-gray-600">무료 기간 종료일</div>
+                            </div>
+                            <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                <div class="text-2xl font-bold text-orange-600 mb-1" id="remaining-days">243일</div>
+                                <div class="text-sm text-gray-600">남은 무료 기간</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
+                            <div class="flex items-start">
+                                <i class="fas fa-gift text-pink-500 mt-1 mr-3"></i>
+                                <div>
+                                    <div class="font-semibold text-pink-900 mb-2">🎁 런칭 기념 무료 서비스!</div>
+                                    <div class="text-pink-800 text-sm space-y-1">
+                                        <p>• <strong>2026년 5월 30일</strong>까지 모든 기능을 무료로 이용하세요!</p>
+                                        <p>• 상담 매칭, 고객 관리, 예약 시스템 모두 무제한 사용</p>
+                                        <p>• 무료 기간 종료 전 별도 안내드립니다</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 무료 서비스 제공 기능 -->
+                    <div class="unni-card p-6 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">현재 이용 가능한 무료 기능</h2>
+                        
+                        <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-lg border border-green-200 mb-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-green-900 mb-2">beautycat 풀 서비스 (무료)</h3>
+                                    <div class="text-green-700 mb-3">
+                                        <span class="text-2xl font-bold">₩0</span>
+                                        <span class="text-sm">/월</span>
+                                        <span class="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">2026.05.30까지</span>
+                                    </div>
+                                    <div class="text-green-600 text-sm mb-3">
+                                        런칭 기념으로 <strong>243일</strong> 더 무료로 이용하세요!
+                                    </div>
+                                </div>
+                                <div class="text-green-500 text-4xl">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <div class="text-sm text-green-700 font-medium mb-2">무료로 제공되는 모든 기능:</div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-green-600">
+                                    <div><i class="fas fa-check mr-2"></i>무제한 상담 요청 수신</div>
+                                    <div><i class="fas fa-check mr-2"></i>견적서 작성 및 전송</div>
+                                    <div><i class="fas fa-check mr-2"></i>고객 채팅 시스템</div>
+                                    <div><i class="fas fa-check mr-2"></i>예약 관리 도구</div>
+                                    <div><i class="fas fa-check mr-2"></i>매출 분석 리포트</div>
+                                    <div><i class="fas fa-check mr-2"></i>마케팅 지원 도구</div>
+                                    <div><i class="fas fa-check mr-2"></i>상위 노출 서비스</div>
+                                    <div><i class="fas fa-check mr-2"></i>프리미엄 지원</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 무료 기간 후 예정 서비스 -->
+                        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                                <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>
+                                2026년 6월 이후 서비스 안내
+                            </h3>
+                            <div class="text-sm text-gray-600 mb-4">
+                                무료 기간 종료 후에도 합리적인 가격으로 서비스를 계속 이용하실 수 있습니다.
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-lg font-semibold text-gray-900 mb-2">기본 플랜 (예정)</div>
+                                    <div class="text-2xl font-bold text-blue-600 mb-2">₩11,000<span class="text-sm font-normal text-gray-600">/월</span></div>
+                                    <div class="text-sm text-gray-600">현재 무료 서비스와 동일한 모든 기능</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="text-lg font-semibold text-gray-900 mb-2">프리미엄 플랜 (예정)</div>
+                                    <div class="text-2xl font-bold text-purple-600 mb-2">₩22,000<span class="text-sm font-normal text-gray-600">/월</span></div>
+                                    <div class="text-sm text-gray-600">추가 마케팅 도구 + 전담 지원</div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-xs text-gray-500">
+                                * 무료 기간 종료 1개월 전에 상세한 요금제 안내를 드립니다.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 서비스 이용 통계 -->
+                    <div class="unni-card p-6 mb-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-semibold text-gray-900">무료 기간 이용 현황</h2>
+                            <div class="text-sm text-gray-500">2025년 9월 29일 기준</div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">날짜</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">서비스</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">금액</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">상태</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">영수증</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="payment-history">
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-sm">2024-01-15</td>
+                                        <td class="py-3 text-sm">입점료</td>
+                                        <td class="py-3 text-sm font-semibold">₩0 <span class="text-green-600">(무료)</span></td>
+                                        <td class="py-3">
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">완료</span>
+                                        </td>
+                                        <td class="py-3">
+                                            <button class="text-primary-500 text-sm hover:underline">
+                                                <i class="fas fa-download mr-1"></i>다운로드
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3 text-sm">2024년 전체</td>
+                                        <td class="py-3 text-sm">월 이용료 (12개월)</td>
+                                        <td class="py-3 text-sm font-semibold">₩0 <span class="text-green-600">(무료 이벤트)</span></td>
+                                        <td class="py-3">
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">무료 제공</span>
+                                        </td>
+                                        <td class="py-3">
+                                            <span class="text-gray-400 text-sm">해당없음</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2025년 결제 예약 -->
+                    <div class="unni-card p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">2025년 결제 예약</h2>
+                        
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-start">
+                                <i class="fas fa-calendar-alt text-yellow-500 mt-1 mr-3"></i>
+                                <div>
+                                    <div class="font-semibold text-yellow-900 mb-1">2025년 1월부터 정상 요금제 적용</div>
+                                    <div class="text-yellow-800 text-sm">
+                                        무료 이벤트 종료 후 자동으로 스탠다드 플랜(월 11,000원)이 적용됩니다.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="setupAutoPayment()" class="flex-1 bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
+                                <i class="fas fa-credit-card mr-2"></i>자동 결제 설정
+                            </button>
+                            <button onclick="postponePayment()" class="flex-1 border border-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-pause mr-2"></i>결제 연기 신청
+                            </button>
+                            <button onclick="cancelSubscription()" class="flex-1 border border-red-300 text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-colors">
+                                <i class="fas fa-times mr-2"></i>구독 해지
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 업체 정보 관리 섹션 -->
+                <div id="shop-info-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">업체 정보 관리</h1>
+                        <p class="text-gray-600">피부관리실 정보를 수정하고 관리하세요</p>
+                    </div>
+
+                    <div class="max-w-4xl">
+                        <div class="unni-card p-6">
+                            <form id="shop-info-form" class="space-y-6">
+                                <!-- 기본 정보 -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">기본 정보</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">피부관리실명</label>
+                                            <input type="text" id="shop-name" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">대표자명</label>
+                                            <input type="text" id="owner-name" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">사업자등록번호 *</label>
+                                            <input type="text" id="business-number" pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="000-00-00000">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">영업신고증 번호 *</label>
+                                            <input type="text" id="business-license-number" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 제2024-서울강남-0000호">
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <p class="text-xs text-gray-500">* 사업자등록번호와 영업신고증 번호는 필수 입력 항목입니다.</p>
+                                    </div>
+                                </div>
+
+                                <!-- 연락처 정보 -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">연락처 정보</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                                            <input type="tel" id="shop-phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                                            <input type="email" id="shop-email" disabled class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-gray-500">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 위치 및 운영 정보 -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">위치 및 운영 정보</h3>
+                                    <div class="space-y-4">
+                                        <!-- 지역 선택 -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">시/도 *</label>
+                                                <select id="shop-state" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                                    <option value="">시/도를 선택해주세요</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">구/군 *</label>
+                                                <select id="shop-district" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" disabled>
+                                                    <option value="">먼저 시/도를 선택해주세요</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">상세 주소</label>
+                                            <input type="text" id="shop-address" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="동/읍/면, 도로명/지번, 건물명, 층수 등">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">영업시간</label>
+                                            <input type="text" id="business-hours" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="월-금 09:00-18:00">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 샵 소개 -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">샵 소개</h3>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">대표 관리 <span class="text-xs text-gray-500">(노출)</span></label>
+                                            <input type="text" id="representative-service" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 여드름 집중 관리">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">1회 관리 가격 <span class="text-xs text-gray-500">(노출)</span></label>
+                                            <input type="text" id="service-price" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 150,000원">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">관리용 화장품 (브랜드)</label>
+                                            <input type="text" id="cosmetic-brands" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 닥터자르트, 아이오페">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 피부미용기기</label>
+                                            <input type="text" id="beauty-equipment" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 울쎄라, 써마지">
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">샵 특징 및 차별 포인트</label>
+                                        <textarea id="shop-features" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="우리 샵만의 특별한 장점과 차별화 포인트를 작성해주세요"></textarea>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">평 수</label>
+                                            <input type="text" id="shop-size" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 30평">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">베드 수</label>
+                                            <input type="text" id="bed-count" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 5대">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">직원 수</label>
+                                            <input type="text" id="staff-count" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 7명">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 원장 소개 -->
+                                <div class="border-b border-gray-200 pb-6">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">원장 소개</h3>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 프로필</label>
+                                            <textarea id="director-profile" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="원장님의 학력, 자격증, 전문 분야 등을 작성해주세요"></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 경력</label>
+                                            <textarea id="director-experience" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="주요 경력 사항과 근무 이력을 작성해주세요"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end space-x-4">
+                                    <button type="button" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                        취소
+                                    </button>
+                                    <button type="submit" class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg">
+                                        저장하기
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 견적서 작성 모달 -->
+    <div id="quote-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">견적서 작성</h3>
+                <button onclick="closeQuoteModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="quote-form" class="space-y-4">
+                <input type="hidden" id="quote-consultation-id">
+                
+                <div>
+                    <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">관리 내용 상세</label>
+                    <textarea id="treatment-details" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="제공할 관리의 상세 내용을 입력하세요..." required></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">견적 가격 (원)</label>
+                        <input type="number" id="quote-price" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="150000" required>
+                    </div>
+                    <div>
+                        <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">예상 소요시간</label>
+                        <input type="text" id="duration" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="1시간 30분" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">예약 가능일</label>
+                    <input type="text" id="available-dates" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="월-금 오전, 주말 가능" required>
+                </div>
+
+                <div>
+                    <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">추가 안내사항</label>
+                    <textarea id="additional-notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="할인 정보, 주의사항 등을 입력하세요..."></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeQuoteModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        취소
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                        견적서 전송
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 대표샵 신청 섹션 -->
+    <div id="representative-application-section" class="content-section hidden p-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
+                <i class="fas fa-crown text-primary-500 mr-3"></i>
+                대표샵 신청
+            </h1>
+            <p class="text-gray-600">우리 동네 대표 피부관리실로 등록하여 전화상담 서비스를 제공하세요</p>
+        </div>
+
+        <!-- 대표샵 현재 상태 -->
+        <div id="rep-status-card" class="mb-6">
+            <!-- 동적으로 로드됩니다 -->
+        </div>
+
+        <!-- 대표샵 혜택 안내 -->
+        <div class="mb-6 bg-gradient-to-r from-primary-50 to-pink-50 border border-primary-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                <i class="fas fa-star text-primary-500 mr-2"></i>
+                대표샵 혜택
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex items-start">
+                    <i class="fas fa-phone text-primary-500 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-medium text-gray-900">전화상담 우선 노출</h4>
+                        <p class="text-sm text-gray-600">메인 페이지에서 지역 대표업체로 표시</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-map-marker-alt text-primary-500 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-medium text-gray-900">지역 독점 서비스</h4>
+                        <p class="text-sm text-gray-600">한 지역당 하나의 대표샵만 지정</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-certificate text-primary-500 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-medium text-gray-900">신뢰도 향상</h4>
+                        <p class="text-sm text-gray-600">관리자 승인을 받은 우수 업체 표시</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-4xl">
+            <!-- 신청 폼 -->
+            <div id="rep-application-form-container" class="unni-card p-6">
+                <form id="representative-application-form" class="space-y-6">
+                    <!-- 기본 정보 확인 -->
+                    <div class="border-b border-gray-200 pb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">기본 정보 확인</h3>
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <p class="text-sm text-gray-600 mb-3">현재 등록된 업체 정보로 대표샵 신청이 진행됩니다.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <span class="text-sm font-medium text-gray-700">피부관리실명:</span>
+                                    <span id="rep-shop-name" class="ml-2 text-gray-900">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-700">지역:</span>
+                                    <span id="rep-shop-location" class="ml-2 text-gray-900">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-700">전화번호:</span>
+                                    <span id="rep-shop-phone" class="ml-2 text-gray-900">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-gray-700">대표자:</span>
+                                    <span id="rep-shop-owner" class="ml-2 text-gray-900">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 대표 관리 프로그램 선택 -->
+                    <div class="border-b border-gray-200 pb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">대표 관리 프로그램</h3>
+                        <p class="text-sm text-gray-600 mb-4">고객에게 표시될 대표 관리 프로그램을 3개까지 선택해주세요.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="여드름 관리" class="mr-3">
+                                <span class="text-sm">여드름 관리</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="미백 관리" class="mr-3">
+                                <span class="text-sm">미백 관리</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="주름 관리" class="mr-3">
+                                <span class="text-sm">주름 관리</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="모공 축소" class="mr-3">
+                                <span class="text-sm">모공 축소</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="수분 관리" class="mr-3">
+                                <span class="text-sm">수분 관리</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="민감성 케어" class="mr-3">
+                                <span class="text-sm">민감성 케어</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="리프팅" class="mr-3">
+                                <span class="text-sm">리프팅</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="바디 케어" class="mr-3">
+                                <span class="text-sm">바디 케어</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
+                                <input type="checkbox" name="representative_treatments" value="색소침착 개선" class="mr-3">
+                                <span class="text-sm">색소침착 개선</span>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">최대 3개까지 선택 가능합니다.</p>
+                    </div>
+
+                    <!-- 신청 사유 -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">신청 사유</h3>
+                        <textarea 
+                            id="application-reason" 
+                            rows="4" 
+                            class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" 
+                            placeholder="대표샵으로 신청하는 이유와 고객 서비스 계획을 작성해주세요 (선택사항)"></textarea>
+                    </div>
+
+                    <!-- 약관 동의 -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <div class="space-y-3">
+                            <label class="flex items-start">
+                                <input type="checkbox" id="rep-terms-service" class="mt-1 mr-3" required>
+                                <span class="text-sm">
+                                    <span class="font-medium">대표샵 운영 약관</span>에 동의합니다. 
+                                    <span class="text-gray-500">(필수)</span>
+                                </span>
+                            </label>
+                            <label class="flex items-start">
+                                <input type="checkbox" id="rep-terms-responsibility" class="mt-1 mr-3" required>
+                                <span class="text-sm">
+                                    전화상담 서비스 제공 시 <span class="font-medium">성실한 고객 응대</span>를 약속합니다. 
+                                    <span class="text-gray-500">(필수)</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 제출 버튼 -->
+                    <div class="pt-6">
+                        <button 
+                            type="submit" 
+                            id="rep-submit-button"
+                            class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            대표샵 신청서 제출
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 리뷰 관리 섹션 -->
+    <div id="reviews-section" class="content-section hidden p-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">리뷰 관리</h1>
+            <p class="text-gray-600">고객들이 작성한 리뷰를 확인하고 관리하세요</p>
+        </div>
+
+        <!-- 리뷰 통계 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="unni-card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-star text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">평균 평점</p>
+                        <p class="text-2xl font-bold text-gray-900" id="average-rating">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unni-card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-comments text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">총 리뷰</p>
+                        <p class="text-2xl font-bold text-gray-900" id="total-reviews">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unni-card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-thumbs-up text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">추천률</p>
+                        <p class="text-2xl font-bold text-gray-900" id="recommendation-rate">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unni-card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">이번 달</p>
+                        <p class="text-2xl font-bold text-gray-900" id="monthly-reviews">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 리뷰 필터 -->
+        <div class="unni-card p-6 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 sm:mb-0">고객 리뷰 목록</h3>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <select id="review-rating-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="">전체 평점</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5점)</option>
+                        <option value="4">⭐⭐⭐⭐ (4점)</option>
+                        <option value="3">⭐⭐⭐ (3점)</option>
+                        <option value="2">⭐⭐ (2점)</option>
+                        <option value="1">⭐ (1점)</option>
+                    </select>
+                    <select id="review-sort-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="newest">최신순</option>
+                        <option value="oldest">오래된순</option>
+                        <option value="highest">평점 높은순</option>
+                        <option value="lowest">평점 낮은순</option>
+                    </select>
+                    <button onclick="filterReviews()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>필터 적용
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 리뷰 목록 -->
+        <div class="space-y-4" id="reviews-list">
+            <!-- 리뷰 데이터가 로드됩니다 -->
+        </div>
+
+        <!-- 리뷰가 없을 때 -->
+        <div id="no-reviews" class="hidden text-center py-12">
+            <i class="fas fa-star text-gray-300 text-6xl mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">아직 리뷰가 없습니다</h3>
+            <p class="text-gray-500">고객 상담을 완료하면 리뷰를 받을 수 있습니다.</p>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/security.js"></script>
+    <script src="js/external-payment.js"></script>
+    <script src="js/regional-matching.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/shop-dashboard.js"></script>
+</body>
+</html>

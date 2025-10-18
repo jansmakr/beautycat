@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - beautycat (뷰티+에티켓)</title>
+    
+    <!-- SEO 메타태그 -->
+    <meta name="description" content="beautycat 회원가입 페이지. 고객 또는 피부관리실 사업자로 가입하여 맞춤형 피부관리 서비스를 시작하세요.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://pposhop.kr/register.html">
+    
+    <!-- 개발 환경 오류 방지 -->
+    <script src="js/dev-environment-handler.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fef2f2',
+                            100: '#fee2e2', 
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ff2d92',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        }
+                    },
+                    fontFamily: {
+                        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
+                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { 
+            font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+        }
+
+        .btn-primary {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #e6297f;
+        }
+
+        .unni-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+        
+        .unni-input:focus {
+            outline: none;
+            border-color: #ff2d92;
+        }
+
+        .unni-card {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-indicator {
+            background: #f0f0f0;
+            color: #999;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .step-indicator.active {
+            background: #ff2d92;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- 헤더 -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- 로고 -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <span class="text-xl">🐱</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
+                        <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                    </div>
+                </div>
+                
+                <!-- 뒤로가기 버튼 -->
+                <a href="index.html" class="text-gray-600 hover:text-primary-500 font-medium text-sm">
+                    <i class="fas fa-arrow-left mr-2"></i>홈으로
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 회원가입 폼 -->
+    <div class="max-w-lg mx-auto mt-8 px-4 pb-8">
+        <div class="unni-card p-8">
+            <!-- 제목 및 진행단계 -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">회원가입</h2>
+                <p class="text-gray-600 mb-6">beautycat 계정을 만들어보세요</p>
+                
+                <!-- 진행단계 표시 -->
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <div class="flex items-center">
+                        <div class="step-indicator active">1</div>
+                        <span class="ml-2 text-sm font-medium text-primary-500">기본정보</span>
+                    </div>
+                    <div class="w-8 h-px bg-gray-200"></div>
+                    <div class="flex items-center">
+                        <div class="step-indicator">2</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">약관동의</span>
+                    </div>
+                    <div class="w-8 h-px bg-gray-200"></div>
+                    <div class="flex items-center">
+                        <div class="step-indicator">3</div>
+                        <span class="ml-2 text-sm font-medium text-gray-400">완료</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 회원가입 폼 -->
+            <form id="registerForm" class="space-y-6">
+                <!-- 사용자 유형 선택 -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">가입 유형</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="flex flex-col items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                            <input type="radio" name="userType" value="customer" checked class="sr-only">
+                            <i class="fas fa-user text-primary-500 text-2xl mb-2"></i>
+                            <span class="font-medium text-gray-700 mb-1">고객</span>
+                            <span class="text-xs text-gray-500 text-center">피부관리를 받고 싶어요</span>
+                        </label>
+                        <label class="flex flex-col items-center p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                            <input type="radio" name="userType" value="shop" class="sr-only">
+                            <i class="fas fa-store text-primary-500 text-2xl mb-2"></i>
+                            <span class="font-medium text-gray-700 mb-1">업체</span>
+                            <span class="text-xs text-gray-500 text-center">피부관리실을 운영해요</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 기본 정보 -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">이름</label>
+                        <input type="text" id="name" name="name" required class="unni-input" placeholder="이름을 입력하세요">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">연락처</label>
+                        <input type="tel" id="phone" name="phone" required class="unni-input" placeholder="010-0000-0000">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">이메일</label>
+                    <input type="email" id="email" name="email" required class="unni-input" placeholder="이메일을 입력하세요">
+                </div>
+
+                <!-- 비밀번호 -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">비밀번호</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required class="unni-input pr-12" placeholder="8자리 이상 입력하세요">
+                        <button type="button" onclick="togglePassword('password')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye" id="passwordToggle"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">영문, 숫자를 포함하여 8자리 이상 입력해주세요</p>
+                </div>
+
+                <!-- 비밀번호 확인 -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">비밀번호 확인</label>
+                    <div class="relative">
+                        <input type="password" id="confirmPassword" name="password_confirm" required class="unni-input pr-12" placeholder="비밀번호를 다시 입력하세요">
+                        <button type="button" onclick="togglePassword('confirmPassword')" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye" id="confirmPasswordToggle"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 업체 추가 정보 (업체 선택 시에만 표시) -->
+                <div id="shopFields" class="hidden space-y-4">
+                    <div class="border-t border-gray-200 pt-6">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-4">업체 정보</h4>
+                        <div class="space-y-4">
+                            <!-- 기본 업체 정보 -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">업체명</label>
+                                    <input type="text" name="shop_name" class="unni-input" placeholder="피부관리실 이름">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">사업자등록번호 *</label>
+                                    <input type="text" name="business_number" class="unni-input shop-required" placeholder="000-00-00000" pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}">
+                                </div>
+                            </div>
+                            
+                            <!-- 영업신고증 번호 -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">영업신고증 번호 *</label>
+                                <input type="text" name="business_license_number" class="unni-input shop-required" placeholder="예: 제2024-서울강남-0000호">
+                                <p class="text-xs text-gray-500 mt-1">미용업 영업신고증에 기재된 신고번호를 입력해주세요</p>
+                            </div>
+                            
+                            <!-- 네이버 카페 아이디 -->
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">네이버 카페 아이디 *</label>
+                                <input type="text" name="naver_cafe_id" class="unni-input shop-required" placeholder="네이버 카페 아이디를 입력하세요">
+                                <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <div class="flex items-start">
+                                        <i class="fas fa-info-circle text-blue-500 mr-2 mt-0.5"></i>
+                                        <div class="text-xs text-blue-700">
+                                            <p class="font-medium mb-1">📢 네이버 피.창.성 카페 회원 전용</p>
+                                            <p class="mb-2">샵 등록은 <a href="https://cafe.naver.com/cosmetickr" target="_blank" class="text-blue-600 font-medium underline">네이버 피.창.성 카페</a> 회원만 가능합니다.</p>
+                                            <p>• 카페 가입 후 네이버 아이디를 정확히 입력해주세요</p>
+                                            <p>• 가입 승인은 카페 활동 확인 후 처리됩니다</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 서류 제출 안내 -->
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-file-alt text-yellow-600 mr-3 mt-0.5 text-lg"></i>
+                                    <div class="flex-1">
+                                        <h5 class="text-sm font-semibold text-yellow-800 mb-2">📄 필수 서류 제출</h5>
+                                        <div class="text-xs text-yellow-700 space-y-1">
+                                            <p>• <strong>사업자등록증</strong> 사본</p>
+                                            <p>• <strong>영업신고증</strong> 사본</p>
+                                            <p class="mt-2 font-medium">📧 제출처: <a href="mailto:utuber@kakao.com" class="text-yellow-800 underline hover:text-yellow-900">utuber@kakao.com</a></p>
+                                            <p class="text-yellow-600">회원가입 완료 후 위 이메일로 서류를 제출해주세요. 서류 확인 후 샵 승인이 완료됩니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 업체 위치 정보 -->
+                            <div class="border-t border-gray-100 pt-4">
+                                <h5 class="text-sm font-medium text-gray-700 mb-3">📍 샵 위치 (중요: 견적 매칭에 사용됩니다)</h5>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">시/도 *</label>
+                                        <select name="shop_state" id="shop_state" class="unni-input shop-required">
+                                            <option value="">시/도를 선택해주세요</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">구/군 *</label>
+                                        <select name="shop_district" id="shop_district" disabled class="unni-input shop-required">
+                                            <option value="">먼저 시/도를 선택해주세요</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">상세 주소 *</label>
+                                    <input type="text" name="shop_address" class="unni-input shop-required" placeholder="동/읍/면, 도로명/지번, 건물명, 층수 등">
+                                    <p class="text-xs text-gray-500 mt-1">예: 강남구 역삼동 123-45 비우티빌딩 3층</p>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
+                                    <div class="flex items-start">
+                                        <i class="fas fa-info-circle text-blue-500 mr-2 mt-0.5 text-sm"></i>
+                                        <div class="text-xs text-blue-800">
+                                            <p class="font-medium mb-1">지역 선택이 중요한 이유:</p>
+                                            <p>• 고객이 견적을 요청할 때 <strong>같은 지역의 샵들만</strong> 견적 요청을 받습니다</p>
+                                            <p>• 시/도와 구/군이 정확해야 고객과 매칭됩니다</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 약관 동의 -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="space-y-3">
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" id="agreeAll" class="mt-1 text-primary-500 focus:ring-primary-500">
+                            <span class="text-sm font-semibold text-gray-700">전체 약관에 동의합니다</span>
+                        </label>
+                        
+                        <div class="pl-6 space-y-2">
+                            <label class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" name="terms_service" class="agree-item" required>
+                                    <span class="text-sm text-gray-600">[필수] 이용약관 동의</span>
+                                </div>
+                                <button type="button" class="text-primary-500 text-xs hover:underline">보기</button>
+                            </label>
+                            <label class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" name="terms_privacy" class="agree-item" required>
+                                    <span class="text-sm text-gray-600">[필수] 개인정보처리방침 동의</span>
+                                </div>
+                                <button type="button" class="text-primary-500 text-xs hover:underline">보기</button>
+                            </label>
+                            <label class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" name="terms_marketing" class="agree-item">
+                                    <span class="text-sm text-gray-600">[선택] 마케팅 정보 수신 동의</span>
+                                </div>
+                                <button type="button" class="text-primary-500 text-xs hover:underline">보기</button>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- 회원가입 버튼 -->
+                <button type="submit" class="w-full btn-primary py-4 text-base font-semibold">
+                    회원가입 완료
+                </button>
+            </form>
+
+            <!-- 하단 링크 -->
+            <div class="mt-6 text-center">
+                <div class="text-sm text-gray-600">
+                    이미 계정이 있으신가요?
+                    <a href="login.html" class="text-primary-500 hover:underline font-medium">로그인</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/security.js"></script>
+    <script src="js/regional-matching.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // 사용자 유형 선택 시 스타일 변경
+        document.querySelectorAll('input[name="userType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // 모든 라벨에서 선택 스타일 제거
+                document.querySelectorAll('label').forEach(label => {
+                    if (label.querySelector('input[name="userType"]')) {
+                        label.classList.remove('border-primary-500', 'bg-primary-50');
+                    }
+                });
+                
+                // 선택된 라벨에 스타일 추가
+                if (this.checked) {
+                    this.parentElement.classList.add('border-primary-500', 'bg-primary-50');
+                }
+                
+                // 업체 선택 시 추가 필드 표시/숨김
+                const shopFields = document.getElementById('shopFields');
+                if (this.value === 'shop') {
+                    shopFields.classList.remove('hidden');
+                    // shop-required 클래스가 있는 필드들을 필수로 설정
+                    shopFields.querySelectorAll('.shop-required').forEach(input => {
+                        input.setAttribute('required', 'required');
+                    });
+                    // 지역 선택 시스템 초기화
+                    initializeShopRegionalSelection();
+                } else {
+                    shopFields.classList.add('hidden');
+                    // shop-required 클래스가 있는 필드들 필수 해제 및 초기화
+                    shopFields.querySelectorAll('.shop-required').forEach(input => {
+                        input.removeAttribute('required');
+                        input.value = '';
+                        if (input.name === 'shop_district') {
+                            input.disabled = true;
+                            input.innerHTML = '<option value="">먼저 시/도를 선택해주세요</option>';
+                        }
+                    });
+                }
+            });
+        });
+
+        // 초기 선택 상태 설정
+        document.querySelector('input[name="userType"]:checked').parentElement.classList.add('border-primary-500', 'bg-primary-50');
+
+        // 비밀번호 표시/숨기기
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const passwordToggle = document.getElementById(fieldId + 'Toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.remove('fa-eye');
+                passwordToggle.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.remove('fa-eye-slash');
+                passwordToggle.classList.add('fa-eye');
+            }
+        }
+
+        // 전체 동의 체크박스
+        document.getElementById('agreeAll').addEventListener('change', function() {
+            const agreeItems = document.querySelectorAll('.agree-item');
+            agreeItems.forEach(item => {
+                item.checked = this.checked;
+            });
+        });
+
+        // 개별 동의 체크박스
+        document.querySelectorAll('.agree-item').forEach(item => {
+            item.addEventListener('change', function() {
+                const allItems = document.querySelectorAll('.agree-item');
+                const checkedItems = document.querySelectorAll('.agree-item:checked');
+                const agreeAll = document.getElementById('agreeAll');
+                
+                agreeAll.checked = allItems.length === checkedItems.length;
+            });
+        });
+
+        // 비밀번호 확인 검증
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = '#ef4444';
+            } else {
+                this.style.borderColor = '#e0e0e0';
+            }
+        });
+
+        // 사업자등록번호 유효성 검사 (업체 선택 시에만)
+        function validateBusinessNumber(input) {
+            const businessNumber = input.value.replace(/[^0-9]/g, '');
+            
+            if (businessNumber.length === 10) {
+                // 자동으로 하이픈 추가 (000-00-00000 형식)
+                const formatted = businessNumber.replace(/(\d{3})(\d{2})(\d{5})/, '$1-$2-$3');
+                input.value = formatted;
+                input.style.borderColor = '#10b981'; // 녹색
+            } else if (businessNumber.length > 0 && businessNumber.length < 10) {
+                input.style.borderColor = '#ef4444'; // 빨간색
+            } else {
+                input.style.borderColor = '#e0e0e0'; // 기본색
+            }
+        }
+
+        // 사업자등록번호 입력 이벤트
+        document.addEventListener('DOMContentLoaded', function() {
+            const businessNumberInput = document.querySelector('input[name="business_number"]');
+            if (businessNumberInput) {
+                businessNumberInput.addEventListener('input', function() {
+                    validateBusinessNumber(this);
+                });
+            }
+            
+            // 영업신고증 번호 입력 안내
+            const licenseNumberInput = document.querySelector('input[name="business_license_number"]');
+            if (licenseNumberInput) {
+                licenseNumberInput.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.style.borderColor = '#ef4444';
+                    } else {
+                        this.style.borderColor = '#10b981';
+                    }
+                });
+            }
+        });
+
+        // 업체 지역 선택 시스템 초기화
+        function initializeShopRegionalSelection() {
+            try {
+                console.log('🏪 업체 회원가입 - 지역 선택 시스템 초기화');
+                
+                // 지역별 매칭 시스템이 로드되었는지 확인
+                if (typeof window.regionalMatching !== 'undefined') {
+                    // 시/도 옵션 추가
+                    const stateSelect = document.getElementById('shop_state');
+                    if (stateSelect && stateSelect.options.length <= 1) {
+                        window.regionalMatching.populateStateOptions(stateSelect);
+                    }
+                    
+                    // 시/도 변경 시 구/군 업데이트 이벤트 설정
+                    const districtSelect = document.getElementById('shop_district');
+                    if (stateSelect && districtSelect) {
+                        stateSelect.removeEventListener('change', handleStateChange); // 중복 방지
+                        stateSelect.addEventListener('change', handleStateChange);
+                    }
+                    
+                    console.log('✅ 업체 회원가입 지역 선택 설정 완료');
+                } else {
+                    console.warn('⚠️ 지역별 매칭 시스템이 로드되지 않음');
+                }
+            } catch (error) {
+                console.error('업체 지역 선택 초기화 오류:', error);
+            }
+        }
+
+        // 시/도 선택 변경 핸들러
+        function handleStateChange(e) {
+            const districtSelect = document.getElementById('shop_district');
+            if (window.regionalMatching && districtSelect) {
+                window.regionalMatching.updateDistrictOptions(e.target.value, districtSelect);
+            }
+        }
+
+        // 페이지 로드 시 초기 상태 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            const shopRadio = document.querySelector('input[name="userType"][value="shop"]');
+            const customerRadio = document.querySelector('input[name="userType"][value="customer"]');
+            const shopFields = document.getElementById('shopFields');
+            
+            // 초기 상태에서 customer가 선택되어 있다면 shop 필드들의 required 제거
+            if (customerRadio && customerRadio.checked) {
+                shopFields.classList.add('hidden');
+                shopFields.querySelectorAll('.shop-required').forEach(input => {
+                    input.removeAttribute('required');
+                });
+            }
+            
+            // 업체가 선택되어 있고 shopFields가 보이는 경우 초기화
+            if (shopRadio && shopRadio.checked && !shopFields.classList.contains('hidden')) {
+                // shop-required 필드들을 필수로 설정
+                shopFields.querySelectorAll('.shop-required').forEach(input => {
+                    input.setAttribute('required', 'required');
+                });
+                setTimeout(() => {
+                    initializeShopRegionalSelection();
+                }, 500); // 지역별 매칭 시스템 로드를 위한 딜레이
+            }
+        });
+
+        // 폼 제출 처리는 auth.js에서 처리됨
+    </script>
+</body>
+</html>
