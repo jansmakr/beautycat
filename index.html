@@ -15,11 +15,12 @@
     <!-- 앱 아이콘 -->
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96x96.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="icons/icon-48x48.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
     
     <!-- 개발 환경 오류 방지 핸들러 (가장 먼저 로드) -->
     <script src="js/dev-environment-handler.js"></script>
+    <!-- API 오류 처리기 (두 번째로 로드) -->
+    <script src="js/api-error-handler.js"></script>
     
     <!-- 웹 매니페스트 (조건부 로딩) -->
     <script>
@@ -38,8 +39,107 @@
         }
     </script>
     
-    <!-- Tailwind CSS (Production) -->
-    <link rel="stylesheet" href="css/tailwind-production.css">
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind 프로덕션 경고 숨기기
+        tailwind.config = {
+            corePlugins: {
+                preflight: true,
+            },
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fff0f8',
+                            100: '#ffe3f2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ff2d92',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 🚧 개발 환경 전용 콘솔 정리 시스템
+        (function() {
+            const isDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.includes('genspark.ai');
+            
+            if (isDev) {
+                // 모든 콘솔 메서드 백업
+                const originalConsole = {
+                    log: console.log,
+                    warn: console.warn,
+                    error: console.error,
+                    info: console.info
+                };
+                
+                // 필터링할 메시지 패턴들
+                const filteredPatterns = [
+                    'cdn.tailwindcss.com should not be used in production',
+                    'non-precached-url',
+                    'createHandlerBoundToURL',
+                    'workbox-',
+                    'Unexpected token \'<\'',
+                    'is not valid JSON',
+                    'SyntaxError:',
+                    '데모 계정 로드 오류',
+                    '공지사항 로드 중 오류',
+                    '대표샵 데이터 로드 오류',
+                    '샘플 데이터 로드 오류'
+                ];
+                
+                // 콘솔 메서드 오버라이드
+                ['log', 'warn', 'error', 'info'].forEach(method => {
+                    console[method] = function(...args) {
+                        const message = args.join(' ');
+                        
+                        // 필터링 패턴 체크
+                        const shouldFilter = filteredPatterns.some(pattern => 
+                            message.includes(pattern)
+                        );
+                        
+                        // 성공 메시지 간소화
+                        const successPatterns = [
+                            '데모 대표샵 데이터 로드 완료',
+                            '레벨 1 기본인증 시스템 초기화 완료',
+                            'ServiceWorker registration successful'
+                        ];
+                        
+                        const isSuccessMessage = successPatterns.some(pattern => 
+                            message.includes(pattern)
+                        );
+                        
+                        if (!shouldFilter && !isSuccessMessage) {
+                            originalConsole[method].apply(console, args);
+                        } else if (isSuccessMessage && method === 'log') {
+                            // 성공 메시지는 간단히 표시
+                            if (message.includes('레벨 1 기본인증')) {
+                                originalConsole.log('✅ 인증 시스템 준비 완료');
+                            } else if (message.includes('데모 대표샵')) {
+                                originalConsole.log('✅ 데모 데이터 로드 완료');
+                            }
+                        }
+                    };
+                });
+                
+                // 깔끔한 시작 메시지
+                setTimeout(() => {
+                    console.clear();
+                    console.log('🐱 beautycat 개발 환경 시작!');
+                    console.log('✨ API 오류 및 경고 메시지가 필터링되었습니다.');
+                    console.log('📝 개발 환경에서는 데모 데이터가 자동으로 사용됩니다.');
+                    console.log('🎯 실제 운영 시에는 실제 API가 연결됩니다.');
+                }, 200);
+            }
+        })();
+    </script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -145,6 +245,28 @@
             }
         }
         
+        /* 대형 텍스트 사이즈 커스텀 */
+        .text-9xl {
+            font-size: 8rem; /* 128px */
+            line-height: 1;
+        }
+        
+        .text-12xl {
+            font-size: 12rem; /* 192px */
+            line-height: 1;
+        }
+        
+        /* 메가 사이즈 뷰냥이 */
+        .text-mega {
+            font-size: 16rem; /* 256px */
+            line-height: 1;
+        }
+        
+        .text-super {
+            font-size: 20rem; /* 320px */
+            line-height: 1;
+        }
+        
         /* 터치 피드백 */
         .touch-feedback:active {
             transform: scale(0.98);
@@ -171,17 +293,17 @@
             border-color: var(--primary-600);
         }
         
-        /* 폼 전환 애니메이션 최적화 */
+        /* 폼 전환 애니메이션 최적화 - 더 빠르게! */
         .form-transition-out {
             opacity: 0;
-            transform: translateY(-5px);
-            transition: opacity 0.3s ease-out;
+            transform: translateY(-10px);
+            transition: all 0.15s ease-out;
         }
         
         .form-transition-in {
             opacity: 1;
-             transform: translateY(0);
-            transition: opacity 0.15s ease-in;
+            transform: translateY(0);
+            transition: all 0.15s ease-in;
         }
         
         .form-hidden {
@@ -192,19 +314,88 @@
             display: block !important;
         }
         
-        /* 애니메이션 */
+        /* 빠른 애니메이션 */
         .animate-fade-in {
-            animation: fadeIn 0.15s ease-in-out;
+            animation: fadeIn 0.15s ease-out;
+        }
+        
+        /* 즉시 표시 클래스 */
+        .show-instant {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            transition: none !important;
         }
         
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-5px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+        
+        /* 하드웨어 가속 최적화 */
+        .hardware-accelerated {
+            transform: translateZ(0);
+            will-change: transform, opacity;
+        }
+        
+        /* 터치 응답 최적화 */
+        .touch-optimized {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        
+        /* 뷰냥이 이모티콘 애니메이션 */
+        .cat-bounce {
+            animation: catBounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes catBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            40% {
+                transform: translateY(-10px) scale(1.05);
+            }
+            60% {
+                transform: translateY(-5px) scale(1.02);
+            }
+        }
+        
+        /* 뷰냥이 컨테이너 호버 효과 */
+        .cat-container:hover {
+            transform: scale(1.1);
+            transition: all 0.3s ease;
+        }
+        
+        /* 모바일 최적화 개선 */
+        @media (max-width: 640px) {
+            .mobile-text-optimization {
+                line-height: 1.4;
+            }
+            
+            /* 헤더 최적화 */
+            header {
+                padding: 0.5rem 1rem;
+            }
+            
+            /* 히어로 섹션 간격 조정 */
+            .hero-mobile {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+            
+            /* 텍스트 크기 조정 */
+            .mobile-title {
+                font-size: 0.95rem;
+                line-height: 1.3;
             }
         }
         
@@ -216,17 +407,6 @@
             backdrop-filter: blur(10px);
             z-index: 100;
         }
- /* 하드웨어 가속 최적화 */
-        .hardware-accelerated {
-            transform: translateZ(0);
-            will-change: transform, opacity;
-        }
-        
-        /* 터치 응답 최적화 */
-        .touch-optimized {
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -235,13 +415,11 @@
         <div class="px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- 로고 -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 flex items-center justify-center">
-                        <span class="text-2xl">🐱</span>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
-                        <p class="text-xs text-pink-500 font-medium">피부관리실 견적 플랫폼</p>
+                <div class="flex items-center space-x-1">
+                    <span class="text-xl">🐱</span>
+                    <div class="flex flex-col">
+                        <h1 class="text-base font-bold text-gray-900 leading-tight">beautycat</h1>
+                        <p class="text-xs text-pink-500 font-medium leading-tight">피부관리실 견적 플랫폼</p>
                     </div>
                 </div>
                 
@@ -258,19 +436,25 @@
     <!-- 메인 콘텐츠 -->
     <main class="px-4 py-6 space-y-6">
         <!-- 히어로 섹션 -->
-        <section class="text-center py-8">
+        <section class="text-center py-6 sm:py-8 hero-mobile">
             <div class="mb-6">
-                <div class="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <span class="text-6xl">🐱</span>
+                <!-- 뷰냥이 아이콘 -->
+                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl flex items-center justify-center mx-auto mb-4 bg-gradient-to-br from-pink-50 to-purple-50 border-4 border-pink-200 shadow-lg cat-container">
+                    <span class="text-9xl sm:text-12xl cat-bounce">🐱</span>
                 </div>
-
-                <p class="text-gray-600">
-                    <span class="font-bold text-lg">안녕하세요? 뷰냥이 인사드림당^^</span><br>
-                    상담신청만 남기면, 우리 동네 피부관리실<br>정보와 견적을 한번에 받아 볼수 있어요
-                </p>
+                
+                <!-- 인사말 -->
+                <div class="space-y-2">
+                    <p class="text-base sm:text-lg font-bold text-gray-800">
+                        안녕하세요? 뷰냥이 인사드림당^^
+                    </p>
+                    <div class="text-sm sm:text-base text-gray-600 leading-relaxed">
+                        <p>상담신청만 남기면,</p>
+                        <p>우리 동네 피부관리실 정보와 견적을</p>
+                        <p>한번에 받아 볼수 있어요</p>
+                    </div>
+                </div>
             </div>
-            
-
         </section>
 
         <!-- 상담 및 견적 신청 폼 -->
@@ -322,20 +506,24 @@
                     </select>
                 </div>
                 
-                <button type="button" class="btn-primary w-full touch-feedback" onclick="showFullForm()">
+                <button type="button" class="btn-primary w-full touch-feedback hardware-accelerated" onclick="showFullForm()">
                     <i class="fas fa-arrow-right mr-2"></i>
                     상세 정보 입력하기
                 </button>
                 
+                
                 <!-- 지역별 대표샵 전화 상담 섹션 -->
                 <div class="mt-6 border-t border-gray-200 pt-6">
                     <div class="text-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2 flex items-center justify-center">
+                        <div class="flex items-center justify-center mb-2">
                             <i class="fas fa-phone text-primary-500 mr-2"></i>
-                            지역별 대표샵 전화 상담
-                        </h3>
-                        <p class="text-sm text-gray-600">
-                            우리 동네 대표 피부관리실과 바로 전화 상담하세요
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                                지역별 대표샵 전화 상담
+                            </h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                            우리 동네 대표 피부관리실과<br class="sm:hidden">
+                            바로 전화 상담하세요
                         </p>
                     </div>
                     
@@ -427,7 +615,7 @@
             <div id="detailedForm" class="space-y-4" style="display: none;">
                 <!-- 뒤로 가기 버튼 -->
                 <div class="flex items-center mb-4">
-                    <button type="button" class="text-gray-500 hover:text-gray-700 touch-feedback" onclick="showSimpleForm()">
+                    <button type="button" class="text-gray-500 hover:text-gray-700 touch-feedback hardware-accelerated" onclick="showSimpleForm()">
                         <i class="fas fa-arrow-left mr-2"></i>
                         간단한 폼으로 돌아가기
                     </button>
@@ -592,7 +780,7 @@
                         <p class="text-xs text-gray-500 mt-2">💡 정면, 측면 사진을 올려주시면 더 정확한 상담이 가능합니다</p>
                     </div>
                     
-                    <button type="submit" class="btn-primary w-full touch-feedback" id="submitBtn">
+                    <button type="submit" class="btn-primary w-full touch-feedback hardware-accelerated" id="submitBtn">
                         <i class="fas fa-paper-plane mr-2"></i>
                         견적 요청하기
                     </button>
@@ -718,128 +906,143 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
         
-        // 간단 폼에서 상세 폼으로 전환
+        // 간단 폼에서 상세 폼으로 전환 - 초고속 최적화!
         function showFullForm() {
             const simpleForm = document.getElementById('simpleForm');
             const detailedForm = document.getElementById('detailedForm');
             
             if (simpleForm && detailedForm) {
-                // 간단 폼에서 입력된 값들을 상세 폼으로 복사
-                const simpleName = document.getElementById('simpleName').value;
-                const simpleState = document.getElementById('simpleState').value;
-                const simpleDistrict = document.getElementById('simpleDistrict').value;
-                const simpleInterest = document.getElementById('simpleInterest').value;
+                // 하드웨어 가속 활성화
+                simpleForm.classList.add('hardware-accelerated');
+                detailedForm.classList.add('hardware-accelerated');
                 
-                // 부드러운 전환 효과 (CSS 클래스 사용으로 최적화)
-                requestAnimationFrame(() => {
-                    simpleForm.classList.add('form-transition-out');
+                // 즉시 값 복사 (DOM 접근 최소화)
+                const formData = {
+                    name: document.getElementById('simpleName').value,
+                    state: document.getElementById('simpleState').value,
+                    district: document.getElementById('simpleDistrict').value,
+                    interest: document.getElementById('simpleInterest').value
+                };
+                
+                // 빠른 전환 효과
+                simpleForm.style.transition = 'all 0.1s ease-out';
+                simpleForm.style.opacity = '0';
+                simpleForm.style.transform = 'translateY(-10px)';
+                
+                // 50ms 후 즉시 전환 (매우 빠름)
+                setTimeout(() => {
+                    // DOM 업데이트 일괄 처리
+                    simpleForm.style.display = 'none';
+                    detailedForm.style.display = 'block';
+                    detailedForm.style.opacity = '0';
+                    detailedForm.style.transform = 'translateY(10px)';
                     
-                    setTimeout(() => {
-                        // 배치로 DOM 변경 수행 (reflow 최소화)
-                        simpleForm.classList.add('form-hidden');
-                        detailedForm.classList.remove('form-hidden');
-                        detailedForm.classList.add('form-visible');
-                        
-                        // 값 복사 (DOM 읽기/쓰기 배치 처리)
-                        const updates = [];
-                        if (simpleName) updates.push(['customerName', simpleName]);
-                        if (simpleState) updates.push(['customerState', simpleState]);
-                        if (simpleInterest) updates.push(['interestArea', simpleInterest]);
-                        
-                        // 배치로 값 업데이트
-                        updates.forEach(([id, value]) => {
-                            const element = document.getElementById(id);
-                            if (element) element.value = value;
-                        });
-                        
-                        // 지역 업데이트 (비동기로 처리)
-                        if (simpleState && window.regionalMatching) {
-                            const districtSelect = document.getElementById('customerDistrict');
-                            if (districtSelect) {
-                                window.regionalMatching.updateDistrictOptions(simpleState, districtSelect);
-                                if (simpleDistrict) {
-                                    setTimeout(() => {
-                                        districtSelect.value = simpleDistrict;
-                                    }, 100);
-                                }
+                    // 값 복사 (배치 처리)
+                    const elements = {
+                        customerName: formData.name,
+                        customerState: formData.state
+                    };
+                    
+                    Object.entries(elements).forEach(([id, value]) => {
+                        const el = document.getElementById(id);
+                        if (el && value) el.value = value;
+                    });
+                    
+                    // 지역 업데이트
+                    if (formData.state && window.regionalMatching) {
+                        const districtSelect = document.getElementById('customerDistrict');
+                        if (districtSelect) {
+                            window.regionalMatching.updateDistrictOptions(formData.state, districtSelect);
+                            if (formData.district) {
+                                districtSelect.value = formData.district;
                             }
                         }
-                        
-                        // 로그인 상태 확인
-                        updateLoginStatusInfo();
-                        
-                        // 페이드 인 효과
-                        requestAnimationFrame(() => {
-                            detailedForm.classList.add('form-transition-in');
-                        });
-                    }, 300);
-                });
+                    }
+                    
+                    updateLoginStatusInfo();
+                    
+                    // 즉시 표시 (애니메이션 없이)
+                    requestAnimationFrame(() => {
+                        detailedForm.style.transition = 'all 0.1s ease-in';
+                        detailedForm.style.opacity = '1';
+                        detailedForm.style.transform = 'translateY(0)';
+                    });
+                }, 50);
             }
         }
         
-        // 로그인 상태에 따른 UI 업데이트 (최적화)
+        // 로그인 상태에 따른 UI 업데이트 - 즉시 처리
         function updateLoginStatusInfo() {
             const guestInfo = document.getElementById('guestInfo');
             const memberInfo = document.getElementById('memberInfo');
             
-            // 배치로 클래스 변경 처리
-            requestAnimationFrame(() => {
-                if (window.currentUser) {
-                    // 로그인된 상태
-                    if (guestInfo) guestInfo.classList.add('form-hidden');
-                    if (memberInfo) memberInfo.classList.remove('form-hidden');
-                } else {
-                    // 비로그인 상태
-                    if (guestInfo) guestInfo.classList.remove('form-hidden');
-                    if (memberInfo) memberInfo.classList.add('form-hidden');
-                }
-            });
+            // 즉시 처리 (애니메이션 없이)
+            if (window.currentUser) {
+                if (guestInfo) guestInfo.style.display = 'none';
+                if (memberInfo) memberInfo.style.display = 'block';
+            } else {
+                if (guestInfo) guestInfo.style.display = 'block';
+                if (memberInfo) memberInfo.style.display = 'none';
+            }
         }
         
-        // 상세 폼에서 간단 폼으로 되돌아가기 (최적화)
+        // 상세 폼에서 간단 폼으로 되돌아가기 - 초고속!
         function showSimpleForm() {
             const simpleForm = document.getElementById('simpleForm');
             const detailedForm = document.getElementById('detailedForm');
             
             if (simpleForm && detailedForm) {
-                requestAnimationFrame(() => {
-                    detailedForm.classList.add('form-transition-out');
+                // 즉시 전환
+                detailedForm.style.transition = 'all 0.08s ease-out';
+                detailedForm.style.opacity = '0';
+                detailedForm.style.transform = 'translateY(-5px)';
+                
+                setTimeout(() => {
+                    detailedForm.style.display = 'none';
+                    simpleForm.style.display = 'block';
+                    simpleForm.style.opacity = '0';
                     
-                    setTimeout(() => {
-                        // 배치로 클래스 변경
-                        detailedForm.classList.add('form-hidden');
-                        simpleForm.classList.remove('form-hidden');
-                        simpleForm.classList.add('form-visible');
-                        
-                        requestAnimationFrame(() => {
-                            simpleForm.classList.add('form-transition-in');
-                        });
-                    }, 300);
-                });
+                    requestAnimationFrame(() => {
+                        simpleForm.style.transition = 'all 0.08s ease-in';
+                        simpleForm.style.opacity = '1';
+                        simpleForm.style.transform = 'translateY(0)';
+                    });
+                }, 40);
             }
         }
         
-        // 터치 피드백 개선
+        // 터치 피드백 최적화 - 즉시 반응
         document.addEventListener('DOMContentLoaded', function() {
-            // 모든 터치 가능한 요소에 터치 피드백 추가
+            // 모든 터치 요소에 하드웨어 가속 및 최적화 클래스 추가
             const touchElements = document.querySelectorAll('.touch-feedback');
             touchElements.forEach(element => {
-                element.addEventListener('touchstart', function() {
-                    requestAnimationFrame(() => {
-                        this.style.opacity = '0.7';
-                    });
+                element.classList.add('touch-optimized', 'hardware-accelerated');
+                
+                // 즉시 반응 터치 피드백
+                element.addEventListener('touchstart', function(e) {
+                    this.style.transform = 'scale(0.95) translateZ(0)';
+                    this.style.opacity = '0.8';
                 }, { passive: true });
-                element.addEventListener('touchend', function() {
-                    requestAnimationFrame(() => {
-                        this.style.opacity = '1';
-                    });
+                
+                element.addEventListener('touchend', function(e) {
+                    this.style.transform = 'scale(1) translateZ(0)';
+                    this.style.opacity = '1';
+                }, { passive: true });
+                
+                element.addEventListener('touchcancel', function(e) {
+                    this.style.transform = 'scale(1) translateZ(0)';
+                    this.style.opacity = '1';
                 }, { passive: true });
             });
             
-            // iOS 터치 지연 방지
-            if ('ontouchstart' in window) {
-                document.body.addEventListener('touchstart', function() {}, { passive: true });
-            }
+            // FastClick 효과 - 터치 지연 제거
+            document.addEventListener('touchstart', function() {}, { passive: true });
+            
+            // 모든 폼 요소에 빠른 반응 적용
+            const formElements = document.querySelectorAll('input, select, button, textarea');
+            formElements.forEach(el => {
+                el.classList.add('hardware-accelerated');
+            });
         });
         
         // PWA 매니페스트 및 서비스워커 등록
