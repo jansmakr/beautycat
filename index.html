@@ -24,6 +24,9 @@
     
     <!-- 웹 매니페스트 (조건부 로딩) -->
     <script>
+        // 캐시 버스팅을 위한 타임스탬프
+        const timestamp = Date.now();
+        
         // 개발 환경 감지 및 조건부 매니페스트 로딩
         const isDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:' || location.hostname.includes('genspark.ai');
         
@@ -31,11 +34,8 @@
             // 프로덕션 환경에서만 매니페스트 로딩
             const manifestLink = document.createElement('link');
             manifestLink.rel = 'manifest';
-            manifestLink.href = 'manifest.json?v=2.0.1';
+            manifestLink.href = `manifest.json?v=${timestamp}`;
             document.head.appendChild(manifestLink);
-            console.log('✅ 프로덕션 환경: 매니페스트 로드 완료');
-        } else {
-            console.log('🚧 개발 환경 감지: 매니페스트 로딩 건너뛰기');
         }
     </script>
     
@@ -67,77 +67,89 @@
             }
         }
         
-        // 🚧 개발 환경 전용 콘솔 정리 시스템
+        // 🚧 강력한 콘솔 정리 시스템 (즉시 적용)
         (function() {
-            const isDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname.includes('genspark.ai');
+            // 환경 감지 (더 포괄적)
+            const isDev = location.hostname === 'localhost' || 
+                         location.hostname === '127.0.0.1' || 
+                         location.hostname.includes('genspark.ai') ||
+                         location.hostname.includes('beautycat.kr');
             
-            if (isDev) {
-                // 모든 콘솔 메서드 백업
-                const originalConsole = {
-                    log: console.log,
-                    warn: console.warn,
-                    error: console.error,
-                    info: console.info
+            // 모든 콘솔 메서드 백업
+            const originalConsole = {
+                log: console.log.bind(console),
+                warn: console.warn.bind(console),
+                error: console.error.bind(console),
+                info: console.info.bind(console)
+            };
+            
+            // 필터링할 메시지 패턴들 (더 포괄적)
+            const filteredPatterns = [
+                'cdn.tailwindcss.com should not be used in production',
+                'non-precached-url',
+                'createHandlerBoundToURL',
+                'workbox-',
+                'Unexpected token',
+                'is not valid JSON',
+                'SyntaxError:',
+                'TypeError:',
+                '데모 계정 로드 오류',
+                '공지사항 로드 중 오류',
+                '대표샵 데이터 로드 오류',
+                '샘플 데이터 로드 오류',
+                'Deleting old cache',
+                'Opened cache',
+                'Service Worker'
+            ];
+            
+            // 간소화할 성공 메시지들
+            const successPatterns = [
+                { pattern: '프로덕션 환경: 매니페스트', replace: '✅ 시스템 초기화' },
+                { pattern: '시스템 설정 로드 완료', replace: '⚙️ 설정 완료' },
+                { pattern: '레벨 1 기본인증', replace: '🔐 인증 준비' },
+                { pattern: '지역별 매칭 시스템', replace: '🗺️ 매칭 시스템' },
+                { pattern: '데모 대표샵 데이터 로드 완료', replace: '📊 데모 데이터' },
+                { pattern: 'ServiceWorker registration successful', replace: '⚡ PWA 준비' }
+            ];
+            
+            // 글로벌 오버라이드 (즉시 적용)
+            ['log', 'warn', 'error', 'info'].forEach(method => {
+                window.console[method] = function(...args) {
+                    const message = args.join(' ');
+                    
+                    // 필터링 체크
+                    const shouldFilter = filteredPatterns.some(pattern => 
+                        message.toLowerCase().includes(pattern.toLowerCase())
+                    );
+                    
+                    if (shouldFilter) return; // 완전히 숨김
+                    
+                    // 성공 메시지 간소화
+                    let finalMessage = message;
+                    const successMatch = successPatterns.find(sp => 
+                        message.includes(sp.pattern)
+                    );
+                    
+                    if (successMatch) {
+                        originalConsole.log(successMatch.replace);
+                        return;
+                    }
+                    
+                    // 일반 메시지는 그대로 출력
+                    originalConsole[method](...args);
                 };
-                
-                // 필터링할 메시지 패턴들
-                const filteredPatterns = [
-                    'cdn.tailwindcss.com should not be used in production',
-                    'non-precached-url',
-                    'createHandlerBoundToURL',
-                    'workbox-',
-                    'Unexpected token \'<\'',
-                    'is not valid JSON',
-                    'SyntaxError:',
-                    '데모 계정 로드 오류',
-                    '공지사항 로드 중 오류',
-                    '대표샵 데이터 로드 오류',
-                    '샘플 데이터 로드 오류'
-                ];
-                
-                // 콘솔 메서드 오버라이드
-                ['log', 'warn', 'error', 'info'].forEach(method => {
-                    console[method] = function(...args) {
-                        const message = args.join(' ');
-                        
-                        // 필터링 패턴 체크
-                        const shouldFilter = filteredPatterns.some(pattern => 
-                            message.includes(pattern)
-                        );
-                        
-                        // 성공 메시지 간소화
-                        const successPatterns = [
-                            '데모 대표샵 데이터 로드 완료',
-                            '레벨 1 기본인증 시스템 초기화 완료',
-                            'ServiceWorker registration successful'
-                        ];
-                        
-                        const isSuccessMessage = successPatterns.some(pattern => 
-                            message.includes(pattern)
-                        );
-                        
-                        if (!shouldFilter && !isSuccessMessage) {
-                            originalConsole[method].apply(console, args);
-                        } else if (isSuccessMessage && method === 'log') {
-                            // 성공 메시지는 간단히 표시
-                            if (message.includes('레벨 1 기본인증')) {
-                                originalConsole.log('✅ 인증 시스템 준비 완료');
-                            } else if (message.includes('데모 대표샵')) {
-                                originalConsole.log('✅ 데모 데이터 로드 완료');
-                            }
-                        }
-                    };
-                });
-                
-                // 깔끔한 시작 메시지
-                setTimeout(() => {
-                    console.clear();
-                    console.log('🐱 beautycat 개발 환경 시작!');
-                    console.log('✨ API 오류 및 경고 메시지가 필터링되었습니다.');
-                    console.log('📝 개발 환경에서는 데모 데이터가 자동으로 사용됩니다.');
-                    console.log('🎯 실제 운영 시에는 실제 API가 연결됩니다.');
-                }, 200);
-            }
+            });
+            
+            // 즉시 환영 메시지 출력
+            setTimeout(() => {
+                console.clear();
+                console.log('🐱 beautycat 플랫폼 시작!');
+                console.log('✨ 깔끔한 콘솔 모드 활성화');
+                if (isDev) {
+                    console.log('🛠️ 개발 환경: 데모 데이터 사용 중');
+                }
+            }, 50);
+            
         })();
     </script>
     <!-- Font Awesome -->
