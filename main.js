@@ -39,17 +39,29 @@
     39	    initializeRepresentativeShops();
     40	    
     41	    // 데이터 로드는 비동기로 처리하여 페이지 로딩을 방해하지 않음
-    42	    setTimeout(() => {
-    43	        loadSampleShops().catch(() => {
-    44	            // 피부관리실 데이터 로드 실패 (무시)
-    45	        });
-    46	        loadAnnouncements().catch(() => {
-    47	            // 공지사항 데이터 로드 실패 (무시)
-    48	        });
-    49	        loadRepresentativeShops().catch(() => {
-    50	            // 대표샵 데이터 로드 실패 (무시)
-    51	        });
-    52	    }, 1000);
+    42	        // 프로덕션 환경 체크
+    const isProduction = location.hostname === 'beautycat.kr' || 
+                        location.hostname === 'www.beautycat.kr' ||
+                        location.hostname.includes('beautycat.pages.dev');
+    
+    if (isProduction) {
+        console.log('🏭 프로덕션 환경 감지: 데이터 로드 건너뛰기');
+        return;
+    }
+    
+    // 개발 환경에서만 데이터 로드
+    setTimeout(() => {
+        loadSampleShops().catch(() => {
+            // 피부관리실 데이터 로드 실패 (무시)
+        });
+        loadAnnouncements().catch(() => {
+            // 공지사항 데이터 로드 실패 (무시)
+        });
+        loadRepresentativeShops().catch(() => {
+            // 대표샵 데이터 로드 실패 (무시)
+        });
+    }, 1000);
+
     53	    
     54	    setupUserAutoFill();
     55	    fillUserDataIfLoggedIn();
@@ -560,10 +572,10 @@
    560	// 샘플 피부관리실 데이터 로드 (개발 및 테스트용)
    561	async function loadSampleShops() {
    562	    try {
-   563	        // 프로덕션 환경에서는 샘플 데이터 로드 건너뛰기
-   564	        const isProduction = !location.hostname.includes('localhost') && 
-   565	                           !location.hostname.includes('127.0.0.1') && 
-   566	                           !location.hostname.includes('genspark.ai');
+   563	          // 프로덕션 환경에서는 샘플 데이터 로드 건너뛰기
+        const isProduction = location.hostname === 'beautycat.kr' || 
+                           location.hostname === 'www.beautycat.kr' ||
+                           location.hostname.includes('beautycat.pages.dev');
    567	        
    568	        if (isProduction) {
    569	            console.log('🏭 프로덕션 환경: 샘플 데이터 로드 건너뛰기');

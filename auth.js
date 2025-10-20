@@ -9,19 +9,31 @@
      9	    checkExistingSession();
     10	});
     11	
-    12	// 인증 앱 초기화
-    13	function initializeAuthApp() {
-    14	    setupAuthEventListeners();
-    15	    loadDemoAccounts();
-    16	    
-    17	    // 페이지별 초기화
-    18	    const pathname = window.location.pathname;
-    19	    if (pathname.includes('login.html')) {
-    20	        initializeLoginPage();
-    21	    } else if (pathname.includes('register.html')) {
-    22	        initializeRegisterPage();
-    23	    }
-    24	}
+    12// 인증 앱 초기화
+function initializeAuthApp() {
+    setupAuthEventListeners();
+    
+    // 프로덕션 환경 체크
+    const isProduction = location.hostname === 'beautycat.kr' || 
+                        location.hostname === 'www.beautycat.kr' ||
+                        location.hostname.includes('beautycat.pages.dev');
+    
+    if (!isProduction) {
+        // 개발 환경에서만 데모 계정 로드
+        loadDemoAccounts();
+    } else {
+        console.log('🏭 프로덕션 환경 감지: 데모 계정 로드 건너뛰기');
+    }
+    
+    // 페이지별 초기화
+    const pathname = window.location.pathname;
+    if (pathname.includes('login.html')) {
+        initializeLoginPage();
+    } else if (pathname.includes('register.html')) {
+        initializeRegisterPage();
+    }
+}
+
     25	
     26	// 인증 관련 이벤트 리스너 설정
     27	function setupAuthEventListeners() {
@@ -1001,10 +1013,10 @@
   1001	// 데모 계정 로드 (개발용)
   1002	async function loadDemoAccounts() {
   1003	    try {
-  1004	        // 개발 환경이 아니면 데모 데이터 로드 건너뛰기
-  1005	        const isProduction = !location.hostname.includes('localhost') && 
-  1006	                           !location.hostname.includes('127.0.0.1') && 
-  1007	                           !location.hostname.includes('genspark.ai');
+  1004        // 개발 환경이 아니면 데모 데이터 로드 건너뛰기
+        const isProduction = location.hostname === 'beautycat.kr' || 
+                           location.hostname === 'www.beautycat.kr' ||
+                           location.hostname.includes('beautycat.pages.dev');
   1008	        
   1009	        if (isProduction) {
   1010	            console.log('🏭 프로덕션 환경: 데모 계정 로드 건너뛰기');
