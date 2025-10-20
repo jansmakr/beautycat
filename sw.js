@@ -1,31 +1,20 @@
-const CACHE_NAME = 'beautycat-v2.0.5';
+const CACHE_NAME = 'beautycat-v2.0.6';
 const urlsToCache = [
-  '/',
   './index.html',
   './login.html', 
-  './register.html',
   './chat.html',
   './customer-dashboard.html',
   './shop-dashboard.html',
-  './contact-inquiry.html',
   './js/main.js',
   './js/auth.js',
-  './js/regional-matching.js',
-  './js/config.js',
-  './js/logger.js',
   './js/dev-environment-handler.js',
-  './css/tailwind-production.css',
-  './manifest.json',
-  './icons/icon-48x48.png',
-  './icons/icon-72x72.png',
-  './icons/icon-96x96.png',
   './icons/icon-192x192.png',
   './icons/icon-512x512.png'
 ];
 
 // 설치 이벤트
 self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
+  // 조용한 설치 (로그 최소화)
   // 즉시 활성화
   self.skipWaiting();
   
@@ -37,26 +26,24 @@ self.addEventListener('install', event => {
         return Promise.allSettled(
           urlsToCache.map(url => 
             cache.add(url).catch(error => {
-              console.warn(`Failed to cache ${url}:`, error.message);
-              return null; // 실패한 것은 무시하고 계속 진행
+              // 조용히 실패 처리 (개발 환경에서 정상적인 상황)
+              return null;
             })
           )
         );
       })
       .then(results => {
-        const successful = results.filter(result => result.status === 'fulfilled').length;
-        const failed = results.filter(result => result.status === 'rejected').length;
-        console.log(`Cached ${successful} resources successfully, ${failed} failed`);
+        // 조용한 캐싱 완료 (로그 최소화)
       })
       .catch(error => {
-        console.error('Failed to open cache:', error);
+        // 조용한 오류 처리
       })
   );
 });
 
 // 활성화 이벤트
 self.addEventListener('activate', event => {
-  console.log('Service Worker activating...');
+  // 조용한 활성화
   // 모든 클라이언트를 즉시 제어
   event.waitUntil(
     Promise.all([
