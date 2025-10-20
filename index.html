@@ -174,12 +174,14 @@
         /* 폼 전환 애니메이션 최적화 */
         .form-transition-out {
             opacity: 0;
+            transform: translateY(-5px);
             transition: opacity 0.3s ease-out;
         }
         
         .form-transition-in {
             opacity: 1;
-            transition: opacity 0.3s ease-in;
+             transform: translateY(0);
+            transition: opacity 0.15s ease-in;
         }
         
         .form-hidden {
@@ -192,7 +194,7 @@
         
         /* 애니메이션 */
         .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.15s ease-in-out;
         }
         
         @keyframes fadeIn {
@@ -213,6 +215,17 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             z-index: 100;
+        }
+ /* 하드웨어 가속 최적화 */
+        .hardware-accelerated {
+            transform: translateZ(0);
+            will-change: transform, opacity;
+        }
+        
+        /* 터치 응답 최적화 */
+        .touch-optimized {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
     </style>
 </head>
