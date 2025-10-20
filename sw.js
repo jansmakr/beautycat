@@ -1,27 +1,26 @@
-const CACHE_NAME = 'beautycat-v2.0.2';
+const CACHE_NAME = 'beautycat-v2.0.5';
 const urlsToCache = [
   '/',
-  './',
-  'index.html',
-  'login.html',
-  'register.html',
-  'chat.html',
-  'customer-dashboard.html',
-  'shop-dashboard.html',
-  'contact-inquiry.html',
-  'js/main.js',
-  'js/auth.js',
-  'js/regional-matching.js',
-  'js/config.js',
-  'js/logger.js',
-  'js/customer-dashboard.js',
-  'js/shop-dashboard.js',
-  'manifest.json',
-  'icons/icon-48x48.png',
-  'icons/icon-72x72.png',
-  'icons/icon-96x96.png',
-  'icons/icon-192x192.png',
-  'icons/icon-512x512.png'
+  './index.html',
+  './login.html', 
+  './register.html',
+  './chat.html',
+  './customer-dashboard.html',
+  './shop-dashboard.html',
+  './contact-inquiry.html',
+  './js/main.js',
+  './js/auth.js',
+  './js/regional-matching.js',
+  './js/config.js',
+  './js/logger.js',
+  './js/dev-environment-handler.js',
+  './css/tailwind-production.css',
+  './manifest.json',
+  './icons/icon-48x48.png',
+  './icons/icon-72x72.png',
+  './icons/icon-96x96.png',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png'
 ];
 
 // 설치 이벤트
@@ -113,9 +112,38 @@ self.addEventListener('fetch', event => {
           return response;
         }
         
-        // 루트 경로 요청인 경우 index.html로 대체 시도
-        if (event.request.url.endsWith('/') || event.request.url === self.location.origin + '/') {
-          return caches.match('/index.html') || caches.match('./index.html');
+        // 루트 경로 요청인 경우 index.html로 대체
+        const url = new URL(event.request.url);
+        if (url.pathname === '/' || url.pathname === '') {
+          return caches.match('./index.html')
+            .then(cachedResponse => {
+              if (cachedResponse) {
+                return cachedResponse;
+              }
+              // 캐시에 없으면 네트워크에서 가져오기
+              return fetch('./index.html')
+                .then(response => {
+                  if (response.ok) {
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME)
+                      .then(cache => cache.put('./index.html', responseClone))
+                      .catch(err => console.warn('Failed to cache index.html:', err));
+                    return response;
+                  }
+                  throw new Error('Failed to fetch index.html');
+                })
+                .catch(err => {
+                  console.error('Failed to fetch index.html:', err);
+                  // 기본 HTML 반환
+                  return new Response('<html><body><h1>오프라인</h1><p>네트워크에 연결되지 않았습니다.</p></body></html>', {
+                    headers: { 'Content-Type': 'text/html' }
+                  });
+                });
+            })
+            .catch(err => {
+              console.error('Cache match failed:', err);
+              return fetch('./index.html');
+            });
         }
         
         // 캐시에 없으면 네트워크에서 가져오기
