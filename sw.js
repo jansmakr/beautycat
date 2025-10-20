@@ -1,4 +1,4 @@
-const CACHE_NAME = 'beautycat-v2.0.6';
+const CACHE_NAME = 'beautycat-v2.0.7';
 const urlsToCache = [
   './index.html',
   './login.html', 
@@ -108,7 +108,7 @@ self.addEventListener('fetch', event => {
                 return cachedResponse;
               }
               // 캐시에 없으면 네트워크에서 가져오기
-              return fetch('./index.html')
+              return fetch('./index.html', { redirect: 'follow' })
                 .then(response => {
                   if (response.ok) {
                     const responseClone = response.clone();
@@ -133,8 +133,13 @@ self.addEventListener('fetch', event => {
             });
         }
         
-        // 캐시에 없으면 네트워크에서 가져오기
-        return fetch(event.request)
+        // 캐시에 없으면 네트워크에서 가져오기 (리다이렉트 허용)
+        const requestOptions = {
+          redirect: 'follow',
+          mode: 'cors'
+        };
+        
+        return fetch(event.request.url, requestOptions)
           .then(response => {
             // 응답이 없거나 네트워크 에러인 경우
             if (!response) {
