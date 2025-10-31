@@ -1,1 +1,0 @@
-/api/* https://beautycat-api.jansmakr.workers.dev/api/:splat 200
