@@ -1,9 +1,5 @@
 Cloudflare Pages Deployment Trigger
-===================================
-
-Timestamp: 2025-10-30 18:30 KST
-Purpose: Force fresh deployment
-Repository: jansmakr/beautycat
-Branch: main
-
-This file is created to trigger a new Cloudflare Pages deployment.
+   ===================================
+   Timestamp: 2025-10-30 18:30 KST
+   Purpose: Force fresh deployment
+   Repository: jansmakr/beautycat
