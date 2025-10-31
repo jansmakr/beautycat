@@ -51,9 +51,13 @@
     <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
     
     <!-- 🚨 Cloudflare API 우선 로드 -->
+       <!-- 🚨 Cloudflare API Helper (최우선 로드) -->
+    <script src="js/api-helper.js"></script>
+    <!-- Cloudflare API -->
     <script src="js/cloudflare-api.js"></script>
     <!-- 개발 환경 핸들러 (Cloudflare API 리다이렉트 지원) -->
     <script src="js/dev-environment-handler.js"></script>
+
     <!-- 🎫 쿠폰 시스템 -->
     <script src="js/coupon-system.js"></script>
     <!-- 📅 예약 시스템 -->
