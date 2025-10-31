@@ -1,0 +1,65 @@
+/**
+ * 🌍 BeautyCat 글로벌 설정 (최우선 로드)
+ * 이 파일이 모든 API 호출을 제어합니다
+ */
+
+(function() {
+    'use strict';
+    
+    // ==========================================
+    // 🔧 API 설정 (여기만 수정하면 전체 적용)
+    // ==========================================
+    const GLOBAL_CONFIG = {
+        API_BASE_URL: 'https://beautycat-api-v3.jansmakr.workers.dev/api',
+        API_VERSION: 'v3',
+        ENVIRONMENT: 'production'
+    };
+    
+    // ==========================================
+    // 🛡️ 강제 적용 (모든 변수 덮어쓰기)
+    // ==========================================
+    
+    // CONFIG 객체
+    window.CONFIG = window.CONFIG || {};
+    window.CONFIG.API_BASE_URL = GLOBAL_CONFIG.API_BASE_URL;
+    
+    // BEAUTYCAT_CONFIG 객체
+    window.BEAUTYCAT_CONFIG = window.BEAUTYCAT_CONFIG || {};
+    window.BEAUTYCAT_CONFIG.API_BASE_URL = GLOBAL_CONFIG.API_BASE_URL;
+    
+    // CLOUDFLARE_API 객체
+    window.CLOUDFLARE_API = window.CLOUDFLARE_API || {};
+    window.CLOUDFLARE_API.baseUrl = GLOBAL_CONFIG.API_BASE_URL;
+    
+    // ==========================================
+    // 🔄 Fetch 인터셉터 (모든 API 호출 자동 변환)
+    // ==========================================
+    const originalFetch = window.fetch;
+    
+    window.fetch = function(url, options) {
+        let modifiedUrl = url;
+        
+        // URL이 문자열인 경우
+        if (typeof url === 'string') {
+            // 구 API URL 자동 변환
+            if (url.includes('beautycat-api.jansmakr.workers.dev')) {
+                modifiedUrl = url.replace(
+                    'beautycat-api.jansmakr.workers.dev',
+                    'beautycat-api-v3.jansmakr.workers.dev'
+                );
+            }
+            
+            // 상대 경로인 경우 절대 경로로 변환
+            if (url.startsWith('tables/') || url.startsWith('/tables/')) {
+                modifiedUrl = GLOBAL_CONFIG.API_BASE_URL + '/' + url.replace(/^\//, '');
+            }
+        }
+        
+        // 원본 fetch 호출
+        return originalFetch.call(this, modifiedUrl, options);
+    };
+    
+    console.log('✅ 글로벌 설정 로드 완료');
+    console.log('📍 API URL:', GLOBAL_CONFIG.API_BASE_URL);
+    
+})();
