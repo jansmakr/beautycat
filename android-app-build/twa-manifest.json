@@ -1,0 +1,56 @@
+{
+  "packageId": "kr.beautycat.app",
+  "host": "beautycat.kr",
+  "name": "BeautyCat",
+  "launcherName": "BeautyCat",
+  "display": "standalone",
+  "themeColor": "#ec4899",
+  "navigationColor": "#000000",
+  "backgroundColor": "#ffffff",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://beautycat.kr/icons/icon-512x512.png",
+  "maskableIconUrl": "https://beautycat.kr/icons/icon-512x512-maskable.png",
+  "monochromeIconUrl": "https://beautycat.kr/icons/icon-512x512-monochrome.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "견적 신청",
+      "short_name": "견적신청",
+      "url": "/#consultation",
+      "icon": "https://beautycat.kr/icons/shortcut-consultation.png"
+    },
+    {
+      "name": "채팅 상담",
+      "short_name": "채팅",
+      "url": "/chat.html",
+      "icon": "https://beautycat.kr/icons/shortcut-chat.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://beautycat.kr/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    },
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "minSdkVersion": 24,
+  "targetSdkVersion": 34,
+  "compileSdkVersion": 34
+}

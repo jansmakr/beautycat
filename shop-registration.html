@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>피부관리실 등록 - beautycat (뷰티+에티켓)</title>
+    
+    <!-- SEO 메타태그 -->
+    <meta name="description" content="피부관리실 사업자 등록 페이지. beautycat에 샵을 등록하고 더 많은 고객들과 만나세요. 여드름, 미백, 주름 관리 전문 샵 모집중!">
+    <meta name="keywords" content="피부관리실 등록, 피부샵 입점, 뷰티 사업자, 피부관리 샵, 사업자 등록, beautycat 파트너">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pposhop.kr/shop-registration.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="피부관리실 등록 - beautycat 파트너">
+    <meta property="og:description" content="beautycat에 피부관리실을 등록하고 더 많은 고객들과 만나세요. 전문 관리 프로그램으로 사업을 확장해보세요!">
+    <meta property="og:url" content="https://pposhop.kr/shop-registration.html">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fff0f8',
+                            100: '#ffe3f2',
+                            500: '#ff2d92', // beautycat 메인 핑크
+                            600: '#e6297f',
+                            700: '#cc256c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+        .unni-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease;
+        }
+        .unni-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 개선된 헤더 -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- 로고 섹션 -->
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center mr-4 lg:mr-0">
+                        <i class="fas fa-arrow-left text-gray-600 text-xl mr-3 lg:hidden"></i>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <span class="text-xl">🐱</span>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
+                                <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 우측 메뉴 -->
+                <div class="flex items-center space-x-3">
+                    <a href="login-clean.html" class="text-gray-600 hover:text-primary-500 font-medium text-sm transition-colors">
+                        로그인
+                    </a>
+                    <a href="index.html" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 text-sm font-medium rounded-lg transition-all">
+                        홈으로
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 안내 섹션 -->
+        <div class="bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-4">피부관리실 등록하고 더 많은 고객을 만나세요!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div class="text-center">
+                    <i class="fas fa-users text-4xl mb-2 opacity-90"></i>
+                    <h3 class="font-semibold mb-1">타겟 고객 매칭</h3>
+                    <p class="text-sm opacity-90">지역과 관심사가 일치하는 고객의 상담 요청을 자동으로 받아보세요</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-chart-line text-4xl mb-2 opacity-90"></i>
+                    <h3 class="font-semibold mb-1">매출 증대</h3>
+                    <p class="text-sm opacity-90">견적 요청부터 예약까지 원스톱 관리로 성약률을 높이세요</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-mobile-alt text-4xl mb-2 opacity-90"></i>
+                    <h3 class="font-semibold mb-1">실시간 소통</h3>
+                    <p class="text-sm opacity-90">채팅을 통한 실시간 상담으로 고객 만족도를 향상시키세요</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 등록 폼 -->
+        <div class="unni-card p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">피부관리실 등록 신청</h3>
+            
+            <form id="shop-registration-form" class="space-y-6">
+                <!-- 기본 정보 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">기본 정보</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="shop_name" class="block text-sm font-medium text-gray-700 mb-2">피부관리실명 *</label>
+                            <input type="text" id="shop_name" name="shop_name" required 
+                                   class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                   placeholder="예: 뷰티스킨 클리닉">
+                        </div>
+                        <div>
+                            <label for="owner_name" class="block text-sm font-medium text-gray-700 mb-2">대표자명 *</label>
+                            <input type="text" id="owner_name" name="owner_name" required 
+                                   class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                   placeholder="홍길동">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 연락처 정보 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">연락처 정보</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">전화번호 *</label>
+                            <input type="tel" id="phone" name="phone" required 
+                                   class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                   placeholder="02-123-4567">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">이메일 *</label>
+                            <div class="space-y-2">
+                                <input type="email" id="email" name="email" required autocomplete="email" 
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg"
+                                       placeholder="shop@example.com">
+                                <button type="button" id="checkEmailBtn" 
+                                        class="w-full px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                                    📧 이메일 중복 확인
+                                </button>
+                            </div>
+                            <div id="emailCheckMessage" class="mt-1 text-sm"></div>
+                            
+                            <!-- 이메일 인증 섹션 - 모바일에서 보이도록 개선 -->
+                            <div id="emailVerificationSection" class="mt-3">
+                                <div class="p-3 bg-blue-50 rounded-lg border">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-envelope text-blue-500"></i>
+                                        <span class="text-sm font-medium text-blue-700">이메일 인증</span>
+                                    </div>
+                                    <p class="text-sm text-blue-600 mb-3">입력하신 이메일로 6자리 인증코드를 발송했습니다.</p>
+                                    
+                                    <!-- 모바일 친화적 인증코드 입력 -->
+                                    <div class="space-y-3">
+                                        <input type="text" id="verificationCode" placeholder="인증코드 6자리 입력" maxlength="6"
+                                               class="w-full px-4 py-3 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-xl"
+                                               aria-label="6자리 이메일 인증코드 입력"
+                                               autocomplete="one-time-code">
+                                        
+                                        <button type="button" id="sendVerificationBtn" 
+                                                class="w-full px-4 py-3 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+                                            📧 인증코드 발송
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center mt-2">
+                                        <div id="verificationMessage" class="text-sm"></div>
+                                        <div id="resendTimer" class="text-sm text-gray-500"></div>
+                                    </div>
+                                    
+                                    <button type="button" id="verifyCodeBtn" 
+                                            class="w-full mt-3 px-4 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400 transition-colors">
+                                        ✅ 인증 확인
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 위치 정보 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">위치 정보</h4>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="shop_province" class="block text-sm font-medium text-gray-700 mb-2">시/도 선택 *</label>
+                                <select id="shop_province" name="shop_province" required 
+                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    <option value="">시/도를 선택해주세요</option>
+                                    <option value="서울특별시">서울특별시</option>
+                                    <option value="부산광역시">부산광역시</option>
+                                    <option value="대구광역시">대구광역시</option>
+                                    <option value="인천광역시">인천광역시</option>
+                                    <option value="광주광역시">광주광역시</option>
+                                    <option value="대전광역시">대전광역시</option>
+                                    <option value="울산광역시">울산광역시</option>
+                                    <option value="세종특별자치시">세종특별자치시</option>
+                                    <option value="경기도">경기도</option>
+                                    <option value="강원도">강원도</option>
+                                    <option value="충청북도">충청북도</option>
+                                    <option value="충청남도">충청남도</option>
+                                    <option value="전라북도">전라북도</option>
+                                    <option value="전라남도">전라남도</option>
+                                    <option value="경상북도">경상북도</option>
+                                    <option value="경상남도">경상남도</option>
+                                    <option value="제주특별자치도">제주특별자치도</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="shop_district" class="block text-sm font-medium text-gray-700 mb-2">구/군 선택 *</label>
+                                <select id="shop_district" name="shop_district" required disabled
+                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                    <option value="">먼저 시/도를 선택해주세요</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-2">상세 주소 *</label>
+                            <input type="text" id="address" name="address" required 
+                                   class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                   placeholder="서울시 강남구 역삼동 123-45 건물명 층수">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 서비스 정보 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">서비스 정보</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">전문 관리 프로그램 *</label>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="specialties" value="여드름 관리" 
+                                           class="rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">여드름 관리</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="specialties" value="미백 관리" 
+                                           class="rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">미백 관리</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="specialties" value="주름 개선" 
+                                           class="rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">주름 개선</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="specialties" value="모공 축소" 
+                                           class="rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">모공 축소</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="specialties" value="수분 관리" 
+                                           class="rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">수분 관리</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="specialties" value="탄력 관리" 
+                                           class="rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                                    <span class="ml-2 text-sm text-gray-700">탄력 관리</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="business_hours" class="block text-sm font-medium text-gray-700 mb-2">영업시간 *</label>
+                                <input type="text" id="business_hours" name="business_hours" required 
+                                       class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                       placeholder="월-금 09:00-18:00, 토 09:00-15:00">
+                            </div>
+                            <div>
+                                <label for="price_range" class="block text-sm font-medium text-gray-700 mb-2">가격대 *</label>
+                                <select id="price_range" name="price_range" required 
+                                        class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    <option value="">가격대를 선택해주세요</option>
+                                    <option value="10만원 미만">10만원 미만</option>
+                                    <option value="10-30만원">10-30만원</option>
+                                    <option value="30-50만원">30-50만원</option>
+                                    <option value="50-100만원">50-100만원</option>
+                                    <option value="100만원 이상">100만원 이상</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">피부관리실 소개 *</label>
+                            <textarea id="description" name="description" rows="4" required 
+                                      class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                      placeholder="피부관리실의 특징, 장점, 경력 등을 자세히 소개해주세요."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 이미지 업로드 -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">사진 업로드</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">피부관리실 사진 (최대 5장)</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors cursor-pointer" id="image-upload-area">
+                                <input type="file" id="shop-images" name="shop-images" accept="image/*" multiple class="hidden">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-gray-600">클릭하여 이미지를 업로드하거나 여기로 드래그하세요</p>
+                                <p class="text-sm text-gray-500 mt-1">JPG, PNG 파일 (각 파일 최대 5MB, 최대 5장)</p>
+                            </div>
+                        </div>
+                        <div id="image-preview-container" class="hidden">
+                            <div id="image-previews" class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                <!-- 미리보기 이미지들이 여기에 표시됩니다 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 약관 동의 -->
+                <div class="space-y-4">
+                    <div class="bg-gray-50 p-4 rounded-lg space-y-3">
+                        <label class="flex items-start">
+                            <input type="checkbox" id="terms_agree" name="terms_agree" required 
+                                   class="mt-1 rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                            <span class="ml-2 text-sm text-gray-700">
+                                <strong>[필수]</strong> 서비스 이용약관에 동의합니다.
+                                <a href="#" class="text-primary-500 hover:underline ml-1">약관 보기</a>
+                            </span>
+                        </label>
+                        
+                        <label class="flex items-start">
+                            <input type="checkbox" id="privacy_agree" name="privacy_agree" required 
+                                   class="mt-1 rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                            <span class="ml-2 text-sm text-gray-700">
+                                <strong>[필수]</strong> 개인정보 수집 및 이용에 동의합니다.
+                                <a href="#" class="text-primary-500 hover:underline ml-1">약관 보기</a>
+                            </span>
+                        </label>
+                        
+                        <label class="flex items-start">
+                            <input type="checkbox" id="marketing_agree" name="marketing_agree" 
+                                   class="mt-1 rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+                            <span class="ml-2 text-sm text-gray-700">
+                                [선택] 마케팅 정보 수신에 동의합니다. (이메일, SMS)
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 제출 버튼 -->
+                <div class="text-center pt-6">
+                    <button type="submit" id="submit-btn" 
+                            class="bg-primary-500 hover:bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        <span id="submit-text">등록 신청하기</span>
+                        <i id="submit-loading" class="fas fa-spinner fa-spin ml-2 hidden"></i>
+                    </button>
+                    <p class="text-sm text-gray-500 mt-3">
+                        등록 신청 후 승인까지 1-2 영업일이 소요됩니다.
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- 혜택 안내 -->
+        <div class="unni-card p-8 mt-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">등록 후 이런 혜택을 받으실 수 있어요!</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bell text-primary-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">실시간 알림</h4>
+                    <p class="text-gray-600 text-sm">새로운 상담 요청이 들어올 때마다 즉시 알림을 받아보세요</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-bar text-primary-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">상세 분석</h4>
+                    <p class="text-gray-600 text-sm">상담 요청 통계, 성약률 등 상세한 분석 데이터를 제공합니다</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar-check text-green-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">예약 관리</h4>
+                    <p class="text-gray-600 text-sm">상담부터 예약까지 한 곳에서 편리하게 관리하세요</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-headset text-blue-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold mb-2">24/7 지원</h4>
+                    <p class="text-gray-600 text-sm">언제든지 문의사항이 있으시면 고객지원팀에서 도와드립니다</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-spa text-primary-500 text-xl mr-2"></i>
+                <h4 class="text-lg font-semibold">beautycat</h4>
+            </div>
+            <p class="text-gray-400 text-sm mb-4">
+                상담신청으로 피부관리실 정보와 견적을 한번에
+            </p>
+            <div class="text-sm text-gray-500">
+                <p><a href="https://open.kakao.com/o/sXXnTISh" target="_blank" class="hover:text-gray-300">카톡상담하기</a> | 이메일: utuber@kakao.com</p>
+                <p class="mt-2">&copy; 2024 beautycat. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/regional-matching.js"></script>
+    <script src="js/shop-registration.js"></script>
+
+    <!-- 모바일 개선을 위한 추가 스크립트 -->
+    <script>
+        // 모바일에서 이메일 인증 섹션 즉시 표시 및 개선
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailVerificationSection = document.getElementById('emailVerificationSection');
+            if (emailVerificationSection) {
+                // 모바일에서는 이메일 인증 섹션을 처음부터 보이게 함
+                if (window.innerWidth <= 768) {
+                    emailVerificationSection.style.display = 'block';
+                    emailVerificationSection.classList.remove('hidden');
+                }
+            }
+            
+            // 이메일 중복 확인 후 인증 섹션 표시
+            const checkEmailBtn = document.getElementById('checkEmailBtn');
+            if (checkEmailBtn) {
+                checkEmailBtn.addEventListener('click', function() {
+                    if (emailVerificationSection) {
+                        emailVerificationSection.style.display = 'block';
+                        emailVerificationSection.classList.remove('hidden');
+                    }
+                });
+            }
+            
+            // 터치 개선을 위한 버튼 스타일
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.style.touchAction = 'manipulation';
+                button.style.userSelect = 'none';
+            });
+            
+            // 모바일에서 입력 필드 개선
+            const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], textarea');
+            inputs.forEach(input => {
+                if (window.innerWidth <= 768) {
+                    input.style.fontSize = '16px'; // iOS 자동 줌 방지
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+User-agent: *
+Allow: /
+
+# 검색엔진 최적화를 위한 허용 페이지
+Allow: /index.html
+Allow: /css/
+Allow: /js/
+Allow: /icons/
+Allow: /legal/
+
+# 검색엔진에서 제외할 페이지
+Disallow: /admin/
+Disallow: /test/
+Disallow: /*.json
+Disallow: /*?debug=*
+Disallow: /*?test=*
+
+# 사이트맵 위치
+Sitemap: https://beautycat.kr/sitemap.xml
+Sitemap: https://beautycat.kr/sitemap-images.xml
+
+# 크롤링 속도 조절 (1초 간격)
+Crawl-delay: 1
+
+# 주요 검색엔진 특별 설정
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot  
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+User-agent: NaverBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: DaumBot
+Allow: /
+Crawl-delay: 1
+
+# 소셜 미디어 봇
+User-agent: facebookexternalhit/
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: KakaoBot
+Allow: /
+
+# Host 지정 (canonical domain)
+Host: https://beautycat.kr

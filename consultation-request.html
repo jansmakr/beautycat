@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 신청 - BeautyCat</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .shop-card {
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .shop-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+        .shop-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .step-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-center;
+            font-weight: 600;
+        }
+        .step-indicator.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .step-indicator.completed {
+            background: #10b981;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <button onclick="history.back()" class="text-gray-600 hover:text-gray-900">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">상담 신청</h1>
+                        <p class="text-sm text-gray-500">피부 고민을 등록하고 전문가의 견적을 받아보세요</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Indicator -->
+    <div class="bg-white border-b">
+        <div class="max-w-5xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center flex-1">
+                    <div id="indicator-1" class="step-indicator active">1</div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                </div>
+                <div class="flex items-center flex-1">
+                    <div id="indicator-2" class="step-indicator">2</div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2"></div>
+                </div>
+                <div class="flex items-center flex-1">
+                    <div id="indicator-3" class="step-indicator">3</div>
+                </div>
+            </div>
+            <div class="flex justify-between mt-2 text-sm">
+                <span class="text-blue-600 font-medium">업체 선택</span>
+                <span class="text-gray-500">상담 정보</span>
+                <span class="text-gray-500">확인</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        
+        <!-- Step 1: 업체 선택 -->
+        <div id="step-1" class="step active">
+            <div class="card mb-6">
+                <h2 class="text-xl font-bold mb-4">상담받고 싶은 업체를 선택하세요</h2>
+                <p class="text-gray-600 mb-6">업체를 선택하면 해당 업체에 상담 요청이 전송됩니다.</p>
+
+                <!-- 로딩 -->
+                <div id="shops-loading" class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-3xl text-blue-600 mb-2"></i>
+                    <p class="text-gray-600">업체 목록 로딩중...</p>
+                </div>
+
+                <!-- 업체 목록 -->
+                <div id="shops-list" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 동적으로 로드됩니다 -->
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button onclick="goToStep(2)" id="next-to-step-2" disabled class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                    다음 단계
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: 상담 정보 입력 -->
+        <div id="step-2" class="step">
+            <div class="card mb-6">
+                <h2 class="text-xl font-bold mb-6">상담 정보를 입력하세요</h2>
+
+                <form id="consultation-form" class="space-y-6">
+                    
+                    <div>
+                        <label class="block font-medium mb-2">
+                            관리 유형 *
+                        </label>
+                        <select id="treatment-type" class="w-full border rounded-lg px-4 py-3" required>
+                            <option value="">선택하세요</option>
+                            <option value="여드름 집중 관리">여드름 집중 관리</option>
+                            <option value="미백 관리">미백 관리</option>
+                            <option value="보습 관리">보습 관리</option>
+                            <option value="주름 개선">주름 개선</option>
+                            <option value="모공 케어">모공 케어</option>
+                            <option value="재생 관리">재생 관리</option>
+                            <option value="아로마 테라피">아로마 테라피</option>
+                            <option value="기타">기타</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-medium mb-2">
+                            피부 타입 *
+                        </label>
+                        <select id="skin-type" class="w-full border rounded-lg px-4 py-3" required>
+                            <option value="">선택하세요</option>
+                            <option value="건성">건성</option>
+                            <option value="지성">지성</option>
+                            <option value="복합성">복합성</option>
+                            <option value="민감성">민감성</option>
+                            <option value="보통">보통</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-medium mb-2">
+                            주요 고민 *
+                        </label>
+                        <input type="text" id="concern" class="w-full border rounded-lg px-4 py-3" 
+                               placeholder="예: 여드름과 홍조가 심합니다" required>
+                    </div>
+
+                    <div>
+                        <label class="block font-medium mb-2">
+                            상세 설명 *
+                        </label>
+                        <textarea id="description" class="w-full border rounded-lg px-4 py-3 h-32" 
+                                  placeholder="피부 상태와 원하시는 관리에 대해 자세히 설명해주세요" required></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-medium mb-2">
+                                희망 날짜 *
+                            </label>
+                            <input type="date" id="preferred-date" class="w-full border rounded-lg px-4 py-3" required>
+                        </div>
+                        <div>
+                            <label class="block font-medium mb-2">
+                                희망 시간 *
+                            </label>
+                            <select id="preferred-time" class="w-full border rounded-lg px-4 py-3" required>
+                                <option value="">선택하세요</option>
+                                <option value="오전 9시">오전 9시</option>
+                                <option value="오전 10시">오전 10시</option>
+                                <option value="오전 11시">오전 11시</option>
+                                <option value="오후 12시">오후 12시</option>
+                                <option value="오후 1시">오후 1시</option>
+                                <option value="오후 2시">오후 2시</option>
+                                <option value="오후 3시">오후 3시</option>
+                                <option value="오후 4시">오후 4시</option>
+                                <option value="오후 5시">오후 5시</option>
+                                <option value="오후 6시">오후 6시</option>
+                                <option value="오후 7시">오후 7시</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-medium mb-2">
+                            예산 범위 *
+                        </label>
+                        <select id="budget" class="w-full border rounded-lg px-4 py-3" required>
+                            <option value="">선택하세요</option>
+                            <option value="50000-100000">5만원 - 10만원</option>
+                            <option value="100000-150000">10만원 - 15만원</option>
+                            <option value="150000-200000">15만원 - 20만원</option>
+                            <option value="200000-300000">20만원 - 30만원</option>
+                            <option value="300000+">30만원 이상</option>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="flex justify-between">
+                <button onclick="goToStep(1)" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    이전
+                </button>
+                <button onclick="goToStep(3)" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    다음 단계
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: 확인 및 제출 -->
+        <div id="step-3" class="step">
+            <div class="card mb-6">
+                <h2 class="text-xl font-bold mb-6">입력하신 내용을 확인하세요</h2>
+
+                <!-- 선택한 업체 -->
+                <div class="mb-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                    <h3 class="font-bold mb-2 text-blue-900">선택한 업체</h3>
+                    <p id="confirm-shop" class="text-blue-800"></p>
+                </div>
+
+                <!-- 입력한 정보 -->
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">관리 유형</p>
+                            <p id="confirm-treatment" class="font-medium"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">피부 타입</p>
+                            <p id="confirm-skin" class="font-medium"></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500">주요 고민</p>
+                        <p id="confirm-concern" class="font-medium"></p>
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500">상세 설명</p>
+                        <p id="confirm-description" class="font-medium"></p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">희망 날짜</p>
+                            <p id="confirm-date" class="font-medium"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">희망 시간</p>
+                            <p id="confirm-time" class="font-medium"></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500">예산 범위</p>
+                        <p id="confirm-budget" class="font-medium"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between">
+                <button onclick="goToStep(2)" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    수정
+                </button>
+                <button onclick="submitConsultation()" class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold">
+                    <i class="fas fa-paper-plane mr-2"></i>
+                    상담 신청하기
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const API_BASE = 'https://beautycat-api.jansmakr.workers.dev/api';
+        let currentCustomer = null;
+        let currentStep = 1;
+        let selectedShop = null;
+        let shops = [];
+
+        // 세션 확인
+        function checkSession() {
+            const user = JSON.parse(localStorage.getItem('beautycat_user') || '{}');
+            if (!user.id || user.user_type !== 'customer') {
+                alert('로그인이 필요합니다.');
+                window.location.href = 'login-clean.html';
+                return null;
+            }
+            return user;
+        }
+
+        // 업체 목록 로드
+        async function loadShops() {
+            try {
+                const response = await fetch(`${API_BASE}/tables/skincare_shops`);
+                const data = await response.json();
+                
+                shops = data.data || [];
+                displayShops();
+
+                document.getElementById('shops-loading').classList.add('hidden');
+                document.getElementById('shops-list').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error loading shops:', error);
+                document.getElementById('shops-loading').innerHTML = 
+                    '<p class="text-red-500">업체 목록을 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        // 업체 목록 표시
+        function displayShops() {
+            const list = document.getElementById('shops-list');
+            
+            list.innerHTML = shops.map(shop => `
+                <div class="shop-card card" onclick="selectShop('${shop.id}')">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="font-bold text-lg">${shop.shop_name || shop.name}</h3>
+                            <p class="text-sm text-gray-500">${shop.address || ''}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center text-yellow-500 text-sm">
+                                <i class="fas fa-star mr-1"></i>
+                                ${shop.rating || '0.0'}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${shop.services ? `
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            ${shop.services.map(s => `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">${s}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="flex justify-between items-center text-sm text-gray-600">
+                        <span><i class="fas fa-phone mr-1"></i>${shop.phone || ''}</span>
+                        <span class="text-blue-600 font-medium">${shop.price_range || ''}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 업체 선택
+        function selectShop(shopId) {
+            selectedShop = shops.find(s => s.id === shopId);
+            
+            // 모든 카드에서 selected 클래스 제거
+            document.querySelectorAll('.shop-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 선택한 카드에 selected 클래스 추가
+            event.currentTarget.classList.add('selected');
+            
+            // 다음 버튼 활성화
+            document.getElementById('next-to-step-2').disabled = false;
+        }
+
+        // 단계 이동
+        function goToStep(step) {
+            // Step 2에서 3으로 갈 때 폼 유효성 검사
+            if (currentStep === 2 && step === 3) {
+                const form = document.getElementById('consultation-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                updateConfirmation();
+            }
+
+            // 이전 단계 숨기기
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+            
+            // 새 단계 보이기
+            currentStep = step;
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            // 프로그레스 업데이트
+            updateProgress();
+            
+            // 스크롤을 맨 위로
+            window.scrollTo(0, 0);
+        }
+
+        // 프로그레스 업데이트
+        function updateProgress() {
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`indicator-${i}`);
+                if (i < currentStep) {
+                    indicator.classList.remove('active');
+                    indicator.classList.add('completed');
+                    indicator.innerHTML = '<i class="fas fa-check"></i>';
+                } else if (i === currentStep) {
+                    indicator.classList.remove('completed');
+                    indicator.classList.add('active');
+                    indicator.textContent = i;
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                    indicator.textContent = i;
+                }
+            }
+        }
+
+        // 확인 페이지 업데이트
+        function updateConfirmation() {
+            document.getElementById('confirm-shop').textContent = 
+                selectedShop ? (selectedShop.shop_name || selectedShop.name) : '';
+            document.getElementById('confirm-treatment').textContent = 
+                document.getElementById('treatment-type').value;
+            document.getElementById('confirm-skin').textContent = 
+                document.getElementById('skin-type').value;
+            document.getElementById('confirm-concern').textContent = 
+                document.getElementById('concern').value;
+            document.getElementById('confirm-description').textContent = 
+                document.getElementById('description').value;
+            document.getElementById('confirm-date').textContent = 
+                document.getElementById('preferred-date').value;
+            document.getElementById('confirm-time').textContent = 
+                document.getElementById('preferred-time').value;
+            document.getElementById('confirm-budget').textContent = 
+                document.getElementById('budget').value;
+        }
+
+        // 상담 신청
+        async function submitConsultation() {
+            const consultationData = {
+                customer_id: currentCustomer.id,
+                customer_name: currentCustomer.name,
+                customer_phone: currentCustomer.phone || '010-1234-5678',
+                shop_id: selectedShop.id,
+                shop_name: selectedShop.shop_name || selectedShop.name,
+                treatment_type: document.getElementById('treatment-type').value,
+                skin_type: document.getElementById('skin-type').value,
+                concern: document.getElementById('concern').value,
+                description: document.getElementById('description').value,
+                preferred_date: document.getElementById('preferred-date').value,
+                preferred_time: document.getElementById('preferred-time').value,
+                budget: document.getElementById('budget').value,
+                status: 'pending'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/tables/consultations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(consultationData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || '상담 신청 실패');
+                }
+
+                const createdConsultation = await response.json();
+                console.log('상담 신청 성공:', createdConsultation);
+                
+                alert('상담 신청이 완료되었습니다!\n\n업체에서 곧 견적서를 보내드릴 예정입니다.');
+                window.location.href = 'customer-dashboard-v2.html';
+
+            } catch (error) {
+                console.error('상담 신청 실패:', error);
+                alert('상담 신청에 실패했습니다: ' + error.message);
+            }
+        }
+
+        // 오늘 날짜 설정 (최소 날짜)
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('preferred-date').min = today;
+        }
+
+        // 초기화
+        async function init() {
+            currentCustomer = checkSession();
+            if (!currentCustomer) return;
+
+            setMinDate();
+            await loadShops();
+        }
+
+        init();
+    </script>
+
+</body>
+</html>

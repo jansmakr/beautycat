@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+
+    <!-- 메인 홈페이지 -->
+    <url>
+        <loc>https://beautycat.kr/</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://beautycat.kr/icons/icon-512x512.png</image:loc>
+            <image:title>beautycat - 피부관리실 예약 플랫폼</image:title>
+            <image:caption>서울 강남, 홍대 피부관리실 견적 비교 및 예약 서비스</image:caption>
+        </image:image>
+    </url>
+
+    <!-- 법적 페이지들 -->
+    <url>
+        <loc>https://beautycat.kr/legal/terms-of-service.html</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/legal/privacy-policy.html</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/legal/beta-test-agreement.html</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- 서비스 주요 기능 페이지들 (추후 추가될 페이지들) -->
+    <url>
+        <loc>https://beautycat.kr/search</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/shops</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/booking</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 지역별 랜딩 페이지 (향후 생성 예정) -->
+    <url>
+        <loc>https://beautycat.kr/gangnam</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/hongdae</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/jamsil</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://beautycat.kr/sinchon</loc>
+        <lastmod>2024-10-23</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+</urlset>

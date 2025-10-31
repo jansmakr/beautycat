@@ -1,0 +1,8 @@
+# beautycat 앱 광고 설정
+# Authorized Digital Sellers for Mobile App
+
+# Google AdMob (예시)
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+
+# 추후 광고 네트워크 추가 시 여기에 설정
+# [도메인], [퍼블리셔 ID], [관계], [인증 ID]
