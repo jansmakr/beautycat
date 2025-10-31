@@ -1,0 +1,2 @@
+/api/* https://beautycat-api.jansmakr.workers.dev/api/:splat 200
+/tables/* https://beautycat-api.jansmakr.workers.dev/api/tables/:splat 200
