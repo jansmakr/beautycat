@@ -1,0 +1,47 @@
+// 🚨 강제 API URL 수정 스크립트
+// 모든 API 호출을 beautycat-api-v3로 강제 변경
+
+(function() {
+    'use strict';
+    
+    console.log('🔧 API URL 강제 수정 활성화');
+    
+    // 1. CONFIG 강제 덮어쓰기
+    if (window.CONFIG) {
+        window.CONFIG.API_BASE_URL = 'https://beautycat-api-v3.jansmakr.workers.dev/api';
+        console.log('✅ CONFIG.API_BASE_URL 강제 변경:', window.CONFIG.API_BASE_URL);
+    }
+    
+    if (window.BEAUTYCAT_CONFIG) {
+        window.BEAUTYCAT_CONFIG.API_BASE_URL = 'https://beautycat-api-v3.jansmakr.workers.dev/api';
+        console.log('✅ BEAUTYCAT_CONFIG.API_BASE_URL 강제 변경:', window.BEAUTYCAT_CONFIG.API_BASE_URL);
+    }
+    
+    // 2. CLOUDFLARE_API 강제 덮어쓰기
+    if (window.CLOUDFLARE_API) {
+        window.CLOUDFLARE_API.baseUrl = 'https://beautycat-api-v3.jansmakr.workers.dev/api';
+        console.log('✅ CLOUDFLARE_API.baseUrl 강제 변경:', window.CLOUDFLARE_API.baseUrl);
+    }
+    
+    // 3. fetch 인터셉트 (구 API 호출 자동 변경)
+    const originalFetch = window.fetch;
+    window.fetch = function(url, options) {
+        let modifiedUrl = url;
+        
+        // 구 API URL을 신 API URL로 자동 변경
+        if (typeof url === 'string') {
+            if (url.includes('beautycat-api.jansmakr.workers.dev')) {
+                modifiedUrl = url.replace(
+                    'beautycat-api.jansmakr.workers.dev',
+                    'beautycat-api-v3.jansmakr.workers.dev'
+                );
+                console.log('🔄 API URL 자동 변경:', url, '→', modifiedUrl);
+            }
+        }
+        
+        return originalFetch.call(this, modifiedUrl, options);
+    };
+    
+    console.log('✅ fetch 인터셉터 활성화 (구 API → v3 자동 변경)');
+    
+})();
