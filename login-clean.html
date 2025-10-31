@@ -91,10 +91,18 @@
                     user.shop_id = user.shop_id || user.id;
                 }
                 
-                // 세션 저장
+                              // 세션 저장
                 Session.set(user);
                 
+                // 관리자의 경우 추가 인증 설정
+                if (user.user_type === 'admin') {
+                    localStorage.setItem('adminAuth', 'true');
+                    localStorage.setItem('adminLoginTime', Date.now().toString());
+                    log('관리자 인증 설정 완료');
+                }
+                
                 showMessage(`환영합니다, ${user.name}님! 🎉`, 'success');
+
                 
                 // Dashboard로 이동
                 setTimeout(() => {
