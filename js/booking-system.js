@@ -5,7 +5,7 @@
 
 class BookingSystem {
     constructor() {
-        this.apiUrl = window.CLOUDFLARE_API?.baseUrl || 'https://beautycat-api.jansmakr.workers.dev/api';
+        this.apiUrl = window.CLOUDFLARE_API?.baseUrl || 'https://beautycat-api-v3.jansmakr.workers.dev/api';
         this.selectedDate = null;
         this.selectedTime = null;
         this.selectedShop = null;
