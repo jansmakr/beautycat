@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뽀샵 오류 해결 검증 - Console Error Fix</title>
+    <link rel="stylesheet" href="pposhop-styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background: #f8fafc; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; text-align: center; }
+        .section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .status { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+        .status.fixed { background: #dcfce7; color: #166534; }
+        .status.pending { background: #fef3c7; color: #92400e; }
+        .status.error { background: #fee2e2; color: #991b1b; }
+        .test-button { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin: 4px; }
+        .test-button:hover { background: #2563eb; }
+        .console-output { background: #1f2937; color: #f9fafb; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; max-height: 300px; overflow-y: auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 뽀샵 오류 해결 검증</h1>
+            <p>Service Worker, Tailwind CSS, Console 오류 해결 상태를 확인합니다</p>
+        </div>
+
+        <!-- 오류 해결 상태 -->
+        <div class="section">
+            <h2>🚨 해결된 오류 목록</h2>
+            <div class="grid">
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">1. Service Worker 오류</h3>
+                    <div class="text-sm mb-2">
+                        <span class="status fixed">✅ 해결됨</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>이전:</strong> <code>non-precached-url :: [{"url":"/"}]</code><br>
+                        <strong>해결책:</strong> sw-simple.js로 교체, 루트 경로 처리 추가
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">2. Tailwind CSS 오류</h3>
+                    <div class="text-sm mb-2">
+                        <span class="status fixed">✅ 해결됨</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>이전:</strong> <code>tailwind is not defined</code><br>
+                        <strong>해결책:</strong> Tailwind config 제거, pposhop-styles.css 사용
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">3. 콘솔 오류 최적화</h3>
+                    <div class="text-sm mb-2">
+                        <span class="status fixed">✅ 해결됨</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>기능:</strong> 불필요한 오류 필터링<br>
+                        <strong>도구:</strong> console-optimizer.js 추가
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 현재 시스템 상태 -->
+        <div class="section">
+            <h2>⚡ 현재 시스템 상태</h2>
+            <div class="grid">
+                <div>
+                    <h3 class="font-medium mb-3">🗺️ 지역별 매칭 시스템</h3>
+                    <div id="regional-status" class="text-sm">
+                        <div>상태: <span id="regional-check">확인 중...</span></div>
+                        <div>함수: <span id="regional-functions">확인 중...</span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium mb-3">🔧 Service Worker</h3>
+                    <div id="sw-status" class="text-sm">
+                        <div>지원: <span id="sw-support">확인 중...</span></div>
+                        <div>등록: <span id="sw-registration">확인 중...</span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium mb-3">🎨 스타일시트</h3>
+                    <div id="style-status" class="text-sm">
+                        <div>CSS: <span id="css-loaded">확인 중...</span></div>
+                        <div>폰트: <span id="font-loaded">확인 중...</span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium mb-3">🧹 콘솔 최적화</h3>
+                    <div id="console-status" class="text-sm">
+                        <div>필터: <span id="console-filter">확인 중...</span></div>
+                        <div>도구: <span id="console-tools">확인 중...</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 테스트 도구 -->
+        <div class="section">
+            <h2>🧪 테스트 도구</h2>
+            <div class="mb-4">
+                <button class="test-button" onclick="runSystemCheck()">전체 시스템 점검</button>
+                <button class="test-button" onclick="testRegionalMatching()">지역 매칭 테스트</button>
+                <button class="test-button" onclick="testServiceWorker()">Service Worker 테스트</button>
+                <button class="test-button" onclick="testConsoleOptimizer()">콘솔 최적화 테스트</button>
+                <button class="test-button" onclick="clearConsole()">콘솔 정리 (Ctrl+Shift+C)</button>
+            </div>
+
+            <div class="console-output" id="test-output">
+                <div>🔧 뽀샵 오류 해결 검증 도구 준비 완료</div>
+                <div>💡 위의 테스트 버튼들을 클릭하여 시스템 상태를 확인하세요</div>
+            </div>
+        </div>
+
+        <!-- 개발자 가이드 -->
+        <div class="section">
+            <h2>👨‍💻 개발자 가이드</h2>
+            <div class="grid">
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-medium mb-2">🔧 해결된 파일들</h3>
+                    <ul class="text-sm space-y-1">
+                        <li><code>sw-simple.js</code> - 새 Service Worker</li>
+                        <li><code>index.html</code> - Tailwind config 제거</li>
+                        <li><code>js/console-optimizer.js</code> - 콘솔 최적화</li>
+                        <li><code>error-fix-verification.html</code> - 이 페이지</li>
+                    </ul>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-medium mb-2">🎯 개발자 도구</h3>
+                    <ul class="text-sm space-y-1">
+                        <li><code>pplog.success("메시지")</code> - 성공 로그</li>
+                        <li><code>pplog.health()</code> - 시스템 상태</li>
+                        <li><code>pplog.clear()</code> - 콘솔 정리</li>
+                        <li><code>Ctrl+Shift+C</code> - 콘솔 정리 단축키</li>
+                    </ul>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-medium mb-2">⚡ 성능 개선</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>불필요한 오류 메시지 필터링</li>
+                        <li>Service Worker 최적화</li>
+                        <li>CSS 로딩 개선</li>
+                        <li>개발자 친화적 로깅</li>
+                    </ul>
+                </div>
+
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-medium mb-2">🔍 모니터링</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>실시간 시스템 상태 체크</li>
+                        <li>네트워크 오류 감지</li>
+                        <li>성능 측정 도구</li>
+                        <li>자동 오류 분류</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트 로드 -->
+    <script src="js/console-optimizer.js"></script>
+    <script src="js/regional-matching.js"></script>
+
+    <script>
+        // 페이지 로드 시 자동 시스템 체크
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                runSystemCheck();
+            }, 1000);
+        });
+
+        // 전체 시스템 점검
+        function runSystemCheck() {
+            addOutput('🔍 전체 시스템 점검 시작...');
+            
+            // 지역별 매칭 시스템 체크
+            const regionalOK = typeof window.regionalMatching !== 'undefined';
+            updateStatus('regional-check', regionalOK ? '✅ 정상' : '❌ 오류');
+            updateStatus('regional-functions', regionalOK ? 
+                Object.keys(window.regionalMatching).length + '개 함수' : '로드 실패');
+
+            // Service Worker 체크
+            const swSupported = 'serviceWorker' in navigator;
+            updateStatus('sw-support', swSupported ? '✅ 지원됨' : '❌ 미지원');
+            
+            if (swSupported) {
+                navigator.serviceWorker.ready
+                    .then(() => updateStatus('sw-registration', '✅ 등록됨'))
+                    .catch(() => updateStatus('sw-registration', '⚠️ 등록 중'));
+            }
+
+            // 스타일시트 체크
+            const cssLoaded = document.querySelector('link[href*="pposhop-styles.css"]');
+            updateStatus('css-loaded', cssLoaded ? '✅ 로드됨' : '❌ 없음');
+            
+            const fontLoaded = document.fonts ? '✅ 지원됨' : '❌ 미지원';
+            updateStatus('font-loaded', fontLoaded);
+
+            // 콘솔 최적화 체크
+            const optimizerOK = typeof window.consoleOptimizer !== 'undefined';
+            updateStatus('console-filter', optimizerOK ? '✅ 활성화' : '❌ 비활성화');
+            updateStatus('console-tools', typeof window.pplog !== 'undefined' ? '✅ 사용가능' : '❌ 없음');
+
+            addOutput('✅ 전체 시스템 점검 완료');
+        }
+
+        // 지역 매칭 테스트
+        function testRegionalMatching() {
+            addOutput('🗺️ 지역별 매칭 시스템 테스트...');
+            
+            if (typeof window.regionalMatching === 'undefined') {
+                addOutput('❌ 지역별 매칭 시스템이 로드되지 않음');
+                return;
+            }
+
+            try {
+                // 시스템 통계 조회 테스트
+                window.regionalMatching.getRegionalStats()
+                    .then(stats => {
+                        addOutput('✅ 지역별 통계 조회 성공');
+                        addOutput(`📊 등록된 지역: ${Object.keys(stats).length}개`);
+                    })
+                    .catch(error => {
+                        addOutput('⚠️ 통계 조회 중 오류: ' + error.message);
+                    });
+
+                // 지역 검색 테스트
+                window.regionalMatching.findShopsInRegion('서울특별시', '강남구')
+                    .then(shops => {
+                        addOutput(`✅ 서울 강남구 업체 검색: ${shops.length}개 발견`);
+                    })
+                    .catch(error => {
+                        addOutput('⚠️ 업체 검색 중 오류: ' + error.message);
+                    });
+
+            } catch (error) {
+                addOutput('❌ 지역 매칭 테스트 실패: ' + error.message);
+            }
+        }
+
+        // Service Worker 테스트
+        function testServiceWorker() {
+            addOutput('🔧 Service Worker 테스트...');
+            
+            if (!('serviceWorker' in navigator)) {
+                addOutput('❌ Service Worker를 지원하지 않는 브라우저');
+                return;
+            }
+
+            navigator.serviceWorker.getRegistrations()
+                .then(registrations => {
+                    addOutput(`✅ 등록된 Service Worker: ${registrations.length}개`);
+                    
+                    registrations.forEach((reg, index) => {
+                        addOutput(`SW ${index + 1}: ${reg.scope}`);
+                    });
+
+                    if (registrations.length === 0) {
+                        addOutput('⚠️ 등록된 Service Worker 없음');
+                    }
+                })
+                .catch(error => {
+                    addOutput('❌ Service Worker 조회 실패: ' + error.message);
+                });
+        }
+
+        // 콘솔 최적화 테스트
+        function testConsoleOptimizer() {
+            addOutput('🧹 콘솔 최적화 테스트...');
+            
+            if (typeof window.pplog === 'undefined') {
+                addOutput('❌ 콘솔 최적화 도구가 로드되지 않음');
+                return;
+            }
+
+            try {
+                // 테스트 로그 메시지들
+                pplog.success('테스트 성공 메시지');
+                pplog.info('테스트 정보 메시지');
+                pplog.system('테스트 시스템 메시지');
+                
+                addOutput('✅ 콘솔 최적화 도구 정상 작동');
+                addOutput('💡 pplog.* 함수들 사용 가능');
+                
+                // 시스템 상태 체크 실행
+                pplog.health();
+                addOutput('✅ 시스템 상태 체크 실행됨 (콘솔 확인)');
+
+            } catch (error) {
+                addOutput('❌ 콘솔 최적화 테스트 실패: ' + error.message);
+            }
+        }
+
+        // 콘솔 정리
+        function clearConsole() {
+            if (typeof window.pplog !== 'undefined') {
+                pplog.clear();
+                addOutput('🧹 콘솔 정리 완료');
+            } else {
+                console.clear();
+                addOutput('🧹 기본 콘솔 정리 완료');
+            }
+        }
+
+        // 헬퍼 함수들
+        function updateStatus(elementId, status) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = status;
+            }
+        }
+
+        function addOutput(message) {
+            const output = document.getElementById('test-output');
+            const div = document.createElement('div');
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // 개발자 도구 안내
+        console.log('🔧 뽀샵 오류 해결 검증 페이지');
+        console.log('💡 사용 가능한 명령어:');
+        console.log('  - pplog.success("메시지") : 성공 로그');
+        console.log('  - pplog.health() : 시스템 상태');
+        console.log('  - pplog.clear() : 콘솔 정리');
+        console.log('  - Ctrl+Shift+C : 콘솔 정리 단축키');
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beautycat 데이터 테스트</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section h3 {
+            color: #ff2d92;
+            border-bottom: 2px solid #ff2d92;
+            padding-bottom: 10px;
+        }
+        .btn {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #e6297f;
+        }
+        .result {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #ff2d92;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .data-count {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .table-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🐱 beautycat (뷰티+에티켓)</div>
+            <h1>데이터베이스 상태 확인</h1>
+            <p>RESTful Table API 데이터 저장 테스트</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 테이블별 데이터 현황</h3>
+            <button class="btn" onclick="checkAllTables()">모든 테이블 데이터 확인</button>
+            <div id="table-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>👥 상담 신청 데이터</h3>
+            <button class="btn" onclick="checkConsultations()">상담 신청 데이터 조회</button>
+            <div id="consultation-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🏪 피부관리실 등록 데이터</h3>
+            <button class="btn" onclick="checkShops()">업체 등록 데이터 조회</button>
+            <div id="shop-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💬 문의 데이터</h3>
+            <button class="btn" onclick="checkInquiries()">문의 데이터 조회</button>
+            <div id="inquiry-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 데이터 추가 테스트</h3>
+            <button class="btn" onclick="addTestData()">테스트 데이터 추가</button>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'tables';
+        
+        // 모든 테이블 데이터 확인
+        async function checkAllTables() {
+            const tableResults = document.getElementById('table-results');
+            tableResults.innerHTML = '<div>📡 데이터 조회 중...</div>';
+            
+            const tables = [
+                'consultations', 'skincare_shops', 'contact_inquiries', 
+                'users', 'quotes', 'reviews', 'messages', 'announcements',
+                'quick_consultations', 'external_orders', 'user_sessions', 'admin_logs'
+            ];
+            
+            let html = '<div class="table-info"><strong>전체 테이블 현황:</strong></div>';
+            
+            for (const table of tables) {
+                try {
+                    const response = await fetch(`${API_BASE}/${table}?limit=1`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const count = data.total || 0;
+                        html += `
+                            <div class="result">
+                                <strong>${table}</strong>: 
+                                <span class="data-count">${count}개 데이터</span>
+                                ${count > 0 ? '<span class="success">✅ 데이터 존재</span>' : '<span class="error">⚠️ 데이터 없음</span>'}
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="result">
+                                <strong>${table}</strong>: 
+                                <span class="error">❌ 조회 실패 (HTTP ${response.status})</span>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    html += `
+                        <div class="result">
+                            <strong>${table}</strong>: 
+                            <span class="error">❌ 네트워크 오류</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            tableResults.innerHTML = html;
+        }
+
+        // 상담 신청 데이터 확인
+        async function checkConsultations() {
+            const results = document.getElementById('consultation-results');
+            results.innerHTML = '<div>📡 상담 데이터 조회 중...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/consultations?limit=10`);
+                if (response.ok) {
+                    const data = await response.json();
+                    let html = `<div class="result"><strong>총 ${data.total || 0}개의 상담 신청</strong></div>`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += '<div class="table-info">최근 상담 신청 목록:</div>';
+                        data.data.forEach((item, index) => {
+                            html += `
+                                <div class="result">
+                                    ${index + 1}. <strong>${item.customer_name || '익명'}</strong> 
+                                    (${item.state || ''} ${item.district || ''})
+                                    - ${new Date(item.submission_date).toLocaleDateString()}
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += '<div class="result"><span class="error">상담 신청 데이터가 없습니다.</span></div>';
+                    }
+                    
+                    results.innerHTML = html;
+                } else {
+                    results.innerHTML = `<div class="result"><span class="error">❌ 데이터 조회 실패 (HTTP ${response.status})</span></div>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<div class="result"><span class="error">❌ 네트워크 오류: ${error.message}</span></div>`;
+            }
+        }
+
+        // 업체 등록 데이터 확인
+        async function checkShops() {
+            const results = document.getElementById('shop-results');
+            results.innerHTML = '<div>📡 업체 데이터 조회 중...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/skincare_shops?limit=10`);
+                if (response.ok) {
+                    const data = await response.json();
+                    let html = `<div class="result"><strong>총 ${data.total || 0}개의 업체 등록</strong></div>`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += '<div class="table-info">등록된 업체 목록:</div>';
+                        data.data.forEach((item, index) => {
+                            html += `
+                                <div class="result">
+                                    ${index + 1}. <strong>${item.shop_name || '업체명 미정'}</strong> 
+                                    (${item.state || ''} ${item.district || ''})
+                                    - 상태: ${item.status || 'pending'}
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += '<div class="result"><span class="error">업체 등록 데이터가 없습니다.</span></div>';
+                    }
+                    
+                    results.innerHTML = html;
+                } else {
+                    results.innerHTML = `<div class="result"><span class="error">❌ 데이터 조회 실패 (HTTP ${response.status})</span></div>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<div class="result"><span class="error">❌ 네트워크 오류: ${error.message}</span></div>`;
+            }
+        }
+
+        // 문의 데이터 확인
+        async function checkInquiries() {
+            const results = document.getElementById('inquiry-results');
+            results.innerHTML = '<div>📡 문의 데이터 조회 중...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/contact_inquiries?limit=10`);
+                if (response.ok) {
+                    const data = await response.json();
+                    let html = `<div class="result"><strong>총 ${data.total || 0}개의 문의</strong></div>`;
+                    
+                    if (data.data && data.data.length > 0) {
+                        html += '<div class="table-info">최근 문의 목록:</div>';
+                        data.data.forEach((item, index) => {
+                            html += `
+                                <div class="result">
+                                    ${index + 1}. <strong>${item.contact_name || '익명'}</strong> 
+                                    - ${item.inquiry_subject || '제목 없음'}
+                                    (${new Date(item.created_at).toLocaleDateString()})
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += '<div class="result"><span class="error">문의 데이터가 없습니다.</span></div>';
+                    }
+                    
+                    results.innerHTML = html;
+                } else {
+                    results.innerHTML = `<div class="result"><span class="error">❌ 데이터 조회 실패 (HTTP ${response.status})</span></div>`;
+                }
+            } catch (error) {
+                results.innerHTML = `<div class="result"><span class="error">❌ 네트워크 오류: ${error.message}</span></div>`;
+            }
+        }
+
+        // 테스트 데이터 추가
+        async function addTestData() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<div>🧪 테스트 데이터 추가 중...</div>';
+            
+            const testConsultation = {
+                customer_name: '테스트 고객',
+                customer_phone: '010-1234-5678',
+                customer_email: 'test@beautycat.com',
+                state: '서울특별시',
+                district: '강남구',
+                treatment_types: ['여드름 관리', '미백 관리'],
+                skin_concerns: ['여드름', '색소침착'],
+                age_range: '20-30세',
+                budget_range: '10-20만원',
+                preferred_schedule: '평일 오후',
+                additional_notes: 'beautycat 데이터 저장 테스트입니다.',
+                status: 'pending',
+                submission_date: new Date().toISOString()
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/consultations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testConsultation)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    results.innerHTML = `
+                        <div class="result">
+                            <span class="success">✅ 테스트 데이터 추가 성공!</span>
+                            <br>추가된 데이터 ID: ${result.id}
+                            <br>현재 시간: ${new Date().toLocaleString()}
+                        </div>
+                    `;
+                } else {
+                    results.innerHTML = `
+                        <div class="result">
+                            <span class="error">❌ 데이터 추가 실패 (HTTP ${response.status})</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="result">
+                        <span class="error">❌ 네트워크 오류: ${error.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 페이지 로드 시 자동으로 전체 데이터 확인
+        window.addEventListener('load', function() {
+            console.log('🐱 beautycat 데이터 테스트 페이지 로드 완료');
+            checkAllTables();
+        });
+    </script>
+</body>
+</html>

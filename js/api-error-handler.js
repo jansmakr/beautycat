@@ -50,79 +50,92 @@ const ApiValidator = {
                     }
                 }
                 
-                return { isValid: false, error: 'Invalid Content-Type' };
+                return { isValid: false, error: 'JSON이 아닌 응답' };
             }
             
             return { isValid: true };
             
         } catch (error) {
-            console.error('❌ API 응답 검증 오류:', error);
+            console.warn(`⚠️ ${apiName} 응답 검증 오류:`, error.message);
             return { isValid: false, error: error.message };
         }
     },
     
     /**
-     * JSON 파싱 안전하게 수행
+     * 안전한 JSON 파싱
      */
     async safeJsonParse(response, apiName = 'API') {
         try {
+            const validation = await this.validateJsonResponse(response, apiName);
+            if (!validation.isValid) {
+                return { success: false, error: validation.error, data: null };
+            }
+            
             const data = await response.json();
             return { success: true, data };
+            
         } catch (error) {
-            console.warn(`⚠️ ${apiName} JSON 파싱 실패:`, error.message);
-            return { success: false, error: error.message };
+            console.warn(`⚠️ ${apiName} JSON 파싱 오류:`, error.message);
+            return { success: false, error: error.message, data: null };
         }
-    },
-    
+    }
+};
+
+// API 요청 래퍼
+const ApiRequest = {
     /**
-     * 안전한 GET 요청 (오류 처리 포함)
+     * 안전한 API 요청 (GET)
      */
-    async safeGet(url, apiName = 'API') {
+    async safeGet(url, options = {}) {
+        const apiName = options.name || url.split('/').pop();
+        
         try {
-            const response = await fetch(url);
-            const validation = await this.validateJsonResponse(response.clone(), apiName);
+            console.log(`🔄 ${apiName} API 요청:`, url);
             
-            if (!validation.isValid) {
-                console.warn(`❌ ${apiName} API 실패:`, validation.error);
-                return null;
-            }
+            const response = await fetch(url, {
+                method: 'GET',
+                ...options
+            });
             
-            const result = await this.safeJsonParse(response, apiName);
+            const result = await ApiValidator.safeJsonParse(response, apiName);
+            
             if (result.success) {
+                console.log(`✅ ${apiName} API 성공:`, result.data);
                 return result.data;
             } else {
-                console.warn(`❌ ${apiName} 데이터 파싱 실패:`, result.error);
+                console.warn(`❌ ${apiName} API 실패:`, result.error);
                 return null;
             }
             
         } catch (error) {
-            console.warn(`🚫 ${apiName} 네트워크 오류:`, error.message);
+            console.warn(`🚫 ${apiName} API 네트워크 오류:`, error.message);
             return null;
         }
     },
     
     /**
-     * 안전한 POST 요청 (오류 처리 포함)
+     * 안전한 API 요청 (POST)
      */
-    async safePost(url, data, apiName = 'API') {
+    async safePost(url, data, options = {}) {
+        const apiName = options.name || url.split('/').pop();
+        
         try {
+            console.log(`🔄 ${apiName} POST 요청:`, url);
+            
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    ...options.headers
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                ...options
             });
             
-            const validation = await this.validateJsonResponse(response.clone(), apiName);
+            const result = await ApiValidator.safeJsonParse(response, apiName);
             
-            if (!validation.isValid) {
-                console.warn(`❌ ${apiName} POST 실패:`, validation.error);
-                return null;
-            }
-            
-            const result = await this.safeJsonParse(response, apiName);
             if (result.success) {
+                console.log(`✅ ${apiName} POST 성공:`, result.data);
                 return result.data;
             } else {
                 console.warn(`❌ ${apiName} POST 실패:`, result.error);
@@ -144,18 +157,6 @@ const GlobalErrorHandler = {
         
         window.fetch = async function(...args) {
             try {
-                // 🚨 강제 API URL 변환: beautycat-api → beautycat-api-v3
-                if (args[0] && typeof args[0] === 'string') {
-                    if (args[0].includes('beautycat-api.jansmakr.workers.dev')) {
-                        const oldUrl = args[0];
-                        args[0] = args[0].replace(
-                            'beautycat-api.jansmakr.workers.dev',
-                            'beautycat-api-v3.jansmakr.workers.dev'
-                        );
-                        console.log('🔄 API URL 자동 변환:', oldUrl, '→', args[0]);
-                    }
-                }
-                
                 const response = await originalFetch.apply(this, args);
                 
                 // API 요청인 경우만 체크
@@ -177,16 +178,53 @@ const GlobalErrorHandler = {
             }
         };
         
-        console.log('✅ 전역 API 오류 핸들러 초기화 완료');
+        console.log('🛡️ API 오류 처리기 활성화됨');
     }
 };
 
-// 초기화
+// 환경별 설정
+const EnvironmentConfig = {
+    development: {
+        enableApiValidation: true,
+        logLevel: 'verbose',
+        skipDemoData: false
+    },
+    
+    production: {
+        enableApiValidation: true,
+        logLevel: 'warn',
+        skipDemoData: true
+    },
+    
+    get() {
+        return Environment.isProduction() ? this.production : this.development;
+    }
+};
+
+// 모듈 초기화
 if (typeof window !== 'undefined') {
+    // 전역 객체로 노출
+    window.BeautyCatApi = {
+        Environment,
+        ApiValidator,
+        ApiRequest,
+        GlobalErrorHandler,
+        EnvironmentConfig
+    };
+    
+    // 자동 초기화
     GlobalErrorHandler.initialize();
-    console.log(`🌍 환경: ${Environment.getEnvironmentName()}`);
+    
+    console.log(`🌍 BeautyCat API 오류 처리기 로드됨 (${Environment.getEnvironmentName()})`);
 }
 
-// 전역 노출
-window.Environment = Environment;
-window.ApiValidator = ApiValidator;
+// ES6 모듈로도 사용 가능
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        Environment,
+        ApiValidator,
+        ApiRequest,
+        GlobalErrorHandler,
+        EnvironmentConfig
+    };
+}

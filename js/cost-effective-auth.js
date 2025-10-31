@@ -593,7 +593,7 @@ class CostEffectiveAuth {
         };
         
         const toast = document.createElement('div');
-        toast.className = `fixed top-16 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+        toast.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
         toast.innerHTML = `
             <div class="flex items-center">
                 <i class="${icons[type]} mr-2"></i>

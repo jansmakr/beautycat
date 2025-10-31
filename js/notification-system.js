@@ -83,7 +83,7 @@ class NotificationSystem {
     // 토스트 메시지 표시
     showToast(title, message, type = 'info', duration = 5000) {
         const toast = document.createElement('div');
-        toast.className = `fixed top-16 right-4 z-50 max-w-sm bg-white border rounded-lg shadow-lg p-4 transform translate-x-full transition-transform duration-300 ease-out ${this.getToastTypeClass(type)}`;
+        toast.className = `fixed top-4 right-4 z-50 max-w-sm bg-white border rounded-lg shadow-lg p-4 transform translate-x-full transition-transform duration-300 ease-out ${this.getToastTypeClass(type)}`;
         
         toast.innerHTML = `
             <div class="flex items-start space-x-3">

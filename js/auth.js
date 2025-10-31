@@ -1,25 +1,13 @@
-// 전역 변수 (캐시 버스팅 적용 - v2024.10.29)
+// 전역 변수
 let currentUser = null;
 let sessionToken = null;
 let emailCheckResult = false;
 
-console.log('🔧 Auth.js 캐시 버스팅 버전 로드됨 - v2024.10.29');
-
 // DOM 로드 완료 후 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Auth 초기화 시작');
     initializeAuthApp();
     checkExistingSession();
 });
-
-// API Base URL 헬퍼 함수 (강제 설정)
-function getApiBaseUrl() {
-    const forcedUrl = 'https://beautycat-api.jansmakr.workers.dev/api';
-    const configUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL;
-    const finalUrl = configUrl || forcedUrl;
-    console.log('🔗 API URL 확정:', finalUrl);
-    return finalUrl;
-}
 
 // 인증 앱 초기화
 function initializeAuthApp() {
@@ -363,30 +351,15 @@ async function processLogin(loginData) {
             };
         }
         
-        // 실제 사용자 계정 확인 (캐시 버스팅 적용)
-        const API_BASE = getApiBaseUrl();
-        const timestamp = Date.now();
-        const apiUrl = `${API_BASE}/tables/users?limit=100&_cb=${timestamp}`;
-        console.log('📡 API 요청 URL:', apiUrl);
-        
-        const response = await fetch(apiUrl, {
-            headers: {
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
-            }
-        });
-        
-        console.log('📥 API 응답 상태:', response.status, response.statusText);
+        // 실제 사용자 계정 확인
+        const response = await fetch(`tables/users?limit=100`);
         
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ API 에러:', response.status, errorText);
-            throw new Error(`API 오류 (${response.status}): 사용자 데이터를 불러올 수 없습니다.`);
+            throw new Error('사용자 데이터를 불러올 수 없습니다.');
         }
         
         const userData = await response.json();
-        console.log('✅ 사용자 데이터 로드 성공:', userData.data?.length || 0, '명');
-        console.log('📊 API 응답 데이터:', userData);
+        console.log('사용자 데이터 조회 완료:', userData.data?.length || 0, '명');
         
         const user = userData.data?.find(u => 
             u.email === loginData.email && 
@@ -420,8 +393,7 @@ async function processLogin(loginData) {
                 
                 try {
                     // 마지막 로그인 시간 업데이트
-                    const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        await fetch(`${API_BASE}/tables/users/${user.id}`, {
+                    await fetch(`tables/users/${user.id}`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json'
@@ -747,8 +719,7 @@ async function processRegister(registerData) {
         }
         
         // 사용자 생성
-        const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${API_BASE}/tables/users`, {
+        const response = await fetch('tables/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -785,8 +756,7 @@ async function processRegister(registerData) {
                 verified: false
             };
             
-            const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const shopResponse = await fetch(`${API_BASE}/tables/skincare_shops`, {
+            const shopResponse = await fetch('tables/skincare_shops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -798,8 +768,7 @@ async function processRegister(registerData) {
                 const newShop = await shopResponse.json();
                 
                 // 사용자에 피부관리실 ID 연결
-                const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-            await fetch(`${API_BASE}/tables/users/${newUser.id}`, {
+                await fetch(`tables/users/${newUser.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -877,8 +846,7 @@ async function checkEmailExists(email) {
         }
         
         // 실제 사용자 확인
-        const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-    const response = await fetch(`${API_BASE}/tables/users?search=${encodeURIComponent(email)}`);
+        const response = await fetch(`tables/users?search=${encodeURIComponent(email)}`);
         const userData = await response.json();
         
         return userData.data.some(user => user.email === email);
@@ -1044,56 +1012,26 @@ function getDemoAccounts() {
 // 데모 계정 로드 (개발용)
 async function loadDemoAccounts() {
     try {
-        // GitHub Pages에서는 Cloudflare Workers API 사용
-        const isGitHubPages = location.hostname.includes('github.io') || 
-                             location.hostname === 'beautycat.kr' ||
-                             location.hostname === 'www.beautycat.kr';
+        // 개발 환경이 아니면 데모 데이터 로드 건너뛰기
+        const isProduction = location.hostname === 'beautycat.kr' || 
+                           location.hostname === 'www.beautycat.kr' ||
+                           location.hostname.includes('beautycat.pages.dev');
         
-        if (isGitHubPages) {
-            console.log('🌐 GitHub Pages 환경: Cloudflare Workers API 사용');
-            // 데모 계정 로드를 건너뛰고 실제 API 사용
+        if (isProduction) {
+            console.log('🏭 프로덕션 환경: 데모 계정 로드 건너뛰기');
+            return;
         }
         
         // 기존 사용자 확인 (안전한 API 방식)
         let usersData;
         try {
-            const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-            const response = await fetch(`${API_BASE}/tables/users?limit=100`);
+            const response = await fetch('tables/users?limit=100');
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            
-            // JSON 파싱 전에 Content-Type 확인
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error(`응답이 JSON이 아닙니다: ${contentType}`);
-            }
-            
             usersData = await response.json();
         } catch (error) {
-            console.log('📝 데모 계정 로드 오류 (정상):', error.message);
-            // JSON 파싱 오류는 조용히 처리 - 인라인 데모 계정으로 대체
-            console.log('📝 개발 환경: 인라인 데모 계정 로드');
-            
-            const demoAccounts = [
-                { email: 'customer@pposhop.com', password: 'demo123', role: '고객' },
-                { email: 'shop@pposhop.com', password: 'demo123', role: '업체' },
-                { email: 'admin@pposhop.com', password: 'admin123', role: '관리자' }
-            ];
-            
-            const container = document.getElementById('demoAccounts');
-            if (container) {
-                container.innerHTML = demoAccounts.map(account => `
-                    <div class="demo-account bg-white p-3 rounded border cursor-pointer hover:bg-gray-50 mb-2" 
-                         onclick="fillLoginForm('${account.email}', '${account.password}')">
-                        <div class="font-bold text-blue-600">${account.role}</div>
-                        <div class="text-sm text-gray-600">${account.email}</div>
-                        <div class="text-xs text-gray-400">비밀번호: ${account.password}</div>
-                    </div>
-                `).join('');
-                container.style.display = 'block';
-                console.log('✅ 인라인 데모 계정 로드 완료');
-            }
+            console.warn('⚠️ 사용자 테이블 접근 실패. 데모 계정 로드를 건너뜁니다.', error.message);
             return;
         }
         
@@ -1111,8 +1049,7 @@ async function loadDemoAccounts() {
             const demoAccounts = getDemoAccounts();
             
             for (const account of demoAccounts) {
-                const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-            await fetch(`${API_BASE}/tables/users`, {
+                await fetch('tables/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1131,7 +1068,7 @@ async function loadDemoAccounts() {
         // 프로덕션에서는 데모 계정 없이도 정상 작동해야 함
         // 개발 환경에서만 디버깅용으로 출력
         if (!isProduction && window.location.hostname === 'localhost') {
-            console.log('📝 데모 계정 로드 완료 (로컬 버전 사용):', error.message);
+            console.warn('⚠️ 데모 계정 로드 오류 (무시됨):', error.message);
         }
     }
 }
@@ -1139,21 +1076,7 @@ async function loadDemoAccounts() {
 // 데모 업체 정보 로드 (지역 정보 포함)
 async function loadDemoShops() {
     try {
-        const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const existingShops = await fetch(`${API_BASE}/tables/skincare_shops`);
-        
-        // JSON 파싱 전에 응답 상태 확인
-        if (!existingShops.ok) {
-            console.warn('데모 업체 로드 실패: HTTP', existingShops.status);
-            return;
-        }
-        
-        const contentType = existingShops.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            console.warn('데모 업체 API 응답이 JSON이 아닙니다:', contentType);
-            return;
-        }
-        
+        const existingShops = await fetch('tables/skincare_shops');
         const shopsData = await existingShops.json();
         
         // 데모 업체가 이미 존재하는지 확인
@@ -1214,8 +1137,7 @@ async function loadDemoShops() {
             ];
             
             for (const shop of demoShops) {
-                const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-            await fetch(`${API_BASE}/tables/skincare_shops`, {
+                await fetch('tables/skincare_shops', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1234,8 +1156,7 @@ async function loadDemoShops() {
             
             for (const shop of demoShops) {
                 if (!shop.state || !shop.district) {
-                    const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-                await fetch(`${API_BASE}/tables/skincare_shops/${shop.id}`, {
+                    await fetch(`tables/skincare_shops/${shop.id}`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1262,7 +1183,7 @@ async function loadDemoShops() {
 // 알림 메시지 표시
 function showNotification(message, type = 'info', duration = 5000) {
     const notification = document.createElement('div');
-    notification.className = `fixed top-16 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-transform duration-300 translate-x-full`;
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-transform duration-300 translate-x-full`;
     
     const bgColor = type === 'success' ? 'bg-green-500' : 
                    type === 'error' ? 'bg-red-500' : 
@@ -1611,8 +1532,7 @@ function askForAuthUpgrade() {
 // 사용자 인증 레벨 업데이트
 async function updateUserAuthLevel(userId, authData) {
     try {
-        const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${API_BASE}/tables/users/${userId}`, {
+        const response = await fetch(`tables/users/${userId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -1638,8 +1558,7 @@ async function updateUserAuthLevel(userId, authData) {
 // 이메일로 사용자 조회
 async function getUserByEmail(email) {
     try {
-        const API_BASE = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-    const response = await fetch(`${API_BASE}/tables/users?search=${encodeURIComponent(email)}`);
+        const response = await fetch(`tables/users?search=${encodeURIComponent(email)}`);
         const data = await response.json();
         
         const user = data.data.find(u => u.email === email);

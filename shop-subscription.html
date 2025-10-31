@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뽀샵 업체 구독 관리 - 피부관리실 중개 플랫폼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+        .pricing-card { transition: all 0.3s ease; }
+        .pricing-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(255, 45, 146, 0.15); }
+        .gradient-bg { background: linear-gradient(135deg, #ff2d92, #ff6b9d); }
+        .free-badge { background: linear-gradient(135deg, #4ade80, #22c55e); }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- 헤더 -->
+    <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-pink-600">
+                        뽀샵
+                    </a>
+                    <span class="ml-2 text-sm text-gray-500">피부관리실 구독 관리</span>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="shop-dashboard.html" class="text-gray-600 hover:text-pink-600 transition-colors">
+                        <i class="fas fa-tachometer-alt mr-2"></i>대시보드
+                    </a>
+                    <a href="contact-inquiry.html" class="text-gray-600 hover:text-pink-600 transition-colors">
+                        <i class="fas fa-headset mr-2"></i>문의하기
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- 페이지 제목 -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                🏪 뽀샵 업체 구독 플랜
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                전국 고객들과 연결되어 매출을 늘리세요! <br>
+                <span class="font-semibold text-pink-600">2024년 런칭 기념 전 플랜 무료!</span>
+            </p>
+        </div>
+
+        <!-- 2024년 무료 안내 배너 -->
+        <div class="free-badge text-white p-6 rounded-2xl mb-12 text-center shadow-lg">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-gift text-3xl mr-3"></i>
+                <h2 class="text-2xl font-bold">🎉 2024년 런칭 기념 이벤트</h2>
+            </div>
+            <p class="text-lg mb-2">올해 입점하시는 모든 피부관리실</p>
+            <p class="text-2xl font-bold">입점료 + 1년 이용료 완전 무료!</p>
+            <p class="text-sm mt-2 opacity-90">* 2025년 1월부터 정상 요금 적용</p>
+        </div>
+
+        <!-- 가격 플랜 -->
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+            
+            <!-- 2024년 무료 플랜 -->
+            <div class="pricing-card bg-white rounded-3xl shadow-lg overflow-hidden border-4 border-green-400 relative">
+                <div class="absolute top-4 right-4">
+                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        🔥 Limited
+                    </span>
+                </div>
+                
+                <div class="p-8">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">
+                            🎁 2024년 런칭 에디션
+                        </h3>
+                        <div class="text-5xl font-bold text-green-600 mb-2">
+                            무료
+                        </div>
+                        <p class="text-gray-600">2024년 12월 31일까지</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>입점료 100,000원 → <strong>무료</strong></span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>월 이용료 11,000원 → <strong>무료</strong></span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>전국 고객 상담 요청 수신</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>무제한 견적서 작성</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>실시간 채팅 상담</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>매출 통계 및 분석</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>카페24/네이버 결제 연동</span>
+                        </li>
+                    </ul>
+                    
+                    <button onclick="registerFreeAccount()" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-6 rounded-xl transition-colors text-lg">
+                        🚀 무료로 시작하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2025년 정규 플랜 -->
+            <div class="pricing-card bg-white rounded-3xl shadow-lg overflow-hidden">
+                <div class="gradient-bg text-white p-6 text-center">
+                    <h3 class="text-2xl font-bold mb-2">💎 2025년 정규 플랜</h3>
+                    <p class="text-pink-100">2025년 1월 1일부터 적용</p>
+                </div>
+                
+                <div class="p-8">
+                    <div class="text-center mb-8">
+                        <div class="text-gray-600 mb-2">
+                            <span class="text-lg">입점료</span>
+                            <span class="text-3xl font-bold text-gray-900 ml-2">100,000원</span>
+                            <span class="text-sm">(1회)</span>
+                        </div>
+                        <div class="text-gray-600">
+                            <span class="text-lg">월 이용료</span>
+                            <span class="text-3xl font-bold text-pink-600 ml-2">11,000원</span>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">연 단위 결제 시 132,000원</p>
+                    </div>
+                    
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-pink-500 mr-3"></i>
+                            <span>전국 고객 상담 요청 수신</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-pink-500 mr-3"></i>
+                            <span>무제한 견적서 작성</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-pink-500 mr-3"></i>
+                            <span>실시간 채팅 상담</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-pink-500 mr-3"></i>
+                            <span>매출 통계 및 분석</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-pink-500 mr-3"></i>
+                            <span>우선 노출 및 마케팅 지원</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-crown text-yellow-500 mr-3"></i>
+                            <span><strong>프리미엄 배지 및 인증마크</strong></span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-crown text-yellow-500 mr-3"></i>
+                            <span><strong>전용 고객지원 및 컨설팅</strong></span>
+                        </li>
+                    </ul>
+                    
+                    <button onclick="showComingSoon()" class="w-full bg-gray-300 text-gray-600 font-semibold py-4 px-6 rounded-xl cursor-not-allowed text-lg">
+                        📅 2025년 1월 오픈
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROI 계산기 -->
+        <div class="bg-white rounded-3xl shadow-lg p-8 mb-16">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+                💰 투자 대비 수익 계산기
+            </h3>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center p-6 bg-gray-50 rounded-xl">
+                    <div class="text-3xl mb-2">📈</div>
+                    <h4 class="font-semibold text-gray-900 mb-2">월 상담 건수</h4>
+                    <input type="number" id="monthlyConsultations" value="10" 
+                           class="w-full text-center text-2xl font-bold border-2 border-pink-200 rounded-lg p-2 focus:border-pink-500 outline-none"
+                           oninput="calculateROI()">
+                    <p class="text-sm text-gray-600 mt-1">예상 상담 요청 수</p>
+                </div>
+                
+                <div class="text-center p-6 bg-gray-50 rounded-xl">
+                    <div class="text-3xl mb-2">💵</div>
+                    <h4 class="font-semibold text-gray-900 mb-2">평균 시술 가격</h4>
+                    <input type="number" id="avgPrice" value="120000" 
+                           class="w-full text-center text-2xl font-bold border-2 border-pink-200 rounded-lg p-2 focus:border-pink-500 outline-none"
+                           oninput="calculateROI()">
+                    <p class="text-sm text-gray-600 mt-1">건당 평균 매출</p>
+                </div>
+                
+                <div class="text-center p-6 bg-pink-50 rounded-xl border-2 border-pink-200">
+                    <div class="text-3xl mb-2">🎯</div>
+                    <h4 class="font-semibold text-gray-900 mb-2">월 예상 매출</h4>
+                    <div id="monthlyRevenue" class="text-2xl font-bold text-pink-600">
+                        1,200,000원
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">뽀샵 이용료: <span class="font-semibold text-green-600">무료!</span></p>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-6 gradient-bg text-white rounded-xl text-center">
+                <h4 class="text-xl font-semibold mb-2">🎉 2024년 순수익</h4>
+                <div id="yearlyProfit" class="text-4xl font-bold mb-2">14,400,000원</div>
+                <p class="text-pink-100">뽀샵 이용료 0원으로 매출 100% 순수익!</p>
+            </div>
+        </div>
+
+        <!-- 업체 등록 절차 -->
+        <div class="bg-white rounded-3xl shadow-lg p-8 mb-16">
+            <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+                📋 간단한 3단계 입점 절차
+            </h3>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-pink-600">1</span>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2">업체 정보 등록</h4>
+                    <p class="text-gray-600">기본 정보, 서비스 분야, 사진 등록</p>
+                    <p class="text-sm text-green-600 font-semibold mt-2">⏱ 소요시간: 5분</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-pink-600">2</span>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2">승인 대기</h4>
+                    <p class="text-gray-600">뽀샵 팀 검토 및 승인 처리</p>
+                    <p class="text-sm text-green-600 font-semibold mt-2">⏱ 소요시간: 1-2일</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-pink-600">3</span>
+                    </div>
+                    <h4 class="text-lg font-semibold mb-2">서비스 시작</h4>
+                    <p class="text-gray-600">고객 상담 요청 수신 및 견적 발송</p>
+                    <p class="text-sm text-green-600 font-semibold mt-2">🚀 즉시 시작!</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="shop-registration.html" 
+                   class="inline-block bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-8 rounded-xl transition-colors text-lg">
+                    🏪 지금 바로 입점 신청하기
+                </a>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="bg-white rounded-3xl shadow-lg p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+                ❓ 자주 묻는 질문
+            </h3>
+            
+            <div class="space-y-6">
+                <div class="border-l-4 border-pink-500 pl-6">
+                    <h4 class="font-semibold text-gray-900 mb-2">Q. 정말 2024년에는 완전 무료인가요?</h4>
+                    <p class="text-gray-600">네! 입점료 10만원 + 연간 이용료 13만2천원 = 총 23만2천원을 2024년 한 해 동안 완전 무료로 제공합니다.</p>
+                </div>
+                
+                <div class="border-l-4 border-pink-500 pl-6">
+                    <h4 class="font-semibold text-gray-900 mb-2">Q. 2025년부터는 어떻게 되나요?</h4>
+                    <p class="text-gray-600">2025년 1월 1일부터 정규 요금이 적용됩니다. 기존 회원님께는 사전에 충분히 안내드립니다.</p>
+                </div>
+                
+                <div class="border-l-4 border-pink-500 pl-6">
+                    <h4 class="font-semibold text-gray-900 mb-2">Q. 상담 요청이 실제로 들어올까요?</h4>
+                    <p class="text-gray-600">뽀샵은 소비자 완전 무료 서비스로 고객 유치에 집중하고 있습니다. 또한 네이버, 카카오 등 다양한 채널로 마케팅을 진행합니다.</p>
+                </div>
+                
+                <div class="border-l-4 border-pink-500 pl-6">
+                    <h4 class="font-semibold text-gray-900 mb-2">Q. 결제는 어떻게 처리되나요?</h4>
+                    <p class="text-gray-600">고객은 업체의 기존 카페24 쇼핑몰이나 네이버 스마트스토어에서 직접 결제하므로, 별도의 PG 수수료나 중간 수수료가 없습니다.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-gray-900 text-white py-12 mt-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold mb-4">뽀샵과 함께 성장하세요!</h3>
+                <p class="text-gray-300 mb-6">상담신청으로 피부관리실 정보와 견적을 한번에</p>
+                
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="tel:02-1234-5678" class="text-gray-300 hover:text-white transition-colors">
+                        <i class="fas fa-phone mr-2"></i>02-1234-5678
+                    </a>
+                    <a href="mailto:business@pposhop.kr" class="text-gray-300 hover:text-white transition-colors">
+                        <i class="fas fa-envelope mr-2"></i>business@pposhop.kr
+                    </a>
+                    <a href="https://open.kakao.com/o/sXXnTISh" class="text-gray-300 hover:text-white transition-colors">
+                        <i class="fas fa-comment mr-2"></i>카카오톡 상담
+                    </a>
+                </div>
+                
+                <p class="text-sm text-gray-400">© 2024 뽀샵(PpoShop). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ROI 계산기
+        function calculateROI() {
+            const consultations = document.getElementById('monthlyConsultations').value || 0;
+            const avgPrice = document.getElementById('avgPrice').value || 0;
+            
+            const monthlyRevenue = consultations * avgPrice;
+            const yearlyRevenue = monthlyRevenue * 12;
+            
+            document.getElementById('monthlyRevenue').textContent = 
+                monthlyRevenue.toLocaleString() + '원';
+            document.getElementById('yearlyProfit').textContent = 
+                yearlyRevenue.toLocaleString() + '원';
+        }
+
+        // 무료 계정 등록
+        function registerFreeAccount() {
+            // 실제로는 shop-registration.html로 이동하거나 모달 팝업
+            if (confirm('🎉 2024년 무료 입점을 신청하시겠습니까?\n\n✅ 입점료 10만원 → 무료\n✅ 1년 이용료 13만원 → 무료\n✅ 총 23만원 혜택!')) {
+                window.location.href = 'shop-registration.html?plan=free2024';
+            }
+        }
+
+        // 2025년 플랜 알림
+        function showComingSoon() {
+            alert('📅 2025년 1월 1일부터 서비스가 시작됩니다.\n\n지금 무료 플랜으로 먼저 시작해보세요! 🚀');
+        }
+
+        // 페이지 로드 시 ROI 계산
+        window.onload = function() {
+            calculateROI();
+        };
+    </script>
+</body>
+</html>

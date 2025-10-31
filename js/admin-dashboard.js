@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Check admin authentication  
 function checkAdminAuth() {
-    // 관리자 인증 확인
+    // 관리자 인증 확인 (비밀번호 5874로 로그인한 경우)
     const adminAuth = localStorage.getItem('adminAuth');
     const adminLoginTime = localStorage.getItem('adminLoginTime');
     
@@ -1915,7 +1915,7 @@ function formatDate(dateString) {
 function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
-    notification.className = `fixed top-16 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm ${
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm ${
         type === 'success' ? 'bg-green-100 text-green-700 border border-green-300' :
         type === 'error' ? 'bg-red-100 text-red-700 border border-red-300' :
         type === 'warning' ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' :

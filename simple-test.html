@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뽀샵 간단 테스트</title>
+    <style>
+        body { 
+            font-family: -apple-system, sans-serif; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 20px; 
+        }
+        .card { 
+            background: white; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn { 
+            background: #ff2d92; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px;
+        }
+        .btn:hover { background: #e6297f; }
+        .btn-secondary { background: #6b7280; }
+        .input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+        .success { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; padding: 10px; border-radius: 4px; }
+        .error { background: #fef2f2; border-color: #fecaca; color: #dc2626; padding: 10px; border-radius: 4px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .text-center { text-align: center; }
+        .mb-4 { margin-bottom: 16px; }
+        .mt-4 { margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div class="text-center mb-4">
+        <h1 style="color: #ff2d92;">🧪 뽀샵 핵심 기능 테스트</h1>
+        <p>회원가입 → 로그인 → 실명인증 → 비용분석</p>
+    </div>
+
+    <div class="grid">
+        <!-- 왼쪽: 테스트 -->
+        <div>
+            <!-- 1. 회원가입 -->
+            <div class="card">
+                <h2>📝 1. 회원가입 테스트</h2>
+                <input type="text" id="regName" class="input" placeholder="이름" value="테스트사용자">
+                <input type="email" id="regEmail" class="input" placeholder="이메일">
+                <input type="tel" id="regPhone" class="input" placeholder="휴대폰" value="01012345678">
+                <input type="password" id="regPassword" class="input" placeholder="비밀번호" value="test123">
+                <select id="regRole" class="input">
+                    <option value="customer">고객</option>
+                    <option value="shop">업체</option>
+                </select>
+                <button onclick="testRegister()" class="btn">회원가입 테스트</button>
+                <div id="regResult" class="mt-4"></div>
+            </div>
+
+            <!-- 2. 로그인 -->
+            <div class="card">
+                <h2>🔐 2. 로그인 테스트</h2>
+                <input type="email" id="loginEmail" class="input" placeholder="이메일" value="customer@pposhop.com">
+                <input type="password" id="loginPassword" class="input" placeholder="비밀번호" value="demo123">
+                <button onclick="testLogin()" class="btn">로그인 테스트</button>
+                <button onclick="fillDemo()" class="btn btn-secondary">데모 계정</button>
+                <div id="loginResult" class="mt-4"></div>
+            </div>
+
+            <!-- 3. 실명인증 -->
+            <div class="card">
+                <h2>🛡️ 3. 실명인증 테스트</h2>
+                <button onclick="testEmail()" class="btn">이메일 인증 (5원)</button>
+                <button onclick="testSMS()" class="btn">SMS 인증 (35원)</button>
+                <button onclick="testPhone()" class="btn">본인확인 (180원)</button>
+                <div id="authResult" class="mt-4"></div>
+            </div>
+        </div>
+
+        <!-- 오른쪽: 결과 -->
+        <div>
+            <!-- 현재 상태 -->
+            <div class="card">
+                <h2>📊 현재 상태</h2>
+                <div id="status">
+                    <div>🔒 로그인: <span id="loginStatus">로그아웃</span></div>
+                    <div>👤 사용자: <span id="userName">-</span></div>
+                    <div>🏷️ 역할: <span id="userRole">-</span></div>
+                    <div>✅ 인증: <span id="authStatus">미완료</span></div>
+                </div>
+            </div>
+
+            <!-- 비용 분석 -->
+            <div class="card">
+                <h2>💰 비용 분석</h2>
+                <div id="costAnalysis">
+                    <div>📧 이메일: <span id="emailCount">0</span>회 (<span id="emailCost">0</span>원)</div>
+                    <div>📱 SMS: <span id="smsCount">0</span>회 (<span id="smsCost">0</span>원)</div>
+                    <div>📞 본인확인: <span id="phoneCount">0</span>회 (<span id="phoneCost">0</span>원)</div>
+                    <hr style="margin: 10px 0;">
+                    <div><strong>💸 총 비용: <span id="totalCost">0</span>원</strong></div>
+                    <div>🔻 기존 대비: <span id="savings">0</span>% 절약</div>
+                </div>
+            </div>
+
+            <!-- 테스트 로그 -->
+            <div class="card">
+                <h2>📝 테스트 로그</h2>
+                <div id="testLog" style="background: #f5f5f5; padding: 10px; border-radius: 4px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px;"></div>
+                <button onclick="clearLog()" class="btn btn-secondary">로그 지우기</button>
+            </div>
+
+            <!-- 자동 테스트 -->
+            <div class="card">
+                <h2>🚀 자동 테스트</h2>
+                <button onclick="runFullTest()" class="btn">전체 자동 테스트</button>
+                <button onclick="runCostTest()" class="btn btn-secondary">비용 효율성 테스트</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 독립형 인증 시스템 -->
+    <script src="standalone-auth.js"></script>
+
+    <script>
+        let testStats = {
+            emailCount: 0,
+            smsCount: 0,
+            phoneCount: 0,
+            totalCost: 0
+        };
+
+        // 로그 추가
+        function addLog(message) {
+            const now = new Date().toLocaleTimeString();
+            const logDiv = document.getElementById('testLog');
+            logDiv.innerHTML += `[${now}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`📝 ${message}`);
+        }
+
+        // 상태 업데이트
+        function updateStatus() {
+            const user = pposhopAuth.getCurrentUser();
+            
+            if (user) {
+                document.getElementById('loginStatus').innerHTML = '✅ 로그인됨';
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userRole').textContent = user.role;
+                document.getElementById('authStatus').innerHTML = user.is_verified ? '✅ 완료' : '⏳ 미완료';
+            } else {
+                document.getElementById('loginStatus').innerHTML = '❌ 로그아웃';
+                document.getElementById('userName').textContent = '-';
+                document.getElementById('userRole').textContent = '-';
+                document.getElementById('authStatus').innerHTML = '❌ 미인증';
+            }
+        }
+
+        // 비용 분석 업데이트
+        function updateCost() {
+            document.getElementById('emailCount').textContent = testStats.emailCount;
+            document.getElementById('emailCost').textContent = testStats.emailCount * 5;
+            document.getElementById('smsCount').textContent = testStats.smsCount;
+            document.getElementById('smsCost').textContent = testStats.smsCount * 35;
+            document.getElementById('phoneCount').textContent = testStats.phoneCount;
+            document.getElementById('phoneCost').textContent = testStats.phoneCount * 180;
+            
+            const totalCost = (testStats.emailCount * 5) + (testStats.smsCount * 35) + (testStats.phoneCount * 180);
+            const traditionalCost = (testStats.emailCount + testStats.smsCount + testStats.phoneCount) * 300;
+            const savings = traditionalCost > 0 ? Math.round(((traditionalCost - totalCost) / traditionalCost) * 100) : 0;
+            
+            document.getElementById('totalCost').textContent = totalCost;
+            document.getElementById('savings').textContent = savings;
+        }
+
+        // 1. 회원가입 테스트
+        async function testRegister() {
+            const timestamp = Date.now();
+            const email = `test${timestamp}@pposhop.com`;
+            document.getElementById('regEmail').value = email;
+            
+            const userData = {
+                name: document.getElementById('regName').value,
+                email: email,
+                phone: document.getElementById('regPhone').value + timestamp.toString().slice(-4),
+                password: document.getElementById('regPassword').value,
+                role: document.getElementById('regRole').value
+            };
+
+            addLog(`📝 회원가입 시도: ${userData.name}`);
+
+            try {
+                const result = await pposhopAuth.register(userData);
+                
+                if (result.success) {
+                    document.getElementById('regResult').innerHTML = `
+                        <div class="success">
+                            ✅ 회원가입 성공!<br>
+                            📧 이메일: ${userData.email}<br>
+                            👤 이름: ${userData.name}
+                        </div>
+                    `;
+                    addLog(`✅ 회원가입 성공: ${userData.name}`);
+                    
+                    // 로그인 폼에 자동 입력
+                    document.getElementById('loginEmail').value = userData.email;
+                    document.getElementById('loginPassword').value = userData.password;
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                document.getElementById('regResult').innerHTML = `
+                    <div class="error">❌ 회원가입 실패: ${error.message}</div>
+                `;
+                addLog(`❌ 회원가입 실패: ${error.message}`);
+            }
+        }
+
+        // 2. 로그인 테스트
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            addLog(`🔐 로그인 시도: ${email}`);
+
+            try {
+                const result = await pposhopAuth.login(email, password);
+                
+                if (result.success) {
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="success">
+                            ✅ 로그인 성공!<br>
+                            👤 ${result.user.name}<br>
+                            🏷️ ${result.user.role}
+                        </div>
+                    `;
+                    addLog(`✅ 로그인 성공: ${result.user.name}`);
+                    updateStatus();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = `
+                    <div class="error">❌ 로그인 실패: ${error.message}</div>
+                `;
+                addLog(`❌ 로그인 실패: ${error.message}`);
+            }
+        }
+
+        // 데모 계정 입력
+        function fillDemo() {
+            document.getElementById('loginEmail').value = 'customer@pposhop.com';
+            document.getElementById('loginPassword').value = 'demo123';
+            addLog('📝 데모 계정 정보 입력');
+        }
+
+        // 3. 이메일 인증 테스트
+        async function testEmail() {
+            testStats.emailCount++;
+            addLog(`📧 이메일 인증 테스트 (${testStats.emailCount}번째)`);
+            
+            // Mock 이메일 API 호출
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            document.getElementById('authResult').innerHTML = `
+                <div class="success">
+                    ✅ 이메일 인증 성공!<br>
+                    💰 비용: 5원<br>
+                    📧 인증코드: 123456 (Mock)
+                </div>
+            `;
+            
+            addLog(`✅ 이메일 인증 성공 (비용: 5원)`);
+            updateCost();
+        }
+
+        // SMS 인증 테스트
+        async function testSMS() {
+            testStats.smsCount++;
+            addLog(`📱 SMS 인증 테스트 (${testStats.smsCount}번째)`);
+            
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            document.getElementById('authResult').innerHTML = `
+                <div class="success">
+                    ✅ SMS 인증 성공!<br>
+                    💰 비용: 35원<br>
+                    📱 인증코드: 654321 (Mock)
+                </div>
+            `;
+            
+            addLog(`✅ SMS 인증 성공 (비용: 35원)`);
+            updateCost();
+        }
+
+        // 본인확인 테스트
+        async function testPhone() {
+            testStats.phoneCount++;
+            addLog(`📞 휴대폰 본인확인 테스트 (${testStats.phoneCount}번째)`);
+            
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            
+            document.getElementById('authResult').innerHTML = `
+                <div class="success">
+                    ✅ 본인확인 성공!<br>
+                    💰 비용: 180원<br>
+                    📞 나이스페이먼츠 연동 (Mock)
+                </div>
+            `;
+            
+            addLog(`✅ 본인확인 성공 (비용: 180원)`);
+            updateCost();
+            
+            // 사용자 인증 상태 업데이트
+            const user = pposhopAuth.getCurrentUser();
+            if (user) {
+                pposhopAuth.updateUser(user.id, { is_verified: true });
+                updateStatus();
+            }
+        }
+
+        // 전체 자동 테스트
+        async function runFullTest() {
+            addLog('🚀 전체 자동 테스트 시작');
+            
+            // 1. 회원가입
+            await testRegister();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 2. 로그인
+            await testLogin();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 3. 인증들
+            await testEmail();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testSMS();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testPhone();
+            
+            addLog('🎉 전체 자동 테스트 완료!');
+        }
+
+        // 비용 효율성 테스트
+        async function runCostTest() {
+            addLog('💰 비용 효율성 테스트 시작 (10회 시뮬레이션)');
+            
+            for (let i = 0; i < 10; i++) {
+                if (i % 3 === 0) await testEmail();
+                else if (i % 3 === 1) await testSMS();
+                else await testPhone();
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            const totalCost = (testStats.emailCount * 5) + (testStats.smsCount * 35) + (testStats.phoneCount * 180);
+            const traditionalCost = (testStats.emailCount + testStats.smsCount + testStats.phoneCount) * 300;
+            const savings = traditionalCost - totalCost;
+            
+            addLog(`💰 비용 분석 결과:`);
+            addLog(`  - 기존 방식: ${traditionalCost.toLocaleString()}원`);
+            addLog(`  - 최적화: ${totalCost.toLocaleString()}원`);
+            addLog(`  - 절약: ${savings.toLocaleString()}원 (${Math.round((savings/traditionalCost)*100)}%)`);
+        }
+
+        // 로그 지우기
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '';
+            addLog('로그 초기화됨');
+        }
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🧪 뽀샵 간단 테스트 시스템 준비 완료');
+            updateStatus();
+            updateCost();
+        });
+
+        console.log('✅ 뽀샵 간단 테스트 시스템 로드 완료');
+    </script>
+</body>
+</html>

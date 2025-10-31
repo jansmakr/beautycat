@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beautycat (뷰티+에티켓) - 피부관리실 견적 플랫폼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'beauty': {
+                            50: '#fdf2f8',
+                            100: '#fce7f3',
+                            200: '#fbcfe8',
+                            300: '#f9a8d4',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#db2777',
+                            700: '#be185d',
+                            800: '#9d174d',
+                            900: '#831843',
+                        },
+                        'gradient': {
+                            'from': '#667eea',
+                            'via': '#764ba2', 
+                            'to': '#f093fb'
+                        },
+                        'modern': {
+                            'purple': '#8b5cf6',
+                            'pink': '#ec4899',
+                            'blue': '#3b82f6',
+                            'indigo': '#6366f1'
+                        }
+                    },
+                    backgroundImage: {
+                        'beauty-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                        'card-gradient': 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+                        'button-gradient': 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                        'hero-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #fbbf24 75%, #f59e0b 100%)'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'system-ui', 'sans-serif'],
+                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'beauty': '0 10px 40px rgba(236, 72, 153, 0.15)',
+                        'card': '0 8px 32px rgba(0, 0, 0, 0.08)',
+                        'button': '0 4px 20px rgba(236, 72, 153, 0.3)',
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'fadeIn': 'fadeIn 0.8s ease-out',
+                        'slideUp': 'slideUp 0.6s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * { 
+            font-family: 'Inter', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        /* 커스텀 애니메이션 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(236, 72, 153, 0.3); }
+            to { box-shadow: 0 0 30px rgba(236, 72, 153, 0.6); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 글래스모피즘 효과 */
+        .glass {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 호버 효과 */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 그라데이션 텍스트 */
+        .gradient-text {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 glass backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center animate-glow">
+                        <span class="text-3xl">🐱</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">beautycat <span class="text-lg text-gray-600">(뷰티+에티켓)</span></h1>
+                        <p class="text-xs text-gray-600">Beauty Matching Platform</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#consultation" class="text-gray-700 hover:text-beauty-500 font-medium transition-colors">무료상담</a>
+                    <a href="shop-registration.html" class="text-gray-700 hover:text-beauty-500 font-medium transition-colors">업체등록</a>
+                    <a href="contact-inquiry.html" class="text-gray-700 hover:text-beauty-500 font-medium transition-colors">문의하기</a>
+                    <div id="authButtons" class="flex items-center space-x-3">
+                        <a href="login.html" class="px-4 py-2 text-beauty-600 font-medium hover:text-beauty-700 transition-colors">로그인</a>
+                        <a href="register.html" class="px-6 py-2 bg-button-gradient text-white rounded-full font-medium shadow-button hover:shadow-lg transition-all">회원가입</a>
+                    </div>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg bg-white shadow-md">
+                    <i class="fas fa-bars text-gray-700"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white shadow-lg">
+            <div class="px-4 py-4 space-y-3">
+                <a href="#consultation" class="block py-2 text-gray-700 font-medium">무료상담</a>
+                <a href="shop-registration.html" class="block py-2 text-gray-700 font-medium">샵등록</a>
+                <a href="contact-inquiry.html" class="block py-2 text-gray-700 font-medium">문의하기</a>
+                <div class="pt-3 border-t border-gray-200">
+                    <a href="login.html" class="block py-2 text-beauty-600 font-medium">로그인</a>
+                    <a href="register.html" class="block py-2 text-beauty-600 font-medium">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 bg-hero-gradient relative overflow-hidden">
+        <!-- 배경 장식 -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-96 h-96 rounded-full bg-white opacity-10 animate-float"></div>
+            <div class="absolute -bottom-10 -left-10 w-64 h-64 rounded-full bg-white opacity-5 animate-float" style="animation-delay: -1s;"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center animate-fadeIn">
+                <!-- 배지 -->
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-white bg-opacity-20 text-white text-sm font-medium mb-8 backdrop-blur-sm">
+                    <i class="fas fa-sparkles mr-2"></i>
+                    대한민국 No.1 피부관리 매칭 플랫폼
+                </div>
+                
+                <!-- 메인 제목 -->
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                    <span class="block">우리 동네 모든</span>
+                    <span class="block bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">피부샵</span>
+                    <span class="block">한 번에 비교하고 선택</span>
+                </h1>
+                
+                <!-- 서브 제목 -->
+                <p class="text-xl md:text-2xl text-white text-opacity-90 mb-12 max-w-3xl mx-auto font-light">
+                    한 번의 신청으로 여러 업체의 견적을 받아보고<br>
+                    가장 적합한 피부관리실을 선택하세요
+                </p>
+                
+                <!-- CTA 버튼 -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="scrollToConsultation()" class="px-8 py-4 bg-white text-beauty-600 font-bold text-lg rounded-2xl shadow-beauty hover:shadow-xl transition-all hover:-translate-y-1 flex items-center space-x-2">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>무료 상담 신청</span>
+                    </button>
+                    <button onclick="playDemoVideo()" class="px-6 py-4 text-white font-medium text-lg flex items-center space-x-2 hover:text-opacity-80 transition-all">
+                        <div class="w-12 h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center backdrop-blur-sm">
+                            <i class="fas fa-play text-sm"></i>
+                        </div>
+                        <span>서비스 소개 보기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 섹션 헤더 -->
+            <div class="text-center mb-16 animate-slideUp">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    왜 <span class="gradient-text">beautycat (뷰티+에티켓)</span>을 선택해야 할까요?
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    한 번의 신청으로 최고의 피부관리 경험을 제공합니다
+                </p>
+            </div>
+
+            <!-- 기능 카드들 -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- 카드 1: 간편한 신청 -->
+                <div class="bg-card-gradient rounded-3xl p-8 shadow-card hover-lift text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-beauty-400 to-beauty-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-beauty animate-float">
+                        <i class="fas fa-mouse-pointer text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">간편한 1회 신청</h3>
+                    <p class="text-gray-600 leading-relaxed mb-6">
+                        복잡한 절차 없이 한 번만 신청하면<br>
+                        지역 내 모든 업체에서 견적을 받을 수 있어요
+                    </p>
+                    <div class="flex justify-center space-x-2">
+                        <div class="w-2 h-2 bg-beauty-400 rounded-full"></div>
+                        <div class="w-2 h-2 bg-beauty-300 rounded-full"></div>
+                        <div class="w-2 h-2 bg-beauty-200 rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- 카드 2: 투명한 비교 -->
+                <div class="bg-card-gradient rounded-3xl p-8 shadow-card hover-lift text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-modern-purple to-modern-indigo rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-beauty animate-float" style="animation-delay: -0.5s;">
+                        <i class="fas fa-chart-bar text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">투명한 견적 비교</h3>
+                    <p class="text-gray-600 leading-relaxed mb-6">
+                        여러 업체의 가격과 서비스를<br>
+                        한눈에 비교하고 최적의 선택을 하세요
+                    </p>
+                    <div class="flex justify-center space-x-2">
+                        <div class="w-2 h-2 bg-modern-purple rounded-full"></div>
+                        <div class="w-2 h-2 bg-beauty-300 rounded-full"></div>
+                        <div class="w-2 h-2 bg-beauty-200 rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- 카드 3: 실시간 상담 -->
+                <div class="bg-card-gradient rounded-3xl p-8 shadow-card hover-lift text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-modern-blue to-beauty-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-beauty animate-float" style="animation-delay: -1s;">
+                        <i class="fas fa-comments text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">실시간 1:1 상담</h3>
+                    <p class="text-gray-600 leading-relaxed mb-6">
+                        전문가와의 실시간 채팅을 통해<br>
+                        궁금한 점을 바로 해결하세요
+                    </p>
+                    <div class="flex justify-center space-x-2">
+                        <div class="w-2 h-2 bg-modern-blue rounded-full"></div>
+                        <div class="w-2 h-2 bg-beauty-300 rounded-full"></div>
+                        <div class="w-2 h-2 bg-beauty-200 rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consultation Form Section -->
+    <section id="consultation" class="py-20 bg-gradient-to-br from-beauty-50 to-modern-purple/5">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 폼 헤더 -->
+            <div class="text-center mb-12 animate-slideUp">
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-beauty-100 text-beauty-700 text-sm font-medium mb-6">
+                    <i class="fas fa-gift mr-2"></i>
+                    완전 무료 서비스
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    지금 바로 <span class="gradient-text">무료 상담</span> 신청하기
+                </h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    3분만 투자하면 우리 동네 최고의 피부관리실을 찾을 수 있어요
+                </p>
+            </div>
+
+            <!-- 상담 신청 폼 -->
+            <div class="bg-white rounded-3xl shadow-card p-8 md:p-12 animate-slideUp">
+                <form id="consultationForm" class="space-y-8">
+                    <!-- 진행 단계 표시 -->
+                    <div class="flex items-center justify-center space-x-4 mb-8">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-beauty-500 rounded-full flex items-center justify-center text-white text-sm font-bold">1</div>
+                            <span class="ml-2 text-sm font-medium text-beauty-500">지역 선택</span>
+                        </div>
+                        <div class="w-8 h-px bg-gray-200"></div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-sm font-bold">2</div>
+                            <span class="ml-2 text-sm font-medium text-gray-500">관심 프로그램</span>
+                        </div>
+                        <div class="w-8 h-px bg-gray-200"></div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-sm font-bold">3</div>
+                            <span class="ml-2 text-sm font-medium text-gray-500">상담 신청</span>
+                        </div>
+                    </div>
+
+                    <!-- 개인정보 입력 -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">이름</label>
+                            <input type="text" id="customerName" required 
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all"
+                                   placeholder="이름을 입력해주세요">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">연락처</label>
+                            <input type="tel" id="customerPhone" required 
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all"
+                                   placeholder="010-0000-0000">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">이메일</label>
+                        <input type="email" id="customerEmail" required 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all"
+                               placeholder="이메일을 입력해주세요">
+                    </div>
+
+                    <!-- 지역 선택 -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">시/도</label>
+                            <select id="stateSelect" required 
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all">
+                                <option value="">시/도를 선택해주세요</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">시/군/구</label>
+                            <select id="citySelect" required disabled
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all">
+                                <option value="">먼저 시/도를 선택해주세요</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 관심 프로그램 선택 -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-semibold text-gray-700">관심 있는 관리 프로그램</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="treatmentTypes">
+                            <!-- JavaScript로 동적 생성 -->
+                        </div>
+                    </div>
+
+                    <!-- 예산 및 일정 -->
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">예산 범위</label>
+                            <select id="budgetRange" required 
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all">
+                                <option value="">예산을 선택해주세요</option>
+                                <option value="10만원 이하">10만원 이하</option>
+                                <option value="10-30만원">10-30만원</option>
+                                <option value="30-50만원">30-50만원</option>
+                                <option value="50-100만원">50-100만원</option>
+                                <option value="100만원 이상">100만원 이상</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700">희망 일정</label>
+                            <select id="preferredSchedule" required 
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all">
+                                <option value="">일정을 선택해주세요</option>
+                                <option value="1주일 이내">1주일 이내</option>
+                                <option value="2주일 이내">2주일 이내</option>
+                                <option value="1개월 이내">1개월 이내</option>
+                                <option value="시간 협의">시간 협의 가능</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 상담 내용 -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">상세 상담 내용</label>
+                        <textarea id="consultationText" rows="4" 
+                                  class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-beauty-500 focus:border-transparent transition-all resize-none"
+                                  placeholder="피부 고민이나 원하는 관리에 대해 자세히 알려주세요"></textarea>
+                    </div>
+
+                    <!-- 이미지 업로드 -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-semibold text-gray-700">피부 상태 사진 (선택사항)</label>
+                        <div class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-beauty-300 transition-colors">
+                            <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            <div id="uploadArea" onclick="document.getElementById('imageUpload').click();" class="cursor-pointer">
+                                <i class="fas fa-camera text-3xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600">사진을 업로드하면 더 정확한 상담을 받을 수 있어요</p>
+                                <p class="text-sm text-gray-400 mt-2">JPG, PNG 파일만 업로드 가능 (최대 5MB)</p>
+                            </div>
+                            <div id="imagePreview" class="hidden mt-4">
+                                <img id="previewImg" class="max-w-full h-32 object-cover rounded-lg mx-auto">
+                                <button type="button" onclick="removeImage()" class="mt-2 text-red-500 text-sm">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 제출 버튼 -->
+                    <button type="submit" class="w-full bg-button-gradient text-white py-4 rounded-xl font-bold text-lg shadow-button hover:shadow-lg transition-all hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>무료 상담 신청하기</span>
+                    </button>
+
+                    <!-- 안내 문구 -->
+                    <p class="text-center text-sm text-gray-500">
+                        신청 후 24시간 이내에 여러 업체로부터 견적을 받을 수 있습니다
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gradient-to-r from-beauty-600 to-modern-purple">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-white mb-12">
+                <h2 class="text-3xl font-bold mb-4">beautycat (뷰티+에티켓) 성과</h2>
+                <p class="text-beauty-100">피부관리실 견적 비교의 새로운 기준</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+                <div class="animate-slideUp">
+                    <div class="text-3xl md:text-4xl font-bold mb-2">1,000+</div>
+                    <div class="text-beauty-100">등록된 업체</div>
+                </div>
+                <div class="animate-slideUp" style="animation-delay: 0.1s;">
+                    <div class="text-3xl md:text-4xl font-bold mb-2">15,000+</div>
+                    <div class="text-beauty-100">만족한 고객</div>
+                </div>
+                <div class="animate-slideUp" style="animation-delay: 0.2s;">
+                    <div class="text-3xl md:text-4xl font-bold mb-2">95%</div>
+                    <div class="text-beauty-100">만족도</div>
+                </div>
+                <div class="animate-slideUp" style="animation-delay: 0.3s;">
+                    <div class="text-3xl md:text-4xl font-bold mb-2">24시간</div>
+                    <div class="text-beauty-100">평균 응답시간</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- 회사 정보 -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center">
+                            <span class="text-3xl">🐱</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">beautycat (뷰티+에티켓)</h3>
+                            <p class="text-sm text-gray-400">Beauty Matching Platform</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        우리 동네 모든 피부샵을 한 번에 비교하고 선택할 수 있는<br>
+                        대한민국 대표 뷰티 매칭 플랫폼입니다.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-beauty-400 transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-beauty-400 transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-beauty-400 transition-colors">
+                            <i class="fab fa-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 빠른 링크 -->
+                <div>
+                    <h4 class="font-bold mb-4">빠른 링크</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#consultation" class="text-gray-300 hover:text-beauty-400 transition-colors">무료상담</a></li>
+                        <li><a href="shop-registration.html" class="text-gray-300 hover:text-beauty-400 transition-colors">업체등록</a></li>
+                        <li><a href="login.html" class="text-gray-300 hover:text-beauty-400 transition-colors">로그인</a></li>
+                        <li><a href="register.html" class="text-gray-300 hover:text-beauty-400 transition-colors">회원가입</a></li>
+                    </ul>
+                </div>
+
+                <!-- 고객센터 -->
+                <div>
+                    <h4 class="font-bold mb-4">고객센터</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-phone mr-2 text-beauty-400"></i>1588-7729</li>
+                        <li><i class="fas fa-envelope mr-2 text-beauty-400"></i>help@pposhop.kr</li>
+                        <li><i class="fas fa-clock mr-2 text-beauty-400"></i>평일 9:00-18:00</li>
+                        <li class="pt-2">
+                            <a href="contact-inquiry.html" class="inline-flex items-center px-4 py-2 bg-beauty-600 hover:bg-beauty-700 rounded-lg text-white text-sm font-medium transition-colors">
+                                <i class="fas fa-headset mr-2"></i>
+                                1:1 문의하기
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 하단 라인 -->
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 beautycat (뷰티+에티켓). All rights reserved. | 
+                   <a href="#" class="hover:text-beauty-400 transition-colors">개인정보처리방침</a> | 
+                   <a href="#" class="hover:text-beauty-400 transition-colors">이용약관</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        // 모바일 메뉴 토글
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 스크롤 애니메이션
+        function scrollToConsultation() {
+            document.getElementById('consultation').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start' 
+            });
+        }
+
+        // 데모 비디오 플레이 (추후 구현)
+        function playDemoVideo() {
+            alert('서비스 소개 영상은 준비 중입니다! 🎬');
+        }
+
+        // 이미지 업로드 처리
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('파일 크기는 5MB 이하만 업로드 가능합니다.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('uploadArea').style.display = 'none';
+                    document.getElementById('imagePreview').classList.remove('hidden');
+                    document.getElementById('previewImg').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 이미지 제거
+        function removeImage() {
+            document.getElementById('imageUpload').value = '';
+            document.getElementById('uploadArea').style.display = 'block';
+            document.getElementById('imagePreview').classList.add('hidden');
+        }
+
+        // 페이지 로드 시 인증 상태 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                document.getElementById('authButtons').innerHTML = `
+                    <span class="text-gray-700">안녕하세요, ${user.name}님</span>
+                    <button onclick="logout()" class="px-4 py-2 text-beauty-600 hover:text-beauty-700 transition-colors">로그아웃</button>
+                `;
+            }
+        });
+
+        // 로그아웃 함수
+        function logout() {
+            localStorage.removeItem('currentUser');
+            location.reload();
+        }
+    </script>
+</body>
+</html>

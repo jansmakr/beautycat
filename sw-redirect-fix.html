@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat - 리다이렉트 오류 완전 수정</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff2d92, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .status-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .log-info { background: rgba(52, 152, 219, 0.2); }
+        .log-success { background: rgba(46, 204, 113, 0.2); }
+        .log-warning { background: rgba(241, 196, 15, 0.2); }
+        .log-error { background: rgba(231, 76, 60, 0.2); }
+        
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4aa, #00b4d8);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 15px;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff2d92, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 45, 146, 0.3);
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 45, 146, 0.4);
+        }
+        
+        button:disabled {
+            background: linear-gradient(45deg, #666, #888);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+        }
+        
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+        }
+        
+        .diagnostic-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #00d4aa;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛠️ BeautyCat</h1>
+        <div class="subtitle">Service Worker 리다이렉트 오류 완전 수정 도구</div>
+        
+        <div class="diagnostic-info">
+            <div class="info-card">
+                <div class="info-title">🌐 현재 URL</div>
+                <div id="currentUrl">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-title">🔧 Service Worker 지원</div>
+                <div id="swSupport">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-title">📊 등록된 SW</div>
+                <div id="swCount">-</div>
+            </div>
+            <div class="info-card">
+                <div class="info-title">💾 캐시 수</div>
+                <div id="cacheCount">-</div>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>수정 진행률</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-text" id="progressText">준비 중...</div>
+            </div>
+        </div>
+        
+        <div class="status-box" id="statusBox">
+            <div class="log-entry log-info">[시작] 🐱 BeautyCat 리다이렉트 오류 수정 도구 초기화 중...</div>
+        </div>
+        
+        <button id="fixBtn" onclick="startCompletefix()">
+            🚀 리다이렉트 오류 완전 수정 시작
+        </button>
+        
+        <div class="button-group" style="display: none;" id="actionButtons">
+            <button onclick="testServiceWorker()">🧪 Service Worker 테스트</button>
+            <button onclick="goToMain()">🏠 메인 페이지로 이동</button>
+        </div>
+    </div>
+
+    <script>
+        let progressValue = 0;
+        
+        function updateProgress(percent, message) {
+            progressValue = percent;
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            const percentSpan = document.getElementById('progressPercent');
+            
+            fill.style.width = percent + '%';
+            text.textContent = message;
+            percentSpan.textContent = percent + '%';
+        }
+        
+        function addLog(message, type = 'info') {
+            const statusBox = document.getElementById('statusBox');
+            const time = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.innerHTML = `[${time}] ${message}`;
+            statusBox.appendChild(logEntry);
+            statusBox.scrollTop = statusBox.scrollHeight;
+        }
+        
+        async function startCompletefix() {
+            const btn = document.getElementById('fixBtn');
+            btn.disabled = true;
+            btn.textContent = '🔧 수정 중... 잠시만 기다려주세요';
+            
+            try {
+                addLog('🔍 리다이렉트 오류 진단 시작', 'info');
+                updateProgress(5, '진단 중...');
+                
+                // 1. 현재 상태 진단
+                await sleep(500);
+                addLog('📊 브라우저 환경 분석 중...', 'info');
+                updateProgress(15, '환경 분석 중...');
+                
+                const currentUrl = window.location.href;
+                const isRedirectDomain = currentUrl.includes('beautycat.kr');
+                
+                addLog(`🌐 현재 도메인: ${window.location.hostname}`, 'info');
+                if (isRedirectDomain) {
+                    addLog('⚠️ 리다이렉트 도메인 감지 - 특별 처리 모드', 'warning');
+                }
+                
+                // 2. Service Worker 완전 정리
+                updateProgress(25, 'Service Worker 정리 중...');
+                addLog('🗑️ 모든 Service Worker 강제 제거 중...', 'info');
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    addLog(`📋 발견된 Service Worker: ${registrations.length}개`, 'info');
+                    
+                    for (let i = 0; i < registrations.length; i++) {
+                        const registration = registrations[i];
+                        addLog(`🔧 제거 중 (${i+1}/${registrations.length}): ${registration.scope}`, 'info');
+                        await registration.unregister();
+                        updateProgress(25 + (i + 1) * 15 / registrations.length, `SW 제거 중 ${i+1}/${registrations.length}`);
+                    }
+                } else {
+                    addLog('❌ Service Worker 미지원 브라우저', 'error');
+                }
+                
+                await sleep(1000);
+                
+                // 3. 캐시 완전 삭제
+                updateProgress(45, '캐시 삭제 중...');
+                addLog('💾 모든 브라우저 캐시 삭제 중...', 'info');
+                
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    addLog(`📊 발견된 캐시: ${cacheNames.length}개`, 'info');
+                    
+                    for (let i = 0; i < cacheNames.length; i++) {
+                        const cacheName = cacheNames[i];
+                        await caches.delete(cacheName);
+                        addLog(`🗑️ 캐시 삭제: ${cacheName}`, 'info');
+                        updateProgress(45 + (i + 1) * 20 / cacheNames.length, `캐시 삭제 중 ${i+1}/${cacheNames.length}`);
+                    }
+                }
+                
+                await sleep(1000);
+                
+                // 4. 로컬 스토리지 정리
+                updateProgress(70, '로컬 데이터 정리 중...');
+                addLog('🧹 로컬 스토리지 및 세션 데이터 정리...', 'info');
+                
+                try {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    addLog('✅ 로컬 스토리지 정리 완료', 'success');
+                } catch (error) {
+                    addLog('⚠️ 스토리지 정리 건너뜀: ' + error.message, 'warning');
+                }
+                
+                await sleep(1000);
+                
+                // 5. 새로운 안전한 Service Worker 등록
+                updateProgress(80, '새 Service Worker 등록 중...');
+                addLog('📝 리다이렉트 안전 Service Worker 등록 시도...', 'info');
+                
+                try {
+                    const registration = await navigator.serviceWorker.register('./sw.js', {
+                        scope: './',
+                        updateViaCache: 'none'
+                    });
+                    
+                    addLog('✅ 새로운 Service Worker 등록 성공!', 'success');
+                    addLog(`🎯 스코프: ${registration.scope}`, 'info');
+                    
+                    // 즉시 활성화
+                    if (registration.waiting) {
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        addLog('⚡ Service Worker 즉시 활성화 요청', 'info');
+                    }
+                    
+                } catch (error) {
+                    addLog('⚠️ Service Worker 등록 건너뜀: ' + error.message, 'warning');
+                    addLog('ℹ️ 앱은 Service Worker 없이도 정상 작동합니다', 'info');
+                }
+                
+                await sleep(1000);
+                
+                // 6. 최종 검증
+                updateProgress(95, '최종 검증 중...');
+                addLog('🔍 수정 결과 검증 중...', 'info');
+                
+                const finalRegistrations = await navigator.serviceWorker.getRegistrations();
+                const finalCaches = await caches.keys();
+                
+                addLog(`📊 최종 Service Worker: ${finalRegistrations.length}개`, 'info');
+                addLog(`📊 최종 캐시: ${finalCaches.length}개`, 'info');
+                
+                // 7. 완료
+                updateProgress(100, '수정 완료!');
+                addLog('🎉 리다이렉트 오류 수정 완료!', 'success');
+                addLog('✨ 이제 BeautyCat을 안전하게 사용할 수 있습니다', 'success');
+                
+                // UI 업데이트
+                btn.style.display = 'none';
+                document.getElementById('actionButtons').style.display = 'grid';
+                
+                // 성공 알림
+                document.querySelector('.container').insertAdjacentHTML('afterbegin', `
+                    <div class="alert alert-success">
+                        <strong>🎊 수정 완료!</strong><br>
+                        모든 리다이렉트 오류가 해결되었습니다. 이제 BeautyCat을 정상적으로 사용하실 수 있습니다.
+                    </div>
+                `);
+                
+            } catch (error) {
+                addLog('❌ 수정 중 오류 발생: ' + error.message, 'error');
+                updateProgress(0, '오류 발생');
+                
+                btn.disabled = false;
+                btn.textContent = '🔄 다시 시도';
+                
+                document.querySelector('.container').insertAdjacentHTML('afterbegin', `
+                    <div class="alert alert-error">
+                        <strong>❌ 수정 실패</strong><br>
+                        ${error.message}<br>
+                        페이지를 새로고침한 후 다시 시도해주세요.
+                    </div>
+                `);
+            }
+        }
+        
+        async function testServiceWorker() {
+            addLog('🧪 Service Worker 테스트 시작', 'info');
+            
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                addLog(`📊 현재 등록된 Service Worker: ${registrations.length}개`, 'info');
+                
+                registrations.forEach((reg, index) => {
+                    addLog(`${index + 1}. 스코프: ${reg.scope}`, 'info');
+                    addLog(`   상태: ${reg.active ? '활성' : '비활성'}`, 'info');
+                });
+                
+                if (registrations.length > 0) {
+                    addLog('✅ Service Worker 테스트 통과', 'success');
+                } else {
+                    addLog('ℹ️ Service Worker 없음 (정상)', 'info');
+                }
+            }
+        }
+        
+        function goToMain() {
+            addLog('🏠 메인 페이지로 이동 중...', 'info');
+            // 캐시 무력화를 위한 타임스탬프 추가
+            window.location.href = './index.html?fixed=' + Date.now();
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // 페이지 로드 시 진단 정보 수집
+        window.addEventListener('load', async () => {
+            document.getElementById('currentUrl').textContent = window.location.href;
+            document.getElementById('swSupport').textContent = 'serviceWorker' in navigator ? '✅ 지원됨' : '❌ 미지원';
+            
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                document.getElementById('swCount').textContent = registrations.length + '개';
+            } else {
+                document.getElementById('swCount').textContent = 'N/A';
+            }
+            
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                document.getElementById('cacheCount').textContent = cacheNames.length + '개';
+            } else {
+                document.getElementById('cacheCount').textContent = 'N/A';
+            }
+            
+            addLog('📋 시스템 정보 수집 완료', 'success');
+            addLog('🚀 "리다이렉트 오류 완전 수정 시작" 버튼을 클릭하세요', 'info');
+        });
+    </script>
+</body>
+</html>

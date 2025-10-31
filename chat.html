@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 채팅 - beautycat (뷰티+에티켓)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ff2d92', // beautycat 메인 핑크
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        }
+                    },
+                    fontFamily: {
+                        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
+                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { 
+            font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif; 
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .chat-container {
+            height: calc(100vh - 180px);
+            min-height: 400px;
+        }
+        .messages-container {
+            height: calc(100% - 80px);
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 1024px) {
+            .chat-container {
+                height: calc(100vh - 220px);
+            }
+        }
+        
+        /* 강남언니 스타일 메시지 버블 */
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .message-customer {
+            background: #ff2d92;
+            color: white;
+            margin-left: auto;
+            border-radius: 18px 18px 4px 18px;
+        }
+        
+        .message-shop {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #f0f0f0;
+            margin-right: auto;
+            border-radius: 18px 18px 18px 4px;
+        }
+
+        /* 강남언니 스타일 카드 */
+        .unni-card {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 버튼 스타일 */
+        .btn-primary {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 12px 24px;
+        }
+        
+        .btn-primary:hover {
+            background: #e6297f;
+        }
+        
+        /* 애니메이션 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between px-4 py-3">
+                
+                <!-- 로고 및 타이틀 -->
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center mr-4">
+                        <i class="fas fa-arrow-left text-gray-600 text-xl mr-3 lg:hidden"></i>
+                        <div class="flex items-center space-x-3">
+                            <!-- 강남언니 스타일 로고 -->
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <span class="text-xl">🐱</span>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
+                                <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 상담 상태 -->
+                <div class="flex items-center space-x-3">
+                    <span id="consultation-status" class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800 font-medium">
+                        <i class="fas fa-circle text-green-500 text-xs mr-1"></i>상담 진행 중
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            
+            <!-- 상담 정보 사이드바 -->
+            <div class="lg:col-span-1">
+                <div class="unni-card p-5 mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-pink-500 mr-2"></i>
+                        상담 정보
+                    </h3>
+                    <div id="consultation-info" class="space-y-3 text-sm">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600">상담 번호</span>
+                            <span id="consultation-id" class="text-gray-900 font-medium">#CS001</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600">고객명</span>
+                            <span id="customer-name" class="text-gray-900 font-medium">김미영님</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600">지역</span>
+                            <span id="consultation-region" class="text-gray-900 font-medium">전국 강남구</span>
+                        </div>
+                        <div class="border-t pt-3 mt-3">
+                            <div class="mb-2">
+                                <span class="font-medium text-gray-600 block mb-1">관심 프로그램</span>
+                                <span id="treatment-type" class="text-pink-600 font-medium text-sm bg-pink-50 px-2 py-1 rounded-lg">여드름 관리, 미백 관리</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="font-medium text-gray-600 block mb-1">예산</span>
+                                <span id="budget-range" class="text-gray-900 font-medium">30-50만원</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-600 block mb-1">선호 일정</span>
+                                <span id="preferred-schedule" class="text-gray-900 font-medium">평일 오후</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 참여 피부관리실 목록 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-store text-pink-500 mr-2"></i>
+                        참여 업체
+                    </h3>
+                    <div id="participating-shops" class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-spa text-pink-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900 text-sm">뷰티스킨 클리닉</div>
+                                    <div class="text-gray-500 text-xs">강남구 · 4.8★</div>
+                                </div>
+                            </div>
+                            <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 채팅 영역 -->
+            <div class="lg:col-span-3">
+                <div class="unni-card chat-container">
+                    <div class="p-4 border-b border-gray-200 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-gray-900 flex items-center">
+                                <i class="fas fa-comments text-pink-500 mr-2"></i>
+                                실시간 상담
+                            </h3>
+                            <div class="flex space-x-2">
+                                <button onclick="refreshMessages()" class="p-2 text-gray-500 hover:text-primary-500 hover:bg-white rounded-lg transition-colors">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button onclick="toggleNotifications()" class="p-2 text-gray-500 hover:text-primary-500 hover:bg-white rounded-lg transition-colors" id="notification-btn">
+                                    <i class="fas fa-bell"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 메시지 영역 -->
+                    <div class="messages-container p-4" id="messages-container">
+                        <div id="messages-list" class="space-y-4">
+                            <!-- 메시지가 동적으로 로드됩니다 -->
+                        </div>
+                        <div id="typing-indicator" class="hidden">
+                            <div class="flex items-center space-x-2 text-gray-500 text-sm">
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                </div>
+                                <span>누군가 입력 중...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 메시지 입력 영역 -->
+                    <div class="p-4 border-t border-gray-200">
+                        <form id="message-form" class="flex space-x-4">
+                            <div class="flex-1">
+                                <div class="flex space-x-2">
+                                    <input 
+                                        type="text" 
+                                        id="message-input" 
+                                        placeholder="메시지를 입력하세요..."
+                                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                    >
+                                    <button type="button" onclick="toggleQuoteForm()" class="px-4 py-2 text-gray-500 hover:text-pink-500 border border-gray-300 rounded-lg">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                    </button>
+                                    <button type="button" onclick="document.getElementById('file-input').click()" class="px-4 py-2 text-gray-500 hover:text-pink-500 border border-gray-300 rounded-lg">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <input type="file" id="file-input" accept="image/*,.pdf,.doc,.docx" class="hidden">
+                                </div>
+                            </div>
+                            <button type="submit" class="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 견적서 작성 모달 -->
+        <div id="quote-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">견적서 작성</h3>
+                    <button onclick="toggleQuoteForm()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="quote-form" class="space-y-4">
+                    <div>
+                        <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">관리 내용 상세</label>
+                        <textarea 
+                            id="treatment-details" 
+                            rows="4" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="제공할 관리의 상세 내용을 입력하세요..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">견적 가격 (원)</label>
+                            <input 
+                                type="number" 
+                                id="quote-price" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                placeholder="예: 150000"
+                                required
+                            >
+                        </div>
+                        <div>
+                            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">예상 소요시간</label>
+                            <input 
+                                type="text" 
+                                id="duration" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                placeholder="예: 1시간 30분"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">예약 가능일</label>
+                        <input 
+                            type="text" 
+                            id="available-dates" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="예: 월-금 오전, 주말 가능"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">추가 안내사항</label>
+                        <textarea 
+                            id="additional-notes" 
+                            rows="3" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="할인 정보, 주의사항 등을 입력하세요..."
+                        ></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" onclick="toggleQuoteForm()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                            취소
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            견적서 전송
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 견적서 상세 보기 모달 -->
+        <div id="quote-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="unni-card p-6 max-w-2xl w-full mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">견적서 상세</h3>
+                    <button onclick="closeQuoteDetail()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="quote-detail-content" class="space-y-4">
+                    <!-- 견적서 내용이 동적으로 로드됩니다 -->
+                </div>
+
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button onclick="closeQuoteDetail()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        닫기
+                    </button>
+                    <button onclick="acceptQuote()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                        견적 수락
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <!-- Firebase API 백엔드 -->
+<script src="js/firebase-api.js"></script>
+<script src="js/api-bridge.js"></script>
+<script src="js/chat.js"></script>
+</body>
+</html>

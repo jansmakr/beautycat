@@ -7,8 +7,7 @@ console.log('🚀 Cloudflare API 브릿지 활성화');
 
 // Cloudflare API 설정 (DNS 문제로 Fallback 우선 사용)
 const CLOUDFLARE_API = {
-    baseUrl: 'https://beautycat-api-v3.jansmakr.workers.dev/api',
-  // 안정적인 URL 우선
+    baseUrl: 'https://beautycat-api.jansmakr.workers.dev/api',  // 안정적인 URL 우선
     fallbackUrl: 'https://api.beautycat.kr/api',               // 커스텀 도메인 대기
     headers: {
         'Content-Type': 'application/json',
@@ -181,24 +180,24 @@ class BeautycatAPI {
         // 1순위: 커스텀 도메인
         try {
             const url = `${this.baseUrl}/health`;
-            const response = await fetch(url, { 
-                method: 'GET',
-                headers: this.headers
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                console.log('💚 Cloudflare API 헬스체크 성공:', data);
-                return data;
-            } else {
-                throw new Error(`HTTP ${response.status}`);
-            }
+            const response = await fetch(url, { timeout: 3000 });
+            const data = await response.json();
+            console.log('💚 Cloudflare API 헬스체크 (커스텀 도메인):', data);
+            return data;
         } catch (error) {
-            // 조용하게 실패 처리 (콘솔 경고만 표시)
-            console.log('ℹ️ API 서버가 아직 배포되지 않았습니다.');
-            console.log('ℹ️ Cloudflare Workers API를 배포하면 백엔드 기능이 활성화됩니다.');
-            console.log('ℹ️ 배포 가이드: CLOUDFLARE_WORKERS_V3_API_GUIDE.md 참고');
-            return null;
+            console.warn('⚠️ 커스텀 도메인 실패, Fallback 시도:', error.message);
+            
+            // 2순위: Fallback URL
+            try {
+                const fallbackUrl = `${this.fallbackUrl}/health`;
+                const response = await fetch(fallbackUrl);
+                const data = await response.json();
+                console.log('💚 Cloudflare API 헬스체크 (Fallback):', data);
+                return data;
+            } catch (fallbackError) {
+                console.error('❌ 모든 API 헬스체크 실패:', fallbackError);
+                return null;
+            }
         }
     }
 }
@@ -210,9 +209,7 @@ const cloudflareAPI = new BeautycatAPI();
 window.cloudflareAPI = cloudflareAPI;
 window.beautyAPI = cloudflareAPI;
 
-// 초기 헬스체크 (비동기로 조용하게 실행)
-cloudflareAPI.healthCheck().catch(() => {
-    // 헬스체크 실패는 무시 (API 서버가 없어도 프론트엔드는 작동)
-});
+// 초기 헬스체크
+cloudflareAPI.healthCheck();
 
 console.log('🎉 Cloudflare API 브릿지 준비 완료!');

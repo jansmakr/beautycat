@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 배포 확인</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #ff2d92;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .test-section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status.loading {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #ff2d92;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #374151;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .final-verdict {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .final-verdict.failure {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .final-verdict h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .final-verdict p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Workers 재배포 확인</h1>
+        <p class="subtitle">beautycat-api 배포 상태를 자동으로 검증합니다</p>
+
+        <!-- Test 1: Health Check -->
+        <div class="test-section">
+            <h2>
+                <span>1️⃣ Health Check</span>
+                <span class="status loading" id="health-status">
+                    <span class="spinner"></span>
+                    테스트 중...
+                </span>
+            </h2>
+            <div id="health-result"></div>
+        </div>
+
+        <!-- Test 2: Root Path -->
+        <div class="test-section">
+            <h2>
+                <span>2️⃣ Root 경로 테스트</span>
+                <span class="status loading" id="root-status">
+                    <span class="spinner"></span>
+                    대기 중...
+                </span>
+            </h2>
+            <div id="root-result"></div>
+        </div>
+
+        <!-- Test 3: Custom Domain -->
+        <div class="test-section">
+            <h2>
+                <span>3️⃣ Custom Domain (api.beautycat.kr)</span>
+                <span class="status loading" id="custom-status">
+                    <span class="spinner"></span>
+                    대기 중...
+                </span>
+            </h2>
+            <div id="custom-result"></div>
+        </div>
+
+        <!-- Final Verdict -->
+        <div id="final-verdict"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://beautycat-api.jansmakr.workers.dev';
+        const CUSTOM_DOMAIN = 'https://api.beautycat.kr';
+        
+        let results = {
+            health: null,
+            root: null,
+            custom: null
+        };
+
+        async function runAllTests() {
+            console.log('🚀 Workers 배포 확인 시작...');
+            
+            // Test 1: Health Check
+            await testHealthCheck();
+            
+            // Test 2: Root Path
+            await testRootPath();
+            
+            // Test 3: Custom Domain
+            await testCustomDomain();
+            
+            // Show Final Verdict
+            showFinalVerdict();
+        }
+
+        async function testHealthCheck() {
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    results.health = {
+                        success: true,
+                        status: response.status,
+                        time: responseTime,
+                        data: data
+                    };
+                    
+                    document.getElementById('health-status').className = 'status success';
+                    document.getElementById('health-status').innerHTML = '✅ 성공';
+                    
+                    document.getElementById('health-result').innerHTML = `
+                        <div class="metric">
+                            <span class="metric-label">HTTP 상태</span>
+                            <span class="metric-value">${response.status} OK</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">응답 시간</span>
+                            <span class="metric-value">${responseTime}ms</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Service</span>
+                            <span class="metric-value">${data.service || 'N/A'}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Status</span>
+                            <span class="metric-value">${data.status || 'N/A'}</span>
+                        </div>
+                        <div class="result">
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                results.health = {
+                    success: false,
+                    error: error.message
+                };
+                
+                document.getElementById('health-status').className = 'status error';
+                document.getElementById('health-status').innerHTML = '❌ 실패';
+                
+                document.getElementById('health-result').innerHTML = `
+                    <div class="result">
+                        <pre>오류: ${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testRootPath() {
+            document.getElementById('root-status').innerHTML = '<span class="spinner"></span> 테스트 중...';
+            
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch(API_BASE);
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    
+                    results.root = {
+                        success: true,
+                        status: response.status,
+                        time: responseTime,
+                        text: text
+                    };
+                    
+                    document.getElementById('root-status').className = 'status success';
+                    document.getElementById('root-status').innerHTML = '✅ 성공';
+                    
+                    document.getElementById('root-result').innerHTML = `
+                        <div class="metric">
+                            <span class="metric-label">HTTP 상태</span>
+                            <span class="metric-value">${response.status} OK</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">응답 시간</span>
+                            <span class="metric-value">${responseTime}ms</span>
+                        </div>
+                        <div class="result">
+                            <pre>${text}</pre>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                results.root = {
+                    success: false,
+                    error: error.message
+                };
+                
+                document.getElementById('root-status').className = 'status error';
+                document.getElementById('root-status').innerHTML = '❌ 실패';
+                
+                document.getElementById('root-result').innerHTML = `
+                    <div class="result">
+                        <pre>오류: ${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCustomDomain() {
+            document.getElementById('custom-status').innerHTML = '<span class="spinner"></span> 테스트 중...';
+            
+            const startTime = performance.now();
+            
+            try {
+                const response = await fetch(`${CUSTOM_DOMAIN}/api/health`);
+                const endTime = performance.now();
+                const responseTime = Math.round(endTime - startTime);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    results.custom = {
+                        success: true,
+                        status: response.status,
+                        time: responseTime,
+                        data: data
+                    };
+                    
+                    document.getElementById('custom-status').className = 'status success';
+                    document.getElementById('custom-status').innerHTML = '✅ 성공';
+                    
+                    document.getElementById('custom-result').innerHTML = `
+                        <div class="metric">
+                            <span class="metric-label">HTTP 상태</span>
+                            <span class="metric-value">${response.status} OK</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">응답 시간</span>
+                            <span class="metric-value">${responseTime}ms</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">도메인</span>
+                            <span class="metric-value">api.beautycat.kr</span>
+                        </div>
+                        <div class="result">
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                results.custom = {
+                    success: false,
+                    error: error.message
+                };
+                
+                document.getElementById('custom-status').className = 'status error';
+                document.getElementById('custom-status').innerHTML = '⚠️ 실패';
+                
+                document.getElementById('custom-result').innerHTML = `
+                    <div class="result">
+                        <pre>오류: ${error.message}
+
+참고: Custom Domain은 DNS 전파에 시간이 걸릴 수 있습니다.
+Workers.dev 도메인이 정상이면 문제없습니다.</pre>
+                    </div>
+                `;
+            }
+        }
+
+        function showFinalVerdict() {
+            const allSuccess = results.health?.success && results.root?.success;
+            const customSuccess = results.custom?.success;
+            
+            let verdictHTML = '';
+            
+            if (allSuccess) {
+                verdictHTML = `
+                    <div class="final-verdict">
+                        <div class="icon">🎉</div>
+                        <h2>Workers 재배포 성공!</h2>
+                        <p>beautycat-api Workers가 정상적으로 작동하고 있습니다.</p>
+                        <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">
+                            ✅ Health Check 성공<br>
+                            ✅ Root 경로 응답 정상<br>
+                            ${customSuccess ? '✅ Custom Domain 정상' : '⚠️ Custom Domain (DNS 전파 대기 중)'}
+                        </p>
+                        <p style="margin-top: 20px; font-weight: 600;">
+                            Checkpoint -222 복원이 완료되었습니다! 🚀
+                        </p>
+                    </div>
+                `;
+            } else {
+                verdictHTML = `
+                    <div class="final-verdict failure">
+                        <div class="icon">❌</div>
+                        <h2>Workers 배포 실패</h2>
+                        <p>API가 정상 작동하지 않습니다.</p>
+                        <p style="margin-top: 10px; font-size: 14px; opacity: 0.9;">
+                            ${results.health?.success ? '✅' : '❌'} Health Check<br>
+                            ${results.root?.success ? '✅' : '❌'} Root 경로<br>
+                            ${results.custom?.success ? '✅' : '⚠️'} Custom Domain
+                        </p>
+                        <p style="margin-top: 20px; font-weight: 600;">
+                            WORKERS_DEPLOYMENT_SOLUTION.md를 다시 확인해주세요.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('final-verdict').innerHTML = verdictHTML;
+            
+            // 콘솔 로그
+            console.log('📊 최종 결과:', {
+                health: results.health?.success ? '✅ 성공' : '❌ 실패',
+                root: results.root?.success ? '✅ 성공' : '❌ 실패',
+                custom: results.custom?.success ? '✅ 성공' : '⚠️ 실패',
+                verdict: allSuccess ? '🎉 배포 성공!' : '❌ 배포 실패'
+            });
+        }
+
+        // 페이지 로드 시 자동 실행
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

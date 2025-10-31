@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 시스템 테스트 - 뽀샵</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+        }
+        .test-pass { 
+            border-color: #10b981; 
+            background-color: #f0fdf4; 
+        }
+        .test-fail { 
+            border-color: #ef4444; 
+            background-color: #fef2f2; 
+        }
+        .test-info { 
+            border-color: #3b82f6; 
+            background-color: #eff6ff; 
+        }
+        .review-card {
+            transition: all 0.3s ease;
+        }
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">
+                <i class="fas fa-star text-yellow-500 mr-3"></i>
+                뽀샵 리뷰 시스템 완전 테스트
+            </h1>
+            
+            <div id="test-results" class="mb-8 max-h-60 overflow-y-auto bg-gray-50 p-4 rounded-lg"></div>
+            
+            <!-- 1. 고객 리뷰 작성 테스트 -->
+            <div class="test-section test-info">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-edit text-blue-600 mr-2"></i>
+                    1. 고객 리뷰 작성 시스템 테스트
+                </h2>
+                
+                <!-- 리뷰 작성 폼 -->
+                <div class="bg-white p-6 rounded-lg border border-gray-200">
+                    <form id="test-review-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">샵명</label>
+                                <input type="text" id="test-shop-name" value="테스트 뷰티클리닉" 
+                                       class="w-full p-3 border border-gray-200 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">고객명</label>
+                                <input type="text" id="test-customer-name" value="김○○" 
+                                       class="w-full p-3 border border-gray-200 rounded-lg">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">전체 만족도 *</label>
+                            <div class="flex items-center space-x-2">
+                                <div class="star-rating" data-rating="0">
+                                    <i class="fas fa-star star text-gray-300 text-2xl cursor-pointer" data-value="1"></i>
+                                    <i class="fas fa-star star text-gray-300 text-2xl cursor-pointer" data-value="2"></i>
+                                    <i class="fas fa-star star text-gray-300 text-2xl cursor-pointer" data-value="3"></i>
+                                    <i class="fas fa-star star text-gray-300 text-2xl cursor-pointer" data-value="4"></i>
+                                    <i class="fas fa-star star text-gray-300 text-2xl cursor-pointer" data-value="5"></i>
+                                </div>
+                                <span class="text-sm text-gray-600 ml-4" id="rating-text">평점을 선택해주세요</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">서비스 품질</label>
+                                <select id="test-service-quality" class="w-full p-2 border border-gray-200 rounded-lg">
+                                    <option value="">선택</option>
+                                    <option value="5">매우 만족 (5점)</option>
+                                    <option value="4" selected>만족 (4점)</option>
+                                    <option value="3">보통 (3점)</option>
+                                    <option value="2">불만족 (2점)</option>
+                                    <option value="1">매우 불만족 (1점)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">가격 만족도</label>
+                                <select id="test-price-satisfaction" class="w-full p-2 border border-gray-200 rounded-lg">
+                                    <option value="">선택</option>
+                                    <option value="5" selected>매우 만족 (5점)</option>
+                                    <option value="4">만족 (4점)</option>
+                                    <option value="3">보통 (3점)</option>
+                                    <option value="2">불만족 (2점)</option>
+                                    <option value="1">매우 불만족 (1점)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">시설 청결도</label>
+                                <select id="test-facility-cleanliness" class="w-full p-2 border border-gray-200 rounded-lg">
+                                    <option value="">선택</option>
+                                    <option value="5" selected>매우 만족 (5점)</option>
+                                    <option value="4">만족 (4점)</option>
+                                    <option value="3">보통 (3점)</option>
+                                    <option value="2">불만족 (2점)</option>
+                                    <option value="1">매우 불만족 (1점)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">직원 친절도</label>
+                                <select id="test-staff-kindness" class="w-full p-2 border border-gray-200 rounded-lg">
+                                    <option value="">선택</option>
+                                    <option value="5">매우 만족 (5점)</option>
+                                    <option value="4" selected>만족 (4점)</option>
+                                    <option value="3">보통 (3점)</option>
+                                    <option value="2">불만족 (2점)</option>
+                                    <option value="1">매우 불만족 (1점)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">받은 치료 내용</label>
+                            <input type="text" id="test-treatment-received" value="여드름 관리, 수분 관리" 
+                                   class="w-full p-3 border border-gray-200 rounded-lg">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">리뷰 내용 *</label>
+                            <textarea id="test-review-content" rows="4" 
+                                      class="w-full p-3 border border-gray-200 rounded-lg"
+                                      placeholder="이용 경험을 자세히 작성해주세요...">정말 만족스러운 관리였습니다! 직원분들도 친절하시고 시설도 깔끔해요. 여드름이 많이 좋아졌어요.</textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="test-recommend" checked class="rounded border-gray-300 mr-2">
+                                <span class="text-sm text-gray-700">이 피부관리실을 다른 분들에게 추천합니다</span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" onclick="testReviewSubmission()" 
+                                    class="px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors">
+                                <i class="fas fa-star mr-2"></i>리뷰 작성 테스트
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 2. 샵 리뷰 관리 테스트 -->
+            <div class="test-section test-info">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-chart-bar text-green-600 mr-2"></i>
+                    2. 샵 리뷰 관리 시스템 테스트
+                </h2>
+                
+                <!-- 리뷰 통계 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-star text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">평균 평점</p>
+                                <p class="text-2xl font-bold text-gray-900" id="demo-average-rating">4.3 / 5.0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-comments text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">총 리뷰</p>
+                                <p class="text-2xl font-bold text-gray-900" id="demo-total-reviews">12개</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-thumbs-up text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">추천률</p>
+                                <p class="text-2xl font-bold text-gray-900" id="demo-recommendation-rate">83%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                <i class="fas fa-clock text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-500">이번 달</p>
+                                <p class="text-2xl font-bold text-gray-900" id="demo-monthly-reviews">4개</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 데모 리뷰 목록 -->
+                <div class="space-y-4" id="demo-reviews-list">
+                    <!-- 리뷰 데이터가 로드됩니다 -->
+                </div>
+            </div>
+
+            <!-- 3. 테스트 버튼들 -->
+            <div class="test-section">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">
+                    <i class="fas fa-play-circle text-purple-600 mr-2"></i>
+                    3. 기능 테스트
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="testStarRating()" 
+                            class="p-4 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors">
+                        <i class="fas fa-star mr-2"></i>
+                        별점 시스템 테스트
+                    </button>
+                    
+                    <button onclick="testReviewFilter()" 
+                            class="p-4 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>
+                        리뷰 필터링 테스트
+                    </button>
+                    
+                    <button onclick="runAllReviewTests()" 
+                            class="p-4 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>
+                        전체 리뷰 테스트 실행
+                    </button>
+                </div>
+            </div>
+
+            <!-- 실제 페이지로 이동 -->
+            <div class="mt-8 text-center space-x-4">
+                <a href="customer-dashboard.html" 
+                   class="inline-flex items-center px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition-colors">
+                    <i class="fas fa-user mr-2"></i>
+                    고객 대시보드 (리뷰 작성)
+                </a>
+                <a href="shop-dashboard.html" 
+                   class="inline-flex items-center px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                    <i class="fas fa-store mr-2"></i>
+                    샵 대시보드 (리뷰 관리)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데모 리뷰 데이터
+        const demoReviews = [
+            {
+                id: 'review_001',
+                customer_name: '김○○',
+                rating: 5,
+                review_text: '정말 만족스러운 관리였습니다! 직원분들도 친절하시고 시설도 깔끔해요. 여드름이 많이 좋아졌어요.',
+                treatment_received: '여드름 관리, 수분 관리',
+                service_quality: 5,
+                price_satisfaction: 4,
+                facility_cleanliness: 5,
+                staff_kindness: 5,
+                recommend_yn: true,
+                created_at: '2024-09-25T14:30:00Z'
+            },
+            {
+                id: 'review_002',
+                customer_name: '이○○',
+                rating: 4,
+                review_text: '전반적으로 만족합니다. 가격도 합리적이고 효과도 좋았어요. 다음에 또 방문할 예정입니다.',
+                treatment_received: '미백 관리',
+                service_quality: 4,
+                price_satisfaction: 5,
+                facility_cleanliness: 4,
+                staff_kindness: 4,
+                recommend_yn: true,
+                created_at: '2024-09-23T10:15:00Z'
+            },
+            {
+                id: 'review_003',
+                customer_name: '박○○',
+                rating: 3,
+                review_text: '괜찮았습니다. 효과는 있었지만 기대했던 것보다는 조금 아쉬웠어요.',
+                treatment_received: '모공 관리',
+                service_quality: 3,
+                price_satisfaction: 3,
+                facility_cleanliness: 4,
+                staff_kindness: 3,
+                recommend_yn: false,
+                created_at: '2024-09-20T16:45:00Z'
+            }
+        ];
+
+        // 페이지 로드시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            logTest('리뷰 시스템 테스트 시작', 'info');
+            setupStarRating();
+            displayDemoReviews();
+        });
+
+        // 별점 시스템 설정
+        function setupStarRating() {
+            const starRating = document.querySelector('.star-rating');
+            const stars = starRating.querySelectorAll('.star');
+            const ratingText = document.getElementById('rating-text');
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('click', function() {
+                    const rating = index + 1;
+                    starRating.dataset.rating = rating;
+                    
+                    // 별점 표시 업데이트
+                    stars.forEach((s, i) => {
+                        if (i < rating) {
+                            s.classList.add('text-yellow-400');
+                            s.classList.remove('text-gray-300');
+                        } else {
+                            s.classList.add('text-gray-300');
+                            s.classList.remove('text-yellow-400');
+                        }
+                    });
+                    
+                    // 텍스트 업데이트
+                    const ratingLabels = ['', '매우 불만족', '불만족', '보통', '만족', '매우 만족'];
+                    ratingText.textContent = `${rating}점 - ${ratingLabels[rating]}`;
+                });
+            });
+        }
+
+        // 데모 리뷰 표시
+        function displayDemoReviews() {
+            const reviewsList = document.getElementById('demo-reviews-list');
+            
+            reviewsList.innerHTML = demoReviews.map(review => `
+                <div class="review-card bg-white p-6 rounded-lg border border-gray-200">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <h4 class="font-semibold text-gray-900 mr-3">${review.customer_name}</h4>
+                                <div class="flex items-center mr-3">
+                                    ${generateStarRating(review.rating)}
+                                    <span class="ml-2 text-sm font-medium text-gray-700">${review.rating}/5</span>
+                                </div>
+                                ${review.recommend_yn ? 
+                                    '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">추천</span>' : 
+                                    '<span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">비추천</span>'
+                                }
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">${review.treatment_received}</p>
+                        </div>
+                        <span class="text-xs text-gray-500">${formatDate(review.created_at)}</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-gray-700 leading-relaxed">${review.review_text}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs bg-gray-50 p-3 rounded-lg">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">서비스 품질:</span>
+                            <span class="font-medium">${review.service_quality}/5</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">가격 만족도:</span>
+                            <span class="font-medium">${review.price_satisfaction}/5</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">시설 청결도:</span>
+                            <span class="font-medium">${review.facility_cleanliness}/5</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">직원 친절도:</span>
+                            <span class="font-medium">${review.staff_kindness}/5</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 별점 HTML 생성
+        function generateStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star text-yellow-400"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
+            }
+            
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star text-gray-300"></i>';
+            }
+            
+            return stars;
+        }
+
+        // 리뷰 작성 테스트
+        function testReviewSubmission() {
+            const rating = parseInt(document.querySelector('.star-rating').dataset.rating || 0);
+            const content = document.getElementById('test-review-content').value;
+            
+            logTest('리뷰 작성 테스트 시작...', 'info');
+            
+            if (rating === 0) {
+                logTest('❌ 평점이 선택되지 않았습니다', 'fail');
+                showNotification('평점을 선택해주세요!', 'error');
+                return;
+            }
+            
+            if (content.length < 20) {
+                logTest('❌ 리뷰 내용이 너무 짧습니다', 'fail');
+                showNotification('리뷰 내용을 20자 이상 작성해주세요!', 'error');
+                return;
+            }
+            
+            // 성공적인 리뷰 작성 시뮬레이션
+            setTimeout(() => {
+                logTest(`✅ 리뷰 작성 성공: ${rating}점, ${content.length}자`, 'pass');
+                showNotification('리뷰가 성공적으로 작성되었습니다!', 'success');
+            }, 1000);
+            
+            showNotification('리뷰 저장 중...', 'info');
+        }
+
+        // 별점 시스템 테스트
+        function testStarRating() {
+            logTest('별점 시스템 테스트 시작...', 'info');
+            
+            const stars = document.querySelectorAll('.star');
+            let testPassed = true;
+            
+            // 별점 클릭 테스트
+            for (let i = 0; i < 5; i++) {
+                stars[i].click();
+                const currentRating = parseInt(document.querySelector('.star-rating').dataset.rating);
+                if (currentRating !== i + 1) {
+                    testPassed = false;
+                    break;
+                }
+            }
+            
+            if (testPassed) {
+                logTest('✅ 별점 시스템 정상 작동', 'pass');
+                showNotification('별점 시스템이 정상 작동합니다!', 'success');
+            } else {
+                logTest('❌ 별점 시스템 오류', 'fail');
+                showNotification('별점 시스템에 오류가 있습니다.', 'error');
+            }
+        }
+
+        // 리뷰 필터링 테스트
+        function testReviewFilter() {
+            logTest('리뷰 필터링 테스트 시작...', 'info');
+            
+            // 5점 리뷰만 필터링 테스트
+            const fiveStarReviews = demoReviews.filter(review => review.rating === 5);
+            logTest(`✅ 5점 리뷰 필터링: ${fiveStarReviews.length}개 발견`, 'pass');
+            
+            // 추천 리뷰만 필터링 테스트
+            const recommendedReviews = demoReviews.filter(review => review.recommend_yn);
+            logTest(`✅ 추천 리뷰 필터링: ${recommendedReviews.length}개 발견`, 'pass');
+            
+            showNotification('리뷰 필터링 테스트 완료!', 'success');
+        }
+
+        // 전체 리뷰 테스트
+        function runAllReviewTests() {
+            logTest('=== 전체 리뷰 시스템 테스트 시작 ===', 'info');
+            
+            // 1. 별점 시스템 테스트
+            setTimeout(() => testStarRating(), 500);
+            
+            // 2. 리뷰 필터링 테스트
+            setTimeout(() => testReviewFilter(), 1000);
+            
+            // 3. 통계 계산 테스트
+            setTimeout(() => {
+                const totalReviews = demoReviews.length;
+                const avgRating = (demoReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1);
+                logTest(`✅ 평균 평점 계산: ${avgRating}/5.0`, 'pass');
+                logTest(`✅ 총 리뷰 수: ${totalReviews}개`, 'pass');
+            }, 1500);
+            
+            // 4. 테스트 완료
+            setTimeout(() => {
+                logTest('=== 전체 테스트 완료 ===', 'info');
+                showNotification('모든 리뷰 테스트가 완료되었습니다!', 'success');
+            }, 2000);
+        }
+
+        // 테스트 로그
+        function logTest(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const colors = {
+                'pass': 'text-green-600',
+                'fail': 'text-red-600',
+                'info': 'text-blue-600',
+                'warning': 'text-yellow-600'
+            };
+            
+            const icons = {
+                'pass': 'fas fa-check-circle',
+                'fail': 'fas fa-times-circle',
+                'info': 'fas fa-info-circle',
+                'warning': 'fas fa-exclamation-triangle'
+            };
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = `flex items-center space-x-2 p-2 rounded ${colors[type]}`;
+            logEntry.innerHTML = `
+                <i class="${icons[type]}"></i>
+                <span class="text-xs text-gray-500">[${timestamp}]</span>
+                <span class="text-sm">${message}</span>
+            `;
+            
+            resultsDiv.appendChild(logEntry);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // 알림 표시
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg max-w-sm transform transition-all duration-300 ${
+                type === 'success' ? 'bg-green-100 text-green-700 border border-green-300' :
+                type === 'error' ? 'bg-red-100 text-red-700 border border-red-300' :
+                type === 'warning' ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' :
+                'bg-blue-100 text-blue-700 border border-blue-300'
+            }`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-lg leading-none hover:text-gray-600">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 자동 제거
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // 날짜 포맷
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뽀샵 스토어 - 비회원 결제</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { font-family: 'Pretendard', sans-serif; }
+        .unni-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fff0f8',
+                            100: '#ffe3f2',
+                            500: '#ff2d92',
+                            600: '#e6297f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 헤더 -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <span class="text-xl">🐱</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-900">뽀샵 스토어</h1>
+                        <p class="text-xs text-primary-500">안전한 결제 시스템</p>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <i class="fas fa-shield-alt text-green-500 mr-1"></i>
+                    SSL 보안 결제
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 주문 정보 (우측) -->
+            <div class="lg:order-2">
+                <div class="unni-card p-6 sticky top-8">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">주문 정보</h2>
+                    
+                    <!-- 상품 정보 -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 id="product-name" class="font-medium text-gray-900">프리미엄 피부관리</h3>
+                                <p id="shop-name" class="text-sm text-gray-500">강남 뷰티 클리닉</p>
+                                <p class="text-xs text-gray-400">120분 집중 관리</p>
+                            </div>
+                            <div class="text-right">
+                                <div id="product-price" class="font-semibold text-gray-900">250,000원</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 할인/쿠폰 -->
+                    <div class="border-t pt-4 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-600">상품금액</span>
+                            <span id="subtotal">250,000원</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm text-green-600">
+                            <span>뽀샵 연동 할인</span>
+                            <span>-10,000원</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 총 결제금액 -->
+                    <div class="border-t pt-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-semibold text-gray-900">총 결제금액</span>
+                            <span id="total-amount" class="text-xl font-bold text-primary-500">240,000원</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 결제 혜택 -->
+                    <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <div class="text-xs text-blue-800">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-gift text-blue-600 mr-1"></i>
+                                <span class="font-medium">뽀샵 연동 혜택</span>
+                            </div>
+                            <ul class="space-y-1">
+                                <li>• 10,000원 즉시 할인</li>
+                                <li>• 포인트 2% 적립</li>
+                                <li>• 무료 애프터케어 1회</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 결제 정보 입력 (좌측) -->
+            <div class="lg:col-span-2 lg:order-1">
+                <div class="unni-card p-6 mb-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">결제 정보</h2>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-user-check text-green-500 mr-2"></i>
+                            <span>뽀샵에서 전달된 정보</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 고객 정보 (자동 입력됨) -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">주문자 정보</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
+                                <input type="text" id="customer-name" readonly 
+                                       class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900"
+                                       placeholder="뽀샵에서 자동 입력됩니다">
+                                <div class="flex items-center mt-1 text-xs text-green-600">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    <span>뽀샵 연동으로 자동 입력됨</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                                <input type="tel" id="customer-phone" readonly
+                                       class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900"
+                                       placeholder="010-0000-0000">
+                                <div class="flex items-center mt-1 text-xs text-green-600">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    <span>뽀샵 연동으로 자동 입력됨</span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                                <input type="email" id="customer-email" readonly
+                                       class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900"
+                                       placeholder="email@example.com">
+                                <div class="flex items-center mt-1 text-xs text-green-600">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    <span>뽀샵 연동으로 자동 입력됨</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 정보 수정 옵션 -->
+                        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-yellow-600 mt-0.5 mr-2"></i>
+                                <div class="text-sm text-yellow-800">
+                                    <div class="font-medium mb-1">정보 확인</div>
+                                    <p>위 정보가 정확하지 않다면 <button onclick="enableEdit()" class="text-yellow-700 underline font-medium">여기를 클릭하여 수정</button>할 수 있습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 결제 방법 선택 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">결제 방법</h3>
+                        <div class="space-y-3">
+                            <label class="payment-method flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-300 transition-colors">
+                                <input type="radio" name="payment-method" value="card" checked class="text-primary-500">
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-credit-card text-blue-500 mr-2"></i>
+                                        <span class="font-medium text-gray-900">신용카드/체크카드</span>
+                                    </div>
+                                    <div class="text-sm text-gray-500">모든 카드 결제 가능</div>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-method flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-300 transition-colors">
+                                <input type="radio" name="payment-method" value="kakaopay" class="text-primary-500">
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-mobile-alt text-yellow-500 mr-2"></i>
+                                        <span class="font-medium text-gray-900">카카오페이</span>
+                                    </div>
+                                    <div class="text-sm text-gray-500">간편하고 빠른 모바일 결제</div>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-method flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-300 transition-colors">
+                                <input type="radio" name="payment-method" value="transfer" class="text-primary-500">
+                                <div class="ml-4 flex-1">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-university text-green-500 mr-2"></i>
+                                        <span class="font-medium text-gray-900">실시간 계좌이체</span>
+                                    </div>
+                                    <div class="text-sm text-gray-500">수수료 없는 직접 이체</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 약관 동의 -->
+                    <div class="mb-6">
+                        <div class="space-y-2">
+                            <label class="flex items-start">
+                                <input type="checkbox" id="agree-service" required class="mt-1 text-primary-500">
+                                <span class="ml-2 text-sm text-gray-700">
+                                    <span class="text-red-500">[필수]</span> 서비스 이용약관에 동의합니다
+                                    <button class="text-primary-500 underline ml-1">보기</button>
+                                </span>
+                            </label>
+                            <label class="flex items-start">
+                                <input type="checkbox" id="agree-payment" required class="mt-1 text-primary-500">
+                                <span class="ml-2 text-sm text-gray-700">
+                                    <span class="text-red-500">[필수]</span> 전자금융거래 이용약관에 동의합니다
+                                    <button class="text-primary-500 underline ml-1">보기</button>
+                                </span>
+                            </label>
+                            <label class="flex items-start">
+                                <input type="checkbox" id="agree-privacy" required class="mt-1 text-primary-500">
+                                <span class="ml-2 text-sm text-gray-700">
+                                    <span class="text-red-500">[필수]</span> 개인정보 수집 및 이용에 동의합니다
+                                    <button class="text-primary-500 underline ml-1">보기</button>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 결제 버튼 -->
+                    <div class="space-y-3">
+                        <button onclick="processPayment()" 
+                                class="w-full bg-primary-500 hover:bg-primary-600 text-white py-4 rounded-lg text-lg font-semibold transition-colors">
+                            <span id="total-payment-amount">240,000원</span> 결제하기
+                        </button>
+                        
+                        <div class="text-center">
+                            <button onclick="history.back()" 
+                                    class="text-gray-500 hover:text-gray-700 text-sm">
+                                뒤로 가기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 보안 인증 -->
+                <div class="unni-card p-4">
+                    <div class="flex items-center justify-center space-x-6 text-xs text-gray-500">
+                        <div class="flex items-center">
+                            <i class="fas fa-shield-alt text-green-500 mr-1"></i>
+                            <span>SSL 보안</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-lock text-blue-500 mr-1"></i>
+                            <span>PCI-DSS 인증</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-primary-500 mr-1"></i>
+                            <span>안전결제 보장</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL 파라미터에서 뽀샵 정보 자동 로드
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrderInfo();
+            setupPaymentMethods();
+        });
+
+        // 주문 정보 자동 로드
+        function loadOrderInfo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoFill = urlParams.get('auto_fill');
+            
+            if (autoFill === 'true') {
+                const customerData = urlParams.get('customer_data');
+                if (customerData) {
+                    try {
+                        const data = JSON.parse(atob(customerData));
+                        
+                        // 고객 정보 자동 입력
+                        document.getElementById('customer-name').value = data.name || '';
+                        document.getElementById('customer-phone').value = data.phone || '';
+                        document.getElementById('customer-email').value = data.email || '';
+                        
+                        // 상품 정보 설정
+                        document.getElementById('product-name').textContent = urlParams.get('product') || '피부관리 서비스';
+                        document.getElementById('shop-name').textContent = urlParams.get('shop') || '업체명';
+                        
+                        const price = parseInt(urlParams.get('price') || '0');
+                        const discountedPrice = price - 10000; // 뽀샵 연동 할인
+                        
+                        document.getElementById('product-price').textContent = formatPrice(price) + '원';
+                        document.getElementById('subtotal').textContent = formatPrice(price) + '원';
+                        document.getElementById('total-amount').textContent = formatPrice(discountedPrice) + '원';
+                        document.getElementById('total-payment-amount').textContent = formatPrice(discountedPrice) + '원';
+                        
+                        // 성공적으로 정보가 로드됨을 표시
+                        showAutoFillSuccess();
+                        
+                    } catch (error) {
+                        console.error('고객 정보 자동 입력 오류:', error);
+                        showManualInputForm();
+                    }
+                } else {
+                    showManualInputForm();
+                }
+            } else {
+                showManualInputForm();
+            }
+        }
+
+        // 자동 입력 성공 표시
+        function showAutoFillSuccess() {
+            const inputs = document.querySelectorAll('#customer-name, #customer-phone, #customer-email');
+            inputs.forEach(input => {
+                input.style.backgroundColor = '#f0fdf4'; // 연한 초록색
+                input.style.borderColor = '#16a34a';
+            });
+        }
+
+        // 수동 입력 폼으로 변경
+        function showManualInputForm() {
+            const inputs = document.querySelectorAll('#customer-name, #customer-phone, #customer-email');
+            inputs.forEach(input => {
+                input.removeAttribute('readonly');
+                input.style.backgroundColor = '#ffffff';
+                input.style.borderColor = '#d1d5db';
+                input.required = true;
+            });
+            
+            // 안내 메시지 숨기기
+            document.querySelectorAll('.text-green-600').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+
+        // 정보 수정 활성화
+        function enableEdit() {
+            const inputs = document.querySelectorAll('#customer-name, #customer-phone, #customer-email');
+            inputs.forEach(input => {
+                input.removeAttribute('readonly');
+                input.style.backgroundColor = '#ffffff';
+                input.style.borderColor = '#ff2d92';
+                input.focus();
+            });
+            
+            // 수정 모드 안내
+            alert('정보 수정이 가능합니다. 수정 후 결제를 진행해주세요.');
+        }
+
+        // 결제 방법 선택 처리
+        function setupPaymentMethods() {
+            const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+            paymentMethods.forEach(method => {
+                method.addEventListener('change', function() {
+                    document.querySelectorAll('.payment-method').forEach(label => {
+                        label.classList.remove('border-primary-500', 'bg-primary-50');
+                        label.classList.add('border-gray-200');
+                    });
+                    
+                    this.closest('.payment-method').classList.remove('border-gray-200');
+                    this.closest('.payment-method').classList.add('border-primary-500', 'bg-primary-50');
+                });
+            });
+        }
+
+        // 결제 처리
+        async function processPayment() {
+            // 약관 동의 확인
+            const requiredAgreements = ['agree-service', 'agree-payment', 'agree-privacy'];
+            const allAgreed = requiredAgreements.every(id => document.getElementById(id).checked);
+            
+            if (!allAgreed) {
+                alert('필수 약관에 모두 동의해주세요.');
+                return;
+            }
+            
+            // 고객 정보 유효성 검사
+            const customerName = document.getElementById('customer-name').value;
+            const customerPhone = document.getElementById('customer-phone').value;
+            const customerEmail = document.getElementById('customer-email').value;
+            
+            if (!customerName || !customerPhone || !customerEmail) {
+                alert('고객 정보를 모두 입력해주세요.');
+                return;
+            }
+            
+            // 결제 방법 확인
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value;
+            if (!paymentMethod) {
+                alert('결제 방법을 선택해주세요.');
+                return;
+            }
+            
+            // 결제 진행
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order_id');
+            
+            try {
+                // 결제 처리 (실제 PG 연동)
+                const paymentResult = await callRealPG({
+                    orderId: orderId,
+                    amount: parseInt(document.getElementById('total-payment-amount').textContent.replace(/[^0-9]/g, '')),
+                    method: paymentMethod,
+                    customerInfo: {
+                        name: customerName,
+                        phone: customerPhone,
+                        email: customerEmail
+                    }
+                });
+                
+                if (paymentResult.success) {
+                    // 뽀샵에 웹훅 전송
+                    await sendWebhookToPposhop(orderId, paymentResult);
+                    
+                    // 성공 페이지로 이동
+                    const successUrl = urlParams.get('success_url');
+                    window.location.href = successUrl || '/payment-success.html';
+                } else {
+                    alert('결제에 실패했습니다: ' + paymentResult.message);
+                }
+                
+            } catch (error) {
+                console.error('결제 처리 오류:', error);
+                alert('결제 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        }
+
+        // 실제 PG 호출 (토스페이먼츠, 카카오페이 등)
+        async function callRealPG(paymentData) {
+            // 실제 구현에서는 각 PG사의 SDK를 사용
+            // 현재는 시뮬레이션
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        success: Math.random() > 0.1, // 90% 성공률
+                        transactionId: 'TXN_' + Date.now(),
+                        amount: paymentData.amount,
+                        method: paymentData.method
+                    });
+                }, 2000);
+            });
+        }
+
+        // 뽀샵 웹훅 전송
+        async function sendWebhookToPposhop(orderId, paymentResult) {
+            const webhookData = {
+                orderId: orderId,
+                status: paymentResult.success ? 'completed' : 'failed',
+                amount: paymentResult.amount,
+                transactionId: paymentResult.transactionId,
+                provider: 'own_mall'
+            };
+            
+            // 백그라운드 웹훅 호출
+            const webhookUrl = new URL('https://pposhop.kr/webhook-handler.html');
+            webhookUrl.searchParams.set('webhook', 'true');
+            Object.entries(webhookData).forEach(([key, value]) => {
+                webhookUrl.searchParams.set(key, value);
+            });
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = webhookUrl.toString();
+            document.body.appendChild(iframe);
+        }
+
+        // 가격 포맷팅
+        function formatPrice(price) {
+            return new Intl.NumberFormat('ko-KR').format(price);
+        }
+    </script>
+</body>
+</html>

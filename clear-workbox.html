@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workbox 캐시 정리 도구</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">🧹 Workbox 캐시 정리 도구</h1>
+        
+        <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <h3 class="font-semibold text-yellow-800 mb-2">⚠️ 오류 해결</h3>
+            <p class="text-sm text-yellow-700">
+                "workbox-fa613c73.js non-precached-url" 오류를 해결하기 위해 
+                브라우저의 모든 캐시와 서비스워커를 완전히 제거합니다.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <button onclick="clearAllCaches()" 
+                    class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                🗑️ 모든 캐시 및 서비스워커 제거
+            </button>
+            
+            <button onclick="clearWorkboxOnly()" 
+                    class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                🎯 Workbox 관련 캐시만 제거
+            </button>
+            
+            <button onclick="reloadPage()" 
+                    class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                🔄 강제 새로고침 (캐시 무시)
+            </button>
+        </div>
+
+        <div class="mt-6">
+            <h3 class="font-semibold text-gray-800 mb-2">📋 진행 로그</h3>
+            <div id="log" class="bg-gray-50 p-3 rounded border text-xs font-mono h-64 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        async function clearAllCaches() {
+            log('🧹 모든 캐시 및 서비스워커 제거 시작...');
+            
+            try {
+                // 1. 모든 서비스워커 제거
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        log(`🗑️ Service Worker 제거: ${registration.scope}`);
+                        await registration.unregister();
+                    }
+                }
+
+                // 2. 모든 캐시 제거
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    for (let cacheName of cacheNames) {
+                        log(`🗑️ 캐시 제거: ${cacheName}`);
+                        await caches.delete(cacheName);
+                    }
+                }
+
+                // 3. IndexedDB 정리 (Workbox 관련)
+                const workboxDbs = [
+                    'workbox-expiration',
+                    'workbox-runtime', 
+                    'workbox-precache',
+                    'workbox-background-sync',
+                    'workbox-streams'
+                ];
+
+                for (let dbName of workboxDbs) {
+                    try {
+                        await deleteIndexedDB(dbName);
+                        log(`🗑️ IndexedDB 삭제: ${dbName}`);
+                    } catch (error) {
+                        log(`⚠️ IndexedDB 삭제 실패 (존재하지 않음): ${dbName}`);
+                    }
+                }
+
+                log('✅ 모든 캐시 및 서비스워커 제거 완료!');
+                
+            } catch (error) {
+                log(`❌ 오류 발생: ${error.message}`);
+            }
+        }
+
+        async function clearWorkboxOnly() {
+            log('🎯 Workbox 관련 캐시만 제거 시작...');
+            
+            try {
+                // Workbox 관련 캐시만 찾아서 제거
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    for (let cacheName of cacheNames) {
+                        if (cacheName.includes('workbox') || cacheName.includes('precache')) {
+                            log(`🗑️ Workbox 캐시 제거: ${cacheName}`);
+                            await caches.delete(cacheName);
+                        }
+                    }
+                }
+
+                // Workbox 관련 IndexedDB 제거
+                const workboxDbs = ['workbox-expiration', 'workbox-runtime', 'workbox-precache'];
+                for (let dbName of workboxDbs) {
+                    try {
+                        await deleteIndexedDB(dbName);
+                        log(`🗑️ Workbox DB 삭제: ${dbName}`);
+                    } catch (error) {
+                        log(`⚠️ Workbox DB 삭제 실패: ${dbName}`);
+                    }
+                }
+
+                log('✅ Workbox 관련 캐시 제거 완료!');
+                
+            } catch (error) {
+                log(`❌ 오류 발생: ${error.message}`);
+            }
+        }
+
+        function deleteIndexedDB(dbName) {
+            return new Promise((resolve, reject) => {
+                const deleteReq = indexedDB.deleteDatabase(dbName);
+                deleteReq.onsuccess = () => resolve();
+                deleteReq.onerror = () => reject(deleteReq.error);
+                deleteReq.onblocked = () => {
+                    log(`⚠️ DB 삭제 차단됨: ${dbName}`);
+                    resolve(); // 차단되어도 성공으로 처리
+                };
+            });
+        }
+
+        function reloadPage() {
+            log('🔄 강제 새로고침 시작...');
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 1000);
+        }
+
+        // 페이지 로드 시 현재 상태 확인
+        window.addEventListener('load', async () => {
+            log('📊 현재 브라우저 캐시 상태 확인...');
+            
+            // 서비스워커 상태 확인
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                log(`📋 등록된 Service Worker: ${registrations.length}개`);
+                registrations.forEach((reg, index) => {
+                    log(`  ${index + 1}. ${reg.scope}`);
+                });
+            }
+
+            // 캐시 상태 확인
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                log(`📋 등록된 캐시: ${cacheNames.length}개`);
+                cacheNames.forEach((name, index) => {
+                    log(`  ${index + 1}. ${name}`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

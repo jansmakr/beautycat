@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 요청 흐름 디버깅 - 뽀샵</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <style>
+        * { font-family: 'Pretendard', system-ui, sans-serif; }
+        .debug-section { border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h1 class="text-2xl font-bold text-blue-600 mb-4">🔍 상담 요청 → 업체 수신 흐름 디버깅</h1>
+                <p class="text-gray-700">고객 견적 요청 시 업체가 받지 못하는 문제를 단계별로 분석합니다</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- 1단계: 상담 요청 데이터 확인 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 debug-section">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">1️⃣ 상담 요청 데이터 확인</h2>
+                    
+                    <button onclick="checkConsultationData()" 
+                            class="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 mb-4">
+                        📋 모든 상담 요청 조회
+                    </button>
+                    
+                    <div id="consultationResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                        버튼을 클릭하여 확인하세요
+                    </div>
+                </div>
+
+                <!-- 2단계: 업체 데이터 확인 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 debug-section">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">2️⃣ 업체 데이터 확인</h2>
+                    
+                    <button onclick="checkShopData()" 
+                            class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 mb-4">
+                        🏪 업체 정보 및 지역 확인
+                    </button>
+                    
+                    <div id="shopResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                        버튼을 클릭하여 확인하세요
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3단계: 매칭 로직 테스트 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6 debug-section">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">3️⃣ 매칭 로직 테스트</h2>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">테스트 지역</label>
+                        <select id="testState" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <option value="서울특별시">서울특별시</option>
+                            <option value="부산광역시">부산광역시</option>
+                            <option value="경기도">경기도</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">구/군</label>
+                        <input type="text" id="testDistrict" placeholder="금천구" value="금천구"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                </div>
+                
+                <button onclick="testMatching()" 
+                        class="w-full bg-purple-500 text-white py-3 rounded-md hover:bg-purple-600 mb-4">
+                    🎯 지역별 매칭 테스트
+                </button>
+                
+                <div id="matchingResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                    지역을 선택하고 테스트하세요
+                </div>
+            </div>
+
+            <!-- 4단계: 실제 상담 요청 시뮬레이션 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6 debug-section">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">4️⃣ 상담 요청 시뮬레이션</h2>
+                
+                <div class="grid md:grid-cols-3 gap-4 mb-4">
+                    <input type="text" id="simName" placeholder="고객 이름" value="테스트 고객" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                    <input type="email" id="simEmail" placeholder="이메일" value="test@customer.com" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                    <input type="tel" id="simPhone" placeholder="전화번호" value="010-1234-5678" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                
+                <button onclick="simulateConsultationRequest()" 
+                        class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 mb-4">
+                    📤 실제 상담 요청 생성 및 매칭 테스트
+                </button>
+                
+                <div id="simulationResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                    고객 정보를 입력하고 테스트하세요
+                </div>
+            </div>
+
+            <!-- 5단계: 업체 대시보드 수신 테스트 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6 debug-section">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">5️⃣ 업체 대시보드 수신 확인</h2>
+                
+                <button onclick="testShopDashboard()" 
+                        class="w-full bg-yellow-500 text-white py-3 rounded-md hover:bg-yellow-600 mb-4">
+                    📊 업체 대시보드 필터링 로직 테스트
+                </button>
+                
+                <div id="dashboardResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                    버튼을 클릭하여 테스트하세요
+                </div>
+            </div>
+
+            <!-- 실행 로그 -->
+            <div class="mt-6 bg-gray-900 rounded-lg p-6 text-green-400 font-mono text-sm">
+                <h3 class="text-white mb-4">실행 로그</h3>
+                <div id="consoleLog" class="space-y-1 max-h-64 overflow-y-auto">
+                    <div>[시작] 상담 요청 흐름 디버깅 도구 준비 완료</div>
+                </div>
+            </div>
+
+            <!-- 네비게이션 -->
+            <div class="mt-6 text-center space-x-4">
+                <a href="index.html" class="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600">
+                    메인 페이지
+                </a>
+                <a href="shop-dashboard.html" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600">
+                    업체 대시보드
+                </a>
+                <a href="admin-dashboard.html" class="bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600">
+                    관리자 대시보드
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 로그 추가 함수
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-blue-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+                error: 'text-red-400'
+            };
+            
+            const logDiv = document.getElementById('consoleLog');
+            const newLog = document.createElement('div');
+            newLog.className = colors[type] || 'text-green-400';
+            newLog.textContent = `[${timestamp}] ${message}`;
+            
+            logDiv.appendChild(newLog);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // 1단계: 상담 요청 데이터 확인
+        async function checkConsultationData() {
+            addLog('📋 상담 요청 데이터 조회 시작...', 'info');
+            
+            try {
+                const response = await fetch('tables/consultations?limit=50&sort=created_at');
+                const data = await response.json();
+                
+                addLog(`✅ 상담 요청 ${data.data.length}개 조회 완료`, 'success');
+                
+                // 최근 상담 요청 분석
+                const recentConsultations = data.data.slice(0, 10);
+                let regionDistribution = {};
+                
+                recentConsultations.forEach(consultation => {
+                    const state = consultation.state || consultation.province || '미설정';
+                    const district = consultation.district || consultation.city || '미설정';
+                    const key = `${state} ${district}`;
+                    regionDistribution[key] = (regionDistribution[key] || 0) + 1;
+                });
+                
+                document.getElementById('consultationResult').innerHTML = `
+                    <div class="space-y-3">
+                        <div><strong>총 상담 요청:</strong> ${data.data.length}개</div>
+                        <div><strong>최근 10개 지역 분포:</strong></div>
+                        <div class="ml-4 space-y-1">
+                            ${Object.entries(regionDistribution).map(([region, count]) => 
+                                `<div class="text-xs">• ${region}: ${count}개</div>`
+                            ).join('')}
+                        </div>
+                        <div><strong>최신 상담 요청:</strong></div>
+                        ${recentConsultations.slice(0, 3).map(c => `
+                            <div class="ml-4 p-2 bg-blue-50 rounded text-xs">
+                                ID: ${c.id}<br>
+                                고객: ${c.customer_name || c.name}<br>
+                                지역: ${c.state || c.province} ${c.district || c.city}<br>
+                                날짜: ${new Date(c.created_at || c.submission_date).toLocaleString()}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                addLog(`📊 지역별 분포: ${JSON.stringify(regionDistribution)}`, 'info');
+                
+            } catch (error) {
+                addLog(`❌ 상담 요청 조회 오류: ${error.message}`, 'error');
+                document.getElementById('consultationResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 2단계: 업체 데이터 확인
+        async function checkShopData() {
+            addLog('🏪 업체 데이터 조회 시작...', 'info');
+            
+            try {
+                const response = await fetch('tables/skincare_shops?limit=50');
+                const data = await response.json();
+                
+                addLog(`✅ 업체 ${data.data.length}개 조회 완료`, 'success');
+                
+                // 업체별 지역 정보 분석
+                const regionShops = {};
+                const approvedShops = data.data.filter(shop => shop.status === 'approved' || !shop.status);
+                
+                approvedShops.forEach(shop => {
+                    const state = shop.state || shop.shop_state || '미설정';
+                    const district = shop.district || shop.shop_district || '미설정';
+                    const key = `${state} ${district}`;
+                    
+                    if (!regionShops[key]) regionShops[key] = [];
+                    regionShops[key].push(shop.shop_name || shop.name);
+                });
+                
+                document.getElementById('shopResult').innerHTML = `
+                    <div class="space-y-3">
+                        <div><strong>전체 업체:</strong> ${data.data.length}개</div>
+                        <div><strong>승인된 업체:</strong> ${approvedShops.length}개</div>
+                        <div><strong>지역별 업체 분포:</strong></div>
+                        <div class="ml-4 space-y-1 max-h-32 overflow-y-auto">
+                            ${Object.entries(regionShops).map(([region, shops]) => 
+                                `<div class="text-xs">
+                                    <strong>${region}:</strong> ${shops.length}개
+                                    <div class="ml-2 text-gray-600">${shops.slice(0, 2).join(', ')}${shops.length > 2 ? ` 외 ${shops.length-2}개` : ''}</div>
+                                </div>`
+                            ).join('')}
+                        </div>
+                        <div><strong>데모 업체 정보:</strong></div>
+                        ${approvedShops.filter(shop => shop.email?.includes('demo')).map(shop => `
+                            <div class="ml-4 p-2 bg-green-50 rounded text-xs">
+                                ${shop.shop_name || shop.name}<br>
+                                지역: ${shop.state || shop.shop_state} ${shop.district || shop.shop_district}<br>
+                                이메일: ${shop.email}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                addLog(`📍 지역별 업체 수: ${JSON.stringify(Object.fromEntries(Object.entries(regionShops).map(([k,v]) => [k, v.length])))}`, 'info');
+                
+            } catch (error) {
+                addLog(`❌ 업체 데이터 조회 오류: ${error.message}`, 'error');
+                document.getElementById('shopResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 3단계: 매칭 로직 테스트
+        async function testMatching() {
+            const testState = document.getElementById('testState').value;
+            const testDistrict = document.getElementById('testDistrict').value;
+            
+            addLog(`🎯 매칭 테스트: ${testState} ${testDistrict}`, 'info');
+            
+            try {
+                // 상담 요청 데이터
+                const consultationsResponse = await fetch('tables/consultations?limit=100');
+                const consultationsData = await consultationsResponse.json();
+                
+                // 업체 데이터
+                const shopsResponse = await fetch('tables/skincare_shops?limit=100');
+                const shopsData = await shopsResponse.json();
+                
+                // 해당 지역 상담 요청 필터링
+                const matchingConsultations = consultationsData.data.filter(consultation => {
+                    const state = consultation.state || consultation.province || '';
+                    const district = consultation.district || consultation.city || '';
+                    
+                    const stateMatch = state.includes(testState.replace('특별시', '').replace('광역시', '')) || 
+                                     testState.includes(state.replace('특별시', '').replace('광역시', ''));
+                    const districtMatch = district.includes(testDistrict) || testDistrict.includes(district);
+                    
+                    return stateMatch && districtMatch;
+                });
+                
+                // 해당 지역 업체 필터링
+                const matchingShops = shopsData.data.filter(shop => {
+                    const shopState = shop.state || shop.shop_state || '';
+                    const shopDistrict = shop.district || shop.shop_district || '';
+                    
+                    const stateMatch = shopState.includes(testState.replace('특별시', '').replace('광역시', '')) || 
+                                     testState.includes(shopState.replace('특별시', '').replace('광역시', ''));
+                    const districtMatch = shopDistrict.includes(testDistrict) || testDistrict.includes(shopDistrict);
+                    
+                    return stateMatch && districtMatch && (shop.status === 'approved' || !shop.status);
+                });
+                
+                addLog(`📊 ${testState} ${testDistrict}: 상담요청 ${matchingConsultations.length}개, 업체 ${matchingShops.length}개`, 'success');
+                
+                document.getElementById('matchingResult').innerHTML = `
+                    <div class="space-y-3">
+                        <div><strong>테스트 지역:</strong> ${testState} ${testDistrict}</div>
+                        <div><strong>해당 지역 상담 요청:</strong> ${matchingConsultations.length}개</div>
+                        <div><strong>해당 지역 업체:</strong> ${matchingShops.length}개</div>
+                        
+                        ${matchingConsultations.length > 0 ? `
+                            <div><strong>최근 상담 요청:</strong></div>
+                            ${matchingConsultations.slice(0, 2).map(c => `
+                                <div class="ml-4 p-2 bg-blue-50 rounded text-xs">
+                                    ${c.customer_name || c.name} (${c.state || c.province} ${c.district || c.city})<br>
+                                    ${new Date(c.created_at || c.submission_date).toLocaleString()}
+                                </div>
+                            `).join('')}
+                        ` : '<div class="text-yellow-600">해당 지역 상담 요청 없음</div>'}
+                        
+                        ${matchingShops.length > 0 ? `
+                            <div><strong>해당 지역 업체:</strong></div>
+                            ${matchingShops.map(shop => `
+                                <div class="ml-4 p-2 bg-green-50 rounded text-xs">
+                                    ${shop.shop_name || shop.name} (${shop.state || shop.shop_state} ${shop.district || shop.shop_district})<br>
+                                    ${shop.email}
+                                </div>
+                            `).join('')}
+                        ` : '<div class="text-red-600">해당 지역 업체 없음</div>'}
+                        
+                        <div class="p-2 ${matchingConsultations.length > 0 && matchingShops.length > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} rounded">
+                            ${matchingConsultations.length > 0 && matchingShops.length > 0 ? '✅ 매칭 가능' : '❌ 매칭 불가능'}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 매칭 테스트 오류: ${error.message}`, 'error');
+                document.getElementById('matchingResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 4단계: 실제 상담 요청 시뮬레이션
+        async function simulateConsultationRequest() {
+            const name = document.getElementById('simName').value;
+            const email = document.getElementById('simEmail').value;
+            const phone = document.getElementById('simPhone').value;
+            const state = document.getElementById('testState').value;
+            const district = document.getElementById('testDistrict').value;
+            
+            addLog(`📤 상담 요청 시뮬레이션: ${name} (${state} ${district})`, 'info');
+            
+            try {
+                const consultationData = {
+                    customer_name: name,
+                    customer_email: email,
+                    customer_phone: phone,
+                    state: state,
+                    district: district,
+                    treatment_types: ['여드름관리'],
+                    skin_concerns: ['여드름'],
+                    additional_notes: '상담 요청 흐름 테스트용입니다',
+                    status: 'pending',
+                    submission_date: new Date().toISOString()
+                };
+                
+                // 상담 요청 저장
+                const response = await fetch('tables/consultations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(consultationData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('상담 요청 저장 실패');
+                }
+                
+                const savedConsultation = await response.json();
+                addLog(`✅ 상담 요청 저장 완료: ${savedConsultation.id}`, 'success');
+                
+                // 해당 지역 업체들 조회
+                const shopsResponse = await fetch('tables/skincare_shops?limit=100');
+                const shopsData = await shopsResponse.json();
+                
+                const targetShops = shopsData.data.filter(shop => {
+                    const shopState = shop.state || shop.shop_state || '';
+                    const shopDistrict = shop.district || shop.shop_district || '';
+                    
+                    const stateMatch = shopState.includes(state.replace('특별시', '').replace('광역시', '')) || 
+                                     state.includes(shopState.replace('특별시', '').replace('광역시', ''));
+                    const districtMatch = shopDistrict.includes(district) || district.includes(shopDistrict);
+                    
+                    return stateMatch && districtMatch && (shop.status === 'approved' || !shop.status);
+                });
+                
+                addLog(`📢 타겟 업체 ${targetShops.length}개 발견`, 'success');
+                
+                document.getElementById('simulationResult').innerHTML = `
+                    <div class="space-y-3">
+                        <div><strong>생성된 상담 요청:</strong></div>
+                        <div class="ml-4 p-3 bg-blue-50 rounded">
+                            <div><strong>ID:</strong> ${savedConsultation.id}</div>
+                            <div><strong>고객:</strong> ${name} (${email})</div>
+                            <div><strong>지역:</strong> ${state} ${district}</div>
+                            <div><strong>시간:</strong> ${new Date().toLocaleString()}</div>
+                        </div>
+                        
+                        <div><strong>알림 대상 업체:</strong> ${targetShops.length}개</div>
+                        ${targetShops.length > 0 ? targetShops.map(shop => `
+                            <div class="ml-4 p-2 bg-green-50 rounded text-xs">
+                                ${shop.shop_name || shop.name}<br>
+                                ${shop.state || shop.shop_state} ${shop.district || shop.shop_district}<br>
+                                ${shop.email}
+                            </div>
+                        `).join('') : '<div class="text-red-600 ml-4">알림받을 업체가 없습니다!</div>'}
+                        
+                        <div class="p-2 ${targetShops.length > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} rounded">
+                            ${targetShops.length > 0 ? '✅ 상담 요청이 업체들에게 전달됩니다' : '❌ 상담 요청을 받을 업체가 없습니다'}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 상담 요청 시뮬레이션 오류: ${error.message}`, 'error');
+                document.getElementById('simulationResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 5단계: 업체 대시보드 수신 테스트
+        async function testShopDashboard() {
+            addLog('📊 업체 대시보드 필터링 로직 테스트...', 'info');
+            
+            try {
+                // 데모 업체 정보 시뮬레이션
+                const demoShop = {
+                    shop_name: '데모 피부관리실',
+                    email: 'demo@shop.com',
+                    state: '서울특별시',
+                    district: '금천구',
+                    shop_state: '서울특별시',
+                    shop_district: '금천구'
+                };
+                
+                // 모든 상담 요청 조회
+                const consultationsResponse = await fetch('tables/consultations?limit=100');
+                const consultationsData = await consultationsResponse.json();
+                
+                // 업체 대시보드 필터링 로직 시뮬레이션
+                const filteredConsultations = consultationsData.data.filter(consultation => {
+                    const consultState = consultation.state || consultation.province || '';
+                    const consultDistrict = consultation.district || consultation.city || '';
+                    
+                    const stateMatch = demoShop.state.includes(consultState.replace('특별시', '').replace('광역시', '')) || 
+                                     consultState.includes(demoShop.state.replace('특별시', '').replace('광역시', ''));
+                    const districtMatch = demoShop.district.includes(consultDistrict) || 
+                                        consultDistrict.includes(demoShop.district);
+                    
+                    const isMatch = stateMatch && districtMatch;
+                    
+                    if (isMatch) {
+                        addLog(`✅ 매칭: ${consultState} ${consultDistrict} → ${demoShop.state} ${demoShop.district}`, 'success');
+                    }
+                    
+                    return isMatch;
+                });
+                
+                addLog(`📊 데모 업체가 받을 상담 요청: ${filteredConsultations.length}개`, 'success');
+                
+                document.getElementById('dashboardResult').innerHTML = `
+                    <div class="space-y-3">
+                        <div><strong>데모 업체 정보:</strong></div>
+                        <div class="ml-4 p-2 bg-blue-50 rounded text-sm">
+                            ${demoShop.shop_name}<br>
+                            지역: ${demoShop.state} ${demoShop.district}<br>
+                            이메일: ${demoShop.email}
+                        </div>
+                        
+                        <div><strong>총 상담 요청:</strong> ${consultationsData.data.length}개</div>
+                        <div><strong>필터링된 상담 요청:</strong> ${filteredConsultations.length}개</div>
+                        
+                        ${filteredConsultations.length > 0 ? `
+                            <div><strong>매칭된 상담 요청들:</strong></div>
+                            ${filteredConsultations.slice(0, 3).map(c => `
+                                <div class="ml-4 p-2 bg-green-50 rounded text-xs">
+                                    고객: ${c.customer_name || c.name}<br>
+                                    지역: ${c.state || c.province} ${c.district || c.city}<br>
+                                    날짜: ${new Date(c.created_at || c.submission_date).toLocaleString()}
+                                </div>
+                            `).join('')}
+                            ${filteredConsultations.length > 3 ? `<div class="ml-4 text-xs text-gray-500">외 ${filteredConsultations.length - 3}개 더...</div>` : ''}
+                        ` : '<div class="text-red-600">매칭된 상담 요청이 없습니다</div>'}
+                        
+                        <div class="p-2 ${filteredConsultations.length > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} rounded">
+                            ${filteredConsultations.length > 0 ? '✅ 업체 대시보드에서 상담 요청을 볼 수 있습니다' : '❌ 업체 대시보드에서 상담 요청을 볼 수 없습니다'}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 대시보드 테스트 오류: ${error.message}`, 'error');
+                document.getElementById('dashboardResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 상담 요청 흐름 디버깅 도구 준비 완료', 'success');
+            addLog('💡 1단계부터 순서대로 실행하여 문제를 진단하세요', 'info');
+        });
+    </script>
+</body>
+</html>

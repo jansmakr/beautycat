@@ -6,122 +6,53 @@
     <title>회원가입 - beautycat (뷰티+에티켓)</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome 아이콘 -->
+<!-- Firebase API 백엔드 -->
+<script src="js/firebase-api.js"></script>
+<script src="js/api-bridge.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <!-- 콘솔 클리너 -->
-    <script src="js/console-cleaner.js"></script>
-    <!-- Firebase API 백엔드 -->
-    <!-- Firebase 제거됨 - Cloudflare Workers 사용 -->
-    <script src="deploy-ready-config.js"></script>
-    <script src="cloudflare-direct-api.js"></script>
-<script src="cloudflare-api-migration.js"></script>
-    <!-- EmailJS for email verification -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- 상단 네비게이션 바 -->
-    <div class="sticky top-0 z-50 bg-white shadow-sm border-b">
-        <div class="flex items-center justify-between px-4 py-3">
-            <button onclick="goBack()" class="flex items-center text-gray-600 hover:text-pink-500">
-                <i class="fas fa-arrow-left mr-2"></i>
-                <span class="text-sm">이전</span>
-            </button>
-            <h1 class="text-lg font-bold text-pink-500">회원가입</h1>
-            <button onclick="goHome()" class="flex items-center text-gray-600 hover:text-pink-500">
-                <i class="fas fa-home mr-1"></i>
-                <span class="text-sm">홈</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="min-h-screen bg-gray-50 pb-6">
-        <div class="max-w-md mx-auto p-4">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="text-center mb-6">
-                    <h1 class="text-2xl font-bold text-pink-500 mb-2">🐱 beautycat</h1>
-                    <p class="text-gray-600 text-sm">뷰티+에티켓 피부관리 플랫폼</p>
-                </div>
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-pink-500 mb-2">beautycat</h1>
+                <p class="text-gray-600">뷰티+에티켓 피부관리 플랫폼</p>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-center mb-6">회원가입</h2>
             
             <form id="registerForm" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
-                    <div class="space-y-2">
-                        <input type="email" id="email" required autocomplete="email"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-lg"
-                               placeholder="이메일 주소를 입력하세요">
-                        <button type="button" id="checkEmailBtn" 
-                                class="w-full px-4 py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
-                            📧 이메일 중복 확인
-                        </button>
-                    </div>
-                    <div id="emailCheckMessage" class="mt-1 text-sm"></div>
-                    
-                    <!-- 이메일 인증 섹션 - 모바일에서 보이도록 개선 -->
-                    <div id="emailVerificationSection" class="mt-3">
-                        <div class="p-3 bg-blue-50 rounded-md border">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-envelope text-blue-500"></i>
-                                <span class="text-sm font-medium text-blue-700">이메일 인증</span>
-                            </div>
-                            <p class="text-sm text-blue-600 mb-3">입력하신 이메일로 6자리 인증코드를 발송했습니다.</p>
-                            
-                            <!-- 모바일 친화적 인증코드 입력 -->
-                            <div class="space-y-3">
-                                <input type="text" id="verificationCode" placeholder="인증코드 6자리 입력" maxlength="6"
-                                       class="w-full px-4 py-3 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-xl"
-                                       aria-label="6자리 이메일 인증코드 입력"
-                                       aria-describedby="verificationMessage"
-                                       autocomplete="one-time-code">
-                                
-                                <button type="button" id="sendVerificationBtn" 
-                                        class="w-full px-4 py-3 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
-                                        aria-label="이메일로 인증코드 발송">
-                                    📧 인증코드 발송
-                                </button>
-                            </div>
-                            
-                            <div class="flex justify-between items-center mt-2">
-                                <div id="verificationMessage" class="text-sm"></div>
-                                <div id="resendTimer" class="text-sm text-gray-500"></div>
-                            </div>
-                            
-                            <button type="button" id="verifyCodeBtn" 
-                                    class="w-full mt-3 px-4 py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400 transition-colors"
-                                    aria-label="입력한 인증코드 확인하기">
-                                ✅ 인증 확인
-                            </button>
-                        </div>
-                    </div>
+                    <input type="email" id="email" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">비밀번호</label>
-                    <input type="password" id="password" required autocomplete="new-password"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-lg"
-                           placeholder="8자리 이상 입력하세요">
+                    <input type="password" id="password" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">비밀번호 확인</label>
-                    <input type="password" id="confirmPassword" required autocomplete="new-password"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-lg"
-                           placeholder="비밀번호를 다시 입력하세요">
+                    <input type="password" id="confirmPassword" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
-                    <input type="text" id="name" required autocomplete="name"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 text-lg"
-                           placeholder="실명을 입력하세요">
+                    <input type="text" id="name" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
-                    <input type="tel" id="phone" required autocomplete="tel"
+                    <input type="tel" id="phone" required 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
@@ -152,489 +83,27 @@
             <div class="text-center mt-6">
                 <p class="text-gray-600">
                     이미 계정이 있으신가요? 
-                    <a href="login-clean.html" class="text-pink-500 hover:underline">로그인</a>
+                    <a href="login.html" class="text-pink-500 hover:underline">로그인</a>
                 </p>
             </div>
         </div>
     </div>
 
     <script>
-        let emailChecked = false; // 이메일 중복 확인 여부
-        let emailVerified = false; // 이메일 인증 완료 여부
-        let verificationCode = ''; // 발송된 인증코드
-        let resendTimer = 0; // 재발송 타이머
-        let timerInterval = null; // 타이머 인터벌
-        
-        // EmailJS 초기화 - 실제 운영용 (오류 처리 강화)
-        let emailjsInitialized = false;
-        (function() {
-            try {
-                // BeautyCat 전용 EmailJS 공개키
-                emailjs.init("ljVnlumQQ0gbs_-QK");
-                emailjsInitialized = true;
-                console.log('✅ EmailJS 초기화 성공 - 실제 이메일 발송 가능!');
-            } catch (error) {
-                console.error('❌ EmailJS 초기화 실패:', error);
-                emailjsInitialized = false;
-                // 사용자에게 알리지 않고 내부적으로 처리
-            }
-        })();
-        
-        // 이메일 중복 확인 버튼 이벤트
-        document.getElementById('checkEmailBtn').addEventListener('click', function() {
-            const email = document.getElementById('email').value.trim();
-            const messageDiv = document.getElementById('emailCheckMessage');
-            
-            if (!email) {
-                messageDiv.innerHTML = '<span class="text-red-500">이메일을 입력해주세요.</span>';
-                return;
-            }
-            
-            // 이메일 형식 검증
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                messageDiv.innerHTML = '<span class="text-red-500">올바른 이메일 형식이 아닙니다.</span>';
-                return;
-            }
-            
-            // 중복 확인 시뮬레이션 (실제로는 서버 API 호출)
-            this.disabled = true;
-            this.textContent = '확인중...';
-            
-            setTimeout(() => {
-                // 데모용: 특정 이메일은 중복으로 처리
-                const duplicateEmails = ['test@example.com', 'admin@beautycat.kr', 'demo@demo.com'];
-                
-                if (duplicateEmails.includes(email)) {
-                    messageDiv.innerHTML = '<span class="text-red-500"><i class="fas fa-times-circle"></i> 이미 사용중인 이메일입니다.</span>';
-                    emailChecked = false;
-                } else {
-                    messageDiv.innerHTML = '<span class="text-green-500"><i class="fas fa-check-circle"></i> 사용 가능한 이메일입니다.</span>';
-                    emailChecked = true;
-                    
-                    // 이메일 인증 섹션 표시
-                    document.getElementById('emailVerificationSection').classList.remove('hidden');
-                }
-                
-                this.disabled = false;
-                this.textContent = '중복확인';
-            }, 1000);
-        });
-        
-        // 이메일 입력 변경 시 중복 확인 상태 초기화 (디바운싱)
-        let emailInputTimeout;
-        document.getElementById('email').addEventListener('input', function() {
-            clearTimeout(emailInputTimeout);
-            emailInputTimeout = setTimeout(() => {
-                emailChecked = false;
-                emailVerified = false;
-                document.getElementById('emailCheckMessage').innerHTML = '';
-                document.getElementById('emailVerificationSection').classList.add('hidden');
-                
-                // 인증코드 변수 초기화 (보안)
-                verificationCode = '';
-                
-                // 타이머가 실행 중이면 정리
-                if (timerInterval) {
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                    document.getElementById('resendTimer').textContent = '';
-                }
-            }, 300); // 300ms 디바운스
-        });
-        
-        // 실제 이메일 발송 함수
-        async function sendVerificationEmail(email, code, button) {
-            const userName = document.getElementById('name').value.trim() || '고객';
-            
-            const templateParams = {
-                user_name: userName,
-                user_email: email,
-                verification_code: code,
-                to_email: email,
-                service_name: 'BeautyCat (뷰티+에티켓)',
-                company_name: 'BeautyCat',
-                support_email: 'support@beautycat.kr',
-                current_year: new Date().getFullYear()
-            };
-            
-            try {
-                console.log('📧 이메일 발송 시도:', {
-                    service: 'service_beautycat',
-                    template: 'template_verification',
-                    to: email,
-                    code: code
-                });
-                
-                const response = await emailjs.send(
-                    'service_beautycat',     // 서비스 ID
-                    'template_verification', // 템플릿 ID
-                    templateParams
-                );
-                
-                console.log('✅ 이메일 발송 성공:', response);
-                
-                // 성공 메시지 표시
-                document.getElementById('verificationMessage').innerHTML = 
-                    '<span class="text-green-500"><i class="fas fa-check"></i> 인증코드가 이메일로 발송되었습니다!</span>';
-                
-                // 재발송 타이머 시작 (3분)
-                startResendTimer(180);
-                
-                // 인증코드 입력란에 포커스
-                document.getElementById('verificationCode').focus();
-                
-            } catch (error) {
-                console.error('❌ 이메일 발송 실패:', error);
-                
-                // 실패 메시지 표시 (사용자 친화적)
-                let errorMessage = '이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.';
-                
-                // 일반적인 오류 케이스별 메시지
-                if (error.status === 400) {
-                    errorMessage = '이메일 주소를 다시 확인해주세요.';
-                } else if (error.status === 403) {
-                    errorMessage = '일시적으로 서비스 이용이 제한되었습니다. 잠시 후 다시 시도해주세요.';
-                } else if (error.status === 422) {
-                    errorMessage = '이메일 템플릿 오류가 발생했습니다. 고객센터에 문의해주세요.';
-                } else if (error.text && error.text.includes('Invalid')) {
-                    errorMessage = '이메일 주소 형식이 올바르지 않습니다.';
-                } else if (error.message && error.message.includes('network')) {
-                    errorMessage = '네트워크 연결을 확인한 후 다시 시도해주세요.';
-                }
-                
-                document.getElementById('verificationMessage').innerHTML = 
-                    `<span class="text-red-500"><i class="fas fa-times"></i> ${errorMessage}</span>`;
-                
-                // 개발자를 위한 상세 오류 정보
-                console.log('🔍 오류 상세 정보:', {
-                    status: error.status,
-                    text: error.text,
-                    message: error.message
-                });
-            } finally {
-                // 버튼 상태 되돌리기
-                button.disabled = false;
-                button.innerHTML = '재발송';
-            }
-        }
-        
-        // 인증코드 발송
-        document.getElementById('sendVerificationBtn').addEventListener('click', function() {
-            const email = document.getElementById('email').value.trim();
-            
-            if (!emailChecked) {
-                alert('이메일 중복 확인을 먼저 해주세요.');
-                return;
-            }
-            
-            // 보안 강화된 6자리 랜덤 인증코드 생성
-            verificationCode = generateSecureCode();
-            
-            // 버튼 비활성화 및 로딩 상태
-            this.disabled = true;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 발송중...';
-            
-            // 이메일 발송 가능 여부 확인 후 발송
-            if (canSendEmail()) {
-                sendVerificationEmail(email, verificationCode, this);
-            } else {
-                // 실패 시 버튼 상태 되돌리기
-                this.disabled = false;
-                this.innerHTML = '인증코드 발송';
-            }
-        });
-        
-        // 인증코드 확인
-        document.getElementById('verifyCodeBtn').addEventListener('click', function() {
-            const inputCode = document.getElementById('verificationCode').value.trim();
-            const messageDiv = document.getElementById('verificationMessage');
-            
-            if (!inputCode) {
-                messageDiv.innerHTML = '<span class="text-red-500">인증코드를 입력해주세요.</span>';
-                return;
-            }
-            
-            if (inputCode.length !== 6) {
-                messageDiv.innerHTML = '<span class="text-red-500">인증코드는 6자리입니다.</span>';
-                return;
-            }
-            
-            // 버튼 로딩 상태
-            this.disabled = true;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 확인중...';
-            
-            setTimeout(() => {
-                if (inputCode === verificationCode) {
-                    messageDiv.innerHTML = '<span class="text-green-500"><i class="fas fa-check-circle"></i> 이메일 인증이 완료되었습니다!</span>';
-                    emailVerified = true;
-                    
-                    // 인증 섹션을 성공 상태로 변경
-                    const section = document.getElementById('emailVerificationSection');
-                    section.className = 'mt-3 p-3 bg-green-50 rounded-md border border-green-200';
-                    
-                    // 인증 완료 후 입력란 비활성화
-                    document.getElementById('verificationCode').disabled = true;
-                    document.getElementById('sendVerificationBtn').disabled = true;
-                    
-                    // 버튼 상태를 인증 완료로 고정
-                    this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-check"></i> 인증 완료';
-                    this.className = 'w-full mt-3 px-4 py-2 bg-green-500 text-white rounded-md cursor-not-allowed';
-                    
-                    // 타이머 정리
-                    if (timerInterval) {
-                        clearInterval(timerInterval);
-                        document.getElementById('resendTimer').textContent = '';
-                    }
-                    
-                    // 인증코드 보안을 위해 변수 초기화
-                    verificationCode = '';
-                    
-                } else {
-                    messageDiv.innerHTML = '<span class="text-red-500"><i class="fas fa-times-circle"></i> 인증코드가 일치하지 않습니다.</span>';
-                    document.getElementById('verificationCode').value = '';
-                    document.getElementById('verificationCode').focus();
-                    
-                    // 실패 시에만 버튼 상태 되돌리기
-                    this.disabled = false;
-                    this.innerHTML = '인증 확인';
-                }
-            }, 1000);
-        });
-        
-        // 재발송 타이머 함수
-        function startResendTimer(seconds) {
-            resendTimer = seconds;
-            const timerDiv = document.getElementById('resendTimer');
-            const sendBtn = document.getElementById('sendVerificationBtn');
-            
-            sendBtn.disabled = true;
-            
-            timerInterval = setInterval(() => {
-                const minutes = Math.floor(resendTimer / 60);
-                const secs = resendTimer % 60;
-                timerDiv.textContent = `재발송 가능: ${minutes}:${secs.toString().padStart(2, '0')}`;
-                
-                resendTimer--;
-                
-                if (resendTimer < 0) {
-                    clearInterval(timerInterval);
-                    timerDiv.textContent = '';
-                    sendBtn.disabled = false;
-                }
-            }, 1000);
-        }
-        
-        // 인증코드 입력 시 자동 포맷팅 및 키보드 내비게이션
-        document.getElementById('verificationCode').addEventListener('input', function(e) {
-            // 숫자만 입력 허용
-            this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // 6자리 입력 완료시 자동 인증 시도
-            if (this.value.length === 6) {
-                setTimeout(() => {
-                    const verifyBtn = document.getElementById('verifyCodeBtn');
-                    if (!verifyBtn.disabled) {
-                        verifyBtn.click();
-                    }
-                }, 500);
-            }
-        });
-        
-        // 키보드 내비게이션 개선
-        document.getElementById('verificationCode').addEventListener('keydown', function(e) {
-            // Enter 키로 인증 확인
-            if (e.key === 'Enter' && this.value.length === 6) {
-                e.preventDefault();
-                const verifyBtn = document.getElementById('verifyCodeBtn');
-                if (!verifyBtn.disabled) {
-                    verifyBtn.click();
-                }
-            }
-            
-            // 백스페이스, 탭, 화살표 키는 허용
-            if (['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(e.key)) {
-                return;
-            }
-            
-            // 숫자만 입력 허용 (키보드 수준에서 차단)
-            if (!/^[0-9]$/.test(e.key)) {
-                e.preventDefault();
-            }
-        });
-        
-        // 회원가입 폼 제출
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // 이메일 중복 확인 체크
-            if (!emailChecked) {
-                alert('이메일 중복 확인을 먼저 해주세요.');
-                document.getElementById('email').focus();
-                return;
-            }
-            
-            // 이메일 인증 확인 체크
-            if (!emailVerified) {
-                alert('이메일 인증을 완료해주세요.');
-                document.getElementById('verificationCode').focus();
-                return;
-            }
             
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
             if (password !== confirmPassword) {
                 alert('비밀번호가 일치하지 않습니다.');
-                document.getElementById('confirmPassword').focus();
-                return;
-            }
-            
-            // 비밀번호 강도 검증
-            if (password.length < 6) {
-                alert('비밀번호는 6자 이상이어야 합니다.');
-                document.getElementById('password').focus();
                 return;
             }
             
             // 회원가입 처리
-            const formData = {
-                email: document.getElementById('email').value,
-                password: password,
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                userType: document.getElementById('userType').value
-            };
-            
-            console.log('회원가입 데이터:', formData);
-            
-            // 성공 메시지와 함께 로그인 페이지로 이동
-            alert('🎉 회원가입이 완료되었습니다!\n로그인 페이지로 이동합니다.');
-            window.location.href = 'login-clean.html';
-        });
-        
-        // 보안 강화된 인증코드 생성 함수
-        function generateSecureCode() {
-            // 더 안전한 랜덤 코드 생성
-            const crypto = window.crypto || window.msCrypto;
-            if (crypto && crypto.getRandomValues) {
-                // 암호화적으로 안전한 난수 생성
-                const array = new Uint32Array(1);
-                crypto.getRandomValues(array);
-                return (100000 + (array[0] % 900000)).toString();
-            } else {
-                // 폴백: 일반 난수 생성
-                return Math.floor(100000 + Math.random() * 900000).toString();
-            }
-        }
-        
-        // 이메일 발송 가능 여부 확인
-        function canSendEmail() {
-            if (!emailjsInitialized) {
-                alert('이메일 서비스 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
-                return false;
-            }
-            return true;
-        }
-        
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('📝 회원가입 페이지 로드 완료');
-            
-            // 이메일 필드에 포커스
-            document.getElementById('email').focus();
-            
-            // 폼 필드 실시간 검증
-            const requiredFields = ['email', 'password', 'confirmPassword', 'name', 'phone', 'userType'];
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                field.addEventListener('blur', function() {
-                    if (!this.value.trim()) {
-                        this.classList.add('border-red-500');
-                    } else {
-                        this.classList.remove('border-red-500');
-                        this.classList.add('border-green-500');
-                    }
-                });
-            });
-            
-            // 비밀번호 확인 실시간 검증
-            document.getElementById('confirmPassword').addEventListener('input', function() {
-                const password = document.getElementById('password').value;
-                const confirmPassword = this.value;
-                
-                if (confirmPassword && password !== confirmPassword) {
-                    this.classList.add('border-red-500');
-                    this.classList.remove('border-green-500');
-                } else if (confirmPassword && password === confirmPassword) {
-                    this.classList.add('border-green-500');
-                    this.classList.remove('border-red-500');
-                }
-            });
-            
-            // 페이지 언로드 시 리소스 정리
-            window.addEventListener('beforeunload', function() {
-                // 타이머 정리
-                if (timerInterval) {
-                    clearInterval(timerInterval);
-                }
-                
-                // 디바운싱 타이머 정리  
-                if (emailInputTimeout) {
-                    clearTimeout(emailInputTimeout);
-                }
-                
-                // 보안을 위한 변수 초기화
-                verificationCode = '';
-            });
-        });
-    </script>
-
-    <!-- 네비게이션 함수들 -->
-    <script>
-        // 뒤로 가기 함수
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // 기록이 없으면 홈으로 이동
-                goHome();
-            }
-        }
-        
-        // 홈으로 가기 함수
-        function goHome() {
-            window.location.href = 'index.html';
-        }
-        
-        // 모바일에서 이메일 인증 섹션 즉시 표시
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailVerificationSection = document.getElementById('emailVerificationSection');
-            if (emailVerificationSection) {
-                // 모바일에서는 이메일 인증 섹션을 처음부터 보이게 함
-                if (window.innerWidth <= 768) {
-                    emailVerificationSection.style.display = 'block';
-                    emailVerificationSection.classList.remove('hidden');
-                }
-            }
-            
-            // 이메일 중복 확인 후 인증 섹션 표시
-            document.getElementById('checkEmailBtn').addEventListener('click', function() {
-                if (emailVerificationSection) {
-                    emailVerificationSection.style.display = 'block';
-                    emailVerificationSection.classList.remove('hidden');
-                }
-            });
-        });
-        
-        // 터치 개선을 위한 버튼 스타일
-        document.addEventListener('DOMContentLoaded', function() {
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.style.touchAction = 'manipulation';
-                button.style.userSelect = 'none';
-            });
+            alert('회원가입이 완료되었습니다!');
+            window.location.href = 'login.html';
         });
     </script>
 </body>

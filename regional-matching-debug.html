@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지역별 매칭 디버깅 - 뽀샵</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <style>
+        * { 
+            font-family: 'Pretendard', system-ui, sans-serif;
+        }
+        pre {
+            background: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- 헤더 -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">🔍 지역별 매칭 디버깅</h1>
+                <p class="text-gray-600">서울 금천구 고객-업체 매칭 문제 분석</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- 컨트롤 패널 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">🛠️ 디버깅 도구</h2>
+                    
+                    <div class="space-y-4">
+                        <button onclick="checkAllShops()" 
+                                class="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600">
+                            📊 전체 업체 데이터 확인
+                        </button>
+                        
+                        <button onclick="checkGeumcheonShops()" 
+                                class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600">
+                            🎯 서울 금천구 업체 검색
+                        </button>
+                        
+                        <button onclick="checkConsultations()" 
+                                class="w-full bg-purple-500 text-white py-3 rounded-md hover:bg-purple-600">
+                            📋 상담 요청 내역 확인
+                        </button>
+                        
+                        <button onclick="testMatching()" 
+                                class="w-full bg-orange-500 text-white py-3 rounded-md hover:bg-orange-600">
+                            🧪 매칭 테스트 실행
+                        </button>
+                        
+                        <button onclick="fixDemoShop()" 
+                                class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600">
+                            🔧 데모 업체 지역 정보 수정
+                        </button>
+                        
+                        <button onclick="clearResults()" 
+                                class="w-full bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500">
+                            🧹 결과 초기화
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 결과 표시 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">📊 분석 결과</h2>
+                    
+                    <div id="debugResults" class="space-y-4">
+                        <div class="text-gray-500 text-center py-8">
+                            <i class="fas fa-search text-4xl mb-3"></i>
+                            <p>디버깅을 시작해주세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 상세 로그 -->
+            <div class="mt-8 bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">📝 상세 로그</h2>
+                <div id="detailedLogs" class="bg-gray-50 rounded-lg p-4 min-h-32 max-h-96 overflow-y-auto">
+                    <p class="text-gray-500 text-sm">로그가 여기에 표시됩니다...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/regional-matching.js"></script>
+    
+    <script>
+        let debugLogs = [];
+        
+        // 로그 추가 함수
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            debugLogs.push({ timestamp, message, type });
+            updateLogDisplay();
+        }
+        
+        // 로그 표시 업데이트
+        function updateLogDisplay() {
+            const container = document.getElementById('detailedLogs');
+            
+            const typeColors = {
+                info: 'text-blue-600',
+                success: 'text-green-600', 
+                warning: 'text-yellow-600',
+                error: 'text-red-600',
+                data: 'text-purple-600'
+            };
+            
+            container.innerHTML = debugLogs.map(log => `
+                <div class="text-sm ${typeColors[log.type]} mb-2">
+                    [${log.timestamp}] ${log.message}
+                </div>
+            `).join('');
+            
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // 결과 표시 함수
+        function showResult(title, data, type = 'info') {
+            const container = document.getElementById('debugResults');
+            
+            const typeColors = {
+                info: 'border-blue-200 bg-blue-50',
+                success: 'border-green-200 bg-green-50',
+                warning: 'border-yellow-200 bg-yellow-50',
+                error: 'border-red-200 bg-red-50'
+            };
+            
+            const resultHTML = `
+                <div class="border ${typeColors[type]} rounded-lg p-4 mb-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">${title}</h3>
+                    <pre class="text-sm text-gray-700 overflow-x-auto">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            
+            container.innerHTML = resultHTML + container.innerHTML;
+        }
+        
+        // 전체 업체 데이터 확인
+        async function checkAllShops() {
+            try {
+                addLog('🔍 전체 업체 데이터 조회 시작', 'info');
+                
+                const response = await fetch('tables/skincare_shops?limit=100');
+                if (!response.ok) {
+                    throw new Error('업체 조회 실패: ' + response.status);
+                }
+                
+                const data = await response.json();
+                addLog(`✅ 전체 업체 ${data.data.length}개 조회 완료`, 'success');
+                
+                // 지역별 분류
+                const regionCount = {};
+                data.data.forEach(shop => {
+                    const key = `${shop.state || '미설정'} ${shop.district || '미설정'}`;
+                    regionCount[key] = (regionCount[key] || 0) + 1;
+                });
+                
+                showResult('전체 업체 데이터 (' + data.data.length + '개)', {
+                    totalShops: data.data.length,
+                    regionDistribution: regionCount,
+                    sampleShops: data.data.slice(0, 3).map(shop => ({
+                        id: shop.id,
+                        name: shop.shop_name || shop.name,
+                        state: shop.state || shop.shop_state,
+                        district: shop.district || shop.shop_district,
+                        status: shop.status
+                    }))
+                }, 'info');
+                
+                addLog(`📊 지역별 분포: ${JSON.stringify(regionCount)}`, 'data');
+                
+            } catch (error) {
+                addLog(`❌ 전체 업체 조회 오류: ${error.message}`, 'error');
+                showResult('오류 발생', { error: error.message }, 'error');
+            }
+        }
+        
+        // 서울 금천구 업체 검색
+        async function checkGeumcheonShops() {
+            try {
+                addLog('🎯 서울 금천구 업체 검색 시작', 'info');
+                
+                // 먼저 전체 검색 후 필터링
+                const response = await fetch('tables/skincare_shops?limit=100');
+                const data = await response.json();
+                
+                // 서울 금천구 업체 필터링 (다양한 필드명 고려)
+                const geumcheonShops = data.data.filter(shop => {
+                    const state = shop.state || shop.shop_state || '';
+                    const district = shop.district || shop.shop_district || '';
+                    
+                    const isSeoul = state.includes('서울');
+                    const isGeumcheon = district.includes('금천');
+                    
+                    addLog(`🔍 업체 "${shop.shop_name || shop.name}": state="${state}", district="${district}", 서울=${isSeoul}, 금천=${isGeumcheon}`, 'data');
+                    
+                    return isSeoul && isGeumcheon;
+                });
+                
+                addLog(`📍 서울 금천구 업체 ${geumcheonShops.length}개 발견`, geumcheonShops.length > 0 ? 'success' : 'warning');
+                
+                showResult('서울 금천구 업체 검색 결과', {
+                    foundShops: geumcheonShops.length,
+                    shops: geumcheonShops.map(shop => ({
+                        id: shop.id,
+                        name: shop.shop_name || shop.name,
+                        state: shop.state || shop.shop_state,
+                        district: shop.district || shop.shop_district,
+                        address: shop.address || shop.shop_address,
+                        status: shop.status,
+                        phone: shop.phone,
+                        email: shop.email
+                    }))
+                }, geumcheonShops.length > 0 ? 'success' : 'warning');
+                
+            } catch (error) {
+                addLog(`❌ 금천구 업체 검색 오류: ${error.message}`, 'error');
+                showResult('오류 발생', { error: error.message }, 'error');
+            }
+        }
+        
+        // 상담 요청 내역 확인
+        async function checkConsultations() {
+            try {
+                addLog('📋 상담 요청 내역 조회 시작', 'info');
+                
+                const response = await fetch('tables/consultations?limit=50');
+                if (!response.ok) {
+                    throw new Error('상담 요청 조회 실패');
+                }
+                
+                const data = await response.json();
+                addLog(`✅ 상담 요청 ${data.data.length}개 조회 완료`, 'success');
+                
+                // 최근 금천구 관련 요청 찾기
+                const geumcheonConsultations = data.data.filter(consultation => {
+                    const state = consultation.state || consultation.province || '';
+                    const district = consultation.district || consultation.city || '';
+                    
+                    return state.includes('서울') && district.includes('금천');
+                });
+                
+                showResult('상담 요청 내역 (금천구 관련)', {
+                    totalConsultations: data.data.length,
+                    geumcheonConsultations: geumcheonConsultations.length,
+                    recentConsultations: geumcheonConsultations.slice(0, 5).map(c => ({
+                        id: c.id,
+                        state: c.state || c.province,
+                        district: c.district || c.city,
+                        name: c.name,
+                        phone: c.phone,
+                        created: c.created_at,
+                        status: c.status
+                    }))
+                }, geumcheonConsultations.length > 0 ? 'success' : 'warning');
+                
+                addLog(`📊 금천구 상담 요청: ${geumcheonConsultations.length}개`, 'data');
+                
+            } catch (error) {
+                addLog(`❌ 상담 요청 조회 오류: ${error.message}`, 'error');
+                showResult('오류 발생', { error: error.message }, 'error');
+            }
+        }
+        
+        // 매칭 테스트 실행
+        async function testMatching() {
+            try {
+                addLog('🧪 매칭 테스트 시작 - 서울 금천구', 'info');
+                
+                // 테스트 상담 데이터
+                const testConsultationData = {
+                    name: '테스트 고객',
+                    phone: '010-1234-5678',
+                    email: 'test@example.com',
+                    state: '서울특별시',
+                    district: '금천구',
+                    treatment_type: ['여드름관리'],
+                    consultation_text: '매칭 테스트입니다',
+                    preferred_date: '2024-12-26'
+                };
+                
+                // regional-matching.js의 매칭 함수 호출
+                if (typeof regionalMatching !== 'undefined') {
+                    const result = await regionalMatching.distributeQuoteRequest(testConsultationData);
+                    
+                    addLog(`📤 매칭 결과: success=${result.success}, shopsCount=${result.shopsCount}`, result.success ? 'success' : 'warning');
+                    
+                    showResult('매칭 테스트 결과', {
+                        testData: testConsultationData,
+                        matchingResult: result
+                    }, result.success ? 'success' : 'warning');
+                } else {
+                    // 직접 API 호출로 테스트
+                    addLog('⚠️ regionalMatching 객체 없음, 직접 API 테스트', 'warning');
+                    
+                    const shopsResponse = await fetch('tables/skincare_shops?limit=100');
+                    const shopsData = await shopsResponse.json();
+                    
+                    const matchedShops = shopsData.data.filter(shop => {
+                        const state = shop.state || shop.shop_state || '';
+                        const district = shop.district || shop.shop_district || '';
+                        return state.includes('서울') && district.includes('금천') && shop.status === 'approved';
+                    });
+                    
+                    showResult('직접 매칭 테스트', {
+                        searchCriteria: { state: '서울특별시', district: '금천구' },
+                        foundShops: matchedShops.length,
+                        shops: matchedShops
+                    }, matchedShops.length > 0 ? 'success' : 'warning');
+                }
+                
+            } catch (error) {
+                addLog(`❌ 매칭 테스트 오류: ${error.message}`, 'error');
+                showResult('매칭 테스트 오류', { error: error.message }, 'error');
+            }
+        }
+        
+        // 데모 업체 지역 정보 수정
+        async function fixDemoShop() {
+            try {
+                addLog('🔧 데모 업체 지역 정보 수정 시작', 'info');
+                
+                // 데모 업체 찾기
+                const response = await fetch('tables/skincare_shops?search=demo&limit=10');
+                const data = await response.json();
+                
+                const demoShops = data.data.filter(shop => 
+                    (shop.email && shop.email.includes('demo')) || 
+                    (shop.shop_name && shop.shop_name.includes('데모')) ||
+                    (shop.name && shop.name.includes('데모'))
+                );
+                
+                addLog(`🎯 데모 업체 ${demoShops.length}개 발견`, 'info');
+                
+                if (demoShops.length === 0) {
+                    // 새 데모 업체 생성
+                    const newDemoShop = {
+                        shop_name: '데모 피부관리실',
+                        name: '데모 사장',
+                        email: 'demo@shop.com', 
+                        phone: '02-1234-5678',
+                        state: '서울특별시',
+                        district: '금천구', 
+                        address: '서울특별시 금천구 가산동 123-45',
+                        shop_state: '서울특별시',
+                        shop_district: '금천구',
+                        shop_address: '서울특별시 금천구 가산동 123-45',
+                        business_number: '123-45-67890',
+                        status: 'approved',
+                        user_type: 'shop'
+                    };
+                    
+                    const createResponse = await fetch('tables/skincare_shops', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newDemoShop)
+                    });
+                    
+                    if (createResponse.ok) {
+                        const createdShop = await createResponse.json();
+                        addLog('✅ 새 데모 업체 생성 완료', 'success');
+                        showResult('새 데모 업체 생성', createdShop, 'success');
+                    } else {
+                        throw new Error('데모 업체 생성 실패');
+                    }
+                } else {
+                    // 기존 데모 업체 수정
+                    for (const shop of demoShops) {
+                        const updateData = {
+                            state: '서울특별시',
+                            district: '금천구',
+                            shop_state: '서울특별시', 
+                            shop_district: '금천구',
+                            status: 'approved'
+                        };
+                        
+                        const updateResponse = await fetch(`tables/skincare_shops/${shop.id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(updateData)
+                        });
+                        
+                        if (updateResponse.ok) {
+                            addLog(`✅ 데모 업체 "${shop.shop_name || shop.name}" 지역 정보 수정 완료`, 'success');
+                        } else {
+                            addLog(`❌ 데모 업체 "${shop.shop_name || shop.name}" 수정 실패`, 'error');
+                        }
+                    }
+                    
+                    showResult('데모 업체 수정 완료', {
+                        updatedShops: demoShops.length,
+                        updateData: {
+                            state: '서울특별시',
+                            district: '금천구',
+                            status: 'approved'
+                        }
+                    }, 'success');
+                }
+                
+            } catch (error) {
+                addLog(`❌ 데모 업체 수정 오류: ${error.message}`, 'error');
+                showResult('오류 발생', { error: error.message }, 'error');
+            }
+        }
+        
+        // 결과 초기화
+        function clearResults() {
+            document.getElementById('debugResults').innerHTML = `
+                <div class="text-gray-500 text-center py-8">
+                    <i class="fas fa-search text-4xl mb-3"></i>
+                    <p>디버깅을 시작해주세요</p>
+                </div>
+            `;
+            debugLogs = [];
+            updateLogDisplay();
+            addLog('🧹 결과가 초기화되었습니다', 'info');
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🔧 지역별 매칭 디버깅 도구 준비 완료', 'success');
+            addLog('💡 서울 금천구 매칭 문제 분석을 시작하세요', 'info');
+        });
+    </script>
+</body>
+</html>

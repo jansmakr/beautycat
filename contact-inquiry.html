@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>온라인 문의 - beautycat (뷰티+에티켓)</title>
+    
+    <!-- SEO 메타태그 -->
+    <meta name="description" content="beautycat 온라인 상담 문의 페이지. 피부 고민 상담부터 맞춤형 관리 프로그램 추천까지 전문가와 1:1 상담받으세요.">
+    <meta name="keywords" content="피부 상담, 온라인 문의, 피부 고민, 맞춤 관리, 전문가 상담, beautycat 문의">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pposhop.kr/contact-inquiry.html">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            50: '#fff0f8',
+                            100: '#ffe3f2',
+                            500: '#ff2d92', // beautycat 메인 핑크
+                            600: '#e6297f',
+                            700: '#cc256c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #fef7ff 0%, #f0f9ff 100%);
+            min-height: 100vh;
+        }
+        
+        .unni-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.2s ease;
+        }
+        
+        .unni-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .btn-primary {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 16px 24px;
+            font-size: 16px;
+        }
+        
+        .btn-primary:hover {
+            background: #e6297f;
+        }
+        
+        .form-input {
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: white;
+            width: 100%;
+        }
+        
+        .form-input:focus {
+            border-color: #ff2d92;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 45, 146, 0.1);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .contact-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.2s ease;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        
+        .contact-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #ff2d92;
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 640px) {
+            .section-card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            
+            .contact-card {
+                padding: 16px;
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 개선된 헤더 -->
+    <header class="bg-white card-shadow sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- 로고 섹션 -->
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center mr-4 lg:mr-0">
+                        <i class="fas fa-arrow-left text-gray-600 text-xl mr-3 lg:hidden"></i>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <span class="text-xl">🐱</span>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
+                                <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                                <p class="text-xs text-gray-500 hidden sm:block">온라인 문의</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 우측 메뉴 -->
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="btn-primary px-4 py-2 text-sm font-medium rounded-lg">
+                        홈으로
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- 헤더 섹션 -->
+        <div class="text-center mb-8 fade-in">
+            <div class="w-20 h-20 mx-auto bg-primary-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+                <i class="fas fa-headset text-white text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">궁금한 점이 있으시나요?</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                언제든지 문의해주세요. <span class="text-primary-500 font-semibold">24시간 내</span> 답변드리겠습니다.
+            </p>
+        </div>
+
+        <!-- 연락 방법 카드 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 fade-in">
+            <div class="contact-card">
+                <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-comment text-yellow-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">카톡상담</h3>
+                <p class="text-gray-600 mb-3">즉시 상담 가능</p>
+                <a href="https://open.kakao.com/o/sXXnTISh" target="_blank" class="text-yellow-600 font-semibold text-lg hover:text-yellow-700">카톡상담하기</a>
+                <p class="text-sm text-gray-500 mt-2">평일 10:30 - 17:00</p>
+            </div>
+            
+            <div class="contact-card">
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-envelope text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">이메일 문의</h3>
+                <p class="text-gray-600 mb-3">자세한 상담</p>
+                <p class="text-blue-600 font-semibold text-lg">utuber@kakao.com</p>
+                <p class="text-sm text-gray-500 mt-2">24시간 접수</p>
+            </div>
+            
+            <div class="contact-card">
+                <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-comments text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 mb-2">온라인 문의</h3>
+                <p class="text-gray-600 mb-3">편리한 문의</p>
+                <p class="text-green-600 font-semibold text-lg">아래 폼 작성</p>
+                <p class="text-sm text-gray-500 mt-2">빠른 답변 보장</p>
+            </div>
+        </div>
+
+        <!-- 문의 폼 -->
+        <div class="section-card fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">온라인 문의하기</h2>
+                <p class="text-gray-600">궁금한 점을 남겨주시면 빠르게 답변드리겠습니다.</p>
+            </div>
+            
+            <form id="contact-form" class="max-w-2xl mx-auto space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="contact-name" class="block text-sm font-semibold text-gray-700 mb-3">이름 *</label>
+                        <input type="text" id="contact-name" name="contact-name" 
+                               class="form-input" 
+                               placeholder="이름을 입력하세요"
+                               required>
+                    </div>
+                    
+                    <div>
+                        <label for="contact-email" class="block text-sm font-semibold text-gray-700 mb-3">이메일 *</label>
+                        <input type="email" id="contact-email" name="contact-email" 
+                               class="form-input" 
+                               placeholder="이메일을 입력하세요"
+                               required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="contact-phone" class="block text-sm font-semibold text-gray-700 mb-3">연락처</label>
+                    <input type="tel" id="contact-phone" name="contact-phone" 
+                           class="form-input" 
+                           placeholder="연락처를 입력하세요 (선택사항)">
+                </div>
+                
+                <div>
+                    <label for="contact-subject" class="block text-sm font-semibold text-gray-700 mb-3">문의 제목 *</label>
+                    <input type="text" id="contact-subject" name="contact-subject" 
+                           class="form-input" 
+                           placeholder="문의 제목을 입력하세요"
+                           required>
+                </div>
+                
+                <div>
+                    <label for="contact-category" class="block text-sm font-semibold text-gray-700 mb-3">문의 유형</label>
+                    <select id="contact-category" name="contact-category" class="form-input">
+                        <option value="">문의 유형을 선택하세요</option>
+                        <option value="서비스 이용">서비스 이용 문의</option>
+                        <option value="업체 등록">업체 등록 문의</option>
+                        <option value="결제/요금">결제/요금 문의</option>
+                        <option value="기술 지원">기술 지원</option>
+                        <option value="제휴 문의">제휴 문의</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="contact-message" class="block text-sm font-semibold text-gray-700 mb-3">문의 내용 *</label>
+                    <textarea id="contact-message" name="contact-message" rows="6" 
+                              class="form-input resize-none" 
+                              placeholder="궁금한 점이나 문의사항을 자세히 적어주세요."
+                              required></textarea>
+                </div>
+                
+                <!-- 개인정보 동의 -->
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <div class="flex items-start">
+                        <input type="checkbox" id="privacy-agree" name="privacy-agree" 
+                               class="w-5 h-5 text-primary-500 rounded mt-1 mr-3" required>
+                        <div class="text-sm">
+                            <label for="privacy-agree" class="text-gray-700">
+                                <span class="font-semibold">[필수] 개인정보 수집 및 이용에 동의합니다.</span>
+                            </label>
+                            <p class="text-gray-500 mt-2">
+                                수집된 개인정보는 문의 답변 목적으로만 사용되며, 답변 완료 후 즉시 삭제됩니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn-primary px-8 py-4 text-lg font-bold">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        문의하기
+                    </button>
+                    <p class="text-sm text-gray-500 mt-3">
+                        영업일 기준 24시간 내 답변드리겠습니다.
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- FAQ 섹션 -->
+        <div class="section-card fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">자주 묻는 질문</h2>
+                <p class="text-gray-600">빠른 답변이 필요하시다면 FAQ를 먼저 확인해보세요.</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto space-y-4">
+                <details class="bg-gray-50 rounded-2xl p-6">
+                    <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between">
+                        <span>상담 신청은 무료인가요?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        네, beautycat의 상담 신청은 완전 무료입니다. 상담 신청 후 업체에서 제공하는 견적도 무료로 받아보실 수 있습니다.
+                    </p>
+                </details>
+                
+                <details class="bg-gray-50 rounded-2xl p-6">
+                    <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between">
+                        <span>상담 신청 후 얼마나 빨리 연락이 오나요?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        보통 24시간 내에 해당 지역의 피부관리실에서 연락드립니다. 여러 업체의 견적을 비교해보실 수 있습니다.
+                    </p>
+                </details>
+                
+                <details class="bg-gray-50 rounded-2xl p-6">
+                    <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between">
+                        <span>피부관리실 등록은 어떻게 하나요?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        메인 페이지의 '샵등록' 메뉴를 통해 신청하실 수 있습니다. 등록 후 심사 과정을 거쳐 승인되면 상담 요청을 받으실 수 있습니다.
+                    </p>
+                </details>
+                
+                <details class="bg-gray-50 rounded-2xl p-6">
+                    <summary class="font-semibold text-gray-900 cursor-pointer flex items-center justify-between">
+                        <span>개인정보는 안전하게 보호되나요?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </summary>
+                    <p class="text-gray-600 mt-4 leading-relaxed">
+                        네, 회원님의 개인정보는 철저히 보호됩니다. SSL 암호화 통신을 사용하며, 상담 목적으로만 사용되고 제3자에게 제공되지 않습니다.
+                    </p>
+                </details>
+            </div>
+        </div>
+    </main>
+
+    <!-- 알림 표시 영역 -->
+    <div id="notification-area" class="fixed top-20 right-4 z-50"></div>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        // 폼 제출 처리
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // 폼 데이터 수집
+            const formData = new FormData(e.target);
+            const contactData = {
+                name: formData.get('contact-name'),
+                email: formData.get('contact-email'),
+                phone: formData.get('contact-phone'),
+                subject: formData.get('contact-subject'),
+                category: formData.get('contact-category'),
+                message: formData.get('contact-message'),
+                privacy_agree: formData.get('privacy-agree') ? true : false,
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+            
+            // 유효성 검사
+            if (!contactData.name || !contactData.email || !contactData.subject || !contactData.message) {
+                showNotification('필수 항목을 모두 입력해주세요.', 'error');
+                return;
+            }
+            
+            if (!contactData.privacy_agree) {
+                showNotification('개인정보 수집 및 이용에 동의해주세요.', 'error');
+                return;
+            }
+            
+            try {
+                // API 호출 시뮬레이션
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 성공 처리
+                showNotification('문의가 성공적으로 접수되었습니다. 24시간 내 답변드리겠습니다.', 'success');
+                
+                // 폼 초기화
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('문의 접수 오류:', error);
+                showNotification('문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.', 'error');
+            }
+        });
+        
+        // 알림 표시 함수
+        function showNotification(message, type = 'info') {
+            const notificationArea = document.getElementById('notification-area');
+            const notification = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'bg-green-500' :
+                           type === 'error' ? 'bg-red-500' :
+                           type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                         type === 'error' ? 'fa-exclamation-circle' : 
+                         type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            
+            notification.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-lg transform translate-x-full transition-transform duration-300 mb-2`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icon} mr-3"></i>
+                    <span class="font-medium">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            notificationArea.appendChild(notification);
+            
+            // 애니메이션으로 표시
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // 자동 제거
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+        
+        // FAQ 아코디언 아이콘 회전
+        document.addEventListener('DOMContentLoaded', function() {
+            const details = document.querySelectorAll('details');
+            
+            details.forEach(detail => {
+                detail.addEventListener('toggle', function() {
+                    const icon = this.querySelector('summary i');
+                    if (this.open) {
+                        icon.style.transform = 'rotate(180deg)';
+                    } else {
+                        icon.style.transform = 'rotate(0deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

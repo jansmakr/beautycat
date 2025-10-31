@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat - 캐시 클리어</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-purple-50 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">🧹 캐시 클리어</h1>
+            <p class="text-gray-600">Service Worker 오류 해결을 위한 캐시 정리</p>
+        </div>
+
+        <div id="status" class="mb-6 p-4 rounded-lg bg-blue-50 text-blue-800">
+            <p>🔄 준비 중...</p>
+        </div>
+
+        <div class="space-y-4">
+            <button onclick="clearAllCaches()" class="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all">
+                🧹 모든 캐시 삭제
+            </button>
+            
+            <button onclick="clearServiceWorkers()" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all">
+                🔄 Service Worker 재등록
+            </button>
+            
+            <button onclick="goToMainSite()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-700 transition-all">
+                🏠 메인 사이트로 이동
+            </button>
+        </div>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-500">
+                오류가 계속 발생하면 브라우저를 완전히 닫았다가 다시 열어주세요.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            const colors = {
+                info: 'bg-blue-50 text-blue-800',
+                success: 'bg-green-50 text-green-800',
+                error: 'bg-red-50 text-red-800',
+                warning: 'bg-yellow-50 text-yellow-800'
+            };
+            
+            statusDiv.className = `mb-6 p-4 rounded-lg ${colors[type] || colors.info}`;
+            statusDiv.innerHTML = `<p>${message}</p>`;
+        }
+
+        async function clearAllCaches() {
+            updateStatus('🧹 캐시 삭제 중...', 'info');
+            
+            try {
+                // 1. 모든 캐시 삭제
+                const cacheNames = await caches.keys();
+                const deletePromises = cacheNames.map(cacheName => {
+                    console.log('삭제할 캐시:', cacheName);
+                    return caches.delete(cacheName);
+                });
+                
+                await Promise.all(deletePromises);
+                updateStatus(`✅ 캐시 삭제 완료! (${cacheNames.length}개 캐시 삭제)`, 'success');
+                
+                // 2. Service Worker 정리
+                await clearServiceWorkers();
+                
+            } catch (error) {
+                console.error('캐시 삭제 중 오류:', error);
+                updateStatus(`❌ 캐시 삭제 중 오류: ${error.message}`, 'error');
+            }
+        }
+
+        async function clearServiceWorkers() {
+            updateStatus('🔄 Service Worker 정리 중...', 'info');
+            
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    for (let registration of registrations) {
+                        console.log('제거할 Service Worker:', registration.scope);
+                        await registration.unregister();
+                    }
+                    
+                    updateStatus(`✅ Service Worker 정리 완료! (${registrations.length}개 제거)`, 'success');
+                    
+                    // 3초 후 새 Service Worker 등록
+                    setTimeout(() => {
+                        registerNewServiceWorker();
+                    }, 3000);
+                    
+                } else {
+                    updateStatus('ℹ️ Service Worker를 지원하지 않는 브라우저입니다.', 'warning');
+                }
+            } catch (error) {
+                console.error('Service Worker 정리 중 오류:', error);
+                updateStatus(`❌ Service Worker 정리 중 오류: ${error.message}`, 'error');
+            }
+        }
+
+        async function registerNewServiceWorker() {
+            updateStatus('🔄 새 Service Worker 등록 중...', 'info');
+            
+            try {
+                const registration = await navigator.serviceWorker.register('/sw.js?v=' + Date.now(), {
+                    scope: '/'
+                });
+                
+                console.log('새 Service Worker 등록 성공:', registration);
+                updateStatus('✅ 새 Service Worker 등록 완료! 이제 메인 사이트로 이동하세요.', 'success');
+                
+            } catch (error) {
+                console.error('Service Worker 등록 오류:', error);
+                updateStatus('ℹ️ Service Worker 없이 사이트를 사용할 수 있습니다. 메인 사이트로 이동하세요.', 'warning');
+            }
+        }
+
+        function goToMainSite() {
+            updateStatus('🏠 메인 사이트로 이동 중...', 'info');
+            
+            // 강제 새로고침으로 이동
+            window.location.href = '/?v=' + Date.now();
+        }
+
+        // 페이지 로드 시 자동 실행
+        window.addEventListener('load', () => {
+            updateStatus('✅ 준비 완료! 버튼을 클릭하여 캐시를 정리하세요.', 'success');
+        });
+
+        // 자동 캐시 정리 (5초 후)
+        setTimeout(() => {
+            if (confirm('자동으로 캐시를 정리하시겠습니까?')) {
+                clearAllCaches();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

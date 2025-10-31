@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매칭 문제 빠른 수정 - 뽀샵</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <style>
+        * { font-family: 'Pretendard', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen py-8">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h1 class="text-2xl font-bold text-red-600 mb-4">🚨 긴급 매칭 문제 해결</h1>
+                <p class="text-gray-700">서울 금천구 고객-업체 매칭이 안되는 문제를 해결합니다</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- 1단계: 데모 업체 생성/수정 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">1️⃣ 데모 업체 생성/수정</h2>
+                    
+                    <button onclick="fixDemoShop()" 
+                            class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 mb-4">
+                        🔧 데모 업체 생성/수정 (서울 금천구)
+                    </button>
+                    
+                    <div id="step1Result" class="text-sm text-gray-600">
+                        아직 실행되지 않음
+                    </div>
+                </div>
+
+                <!-- 2단계: 매칭 테스트 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">2️⃣ 매칭 테스트</h2>
+                    
+                    <button onclick="testMatching()" 
+                            class="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 mb-4">
+                        🧪 서울 금천구 매칭 테스트
+                    </button>
+                    
+                    <div id="step2Result" class="text-sm text-gray-600">
+                        먼저 1단계를 실행하세요
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3단계: 실제 상담 신청 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">3️⃣ 실제 상담 신청 테스트</h2>
+                
+                <div class="grid md:grid-cols-3 gap-4 mb-4">
+                    <input type="text" id="testName" placeholder="이름" value="테스트 고객" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                    <input type="email" id="testEmail" placeholder="이메일" value="test@customer.com" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                    <input type="tel" id="testPhone" placeholder="전화번호" value="010-1234-5678" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                
+                <button onclick="submitTestConsultation()" 
+                        class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 mb-4">
+                    📋 실제 상담 신청 (서울 금천구)
+                </button>
+                
+                <div id="step3Result" class="text-sm text-gray-600">
+                    1, 2단계 완료 후 실행하세요
+                </div>
+            </div>
+
+            <!-- 결과 로그 -->
+            <div class="mt-6 bg-gray-900 rounded-lg p-6 text-green-400 font-mono text-sm">
+                <h3 class="text-white mb-4">실행 로그</h3>
+                <div id="consoleLog" class="space-y-1 max-h-64 overflow-y-auto">
+                    <div>[시작] 매칭 문제 해결 도구 준비 완료</div>
+                </div>
+            </div>
+
+            <!-- 네비게이션 -->
+            <div class="mt-6 text-center">
+                <a href="index.html" class="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 mr-4">
+                    메인 페이지로
+                </a>
+                <a href="regional-matching-debug.html" class="bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600">
+                    상세 디버깅
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 로그 추가 함수
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-blue-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+                error: 'text-red-400'
+            };
+            
+            const logDiv = document.getElementById('consoleLog');
+            const newLog = document.createElement('div');
+            newLog.className = colors[type] || 'text-green-400';
+            newLog.textContent = `[${timestamp}] ${message}`;
+            
+            logDiv.appendChild(newLog);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // 결과 업데이트 함수
+        function updateResult(stepId, message, success = true) {
+            const element = document.getElementById(stepId);
+            element.className = success ? 'text-sm text-green-600' : 'text-sm text-red-600';
+            element.textContent = message;
+        }
+        
+        // 1단계: 데모 업체 생성/수정
+        async function fixDemoShop() {
+            try {
+                addLog('🔧 데모 업체 생성/수정 시작...', 'info');
+                updateResult('step1Result', '처리 중...', true);
+                
+                // 기존 업체 조회
+                const shopsResponse = await fetch('tables/skincare_shops?limit=100');
+                const shopsData = await shopsResponse.json();
+                
+                addLog(`📊 전체 업체 ${shopsData.data.length}개 조회 완료`, 'info');
+                
+                // 데모 업체 찾기
+                let demoShop = shopsData.data.find(shop => 
+                    shop.email === 'demo@shop.com' || 
+                    (shop.shop_name && shop.shop_name.includes('데모'))
+                );
+                
+                const demoShopData = {
+                    shop_name: '데모 피부관리실 (금천구점)',
+                    name: '데모 사장님',
+                    email: 'demo@shop.com',
+                    password: 'shop123',
+                    phone: '02-1234-5678',
+                    user_type: 'shop',
+                    business_number: '123-45-67890',
+                    state: '서울특별시',
+                    district: '금천구',
+                    shop_state: '서울특별시',
+                    shop_district: '금천구',
+                    shop_address: '서울특별시 금천구 가산동 123-45',
+                    address: '서울특별시 금천구 가산동 123-45',
+                    status: 'approved',
+                    is_active: true
+                };
+                
+                if (demoShop) {
+                    // 기존 업체 수정
+                    addLog(`🔄 기존 데모 업체 수정: ${demoShop.id}`, 'info');
+                    
+                    const updateResponse = await fetch(`tables/skincare_shops/${demoShop.id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(demoShopData)
+                    });
+                    
+                    if (updateResponse.ok) {
+                        addLog('✅ 데모 업체 수정 완료', 'success');
+                        updateResult('step1Result', '✅ 데모 업체 수정 완료', true);
+                    } else {
+                        throw new Error('업체 수정 실패');
+                    }
+                } else {
+                    // 새 업체 생성
+                    addLog('🆕 새 데모 업체 생성 중...', 'info');
+                    
+                    const createResponse = await fetch('tables/skincare_shops', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(demoShopData)
+                    });
+                    
+                    if (createResponse.ok) {
+                        const created = await createResponse.json();
+                        addLog(`✅ 새 데모 업체 생성 완료: ${created.id}`, 'success');
+                        updateResult('step1Result', '✅ 새 데모 업체 생성 완료', true);
+                    } else {
+                        throw new Error('업체 생성 실패');
+                    }
+                }
+                
+            } catch (error) {
+                addLog(`❌ 데모 업체 처리 오류: ${error.message}`, 'error');
+                updateResult('step1Result', `❌ 오류: ${error.message}`, false);
+            }
+        }
+        
+        // 2단계: 매칭 테스트
+        async function testMatching() {
+            try {
+                addLog('🧪 매칭 테스트 시작...', 'info');
+                updateResult('step2Result', '처리 중...', true);
+                
+                // 서울 금천구 업체 검색
+                const shopsResponse = await fetch('tables/skincare_shops?limit=100');
+                const shopsData = await shopsResponse.json();
+                
+                const matchedShops = shopsData.data.filter(shop => {
+                    const state = shop.state || shop.shop_state || '';
+                    const district = shop.district || shop.shop_district || '';
+                    
+                    const isSeoul = state.includes('서울');
+                    const isGeumcheon = district.includes('금천');
+                    const isApproved = shop.status === 'approved' || !shop.status;
+                    
+                    return isSeoul && isGeumcheon && isApproved;
+                });
+                
+                addLog(`📍 서울 금천구에서 ${matchedShops.length}개 업체 발견`, 'info');
+                
+                if (matchedShops.length > 0) {
+                    addLog('✅ 매칭 테스트 성공!', 'success');
+                    updateResult('step2Result', `✅ 매칭 성공 (${matchedShops.length}개 업체)`, true);
+                    
+                    matchedShops.forEach((shop, index) => {
+                        addLog(`  ${index + 1}. ${shop.shop_name || shop.name} (${shop.state} ${shop.district})`, 'info');
+                    });
+                } else {
+                    addLog('⚠️ 매칭된 업체가 없습니다', 'warning');
+                    updateResult('step2Result', '⚠️ 매칭된 업체 없음', false);
+                }
+                
+            } catch (error) {
+                addLog(`❌ 매칭 테스트 오류: ${error.message}`, 'error');
+                updateResult('step2Result', `❌ 오류: ${error.message}`, false);
+            }
+        }
+        
+        // 3단계: 실제 상담 신청
+        async function submitTestConsultation() {
+            try {
+                addLog('📋 실제 상담 신청 테스트 시작...', 'info');
+                updateResult('step3Result', '처리 중...', true);
+                
+                const consultationData = {
+                    customer_name: document.getElementById('testName').value,
+                    customer_email: document.getElementById('testEmail').value,
+                    customer_phone: document.getElementById('testPhone').value,
+                    state: '서울특별시',
+                    district: '금천구',
+                    treatment_types: ['여드름관리'],
+                    skin_concerns: ['여드름'],
+                    additional_notes: '매칭 테스트용 상담 신청입니다',
+                    status: 'pending',
+                    submission_date: new Date().toISOString()
+                };
+                
+                addLog(`📤 상담 데이터: ${JSON.stringify(consultationData, null, 2)}`, 'info');
+                
+                // 상담 요청 저장
+                const consultationResponse = await fetch('tables/consultations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(consultationData)
+                });
+                
+                if (!consultationResponse.ok) {
+                    throw new Error('상담 요청 저장 실패');
+                }
+                
+                const savedConsultation = await consultationResponse.json();
+                addLog(`✅ 상담 요청 저장 완료: ${savedConsultation.id}`, 'success');
+                
+                // 해당 지역 업체들에게 알림 (시뮬레이션)
+                const shopsResponse = await fetch('tables/skincare_shops?limit=100');
+                const shopsData = await shopsResponse.json();
+                
+                const targetShops = shopsData.data.filter(shop => {
+                    const state = shop.state || shop.shop_state || '';
+                    const district = shop.district || shop.shop_district || '';
+                    return state.includes('서울') && district.includes('금천') && (shop.status === 'approved' || !shop.status);
+                });
+                
+                addLog(`📢 ${targetShops.length}개 업체에게 알림 발송 (시뮬레이션)`, 'success');
+                
+                targetShops.forEach((shop, index) => {
+                    addLog(`  ✉️ ${shop.shop_name || shop.name} (${shop.phone})`, 'success');
+                });
+                
+                updateResult('step3Result', `✅ 상담 신청 완료! ${targetShops.length}개 업체에게 알림 발송`, true);
+                
+            } catch (error) {
+                addLog(`❌ 상담 신청 오류: ${error.message}`, 'error');
+                updateResult('step3Result', `❌ 오류: ${error.message}`, false);
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 매칭 문제 해결 도구 준비 완료', 'success');
+            addLog('💡 1단계부터 순서대로 실행하세요', 'info');
+        });
+    </script>
+</body>
+</html>

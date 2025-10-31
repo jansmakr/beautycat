@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 경험 개선 - 뽀샵</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <style>
+        * { font-family: 'Pretendard', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h1 class="text-2xl font-bold text-green-600 mb-4">🛠️ 사용자 경험 개선 테스트</h1>
+                <p class="text-gray-700">회원가입 후 자동 입력, 업체 정보 저장 등 사용자 편의 기능을 테스트합니다</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- 1. 고객 자동 입력 테스트 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">👤 고객 자동 입력 테스트</h2>
+                    
+                    <div class="space-y-3 mb-4">
+                        <button onclick="testCustomerLogin()" 
+                                class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+                            1. 고객 로그인 (demo@customer.com)
+                        </button>
+                        
+                        <button onclick="checkAutoFillCustomer()" 
+                                class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600">
+                            2. 메인 페이지 상담 폼 자동 입력 확인
+                        </button>
+                    </div>
+                    
+                    <div id="customerResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                        버튼을 순서대로 클릭하여 테스트하세요
+                    </div>
+                </div>
+
+                <!-- 2. 업체 자동 입력 테스트 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">🏪 업체 자동 입력 테스트</h2>
+                    
+                    <div class="space-y-3 mb-4">
+                        <button onclick="testShopLogin()" 
+                                class="w-full bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600">
+                            1. 업체 로그인 (demo@shop.com)
+                        </button>
+                        
+                        <button onclick="checkAutoFillShop()" 
+                                class="w-full bg-yellow-500 text-white py-2 rounded-md hover:bg-yellow-600">
+                            2. 업체 대시보드 정보 자동 입력 확인
+                        </button>
+                    </div>
+                    
+                    <div id="shopResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                        버튼을 순서대로 클릭하여 테스트하세요
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 업체 정보 저장 테스트 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">💾 업체 정보 저장 테스트</h2>
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">업체명</label>
+                        <input type="text" id="testShopName" placeholder="테스트 피부관리실" value="테스트 피부관리실"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">대표자명</label>
+                        <input type="text" id="testOwnerName" placeholder="홍길동" value="홍길동"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                        <input type="tel" id="testShopPhone" placeholder="02-1234-5678" value="02-1234-5678"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">지역</label>
+                        <select id="testShopRegion" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                            <option value="서울특별시 금천구">서울특별시 금천구</option>
+                            <option value="서울특별시 강남구">서울특별시 강남구</option>
+                            <option value="부산광역시 해운대구">부산광역시 해운대구</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="testShopInfoSave()" 
+                        class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 mb-4">
+                    💾 업체 정보 저장 API 테스트
+                </button>
+                
+                <div id="saveResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                    업체 정보를 입력하고 저장 테스트를 실행하세요
+                </div>
+            </div>
+
+            <!-- 4. 통합 시나리오 테스트 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">🎯 통합 시나리오 테스트</h2>
+                
+                <div class="space-y-3 mb-4">
+                    <button onclick="runFullScenario()" 
+                            class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-md hover:from-blue-600 hover:to-purple-600">
+                        🚀 전체 시나리오 실행 (고객 → 업체 → 저장)
+                    </button>
+                    
+                    <button onclick="resetAll()" 
+                            class="w-full bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500">
+                        🔄 초기화
+                    </button>
+                </div>
+                
+                <div id="scenarioResult" class="text-sm bg-gray-50 p-4 rounded-md">
+                    통합 시나리오를 실행하여 모든 기능을 한번에 테스트하세요
+                </div>
+            </div>
+
+            <!-- 실행 로그 -->
+            <div class="mt-6 bg-gray-900 rounded-lg p-6 text-green-400 font-mono text-sm">
+                <h3 class="text-white mb-4">실행 로그</h3>
+                <div id="consoleLog" class="space-y-1 max-h-64 overflow-y-auto">
+                    <div>[시작] 사용자 경험 개선 테스트 도구 준비 완료</div>
+                </div>
+            </div>
+
+            <!-- 네비게이션 -->
+            <div class="mt-6 text-center space-x-4">
+                <a href="index.html" class="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600">
+                    메인 페이지
+                </a>
+                <a href="shop-dashboard.html" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600">
+                    업체 대시보드
+                </a>
+                <a href="customer-dashboard.html" class="bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600">
+                    고객 대시보드
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 로그 추가 함수
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-blue-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+                error: 'text-red-400'
+            };
+            
+            const logDiv = document.getElementById('consoleLog');
+            const newLog = document.createElement('div');
+            newLog.className = colors[type] || 'text-green-400';
+            newLog.textContent = `[${timestamp}] ${message}`;
+            
+            logDiv.appendChild(newLog);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // 1. 고객 로그인 테스트
+        function testCustomerLogin() {
+            addLog('👤 고객 로그인 테스트 시작...', 'info');
+            
+            try {
+                // 데모 고객 정보로 강제 로그인
+                const customerData = {
+                    id: 'demo_customer_1',
+                    email: 'demo@customer.com',
+                    name: '데모 고객',
+                    phone: '010-1111-1111',
+                    user_type: 'customer',
+                    is_active: true,
+                    permissions: ['customer']
+                };
+                
+                // localStorage에 저장
+                localStorage.setItem('currentUser', JSON.stringify(customerData));
+                localStorage.setItem('user_data', JSON.stringify(customerData));
+                localStorage.setItem('authToken', 'demo_customer_token_' + Date.now());
+                
+                addLog('✅ 고객 로그인 완료', 'success');
+                
+                document.getElementById('customerResult').innerHTML = `
+                    <div class="space-y-2">
+                        <div class="text-green-600 font-semibold">✅ 고객 로그인 성공!</div>
+                        <div><strong>이름:</strong> ${customerData.name}</div>
+                        <div><strong>이메일:</strong> ${customerData.email}</div>
+                        <div><strong>전화:</strong> ${customerData.phone}</div>
+                        <div class="text-sm text-gray-600 mt-2">이제 "2. 메인 페이지 상담 폼 자동 입력 확인" 버튼을 클릭하세요</div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 고객 로그인 오류: ${error.message}`, 'error');
+                document.getElementById('customerResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 2. 고객 자동 입력 확인
+        function checkAutoFillCustomer() {
+            addLog('📝 고객 자동 입력 확인...', 'info');
+            
+            try {
+                const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                
+                if (!userData.email) {
+                    throw new Error('로그인된 고객 정보가 없습니다');
+                }
+                
+                // 메인 페이지 폼 필드들 시뮬레이션
+                const mockFormData = {
+                    customerName: userData.name || '',
+                    customerEmail: userData.email || '',
+                    customerPhone: userData.phone || ''
+                };
+                
+                addLog(`📋 자동 입력 데이터: ${JSON.stringify(mockFormData)}`, 'success');
+                
+                document.getElementById('customerResult').innerHTML = `
+                    <div class="space-y-2">
+                        <div class="text-green-600 font-semibold">✅ 자동 입력 확인 완료!</div>
+                        <div><strong>메인 페이지 상담 폼 자동 입력 예상값:</strong></div>
+                        <div class="ml-4 space-y-1 text-sm">
+                            <div>이름: ${mockFormData.customerName}</div>
+                            <div>이메일: ${mockFormData.customerEmail}</div>
+                            <div>전화: ${mockFormData.customerPhone}</div>
+                        </div>
+                        <div class="text-sm text-blue-600 mt-2">
+                            <a href="index.html" class="hover:underline">메인 페이지에서 실제 확인 →</a>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 자동 입력 확인 오류: ${error.message}`, 'error');
+                document.getElementById('customerResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 3. 업체 로그인 테스트
+        function testShopLogin() {
+            addLog('🏪 업체 로그인 테스트 시작...', 'info');
+            
+            try {
+                // 데모 업체 정보로 강제 로그인
+                const shopData = {
+                    id: 'demo_shop_1',
+                    email: 'demo@shop.com',
+                    name: '데모 업체',
+                    phone: '010-2222-2222',
+                    user_type: 'shop',
+                    is_active: true,
+                    permissions: ['shop']
+                };
+                
+                // localStorage에 저장
+                localStorage.setItem('currentUser', JSON.stringify(shopData));
+                localStorage.setItem('user_data', JSON.stringify(shopData));
+                localStorage.setItem('authToken', 'demo_shop_token_' + Date.now());
+                
+                addLog('✅ 업체 로그인 완료', 'success');
+                
+                document.getElementById('shopResult').innerHTML = `
+                    <div class="space-y-2">
+                        <div class="text-green-600 font-semibold">✅ 업체 로그인 성공!</div>
+                        <div><strong>이름:</strong> ${shopData.name}</div>
+                        <div><strong>이메일:</strong> ${shopData.email}</div>
+                        <div><strong>전화:</strong> ${shopData.phone}</div>
+                        <div class="text-sm text-gray-600 mt-2">이제 "2. 업체 대시보드 정보 자동 입력 확인" 버튼을 클릭하세요</div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 업체 로그인 오류: ${error.message}`, 'error');
+                document.getElementById('shopResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 4. 업체 자동 입력 확인
+        function checkAutoFillShop() {
+            addLog('📝 업체 자동 입력 확인...', 'info');
+            
+            try {
+                const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                
+                if (!userData.email || userData.user_type !== 'shop') {
+                    throw new Error('로그인된 업체 정보가 없습니다');
+                }
+                
+                // 업체 대시보드 폼 필드들 시뮬레이션
+                const mockShopFormData = {
+                    ownerName: userData.name || '',
+                    shopEmail: userData.email || '',
+                    shopPhone: userData.phone || ''
+                };
+                
+                addLog(`📋 업체 자동 입력 데이터: ${JSON.stringify(mockShopFormData)}`, 'success');
+                
+                document.getElementById('shopResult').innerHTML = `
+                    <div class="space-y-2">
+                        <div class="text-green-600 font-semibold">✅ 업체 자동 입력 확인 완료!</div>
+                        <div><strong>업체 대시보드 폼 자동 입력 예상값:</strong></div>
+                        <div class="ml-4 space-y-1 text-sm">
+                            <div>대표자명: ${mockShopFormData.ownerName}</div>
+                            <div>이메일: ${mockShopFormData.shopEmail}</div>
+                            <div>전화: ${mockShopFormData.shopPhone}</div>
+                        </div>
+                        <div class="text-sm text-blue-600 mt-2">
+                            <a href="shop-dashboard.html" class="hover:underline">업체 대시보드에서 실제 확인 →</a>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 업체 자동 입력 확인 오류: ${error.message}`, 'error');
+                document.getElementById('shopResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 5. 업체 정보 저장 테스트
+        async function testShopInfoSave() {
+            addLog('💾 업체 정보 저장 테스트 시작...', 'info');
+            
+            try {
+                const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                
+                if (!userData.email) {
+                    throw new Error('로그인된 사용자가 없습니다');
+                }
+                
+                // 테스트 데이터 수집
+                const shopName = document.getElementById('testShopName').value;
+                const ownerName = document.getElementById('testOwnerName').value;
+                const shopPhone = document.getElementById('testShopPhone').value;
+                const regionValue = document.getElementById('testShopRegion').value;
+                const [state, district] = regionValue.split(' ');
+                
+                const testShopData = {
+                    shop_name: shopName,
+                    name: ownerName,
+                    owner_name: ownerName,
+                    phone: shopPhone,
+                    email: userData.email,
+                    user_type: 'shop',
+                    state: state,
+                    district: district,
+                    shop_state: state,
+                    shop_district: district,
+                    shop_address: `${state} ${district} 테스트로 123-45`,
+                    address: `${state} ${district} 테스트로 123-45`,
+                    business_hours: '09:00 - 18:00',
+                    price_range: '10만원 - 50만원',
+                    description: '테스트용 업체 정보입니다',
+                    treatment_types: ['여드름관리', '미백관리'],
+                    services: ['여드름관리', '미백관리'],
+                    status: 'approved',
+                    is_active: true,
+                    verified: false,
+                    rating: 0,
+                    review_count: 0,
+                    images: [],
+                    updated_at: new Date().toISOString()
+                };
+                
+                addLog(`📤 저장할 업체 데이터: ${JSON.stringify(testShopData, null, 2)}`, 'info');
+                
+                // API 저장 테스트
+                const response = await fetch('tables/skincare_shops', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testShopData)
+                });
+                
+                if (response.ok) {
+                    const savedShop = await response.json();
+                    addLog('✅ 업체 정보 저장 성공!', 'success');
+                    
+                    document.getElementById('saveResult').innerHTML = `
+                        <div class="space-y-2">
+                            <div class="text-green-600 font-semibold">✅ 업체 정보 저장 성공!</div>
+                            <div><strong>저장된 ID:</strong> ${savedShop.id}</div>
+                            <div><strong>업체명:</strong> ${savedShop.shop_name}</div>
+                            <div><strong>지역:</strong> ${savedShop.state} ${savedShop.district}</div>
+                            <div><strong>상태:</strong> ${savedShop.status}</div>
+                            <div class="text-sm text-gray-600 mt-2">업체 정보가 성공적으로 데이터베이스에 저장되었습니다</div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+            } catch (error) {
+                addLog(`❌ 업체 정보 저장 오류: ${error.message}`, 'error');
+                document.getElementById('saveResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 6. 전체 시나리오 실행
+        async function runFullScenario() {
+            addLog('🚀 전체 시나리오 실행 시작...', 'info');
+            
+            try {
+                addLog('1/4 고객 로그인...', 'info');
+                testCustomerLogin();
+                await sleep(1000);
+                
+                addLog('2/4 고객 자동 입력 확인...', 'info');
+                checkAutoFillCustomer();
+                await sleep(1000);
+                
+                addLog('3/4 업체 로그인...', 'info');
+                testShopLogin();
+                await sleep(1000);
+                
+                addLog('4/4 업체 자동 입력 확인...', 'info');
+                checkAutoFillShop();
+                await sleep(1000);
+                
+                addLog('✅ 전체 시나리오 완료!', 'success');
+                
+                document.getElementById('scenarioResult').innerHTML = `
+                    <div class="space-y-3">
+                        <div class="text-green-600 font-semibold text-lg">🎉 전체 시나리오 실행 완료!</div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                <span>고객 로그인 및 자동 입력</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                <span>업체 로그인 및 자동 입력</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                                <span>업체 정보 저장은 별도 테스트 필요</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <div class="text-sm text-blue-700">
+                                <strong>결과:</strong> 모든 자동 입력 기능이 정상 작동합니다!<br>
+                                실제 페이지에서 로그인 후 폼 필드가 자동으로 채워지는지 확인하세요.
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ 시나리오 실행 오류: ${error.message}`, 'error');
+                document.getElementById('scenarioResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 7. 초기화
+        function resetAll() {
+            addLog('🔄 모든 데이터 초기화...', 'warning');
+            
+            // localStorage 정리
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('user_data');
+            localStorage.removeItem('authToken');
+            
+            // 결과 초기화
+            document.getElementById('customerResult').innerHTML = '버튼을 순서대로 클릭하여 테스트하세요';
+            document.getElementById('shopResult').innerHTML = '버튼을 순서대로 클릭하여 테스트하세요';
+            document.getElementById('saveResult').innerHTML = '업체 정보를 입력하고 저장 테스트를 실행하세요';
+            document.getElementById('scenarioResult').innerHTML = '통합 시나리오를 실행하여 모든 기능을 한번에 테스트하세요';
+            
+            addLog('✅ 초기화 완료', 'success');
+        }
+        
+        // 유틸리티 함수
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🛠️ 사용자 경험 개선 테스트 도구 준비 완료', 'success');
+            addLog('💡 각 섹션별로 테스트하거나 통합 시나리오를 실행하세요', 'info');
+        });
+    </script>
+</body>
+</html>

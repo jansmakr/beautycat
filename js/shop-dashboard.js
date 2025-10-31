@@ -67,11 +67,6 @@ function checkAuthentication() {
         user = demoShop;
     }
     
-    // shop 타입 사용자의 경우 shop_id 설정
-    if (user && user.user_type === 'shop') {
-        user.shop_id = user.shop_id || user.id;
-    }
-    
     // 전역 currentUser 변수에 할당
     currentUser = user;
     return true;
@@ -101,33 +96,21 @@ async function loadUserInfo() {
 
 // 피부관리실 정보 로드
 async function loadShopInfo() {
-    const API_URL = 'https://beautycat-api.jansmakr.workers.dev/api';
-    
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000); // 3초 타임아웃
         
-        console.log('🔍 loadShopInfo 시작:', { 
-            currentUser: currentUser?.email, 
-            shop_id: currentUser?.shop_id 
-        });
-        
         if (currentUser.shop_id) {
             // 기존 피부관리실 정보 로드
             try {
-                const url = `${API_URL}/tables/skincare_shops/${currentUser.shop_id}`;
-                console.log('📡 Shop 정보 요청:', url);
-                const response = await fetch(url, {
+                const response = await fetch(`tables/skincare_shops/${currentUser.shop_id}`, {
                     signal: controller.signal
                 });
                 clearTimeout(timeoutId);
-                console.log('📨 응답 상태:', response.status, response.statusText);
-                
                 if (response.ok) {
                     currentShop = await response.json();
-                    console.log('✅ Shop 정보 로드 성공:', currentShop.shop_name);
                 } else if (response.status === 404) {
-                    console.warn('⚠️ Shop ID로 찾기 실패 (404). 이메일로 재검색합니다.');
+                    console.warn('업체 정보를 찾을 수 없습니다. 이메일로 재검색합니다.');
                     // 404인 경우 이메일로 재검색
                     await searchShopByEmail();
                 }
@@ -143,28 +126,15 @@ async function loadShopInfo() {
         async function searchShopByEmail() {
             try {
                 // 이메일로 피부관리실 찾기
-                const url = `${API_URL}/tables/skincare_shops?search=${encodeURIComponent(currentUser.email)}`;
-                console.log('📡 이메일 검색 요청:', url);
-                
-                const response = await fetch(url, {
+                const response = await fetch(`tables/skincare_shops?search=${encodeURIComponent(currentUser.email)}`, {
                     signal: controller.signal
                 });
-                
-                console.log('📨 이메일 검색 응답:', response.status, response.statusText);
-                
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('📦 검색 결과:', data);
                     currentShop = data.data.find(shop => shop.email === currentUser.email);
-                    
-                    if (currentShop) {
-                        console.log('✅ 이메일로 Shop 발견:', currentShop.shop_name);
-                    } else {
-                        console.warn('⚠️ 이메일 일치하는 Shop 없음');
-                    }
                 }
             } catch (error) {
-                console.error('❌ 이메일 검색 실패:', error.message);
+                console.warn('이메일로 업체 검색 실패:', error.message);
             }
         }
         
@@ -285,8 +255,7 @@ async function loadConsultationRequests() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000); // 3초 타임아웃
         
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/consultations?limit=100&sort=created_at`, {
+        const response = await fetch('tables/consultations?limit=100&sort=created_at', {
             signal: controller.signal
         });
         clearTimeout(timeoutId);
@@ -361,8 +330,7 @@ async function loadQuotes() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000); // 3초 타임아웃
         
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/quotes?limit=100&sort=created_at`, {
+        const response = await fetch('tables/quotes?limit=100&sort=created_at', {
             signal: controller.signal
         });
         clearTimeout(timeoutId);
@@ -754,8 +722,7 @@ async function handleQuoteSubmit(e) {
         };
         
         // 견적서 저장
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/quotes`, {
+        const response = await fetch('tables/quotes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -777,7 +744,7 @@ async function handleQuoteSubmit(e) {
             timestamp: new Date().toISOString()
         };
         
-        await fetch(`${apiUrl}/tables/messages`, {
+        await fetch('tables/messages', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -967,8 +934,7 @@ async function handleShopInfoUpdate(e) {
         
         if (currentShop && currentShop.id) {
             // 기존 업체 정보 업데이트
-            const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-            response = await fetch(`${apiUrl}/tables/skincare_shops/${currentShop.id}`, {
+            response = await fetch(`tables/skincare_shops/${currentShop.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -987,8 +953,7 @@ async function handleShopInfoUpdate(e) {
                 verified: false
             };
             
-            const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-            response = await fetch(`${apiUrl}/tables/skincare_shops`, {
+            response = await fetch('tables/skincare_shops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1163,7 +1128,7 @@ function getQuoteStatusBadgeClass(status) {
 // 알림 메시지 표시
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
-    notification.className = `fixed top-16 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-transform duration-300 translate-x-full`;
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-transform duration-300 translate-x-full`;
     
     const bgColor = type === 'success' ? 'bg-green-500' : 
                    type === 'error' ? 'bg-red-500' : 
@@ -1217,8 +1182,7 @@ window.editQuote = editQuote;
 // 공지사항 알림 로드
 async function loadAnnouncementAlert() {
     try {
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/announcements?limit=1&sort=created_at`);
+        const response = await fetch('tables/announcements?limit=1&sort=created_at');
         const data = await response.json();
         let announcements = data.data || [];
         
@@ -1645,8 +1609,7 @@ async function loadShopReviews() {
     try {
         // 현재 샵 ID로 리뷰 검색
         const currentShopId = currentUser.shop_id || 'demo_shop_seoul_geumcheon';
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/reviews?limit=1000&search=${encodeURIComponent(currentShopId)}&sort=created_at`);
+        const response = await fetch(`tables/reviews?limit=1000&search=${encodeURIComponent(currentShopId)}&sort=created_at`);
         const data = await response.json();
         allShopReviews = data.data || [];
         
@@ -1873,8 +1836,7 @@ async function checkRepresentativeShopStatus() {
     
     try {
         // 현재 샵의 대표샵 신청 상태 확인
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/representative_shops?shop_name=${encodeURIComponent(currentShop.shop_name)}&state=${encodeURIComponent(currentShop.state)}&district=${encodeURIComponent(currentShop.district)}`);
+        const response = await fetch(`tables/representative_shops?shop_name=${encodeURIComponent(currentShop.shop_name)}&state=${encodeURIComponent(currentShop.state)}&district=${encodeURIComponent(currentShop.district)}`);
         const data = await response.json();
         
         const application = data.data && data.data[0];
@@ -2050,8 +2012,7 @@ async function handleRepresentativeApplication(e) {
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>신청 중...';
         
         // API 요청
-        const apiUrl = window.BEAUTYCAT_CONFIG?.API_BASE_URL || 'https://beautycat-api.jansmakr.workers.dev/api';
-        const response = await fetch(`${apiUrl}/tables/representative_shops`, {
+        const response = await fetch('tables/representative_shops', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 권한 수정 - 뽀샵</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <style>
+        * { font-family: 'Pretendard', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen py-8">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h1 class="text-2xl font-bold text-red-600 mb-4">🚨 관리자 권한 문제 해결</h1>
+                <p class="text-gray-700">관리자 로그인 시 권한 오류를 즉시 해결합니다</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- 현재 상태 확인 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">🔍 현재 로그인 상태</h2>
+                    
+                    <button onclick="checkCurrentUser()" 
+                            class="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 mb-4">
+                        현재 사용자 확인
+                    </button>
+                    
+                    <div id="currentUserInfo" class="text-sm bg-gray-50 p-4 rounded-md">
+                        버튼을 클릭하여 확인하세요
+                    </div>
+                </div>
+
+                <!-- 권한 수정 -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">🔧 권한 수정</h2>
+                    
+                    <button onclick="fixAdminPermissions()" 
+                            class="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 mb-4">
+                        관리자 권한 강제 수정
+                    </button>
+                    
+                    <div id="fixResult" class="text-sm text-gray-600">
+                        먼저 현재 상태를 확인하세요
+                    </div>
+                </div>
+            </div>
+
+            <!-- 관리자 로그인 테스트 -->
+            <div class="mt-6 bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">🎯 관리자 로그인 테스트</h2>
+                
+                <div class="grid md:grid-cols-3 gap-4 mb-4">
+                    <input type="email" id="adminEmail" placeholder="이메일" value="admin@demo.com" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                    <input type="password" id="adminPassword" placeholder="비밀번호" value="admin123" 
+                           class="px-3 py-2 border border-gray-300 rounded-md">
+                    <select id="adminUserType" class="px-3 py-2 border border-gray-300 rounded-md">
+                        <option value="admin">관리자</option>
+                        <option value="customer">고객</option>
+                        <option value="shop">업체</option>
+                    </select>
+                </div>
+                
+                <button onclick="testAdminLogin()" 
+                        class="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 mb-4">
+                    관리자 로그인 테스트
+                </button>
+                
+                <div id="loginResult" class="text-sm text-gray-600">
+                    관리자 정보를 입력하고 테스트하세요
+                </div>
+            </div>
+
+            <!-- 실행 로그 -->
+            <div class="mt-6 bg-gray-900 rounded-lg p-6 text-green-400 font-mono text-sm">
+                <h3 class="text-white mb-4">실행 로그</h3>
+                <div id="consoleLog" class="space-y-1 max-h-64 overflow-y-auto">
+                    <div>[시작] 관리자 권한 수정 도구 준비 완료</div>
+                </div>
+            </div>
+
+            <!-- 네비게이션 -->
+            <div class="mt-6 text-center">
+                <a href="login.html" class="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 mr-4">
+                    로그인 페이지
+                </a>
+                <a href="admin-dashboard.html" class="bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600">
+                    관리자 대시보드
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // 로그 추가 함수
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-blue-400',
+                success: 'text-green-400',
+                warning: 'text-yellow-400',
+                error: 'text-red-400'
+            };
+            
+            const logDiv = document.getElementById('consoleLog');
+            const newLog = document.createElement('div');
+            newLog.className = colors[type] || 'text-green-400';
+            newLog.textContent = `[${timestamp}] ${message}`;
+            
+            logDiv.appendChild(newLog);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // 현재 사용자 확인
+        function checkCurrentUser() {
+            addLog('🔍 현재 로그인 사용자 확인...', 'info');
+            
+            try {
+                // localStorage의 모든 관련 키 확인
+                const currentUser = localStorage.getItem('currentUser');
+                const userData = localStorage.getItem('user_data');
+                const authToken = localStorage.getItem('authToken');
+                
+                addLog(`📊 localStorage 키 확인:`, 'info');
+                addLog(`  - currentUser: ${currentUser ? '존재' : '없음'}`, 'info');
+                addLog(`  - user_data: ${userData ? '존재' : '없음'}`, 'info');
+                addLog(`  - authToken: ${authToken ? '존재' : '없음'}`, 'info');
+                
+                let user = null;
+                if (currentUser) {
+                    user = JSON.parse(currentUser);
+                } else if (userData) {
+                    user = JSON.parse(userData);
+                }
+                
+                const userInfo = document.getElementById('currentUserInfo');
+                
+                if (user) {
+                    addLog(`✅ 사용자 발견: ${user.name} (${user.user_type})`, 'success');
+                    addLog(`🔑 권한: ${JSON.stringify(user.permissions || [])}`, 'info');
+                    
+                    userInfo.innerHTML = `
+                        <div class="space-y-2">
+                            <div><strong>이름:</strong> ${user.name}</div>
+                            <div><strong>이메일:</strong> ${user.email}</div>
+                            <div><strong>타입:</strong> ${user.user_type}</div>
+                            <div><strong>권한:</strong> ${JSON.stringify(user.permissions || [])}</div>
+                            <div class="mt-2 p-2 ${user.user_type === 'admin' && (!user.permissions || !user.permissions.includes('all')) ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} rounded">
+                                ${user.user_type === 'admin' && (!user.permissions || !user.permissions.includes('all')) ? '⚠️ 관리자 권한 오류' : '✅ 정상'}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    addLog('❌ 로그인된 사용자 없음', 'error');
+                    userInfo.innerHTML = '<div class="text-red-600">로그인된 사용자가 없습니다.</div>';
+                }
+                
+            } catch (error) {
+                addLog(`❌ 사용자 확인 오류: ${error.message}`, 'error');
+                document.getElementById('currentUserInfo').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 관리자 권한 강제 수정
+        function fixAdminPermissions() {
+            addLog('🔧 관리자 권한 강제 수정 시작...', 'info');
+            
+            try {
+                // 현재 사용자 데이터 가져오기
+                let user = null;
+                const currentUser = localStorage.getItem('currentUser');
+                const userData = localStorage.getItem('user_data');
+                
+                if (currentUser) {
+                    user = JSON.parse(currentUser);
+                } else if (userData) {
+                    user = JSON.parse(userData);
+                } else {
+                    throw new Error('로그인된 사용자가 없습니다.');
+                }
+                
+                addLog(`👤 사용자: ${user.name} (${user.user_type})`, 'info');
+                
+                if (user.user_type === 'admin') {
+                    // 관리자 권한 강제 설정
+                    user.permissions = ['all'];
+                    user.is_admin = true;
+                    user.role = 'admin';
+                    
+                    // localStorage 업데이트 (모든 키에)
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    localStorage.setItem('user_data', JSON.stringify(user));
+                    
+                    addLog('✅ 관리자 권한 수정 완료!', 'success');
+                    addLog(`🔑 새 권한: ${JSON.stringify(user.permissions)}`, 'success');
+                    
+                    document.getElementById('fixResult').innerHTML = `
+                        <div class="text-green-600 font-semibold">
+                            ✅ 관리자 권한이 수정되었습니다!<br>
+                            권한: ['all']<br>
+                            페이지를 새로고침하거나 관리자 대시보드에 접속해보세요.
+                        </div>
+                    `;
+                } else {
+                    addLog('⚠️ 관리자가 아닌 사용자입니다', 'warning');
+                    document.getElementById('fixResult').innerHTML = `
+                        <div class="text-yellow-600">
+                            현재 사용자는 관리자가 아닙니다 (${user.user_type})
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                addLog(`❌ 권한 수정 오류: ${error.message}`, 'error');
+                document.getElementById('fixResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 관리자 로그인 테스트
+        async function testAdminLogin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const userType = document.getElementById('adminUserType').value;
+            
+            addLog(`🎯 관리자 로그인 테스트: ${email}`, 'info');
+            
+            try {
+                // 데모 계정 직접 확인
+                const demoAccounts = [
+                    {
+                        id: 'demo_admin_1',
+                        email: 'admin@demo.com',
+                        password: 'admin123',
+                        name: '관리자',
+                        phone: '010-0000-0000',
+                        user_type: 'admin',
+                        is_active: true,
+                        is_verified: true,
+                        permissions: ['all']
+                    }
+                ];
+                
+                const adminUser = demoAccounts.find(account => 
+                    account.email === email && 
+                    account.password === password &&
+                    account.user_type === userType
+                );
+                
+                if (adminUser) {
+                    addLog('✅ 데모 관리자 계정 확인됨', 'success');
+                    
+                    // 강제 로그인
+                    localStorage.setItem('currentUser', JSON.stringify(adminUser));
+                    localStorage.setItem('user_data', JSON.stringify(adminUser));
+                    localStorage.setItem('authToken', 'demo_admin_token_' + Date.now());
+                    
+                    addLog('✅ 강제 로그인 완료!', 'success');
+                    
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="text-green-600 font-semibold">
+                            ✅ 관리자 로그인 성공!<br>
+                            권한: ['all']<br>
+                            <a href="admin-dashboard.html" class="text-blue-600 hover:underline">관리자 대시보드로 이동 →</a>
+                        </div>
+                    `;
+                } else {
+                    addLog('❌ 로그인 정보가 올바르지 않습니다', 'error');
+                    document.getElementById('loginResult').innerHTML = `
+                        <div class="text-red-600">
+                            로그인 실패. 정보를 확인해주세요.
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                addLog(`❌ 로그인 테스트 오류: ${error.message}`, 'error');
+                document.getElementById('loginResult').innerHTML = `<div class="text-red-600">오류: ${error.message}</div>`;
+            }
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 관리자 권한 수정 도구 준비 완료', 'success');
+            addLog('💡 "현재 사용자 확인" 버튼부터 클릭하세요', 'info');
+            
+            // 자동으로 현재 상태 확인
+            setTimeout(checkCurrentUser, 500);
+        });
+    </script>
+</body>
+</html>

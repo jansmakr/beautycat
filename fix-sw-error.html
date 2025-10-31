@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat - Service Worker 오류 수정</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        button {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #e6267d;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .success {
+            background: rgba(40, 167, 69, 0.3);
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            background: rgba(220, 53, 69, 0.3);
+            border-left: 4px solid #dc3545;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #28a745;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Service Worker 오류 수정</h1>
+        
+        <div class="status" id="status">
+            🐱 BeautyCat Service Worker 문제 해결 도구를 시작합니다...<br>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <button id="fixBtn" onclick="fixServiceWorker()">
+            🚀 Service Worker 오류 수정 시작
+        </button>
+
+        <button id="goHomeBtn" onclick="goHome()" style="display: none;">
+            🏠 메인 페이지로 돌아가기
+        </button>
+    </div>
+
+    <script>
+        let progress = 0;
+        
+        function updateProgress(percent, message) {
+            progress = percent;
+            document.getElementById('progressBar').style.width = percent + '%';
+            addStatus(message);
+        }
+        
+        function addStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            const time = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+            statusDiv.innerHTML += `<div class="${className}">[${time}] ${message}</div>`;
+            statusDiv.scrollTop = statusDiv.scrollHeight;
+        }
+
+        async function fixServiceWorker() {
+            const btn = document.getElementById('fixBtn');
+            btn.disabled = true;
+            btn.textContent = '🔧 수정 중...';
+            
+            try {
+                addStatus('🔍 Service Worker 상태 확인 중...');
+                updateProgress(10, '📋 등록된 Service Worker 조회 중...');
+                
+                // 1. 기존 Service Worker 해제
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    updateProgress(25, `📊 발견된 Service Worker: ${registrations.length}개`);
+                    
+                    for (let registration of registrations) {
+                        addStatus(`🗑️ Service Worker 해제 중: ${registration.scope}`);
+                        await registration.unregister();
+                    }
+                    
+                    updateProgress(40, '✅ 모든 Service Worker 해제 완료');
+                }
+                
+                // 2. 모든 캐시 삭제
+                updateProgress(50, '🧹 브라우저 캐시 정리 중...');
+                
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    addStatus(`📊 발견된 캐시: ${cacheNames.length}개`);
+                    
+                    for (let cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        addStatus(`🗑️ 캐시 삭제: ${cacheName}`);
+                    }
+                }
+                
+                updateProgress(70, '✅ 모든 캐시 삭제 완료');
+                
+                // 3. 새로운 Service Worker 등록
+                updateProgress(80, '📝 새로운 Service Worker 등록 중...');
+                
+                const registration = await navigator.serviceWorker.register('/sw.js', {
+                    scope: '/'
+                });
+                
+                addStatus('✅ 새로운 Service Worker 등록 완료', 'success');
+                
+                // 4. Service Worker 활성화 대기
+                updateProgress(90, '⏳ Service Worker 활성화 대기 중...');
+                
+                if (registration.waiting) {
+                    registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                }
+                
+                await new Promise(resolve => {
+                    if (registration.active) {
+                        resolve();
+                    } else {
+                        registration.addEventListener('statechange', () => {
+                            if (registration.active) {
+                                resolve();
+                            }
+                        });
+                    }
+                });
+                
+                updateProgress(100, '🎉 Service Worker 수정 완료!');
+                addStatus('✨ 모든 문제가 해결되었습니다!', 'success');
+                addStatus('🔄 페이지를 새로고침하여 변경사항을 적용하세요.', 'success');
+                
+                // 성공 시 버튼 변경
+                btn.style.display = 'none';
+                document.getElementById('goHomeBtn').style.display = 'block';
+                
+            } catch (error) {
+                updateProgress(0, '❌ 오류 발생: ' + error.message);
+                addStatus('❌ Service Worker 수정 실패: ' + error.message, 'error');
+                addStatus('🔄 페이지를 새로고침하고 다시 시도해주세요.', 'error');
+                
+                btn.disabled = false;
+                btn.textContent = '🔄 다시 시도';
+            }
+        }
+
+        function goHome() {
+            addStatus('🏠 메인 페이지로 이동 중...');
+            // 강제 새로고침으로 이동
+            window.location.href = '/index.html?t=' + Date.now();
+        }
+
+        // 페이지 로드 시 자동 진단
+        window.addEventListener('load', () => {
+            addStatus('🐱 BeautyCat Service Worker 진단 도구 준비 완료');
+            addStatus('📊 현재 브라우저: ' + navigator.userAgent.split(') ')[0] + ')');
+            
+            if ('serviceWorker' in navigator) {
+                addStatus('✅ Service Worker 지원됨');
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    if (registrations.length > 0) {
+                        addStatus(`⚠️ 등록된 Service Worker ${registrations.length}개 발견`);
+                        addStatus('🔧 위의 "수정 시작" 버튼을 클릭하여 문제를 해결하세요.');
+                    } else {
+                        addStatus('ℹ️ 등록된 Service Worker 없음');
+                    }
+                });
+            } else {
+                addStatus('❌ Service Worker 미지원 브라우저', 'error');
+            }
+        });
+
+        // Console 정리
+        if (console.clear) {
+            console.clear();
+        }
+        console.log('🔧 BeautyCat Service Worker 수정 도구');
+    </script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업체 회원가입 지역 선택 테스트 - 뽀샵</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background: #f8fafc; }
+        .test-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-header { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; text-align: center; }
+        .unni-input { width: 100%; padding: 10px; border: 2px solid #e5e7eb; border-radius: 8px; focus:outline-none focus:ring-2 focus:ring-orange-500; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🏪 업체 회원가입 지역 선택 테스트</h1>
+            <p>피부관리실 회원가입 시 시/구 선택 + 상세주소 입력 기능을 테스트합니다</p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow">
+            <h2 class="text-xl font-bold mb-6">업체 회원가입 폼 (지역 선택 부분만)</h2>
+            
+            <!-- 사용자 유형 선택 -->
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">회원 유형 선택</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer hover:border-orange-500 transition-colors">
+                        <input type="radio" name="userType" value="customer" class="sr-only">
+                        <i class="fas fa-user text-2xl text-orange-500 mb-2"></i>
+                        <div class="font-medium text-gray-700">고객</div>
+                        <div class="text-xs text-gray-500">피부관리를 받고 싶어요</div>
+                    </label>
+                    <label class="border-2 border-gray-200 rounded-lg p-4 text-center cursor-pointer hover:border-orange-500 transition-colors">
+                        <input type="radio" name="userType" value="shop" class="sr-only">
+                        <i class="fas fa-store text-2xl text-orange-500 mb-2"></i>
+                        <div class="font-medium text-gray-700">업체</div>
+                        <div class="text-xs text-gray-500">피부관리실을 운영해요</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 업체 추가 정보 -->
+            <div id="shopFields" class="hidden space-y-4">
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-4">업체 정보</h4>
+                    <div class="space-y-4">
+                        <!-- 기본 업체 정보 -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">업체명</label>
+                                <input type="text" name="shop_name" class="unni-input" placeholder="피부관리실 이름" value="테스트 피부관리실">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">사업자등록번호</label>
+                                <input type="text" name="business_number" class="unni-input" placeholder="000-00-00000" value="123-45-67890">
+                            </div>
+                        </div>
+                        
+                        <!-- 업체 위치 정보 -->
+                        <div class="border-t border-gray-100 pt-4">
+                            <h5 class="text-sm font-medium text-gray-700 mb-3">📍 업체 위치 (중요: 견적 매칭에 사용됩니다)</h5>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">시/도 *</label>
+                                    <select name="shop_state" id="shop_state" required class="unni-input">
+                                        <option value="">시/도를 선택해주세요</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">구/군 *</label>
+                                    <select name="shop_district" id="shop_district" required disabled class="unni-input">
+                                        <option value="">먼저 시/도를 선택해주세요</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">상세 주소 *</label>
+                                <input type="text" name="shop_address" required class="unni-input" placeholder="동/읍/면, 도로명/지번, 건물명, 층수 등">
+                                <p class="text-xs text-gray-500 mt-1">예: 강남구 역삼동 123-45 비우티빌딩 3층</p>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-info-circle text-blue-500 mr-2 mt-0.5 text-sm"></i>
+                                    <div class="text-xs text-blue-800">
+                                        <p class="font-medium mb-1">지역 선택이 중요한 이유:</p>
+                                        <p>• 고객이 견적을 요청할 때 <strong>같은 지역의 업체들만</strong> 견적 요청을 받습니다</p>
+                                        <p>• 시/도와 구/군이 정확해야 고객과 매칭됩니다</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 테스트 버튼들 -->
+            <div class="mt-6 flex gap-4">
+                <button type="button" onclick="selectShopType()" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg">
+                    업체 선택하기
+                </button>
+                <button type="button" onclick="setTestLocation()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
+                    테스트 위치 설정
+                </button>
+                <button type="button" onclick="validateForm()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
+                    폼 검증하기
+                </button>
+            </div>
+
+            <!-- 결과 표시 -->
+            <div id="test-results" class="mt-6 p-4 bg-gray-50 rounded-lg hidden">
+                <h4 class="font-medium mb-2">🧪 테스트 결과:</h4>
+                <div id="results-content"></div>
+            </div>
+        </div>
+
+        <!-- 실제 동작 확인 -->
+        <div class="bg-white rounded-lg p-6 shadow mt-6">
+            <h2 class="text-xl font-bold mb-4">📋 실제 회원가입 페이지와 비교</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="border rounded p-4">
+                    <h3 class="font-medium mb-2">✅ 구현 완료 사항</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>• 업체 선택 시 지역 선택 폼 표시</li>
+                        <li>• 시/도 선택 → 구/군 옵션 자동 업데이트</li>
+                        <li>• 상세 주소 텍스트 입력</li>
+                        <li>• 지역별 매칭 시스템 연동</li>
+                        <li>• 폼 유효성 검증</li>
+                    </ul>
+                </div>
+                <div class="border rounded p-4">
+                    <h3 class="font-medium mb-2">🎯 사용자 플로우</h3>
+                    <ul class="text-sm space-y-1">
+                        <li>1. 회원가입 페이지 방문</li>
+                        <li>2. <strong>업체</strong> 선택</li>
+                        <li>3. 업체명, 사업자번호 입력</li>
+                        <li>4. <strong>시/도</strong> 선택</li>
+                        <li>5. <strong>구/군</strong> 선택</li>
+                        <li>6. 상세 주소 입력</li>
+                        <li>7. 회원가입 완료</li>
+                        <li>8. ➡️ 해당 지역 견적 요청 수신!</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="register.html" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg inline-block">
+                    실제 회원가입 페이지 확인하기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/regional-matching.js"></script>
+    <script>
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTest();
+        });
+
+        // 테스트 초기화
+        function initializeTest() {
+            console.log('🏪 업체 회원가입 지역 선택 테스트 초기화');
+            
+            // 사용자 유형 선택 이벤트 설정
+            document.querySelectorAll('input[name="userType"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // 모든 라벨 스타일 초기화
+                    document.querySelectorAll('label').forEach(label => {
+                        if (label.querySelector('input[name="userType"]')) {
+                            label.classList.remove('border-orange-500', 'bg-orange-50');
+                        }
+                    });
+                    
+                    // 선택된 라벨 스타일 적용
+                    if (this.checked) {
+                        this.parentElement.classList.add('border-orange-500', 'bg-orange-50');
+                    }
+                    
+                    // 업체 선택 시 추가 필드 표시
+                    const shopFields = document.getElementById('shopFields');
+                    if (this.value === 'shop') {
+                        shopFields.classList.remove('hidden');
+                        initializeShopRegionalSelection();
+                        showResults('success', '업체가 선택되었습니다. 지역 선택 폼이 표시됩니다.');
+                    } else {
+                        shopFields.classList.add('hidden');
+                        showResults('info', '고객이 선택되었습니다. 업체 정보 입력이 필요하지 않습니다.');
+                    }
+                });
+            });
+        }
+
+        // 업체 지역 선택 시스템 초기화
+        function initializeShopRegionalSelection() {
+            try {
+                console.log('🏪 업체 회원가입 - 지역 선택 시스템 초기화');
+                
+                if (typeof window.regionalMatching !== 'undefined') {
+                    // 시/도 옵션 추가
+                    const stateSelect = document.getElementById('shop_state');
+                    if (stateSelect && stateSelect.options.length <= 1) {
+                        window.regionalMatching.populateStateOptions(stateSelect);
+                    }
+                    
+                    // 시/도 변경 이벤트 설정
+                    const districtSelect = document.getElementById('shop_district');
+                    if (stateSelect && districtSelect) {
+                        stateSelect.addEventListener('change', (e) => {
+                            window.regionalMatching.updateDistrictOptions(e.target.value, districtSelect);
+                            if (e.target.value) {
+                                showResults('info', `${e.target.value} 선택됨. 구/군을 선택해주세요.`);
+                            }
+                        });
+                        
+                        districtSelect.addEventListener('change', (e) => {
+                            if (e.target.value) {
+                                const state = stateSelect.value;
+                                showResults('success', `지역 선택 완료: ${state} ${e.target.value}<br>이 지역의 고객 견적 요청을 받을 수 있습니다.`);
+                            }
+                        });
+                    }
+                    
+                    console.log('✅ 업체 회원가입 지역 선택 설정 완료');
+                } else {
+                    showResults('error', '지역별 매칭 시스템이 로드되지 않았습니다.');
+                }
+            } catch (error) {
+                console.error('업체 지역 선택 초기화 오류:', error);
+                showResults('error', '지역 선택 초기화 중 오류 발생: ' + error.message);
+            }
+        }
+
+        // 업체 타입 선택
+        function selectShopType() {
+            const shopRadio = document.querySelector('input[name="userType"][value="shop"]');
+            if (shopRadio) {
+                shopRadio.checked = true;
+                shopRadio.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // 테스트 위치 설정
+        function setTestLocation() {
+            const stateSelect = document.getElementById('shop_state');
+            const districtSelect = document.getElementById('shop_district');
+            const addressInput = document.querySelector('input[name="shop_address"]');
+            
+            if (!stateSelect || stateSelect.options.length <= 1) {
+                showResults('warning', '먼저 업체를 선택해주세요.');
+                return;
+            }
+            
+            // 서울 강남구로 자동 설정
+            stateSelect.value = '서울특별시';
+            window.regionalMatching.updateDistrictOptions('서울특별시', districtSelect);
+            
+            setTimeout(() => {
+                districtSelect.value = '강남구';
+                addressInput.value = '역삼동 123-45 테스트빌딩 3층';
+                showResults('success', '테스트 위치가 설정되었습니다: 서울특별시 강남구 역삼동 123-45 테스트빌딩 3층');
+            }, 100);
+        }
+
+        // 폼 검증
+        function validateForm() {
+            const userType = document.querySelector('input[name="userType"]:checked');
+            
+            if (!userType) {
+                showResults('error', '회원 유형을 선택해주세요.');
+                return;
+            }
+            
+            if (userType.value === 'customer') {
+                showResults('info', '고객 회원가입은 추가 정보가 필요하지 않습니다.');
+                return;
+            }
+            
+            // 업체 정보 검증
+            const shopName = document.querySelector('input[name="shop_name"]').value;
+            const businessNumber = document.querySelector('input[name="business_number"]').value;
+            const state = document.getElementById('shop_state').value;
+            const district = document.getElementById('shop_district').value;
+            const address = document.querySelector('input[name="shop_address"]').value;
+            
+            const errors = [];
+            
+            if (!shopName.trim()) errors.push('업체명');
+            if (!state) errors.push('시/도');
+            if (!district) errors.push('구/군');
+            if (!address.trim()) errors.push('상세 주소');
+            
+            if (errors.length > 0) {
+                showResults('error', `다음 항목을 입력해주세요: ${errors.join(', ')}`);
+                return;
+            }
+            
+            // 검증 성공
+            const resultHtml = `
+                <div class="space-y-2">
+                    <div><strong>✅ 폼 검증 성공!</strong></div>
+                    <div><strong>업체명:</strong> ${shopName}</div>
+                    <div><strong>사업자번호:</strong> ${businessNumber || '미입력'}</div>
+                    <div><strong>위치:</strong> ${state} ${district}</div>
+                    <div><strong>상세주소:</strong> ${address}</div>
+                    <div class="bg-green-100 border border-green-300 rounded p-2 mt-2 text-green-800 text-sm">
+                        <strong>매칭 가능:</strong> ${state} ${district} 지역의 고객 견적 요청을 받을 수 있습니다!
+                    </div>
+                </div>
+            `;
+            
+            showResults('success', resultHtml);
+        }
+
+        // 결과 표시
+        function showResults(type, content) {
+            const resultsDiv = document.getElementById('test-results');
+            const contentDiv = document.getElementById('results-content');
+            
+            const colors = {
+                success: 'bg-green-50 border-green-200 text-green-800',
+                error: 'bg-red-50 border-red-200 text-red-800',
+                warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+                info: 'bg-blue-50 border-blue-200 text-blue-800'
+            };
+            
+            resultsDiv.className = `mt-6 p-4 rounded-lg border ${colors[type] || colors.info}`;
+            resultsDiv.classList.remove('hidden');
+            
+            contentDiv.innerHTML = content;
+        }
+    </script>
+</body>
+</html>

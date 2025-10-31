@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뽀샵 본인인증 - 안전한 실명확인</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+        .auth-method { transition: all 0.3s ease; cursor: pointer; }
+        .auth-method:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .auth-method.selected { border-color: #ff2d92; background-color: #fef2f7; }
+        .verification-step { opacity: 0.5; }
+        .verification-step.active { opacity: 1; }
+        .verification-step.completed { opacity: 1; color: #10b981; }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- 헤더 -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-pink-600">뽀샵</a>
+                    <span class="ml-3 text-gray-500">본인인증</span>
+                </div>
+                <button onclick="history.back()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="max-w-2xl mx-auto px-4 py-8">
+        
+        <!-- 진행 단계 -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center space-x-4 mb-6">
+                <div class="verification-step active flex items-center">
+                    <div class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                    <span class="ml-2 text-sm font-medium">인증방법 선택</span>
+                </div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
+                <div class="verification-step flex items-center">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                    <span class="ml-2 text-sm text-gray-500">정보입력</span>
+                </div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
+                <div class="verification-step flex items-center">
+                    <div class="w-8 h-8 bg-gray-300 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                    <span class="ml-2 text-sm text-gray-500">인증완료</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 본인인증 안내 -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-pink-600 text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">본인인증이 필요합니다</h1>
+                <p class="text-gray-600">
+                    안전한 서비스 이용을 위해 본인인증을 진행해주세요.<br>
+                    개인정보는 인증 목적으로만 사용되며 안전하게 보호됩니다.
+                </p>
+            </div>
+            
+            <!-- 인증 방법 선택 -->
+            <div class="space-y-4" id="authMethods">
+                
+                <!-- 휴대폰 인증 (추천) -->
+                <div class="auth-method border-2 border-gray-200 rounded-lg p-4 relative" 
+                     onclick="selectAuthMethod('mobile')" data-method="mobile">
+                    <div class="absolute top-3 right-3">
+                        <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded-full">추천</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-mobile-alt text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">휴대폰 본인확인</h3>
+                            <p class="text-sm text-gray-600">휴대폰 번호로 간편하게 본인확인</p>
+                            <p class="text-xs text-green-600 mt-1">
+                                <i class="fas fa-bolt mr-1"></i>30초 완료 • 성공률 98%
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-900">무료</p>
+                            <p class="text-xs text-gray-500">SMS 요금만</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 아이핀 인증 -->
+                <div class="auth-method border-2 border-gray-200 rounded-lg p-4" 
+                     onclick="selectAuthMethod('ipin')" data-method="ipin">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-id-card text-green-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">아이핀(i-PIN)</h3>
+                            <p class="text-sm text-gray-600">공인 아이핀으로 안전한 본인확인</p>
+                            <p class="text-xs text-blue-600 mt-1">
+                                <i class="fas fa-certificate mr-1"></i>공인인증 • 높은 신뢰성
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-900">무료</p>
+                            <p class="text-xs text-gray-500">서비스 제공</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 카카오 간편인증 -->
+                <div class="auth-method border-2 border-gray-200 rounded-lg p-4" 
+                     onclick="selectAuthMethod('kakao')" data-method="kakao">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-comment text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">카카오 간편인증</h3>
+                            <p class="text-sm text-gray-600">카카오톡으로 간편하게 본인확인</p>
+                            <p class="text-xs text-yellow-600 mt-1">
+                                <i class="fas fa-zap mr-1"></i>원터치 인증 • 간편함
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-900">무료</p>
+                            <p class="text-xs text-gray-500">카카오 연동</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 신용카드 인증 -->
+                <div class="auth-method border-2 border-gray-200 rounded-lg p-4" 
+                     onclick="selectAuthMethod('card')" data-method="card">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-credit-card text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900">신용카드 본인확인</h3>
+                            <p class="text-sm text-gray-600">신용카드 정보로 본인확인</p>
+                            <p class="text-xs text-purple-600 mt-1">
+                                <i class="fas fa-shield mr-1"></i>높은 보안 • 카드 필요
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-medium text-gray-900">무료</p>
+                            <p class="text-xs text-gray-500">결제 없음</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 선택된 방법 설명 -->
+            <div id="methodDescription" class="hidden mt-6 p-4 bg-gray-50 rounded-lg">
+                <!-- 동적으로 채워짐 -->
+            </div>
+
+            <!-- 다음 버튼 -->
+            <div class="mt-6">
+                <button id="nextButton" 
+                        onclick="proceedVerification()" 
+                        class="w-full bg-gray-300 text-gray-500 font-semibold py-3 px-6 rounded-lg cursor-not-allowed"
+                        disabled>
+                    인증방법을 선택해주세요
+                </button>
+            </div>
+        </div>
+
+        <!-- 보안 안내 -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-3"></i>
+                <div>
+                    <h4 class="font-medium text-blue-900 mb-1">개인정보 보호 안내</h4>
+                    <ul class="text-sm text-blue-800 space-y-1">
+                        <li>• 수집된 정보는 본인확인 목적으로만 사용됩니다</li>
+                        <li>• 인증 완료 후 개인정보는 즉시 파기됩니다</li>
+                        <li>• SSL 암호화로 전송 구간을 보호합니다</li>
+                        <li>• 관련 법령에 따라 안전하게 처리됩니다</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 휴대폰 인증 모달 -->
+    <div id="mobileAuthModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 m-4 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-mobile-alt text-blue-600 text-2xl"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 mb-2">휴대폰 본인확인</h2>
+                <p class="text-gray-600">휴대폰 번호를 입력해주세요</p>
+            </div>
+            
+            <form id="mobileAuthForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
+                    <input type="text" 
+                           id="userName" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                           placeholder="실명을 입력해주세요">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">생년월일</label>
+                    <input type="text" 
+                           id="birthDate" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                           placeholder="YYMMDD (6자리)"
+                           maxlength="6">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">휴대폰 번호</label>
+                    <input type="tel" 
+                           id="phoneNumber" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                           placeholder="01012345678">
+                </div>
+                
+                <div class="flex space-x-3 mt-6">
+                    <button type="button" 
+                            onclick="closeMobileAuthModal()" 
+                            class="flex-1 bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+                        취소
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 bg-pink-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-pink-700 transition-colors">
+                        인증 요청
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+        
+        // 인증방법 선택
+        function selectAuthMethod(method) {
+            // 이전 선택 해제
+            document.querySelectorAll('.auth-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // 새 선택 적용
+            const selectedEl = document.querySelector(`[data-method="${method}"]`);
+            selectedEl.classList.add('selected');
+            selectedMethod = method;
+            
+            // 설명 표시
+            showMethodDescription(method);
+            
+            // 다음 버튼 활성화
+            const nextButton = document.getElementById('nextButton');
+            nextButton.disabled = false;
+            nextButton.className = 'w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors cursor-pointer';
+            nextButton.textContent = '선택한 방법으로 인증하기';
+        }
+        
+        // 방법별 설명 표시
+        function showMethodDescription(method) {
+            const descriptions = {
+                mobile: {
+                    title: '휴대폰 본인확인 안내',
+                    content: `
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li>• 본인 명의의 휴대폰이 필요합니다</li>
+                            <li>• SKT, KT, LG U+ 모든 통신사 지원</li>
+                            <li>• 인증 과정에서 SMS 요금이 발생할 수 있습니다</li>
+                            <li>• 약 30초 내에 인증이 완료됩니다</li>
+                        </ul>
+                    `
+                },
+                ipin: {
+                    title: '아이핀(i-PIN) 인증 안내', 
+                    content: `
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li>• 기존에 발급받은 아이핀이 필요합니다</li>
+                            <li>• 아이핀이 없으시면 먼저 발급받아주세요</li>
+                            <li>• 공인인증기관을 통한 안전한 인증</li>
+                            <li>• 아이핀 발급: <a href="https://www.ipin.go.kr" class="text-pink-600 underline" target="_blank">www.ipin.go.kr</a></li>
+                        </ul>
+                    `
+                },
+                kakao: {
+                    title: '카카오 간편인증 안내',
+                    content: `
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li>• 카카오톡 앱이 설치된 휴대폰이 필요합니다</li>
+                            <li>• 카카오톡에서 본인인증을 완료해야 합니다</li>
+                            <li>• 가장 빠르고 간편한 인증 방법</li>
+                            <li>• 카카오 계정과 휴대폰이 연동되어야 합니다</li>
+                        </ul>
+                    `
+                },
+                card: {
+                    title: '신용카드 본인확인 안내',
+                    content: `
+                        <ul class="space-y-2 text-sm text-gray-700">
+                            <li>• 본인 명의의 신용카드가 필요합니다</li>
+                            <li>• 실제 결제는 발생하지 않습니다 (인증만)</li>
+                            <li>• 카드사별로 인증 방법이 다를 수 있습니다</li>
+                            <li>• 체크카드나 해외카드는 제한될 수 있습니다</li>
+                        </ul>
+                    `
+                }
+            };
+            
+            const desc = descriptions[method];
+            const container = document.getElementById('methodDescription');
+            
+            container.innerHTML = `
+                <h4 class="font-medium text-gray-900 mb-3">${desc.title}</h4>
+                ${desc.content}
+            `;
+            container.classList.remove('hidden');
+        }
+        
+        // 인증 진행
+        function proceedVerification() {
+            if (!selectedMethod) return;
+            
+            switch(selectedMethod) {
+                case 'mobile':
+                    showMobileAuthModal();
+                    break;
+                case 'ipin':
+                    // 아이핀 인증 페이지로 이동
+                    window.location.href = '/auth/ipin';
+                    break;
+                case 'kakao':
+                    // 카카오 인증 시작
+                    startKakaoAuth();
+                    break;
+                case 'card':
+                    // 신용카드 인증 페이지로 이동
+                    window.location.href = '/auth/card';
+                    break;
+            }
+        }
+        
+        // 휴대폰 인증 모달 표시
+        function showMobileAuthModal() {
+            document.getElementById('mobileAuthModal').classList.remove('hidden');
+        }
+        
+        // 휴대폰 인증 모달 닫기
+        function closeMobileAuthModal() {
+            document.getElementById('mobileAuthModal').classList.add('hidden');
+        }
+        
+        // 휴대폰 인증 폼 제출
+        document.getElementById('mobileAuthForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('userName').value,
+                birthDate: document.getElementById('birthDate').value,
+                phoneNumber: document.getElementById('phoneNumber').value
+            };
+            
+            // 유효성 검사
+            if (!formData.name || !formData.birthDate || !formData.phoneNumber) {
+                alert('모든 정보를 입력해주세요.');
+                return;
+            }
+            
+            if (formData.birthDate.length !== 6) {
+                alert('생년월일을 6자리로 입력해주세요. (YYMMDD)');
+                return;
+            }
+            
+            if (!/^010\d{8}$/.test(formData.phoneNumber)) {
+                alert('휴대폰 번호를 정확히 입력해주세요. (01012345678)');
+                return;
+            }
+            
+            // 인증 요청
+            try {
+                await requestMobileAuth(formData);
+            } catch (error) {
+                console.error('인증 요청 실패:', error);
+                alert('인증 요청에 실패했습니다. 다시 시도해주세요.');
+            }
+        });
+        
+        // 휴대폰 인증 요청 (실제 API 연동)
+        async function requestMobileAuth(data) {
+            // 로딩 표시
+            const submitBtn = document.querySelector('#mobileAuthForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '인증 요청 중...';
+            submitBtn.disabled = true;
+            
+            try {
+                // 실제로는 나이스페이먼츠 등의 API 호출
+                const response = await fetch('/api/auth/mobile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 인증 성공
+                    alert('본인인증이 완료되었습니다!');
+                    window.location.href = result.redirectUrl || '/dashboard';
+                } else {
+                    // 인증 실패
+                    alert(result.message || '인증에 실패했습니다.');
+                }
+                
+            } catch (error) {
+                // 네트워크 오류 등
+                console.error('API 오류:', error);
+                alert('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            } finally {
+                // 로딩 해제
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // 카카오 인증 시작
+        function startKakaoAuth() {
+            alert('카카오 인증을 시작합니다.\n카카오톡 앱으로 이동합니다.');
+            // 실제로는 카카오 SDK를 사용하여 인증 진행
+        }
+        
+        // 생년월일 입력 제한 (숫자만)
+        document.getElementById('birthDate').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        
+        // 휴대폰 번호 입력 제한 (숫자만)
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 웹훅 처리 - beautycat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-4">결제 웹훅 처리 시스템</h1>
+            <p class="text-gray-600 mb-6">자사몰/네이버 스토어에서 결제 완료 시 호출되는 엔드포인트입니다.</p>
+            
+            <!-- 상태 표시 -->
+            <div id="status" class="mb-4 p-3 rounded-lg bg-gray-50">
+                <span class="text-gray-600">대기 중...</span>
+            </div>
+            
+            <!-- 테스트 섹션 -->
+            <div class="border-t pt-6">
+                <h2 class="text-lg font-semibold mb-4">테스트 웹훅</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">주문 ID</label>
+                        <input type="text" id="testOrderId" placeholder="PPO1234567890ABC" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">결제 상태</label>
+                        <select id="testStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="completed">완료</option>
+                            <option value="cancelled">취소</option>
+                            <option value="failed">실패</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="testWebhook()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    웹훅 테스트
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/external-payment.js"></script>
+    <script>
+        // 웹훅 처리 클래스
+        class WebhookHandler {
+            constructor() {
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // URL 파라미터 확인
+                this.checkUrlParams();
+                
+                // 메시지 이벤트 리스너 (postMessage 방식)
+                window.addEventListener('message', (event) => {
+                    this.handlePostMessage(event);
+                });
+            }
+
+            // URL 파라미터에서 웹훅 데이터 확인
+            checkUrlParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                if (urlParams.has('webhook')) {
+                    const webhookData = {
+                        orderId: urlParams.get('orderId'),
+                        status: urlParams.get('status'),
+                        amount: urlParams.get('amount'),
+                        transactionId: urlParams.get('transactionId'),
+                        provider: urlParams.get('provider') || 'unknown'
+                    };
+                    
+                    this.processWebhook(webhookData);
+                }
+            }
+
+            // PostMessage 방식 웹훅 처리
+            handlePostMessage(event) {
+                // 보안: 허용된 도메인에서만 메시지 수신
+                const allowedOrigins = [
+                    'https://store.pposhop.kr',
+                    'https://smartstore.naver.com',
+                    'https://www.coupang.com'
+                ];
+                
+                if (!allowedOrigins.includes(event.origin)) {
+                    console.warn('허용되지 않은 출처에서의 메시지:', event.origin);
+                    return;
+                }
+                
+                if (event.data && event.data.type === 'payment_webhook') {
+                    this.processWebhook(event.data.payload);
+                }
+            }
+
+            // 웹훅 데이터 처리
+            async processWebhook(webhookData) {
+                this.updateStatus('처리 중...', 'processing');
+                
+                try {
+                    console.log('웹훅 데이터 수신:', webhookData);
+                    
+                    // 주문 ID 검증
+                    if (!webhookData.orderId) {
+                        throw new Error('주문 ID가 없습니다');
+                    }
+                    
+                    // 주문 정보 조회
+                    const orderResponse = await fetch(`tables/external_orders?search=${webhookData.orderId}&limit=1`);
+                    const orderData = await orderResponse.json();
+                    
+                    if (!orderData.data || orderData.data.length === 0) {
+                        throw new Error('주문 정보를 찾을 수 없습니다');
+                    }
+                    
+                    const order = orderData.data[0];
+                    
+                    // 결제 상태에 따른 처리
+                    switch (webhookData.status) {
+                        case 'completed':
+                            await this.handlePaymentCompleted(order, webhookData);
+                            break;
+                        case 'cancelled':
+                            await this.handlePaymentCancelled(order, webhookData);
+                            break;
+                        case 'failed':
+                            await this.handlePaymentFailed(order, webhookData);
+                            break;
+                        default:
+                            throw new Error('알 수 없는 결제 상태: ' + webhookData.status);
+                    }
+                    
+                    this.updateStatus('처리 완료', 'success');
+                    
+                } catch (error) {
+                    console.error('웹훅 처리 오류:', error);
+                    this.updateStatus('처리 실패: ' + error.message, 'error');
+                }
+            }
+
+            // 결제 완료 처리
+            async handlePaymentCompleted(order, webhookData) {
+                console.log('결제 완료 처리:', order.orderId);
+                
+                // 주문 상태 업데이트
+                await fetch(`tables/external_orders/${order.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: 'completed',
+                        actualPrice: webhookData.amount || order.estimatedPrice,
+                        payment_completed_at: new Date().toISOString(),
+                        payment_info: JSON.stringify({
+                            transactionId: webhookData.transactionId,
+                            provider: webhookData.provider,
+                            completedAt: new Date().toISOString(),
+                            webhookData: webhookData
+                        })
+                    })
+                });
+
+                // 상담 상태 업데이트
+                if (order.consultationId) {
+                    await fetch(`tables/consultations/${order.consultationId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            status: 'paid'
+                        })
+                    });
+                }
+
+                // 업체에게 알림 (이메일 또는 SMS - 향후 구현)
+                await this.notifyShop(order, 'payment_completed');
+                
+                // 고객에게 확인 이메일 (향후 구현)
+                await this.notifyCustomer(order, 'payment_completed');
+            }
+
+            // 결제 취소 처리
+            async handlePaymentCancelled(order, webhookData) {
+                console.log('결제 취소 처리:', order.orderId);
+                
+                await fetch(`tables/external_orders/${order.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: 'cancelled',
+                        cancelled_at: new Date().toISOString(),
+                        payment_info: JSON.stringify({
+                            cancelledAt: new Date().toISOString(),
+                            reason: webhookData.reason || 'user_cancelled',
+                            webhookData: webhookData
+                        })
+                    })
+                });
+
+                // 상담 상태는 원래대로 되돌림
+                if (order.consultationId) {
+                    await fetch(`tables/consultations/${order.consultationId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            status: 'quoted' // 견적서 발송됨 상태로 되돌림
+                        })
+                    });
+                }
+            }
+
+            // 결제 실패 처리
+            async handlePaymentFailed(order, webhookData) {
+                console.log('결제 실패 처리:', order.orderId);
+                
+                await fetch(`tables/external_orders/${order.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: 'failed',
+                        payment_info: JSON.stringify({
+                            failedAt: new Date().toISOString(),
+                            reason: webhookData.reason || 'payment_failed',
+                            error: webhookData.error,
+                            webhookData: webhookData
+                        })
+                    })
+                });
+
+                // 상담 상태는 원래대로 되돌림
+                if (order.consultationId) {
+                    await fetch(`tables/consultations/${order.consultationId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            status: 'quoted'
+                        })
+                    });
+                }
+            }
+
+            // 업체 알림 (향후 구현)
+            async notifyShop(order, eventType) {
+                console.log('업체 알림 발송:', order.shopName, eventType);
+                // TODO: 이메일 또는 SMS 발송
+            }
+
+            // 고객 알림 (향후 구현)
+            async notifyCustomer(order, eventType) {
+                console.log('고객 알림 발송:', order.customerName, eventType);
+                // TODO: 이메일 또는 SMS 발송
+            }
+
+            // 상태 표시 업데이트
+            updateStatus(message, type = 'info') {
+                const statusEl = document.getElementById('status');
+                
+                const colors = {
+                    info: 'bg-blue-50 text-blue-700',
+                    success: 'bg-green-50 text-green-700',
+                    error: 'bg-red-50 text-red-700',
+                    processing: 'bg-yellow-50 text-yellow-700'
+                };
+                
+                statusEl.className = `mb-4 p-3 rounded-lg ${colors[type] || colors.info}`;
+                statusEl.innerHTML = `
+                    <div class="flex items-center">
+                        ${type === 'processing' ? '<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>' : ''}
+                        <span>${message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 웹훅 테스트 함수
+        async function testWebhook() {
+            const orderId = document.getElementById('testOrderId').value;
+            const status = document.getElementById('testStatus').value;
+            
+            if (!orderId) {
+                alert('주문 ID를 입력해주세요');
+                return;
+            }
+            
+            const testData = {
+                orderId: orderId,
+                status: status,
+                amount: 150000,
+                transactionId: 'TEST_' + Date.now(),
+                provider: 'test'
+            };
+            
+            webhookHandler.processWebhook(testData);
+        }
+
+        // 웹훅 핸들러 초기화
+        const webhookHandler = new WebhookHandler();
+        
+        // 전역 함수로 등록
+        window.webhookHandler = webhookHandler;
+    </script>
+</body>
+</html>

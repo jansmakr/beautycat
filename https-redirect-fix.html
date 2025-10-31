@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat - HTTPS 연결 문제 해결</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff2d92, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .url-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .solution {
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        button {
+            background: #ff2d92;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #e6267d;
+            transform: translateY(-2px);
+        }
+        .url-list {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .url-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .url-item:last-child {
+            border-bottom: none;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 HTTPS 연결 문제 해결</h1>
+        
+        <div class="url-info">
+            <h3>📊 현재 연결 정보</h3>
+            <div id="currentInfo">
+                <div>🌐 현재 URL: <span id="currentUrl"></span></div>
+                <div>🔒 프로토콜: <span id="protocol"></span></div>
+                <div>🏠 호스트: <span id="hostname"></span></div>
+                <div>🚪 포트: <span id="port"></span></div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h3>⚠️ HTTPS 연결 문제 발생</h3>
+            <p><strong>원인:</strong> beautycat.kr 도메인의 SSL 인증서 또는 HTTPS 설정 문제</p>
+            <p><strong>해결:</strong> HTTP로 접속하거나 GitHub Pages 백업 URL 사용</p>
+        </div>
+        
+        <div class="solution">
+            <h3>✅ 해결 방법들</h3>
+            
+            <h4>🎯 방법 1: HTTP로 접속 (권장)</h4>
+            <div class="url-list">
+                <div class="url-item">
+                    <span>http://beautycat.kr</span>
+                    <button class="copy-btn" onclick="copyAndGo('http://beautycat.kr')">복사 & 이동</button>
+                </div>
+            </div>
+            
+            <h4>🎯 방법 2: GitHub Pages 백업 (안전)</h4>
+            <div class="url-list">
+                <div class="url-item">
+                    <span>https://jansmakr.github.io/beautycat</span>
+                    <button class="copy-btn" onclick="copyAndGo('https://jansmakr.github.io/beautycat')">복사 & 이동</button>
+                </div>
+            </div>
+            
+            <h4>🎯 방법 3: 로컬 개발 (개발자용)</h4>
+            <div class="url-list">
+                <div class="url-item">
+                    <span>http://localhost:3000</span>
+                    <button class="copy-btn" onclick="copyText('http://localhost:3000')">복사</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status" id="status">
+            브라우저 호환성 확인 중...
+        </div>
+        
+        <button onclick="testConnections()">🔍 연결 상태 테스트</button>
+        <button onclick="forceHTTP()">🚀 HTTP로 강제 이동</button>
+        <button onclick="goBackup()">💾 백업 사이트로 이동</button>
+    </div>
+
+    <script>
+        // 페이지 로드 시 정보 수집
+        window.addEventListener('load', () => {
+            document.getElementById('currentUrl').textContent = window.location.href;
+            document.getElementById('protocol').textContent = window.location.protocol;
+            document.getElementById('hostname').textContent = window.location.hostname;
+            document.getElementById('port').textContent = window.location.port || '기본';
+            
+            // HTTPS 문제 자동 감지
+            if (window.location.protocol === 'https:' && 
+                (window.location.hostname === 'beautycat.kr' || window.location.hostname.includes('beautycat'))) {
+                document.getElementById('status').innerHTML = '🚨 HTTPS 연결 문제 감지됨';
+                document.getElementById('status').style.color = '#ff6b6b';
+            } else {
+                document.getElementById('status').innerHTML = '✅ 연결 상태 정상';
+                document.getElementById('status').style.color = '#28a745';
+            }
+        });
+        
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ URL이 클립보드에 복사되었습니다!');
+            }).catch(() => {
+                prompt('URL을 복사하세요:', text);
+            });
+        }
+        
+        function copyAndGo(url) {
+            copyText(url);
+            setTimeout(() => {
+                window.location.href = url;
+            }, 1000);
+        }
+        
+        function forceHTTP() {
+            const currentHost = window.location.hostname;
+            let targetUrl;
+            
+            if (currentHost === 'beautycat.kr' || currentHost.includes('beautycat')) {
+                targetUrl = 'http://beautycat.kr';
+            } else {
+                targetUrl = 'http://' + currentHost + window.location.pathname;
+            }
+            
+            window.location.href = targetUrl;
+        }
+        
+        function goBackup() {
+            window.location.href = 'https://jansmakr.github.io/beautycat';
+        }
+        
+        async function testConnections() {
+            const status = document.getElementById('status');
+            status.innerHTML = '🔍 연결 테스트 중...';
+            
+            const urls = [
+                'http://beautycat.kr',
+                'https://jansmakr.github.io/beautycat'
+            ];
+            
+            const results = [];
+            
+            for (const url of urls) {
+                try {
+                    const response = await fetch(url, { 
+                        mode: 'no-cors',
+                        method: 'HEAD',
+                        timeout: 5000 
+                    });
+                    results.push(`✅ ${url} - 연결 가능`);
+                } catch (error) {
+                    results.push(`❌ ${url} - 연결 실패`);
+                }
+            }
+            
+            status.innerHTML = results.join('<br>');
+        }
+        
+        // 자동 리다이렉트 (5초 후)
+        if (window.location.protocol === 'https:' && window.location.hostname === 'beautycat.kr') {
+            let countdown = 5;
+            const countdownElement = document.createElement('div');
+            countdownElement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 45, 146, 0.9);
+                color: white;
+                padding: 15px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 9999;
+            `;
+            document.body.appendChild(countdownElement);
+            
+            const timer = setInterval(() => {
+                countdownElement.textContent = `${countdown}초 후 HTTP로 자동 이동...`;
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    window.location.href = 'http://beautycat.kr';
+                }
+            }, 1000);
+        }
+        
+        console.clear();
+        console.log('🔒 BeautyCat HTTPS 연결 문제 해결 도구');
+        console.log('📋 사용 가능한 URL:');
+        console.log('   1. http://beautycat.kr (권장)');
+        console.log('   2. https://jansmakr.github.io/beautycat (백업)');
+    </script>
+</body>
+</html>

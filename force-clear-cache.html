@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>beautycat 캐시 완전 정리</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 { 
+            color: #ff2d92; 
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .step {
+            background: #f8f9fa;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #007bff;
+        }
+        .step.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .step.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        button {
+            background: linear-gradient(135deg, #ff2d92, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .status {
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 beautycat 캐시 완전 정리</h1>
+        <p><strong>Service Worker 리다이렉트 오류 해결</strong></p>
+        
+        <div class="step" id="step1">
+            <h3>1단계: Service Worker 언등록</h3>
+            <div id="sw-status">대기 중...</div>
+        </div>
+        
+        <div class="step" id="step2">
+            <h3>2단계: 브라우저 캐시 정리</h3>
+            <div id="cache-status">대기 중...</div>
+        </div>
+        
+        <div class="step" id="step3">
+            <h3>3단계: 로컬 스토리지 정리</h3>
+            <div id="storage-status">대기 중...</div>
+        </div>
+        
+        <div class="step" id="step4">
+            <h3>4단계: 완전 새로고침</h3>
+            <div id="refresh-status">대기 중...</div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="startClearProcess()">🚀 캐시 완전 정리 시작</button>
+            <button onclick="location.href='/'">🏠 메인 페이지로</button>
+        </div>
+        
+        <div style="margin-top: 20px; font-size: 14px; color: #666;">
+            <p><strong>수동 정리 방법:</strong></p>
+            <p>1. <kbd>F12</kbd> 개발자 도구 열기</p>
+            <p>2. <kbd>Application</kbd> 탭 → <kbd>Storage</kbd></p>
+            <p>3. <kbd>Clear site data</kbd> 클릭</p>
+        </div>
+    </div>
+
+    <script>
+        function updateStep(stepId, status, message) {
+            const step = document.getElementById(stepId);
+            const statusDiv = step.querySelector('div[id$="-status"]');
+            
+            step.className = 'step ' + status;
+            statusDiv.innerHTML = message;
+        }
+        
+        async function clearServiceWorkers() {
+            try {
+                updateStep('step1', '', '<div class="loading"></div>Service Worker 언등록 중...');
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    
+                    if (registrations.length === 0) {
+                        updateStep('step1', 'success', '✅ Service Worker가 이미 언등록됨');
+                        return;
+                    }
+                    
+                    const unregisterPromises = registrations.map(registration => {
+                        console.log('🗑️ SW 언등록:', registration.scope);
+                        return registration.unregister();
+                    });
+                    
+                    await Promise.all(unregisterPromises);
+                    
+                    updateStep('step1', 'success', `✅ ${registrations.length}개 Service Worker 언등록 완료`);
+                } else {
+                    updateStep('step1', 'success', '✅ Service Worker 미지원 브라우저');
+                }
+            } catch (error) {
+                updateStep('step1', 'error', `❌ Service Worker 언등록 실패: ${error.message}`);
+            }
+        }
+        
+        async function clearCaches() {
+            try {
+                updateStep('step2', '', '<div class="loading"></div>브라우저 캐시 정리 중...');
+                
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    
+                    if (cacheNames.length === 0) {
+                        updateStep('step2', 'success', '✅ 캐시가 이미 정리됨');
+                        return;
+                    }
+                    
+                    const deletePromises = cacheNames.map(cacheName => {
+                        console.log('🗑️ 캐시 삭제:', cacheName);
+                        return caches.delete(cacheName);
+                    });
+                    
+                    await Promise.all(deletePromises);
+                    
+                    updateStep('step2', 'success', `✅ ${cacheNames.length}개 캐시 정리 완료`);
+                } else {
+                    updateStep('step2', 'success', '✅ 캐시 API 미지원 브라우저');
+                }
+            } catch (error) {
+                updateStep('step2', 'error', `❌ 캐시 정리 실패: ${error.message}`);
+            }
+        }
+        
+        function clearStorage() {
+            try {
+                updateStep('step3', '', '<div class="loading"></div>로컬 스토리지 정리 중...');
+                
+                // 로컬 스토리지 정리
+                localStorage.clear();
+                
+                // 세션 스토리지 정리
+                sessionStorage.clear();
+                
+                // IndexedDB 정리 (가능한 경우)
+                if ('indexedDB' in window) {
+                    // beautycat 관련 DB 삭제
+                    const deleteRequest = indexedDB.deleteDatabase('beautycat');
+                    deleteRequest.onsuccess = () => console.log('🗑️ IndexedDB 삭제됨');
+                }
+                
+                updateStep('step3', 'success', '✅ 모든 스토리지 정리 완료');
+            } catch (error) {
+                updateStep('step3', 'error', `❌ 스토리지 정리 실패: ${error.message}`);
+            }
+        }
+        
+        function forceRefresh() {
+            updateStep('step4', '', '<div class="loading"></div>3초 후 완전 새로고침...');
+            
+            let countdown = 3;
+            const timer = setInterval(() => {
+                updateStep('step4', '', `<div class="loading"></div>${countdown}초 후 완전 새로고침...`);
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    updateStep('step4', 'success', '🔄 완전 새로고침 실행');
+                    
+                    // 강제 새로고침 (캐시 무시)
+                    setTimeout(() => {
+                        location.href = '/?v=' + Date.now();
+                    }, 500);
+                }
+            }, 1000);
+        }
+        
+        async function startClearProcess() {
+            console.log('🧹 beautycat 캐시 완전 정리 시작');
+            
+            // 1단계: Service Worker 언등록
+            await clearServiceWorkers();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 2단계: 캐시 정리
+            await clearCaches();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 3단계: 스토리지 정리
+            clearStorage();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // 4단계: 새로고침
+            forceRefresh();
+        }
+        
+        // 페이지 로드 시 자동 시작
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧹 캐시 정리 도구 로드됨');
+        });
+    </script>
+</body>
+</html>

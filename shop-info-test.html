@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>업체 정보 관리 테스트 - 뽀샵</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background: #f8fafc; }
+        .test-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🏪 업체 정보 관리 지역 선택 테스트</h1>
+            <p>업체 대시보드의 지역 선택 기능이 제대로 작동하는지 테스트합니다</p>
+        </div>
+
+        <div class="bg-white rounded-lg p-6 shadow">
+            <h2 class="text-xl font-bold mb-6">업체 위치 정보 입력</h2>
+            
+            <form class="space-y-6">
+                <!-- 기본 정보 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">피부관리실명</label>
+                        <input type="text" value="테스트 피부관리실" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">대표자명</label>
+                        <input type="text" value="김대표" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+
+                <!-- 지역 선택 -->
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">📍 업체 위치 (중요: 견적 매칭에 사용)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">시/도 *</label>
+                            <select id="shop-state" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option value="">시/도를 선택해주세요</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">구/군 *</label>
+                            <select id="shop-district" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" disabled>
+                                <option value="">먼저 시/도를 선택해주세요</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">상세 주소</label>
+                        <input type="text" placeholder="동/읍/면, 도로명/지번, 건물명, 층수 등" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <p class="text-sm text-gray-500 mt-1">예: 강남구 역삼동 123-45 비우티빌딩 3층</p>
+                    </div>
+                </div>
+
+                <!-- 설명 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mr-2 mt-1"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-medium mb-2">지역 선택이 중요한 이유:</p>
+                            <ul class="space-y-1">
+                                <li>• 고객이 견적을 요청할 때 <strong>같은 지역의 업체들만</strong> 견적 요청을 받습니다</li>
+                                <li>• 시/도와 구/군이 정확해야 고객과 매칭됩니다</li>
+                                <li>• 잘못 설정하면 견적 요청을 받지 못할 수 있습니다</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 테스트 버튼들 -->
+                <div class="flex gap-4">
+                    <button type="button" onclick="testRegionalMatching()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
+                        지역 매칭 테스트
+                    </button>
+                    <button type="button" onclick="simulateCustomerRequest()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
+                        고객 요청 시뮬레이션
+                    </button>
+                    <button type="button" onclick="setTestData()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+                        테스트 데이터 입력
+                    </button>
+                </div>
+            </form>
+
+            <!-- 결과 표시 -->
+            <div id="test-results" class="mt-6 p-4 bg-gray-50 rounded-lg hidden">
+                <h4 class="font-medium mb-2">🧪 테스트 결과:</h4>
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/regional-matching.js"></script>
+    <script>
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeShopLocationTest();
+        });
+
+        // 업체 위치 테스트 초기화
+        function initializeShopLocationTest() {
+            console.log('🏪 업체 위치 선택 테스트 초기화');
+            
+            // 지역별 매칭 시스템이 로드되었는지 확인
+            if (typeof window.regionalMatching !== 'undefined') {
+                // 시/도 옵션 추가
+                const stateSelect = document.getElementById('shop-state');
+                if (stateSelect) {
+                    window.regionalMatching.populateStateOptions(stateSelect);
+                }
+                
+                // 시/도 변경 시 구/군 업데이트 이벤트 설정
+                const districtSelect = document.getElementById('shop-district');
+                if (stateSelect && districtSelect) {
+                    stateSelect.addEventListener('change', (e) => {
+                        window.regionalMatching.updateDistrictOptions(e.target.value, districtSelect);
+                        
+                        // 선택 시 결과 업데이트
+                        updateSelectionInfo();
+                    });
+                    
+                    districtSelect.addEventListener('change', updateSelectionInfo);
+                }
+                
+                console.log('✅ 업체 위치 선택 설정 완료');
+            } else {
+                console.error('❌ 지역별 매칭 시스템이 로드되지 않음');
+                showResults('error', '지역별 매칭 시스템이 로드되지 않았습니다.');
+            }
+        }
+
+        // 선택 정보 업데이트
+        function updateSelectionInfo() {
+            const state = document.getElementById('shop-state').value;
+            const district = document.getElementById('shop-district').value;
+            
+            if (state && district) {
+                showResults('info', `선택된 지역: ${state} ${district}<br>이 지역의 고객 견적 요청을 받게 됩니다.`);
+            }
+        }
+
+        // 지역 매칭 테스트
+        async function testRegionalMatching() {
+            const state = document.getElementById('shop-state').value;
+            const district = document.getElementById('shop-district').value;
+            
+            if (!state || !district) {
+                showResults('warning', '시/도와 구/군을 모두 선택해주세요.');
+                return;
+            }
+            
+            try {
+                // 해당 지역의 기존 업체 검색
+                const existingShops = await window.regionalMatching.findShopsInRegion(state, district);
+                
+                let resultHtml = `
+                    <div class="space-y-2">
+                        <div><strong>선택 지역:</strong> ${state} ${district}</div>
+                        <div><strong>기존 등록 업체:</strong> ${existingShops.length}개</div>
+                `;
+                
+                if (existingShops.length > 0) {
+                    resultHtml += '<div><strong>기존 업체 목록:</strong></div><ul class="list-disc list-inside ml-4 text-sm">';
+                    existingShops.slice(0, 3).forEach(shop => {
+                        resultHtml += `<li>${shop.shop_name} (${shop.phone})</li>`;
+                    });
+                    if (existingShops.length > 3) {
+                        resultHtml += `<li>외 ${existingShops.length - 3}개 업체</li>`;
+                    }
+                    resultHtml += '</ul>';
+                }
+                
+                resultHtml += `
+                        <div class="mt-2 p-2 bg-green-100 rounded text-green-800 text-sm">
+                            ✅ 이 지역에 업체를 등록하면 <strong>${state} ${district}</strong> 지역의 고객 견적 요청을 받을 수 있습니다.
+                        </div>
+                    </div>
+                `;
+                
+                showResults('success', resultHtml);
+                
+            } catch (error) {
+                console.error('지역 매칭 테스트 오류:', error);
+                showResults('error', '지역 매칭 테스트 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 고객 요청 시뮬레이션
+        function simulateCustomerRequest() {
+            const state = document.getElementById('shop-state').value;
+            const district = document.getElementById('shop-district').value;
+            
+            if (!state || !district) {
+                showResults('warning', '시/도와 구/군을 모두 선택해주세요.');
+                return;
+            }
+            
+            const simulationHtml = `
+                <div class="space-y-3">
+                    <div class="font-medium">📱 고객 견적 요청 시뮬레이션</div>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-3">
+                        <div class="text-sm">
+                            <div><strong>고객이 선택:</strong> ${state} ${district}</div>
+                            <div><strong>요청 내용:</strong> 여드름 관리, 미백 관리</div>
+                            <div><strong>예산:</strong> 20-50만원</div>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <div>1️⃣ 고객이 뽀샵에서 견적 요청</div>
+                        <div>2️⃣ 시스템이 <strong>${state} ${district}</strong> 지역 업체들 검색</div>
+                        <div>3️⃣ <strong>이 업체가 견적 요청 수신!</strong></div>
+                        <div>4️⃣ 업체가 견적서 작성 후 고객에게 전송</div>
+                    </div>
+                    <div class="bg-green-100 border border-green-300 rounded p-2 text-green-800 text-sm">
+                        ✅ 지역이 일치하므로 견적 요청을 받습니다!
+                    </div>
+                </div>
+            `;
+            
+            showResults('success', simulationHtml);
+        }
+
+        // 테스트 데이터 입력
+        function setTestData() {
+            // 서울 강남구로 자동 설정
+            const stateSelect = document.getElementById('shop-state');
+            const districtSelect = document.getElementById('shop-district');
+            
+            stateSelect.value = '서울특별시';
+            window.regionalMatching.updateDistrictOptions('서울특별시', districtSelect);
+            
+            setTimeout(() => {
+                districtSelect.value = '강남구';
+                updateSelectionInfo();
+                showResults('info', '테스트 데이터가 입력되었습니다: 서울특별시 강남구');
+            }, 100);
+        }
+
+        // 결과 표시
+        function showResults(type, content) {
+            const resultsDiv = document.getElementById('test-results');
+            const contentDiv = document.getElementById('results-content');
+            
+            const colors = {
+                success: 'bg-green-50 border-green-200 text-green-800',
+                error: 'bg-red-50 border-red-200 text-red-800',
+                warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+                info: 'bg-blue-50 border-blue-200 text-blue-800'
+            };
+            
+            resultsDiv.className = `mt-6 p-4 rounded-lg border ${colors[type] || colors.info}`;
+            resultsDiv.classList.remove('hidden');
+            
+            contentDiv.innerHTML = content;
+        }
+    </script>
+</body>
+</html>

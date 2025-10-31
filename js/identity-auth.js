@@ -410,7 +410,7 @@ class IdentityAuthManager {
     showSuccessMessage(message) {
         // 성공 토스트 메시지 표시
         const toast = document.createElement('div');
-        toast.className = 'fixed top-16 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
         toast.innerHTML = `
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
@@ -428,7 +428,7 @@ class IdentityAuthManager {
     showErrorMessage(message) {
         // 에러 토스트 메시지 표시
         const toast = document.createElement('div');
-        toast.className = 'fixed top-16 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
         toast.innerHTML = `
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2"></i>
