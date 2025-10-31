@@ -203,14 +203,16 @@
     </main>
 
     <script>
-        const API_BASE = 'https://beautycat-api.jansmakr.workers.dev/api';
+        const API_BASE = 'https://beautycat-api-v3.jansmakr.workers.dev/api';
+
         let currentCustomer = null;
         let allConsultations = [];
         let currentFilter = 'all';
 
         // 세션 확인
         function checkSession() {
-            const user = JSON.parse(localStorage.getItem('beautycat_user') || '{}');
+           const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
             if (!user.id || user.user_type !== 'customer') {
                 alert('로그인이 필요합니다.');
                 window.location.href = 'login-clean.html';
@@ -221,7 +223,10 @@
 
         // 로그아웃
         function logout() {
-            localStorage.removeItem('beautycat_user');
+           localStorage.removeItem('currentUser');
+localStorage.removeItem('user_type');
+localStorage.removeItem('session_token');
+
             window.location.href = 'login-clean.html';
         }
 

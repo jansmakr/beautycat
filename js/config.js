@@ -3,7 +3,7 @@
 
 const CONFIG = {
     // API 설정
-    API_BASE_URL: 'https://beautycat-api.jansmakr.workers.dev/api',
+API_BASE_URL: 'https://beautycat-api-v3.jansmakr.workers.dev/api',
     
     // 환경 설정
     ENVIRONMENT: 'production',
