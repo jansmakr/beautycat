@@ -57,36 +57,6 @@
     <link rel="stylesheet" href="css/tailwind-production.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind Config 주석처리 (로컬 CSS 사용) -->
-    <!--
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': {
-                            50: '#fef2f2',
-                            100: '#fee2e2', 
-                            200: '#fecaca',
-                            300: '#fca5a5',
-                            400: '#f87171',
-                            500: '#ff2d92',
-                            600: '#dc2626',
-                            700: '#b91c1c',
-                            800: '#991b1b',
-                            900: '#7f1d1d',
-                        }
-                    },
-                    fontFamily: {
-                        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
-                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    -->
-    
     <style>
         * { 
             font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
@@ -202,10 +172,6 @@
                     </div>
                 </div>
 
-
-
-
-
                 <!-- 로그인 버튼 -->
                 <button type="submit" class="w-full btn-primary py-3 text-base font-semibold">
                     로그인
@@ -246,6 +212,20 @@
     <!-- 🚨 Cloudflare API 설정 (최우선 로드) -->
     <script src="deploy-ready-config.js"></script>
     <script src="js/api-helper.js"></script>
+    
+    <!-- Fetch 오버라이드: /tables/* → Workers API -->
+    <script>
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            // /tables/ 경로를 Workers API로 변환
+            if (typeof url === 'string' && url.includes('/tables/')) {
+                const newUrl = url.replace(/^(https?:\/\/[^\/]+)?\/tables\//, 'https://beautycat-api.jansmakr.workers.dev/api/tables/');
+                console.log('🔄 API 경로 변환:', url, '→', newUrl);
+                return originalFetch(newUrl, options);
+            }
+            return originalFetch(url, options);
+        };
+    </script>
     
     <script src="js/security.js"></script>
     <script src="js/auth.js"></script>
