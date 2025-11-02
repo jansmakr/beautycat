@@ -971,12 +971,11 @@ function getDemoAccounts() {
             name: '데모 고객',
             phone: '010-1111-1111',
             user_type: 'customer',
-            is_active: true,
-            is_verified: true,
-            profile_image: '',
-            last_login: null,
-            shop_id: '',
-            permissions: ['customer']
+            status: 'active',
+            shop_id: null,
+            email_verified: 1,
+            phone_verified: 0,
+            last_login_at: null
         },
         {
             id: 'demo_shop_1',
@@ -985,12 +984,11 @@ function getDemoAccounts() {
             name: '데모 상점',
             phone: '010-2222-2222',
             user_type: 'shop',
-            is_active: true,
-            is_verified: true,
-            profile_image: '',
-            last_login: null,
+            status: 'active',
             shop_id: 'shop_001',
-            permissions: ['shop']
+            email_verified: 1,
+            phone_verified: 1,
+            last_login_at: null
         },
         {
             id: 'demo_admin_1',
@@ -999,12 +997,11 @@ function getDemoAccounts() {
             name: '관리자',
             phone: '010-0000-0000',
             user_type: 'admin',
-            is_active: true,
-            is_verified: true,
-            profile_image: '',
-            last_login: null,
-            shop_id: '',
-            permissions: ['all']
+            status: 'active',
+            shop_id: null,
+            email_verified: 1,
+            phone_verified: 1,
+            last_login_at: null
         }
     ];
 }
@@ -1031,7 +1028,7 @@ async function loadDemoAccounts() {
             }
             usersData = await response.json();
         } catch (error) {
-            console.warn('⚠️ 사용자 테이블 접근 실패. 데모 계정 로드를 건너뜁니다.', error.message);
+            console.warn(⚠️ 사용자 테이블 접근 실패. 데모 계정 로드를 건너뜁니다.', error.message);
             return;
         }
         
@@ -1086,53 +1083,49 @@ async function loadDemoShops() {
         );
         
         if (!demoShopExists) {
-            // 데모 업체 생성 (지역별로 여러 개)
+            // D1 스키마에 맞춘 데모 업체 데이터
             const demoShops = [
                 {
                     id: 'demo_shop_seoul_geumcheon',
-                    shop_name: '데모 피부관리실 (금천구점)',
-                    name: '데모 사장님',
+                    name: '데모 피부관리실 (금천구점)',
+                    owner_name: '데모 사장님',
                     email: 'demo@shop.com',
-                    password: 'shop123',
                     phone: '02-1234-5678',
-                    user_type: 'shop',
-                    business_number: '123-45-67890',
+                    address: '서울특별시 금천구 가산동 123-45 데모빌딩 2층',
                     state: '서울특별시',
                     district: '금천구',
-                    shop_state: '서울특별시',
-                    shop_district: '금천구',
-                    shop_address: '서울특별시 금천구 가산동 123-45 데모빌딩 2층',
-                    address: '서울특별시 금천구 가산동 123-45 데모빌딩 2층',
-                    status: 'approved',
-                    is_active: true,
-                    services: ['여드름관리', '미백관리', '모공관리'],
+                    services: JSON.stringify(['여드름관리', '미백관리', '모공관리']),
                     description: '금천구 지역 전문 피부관리실입니다.',
-                    rating: 4.8,
-                    review_count: 127,
-                    created_at: new Date().toISOString()
+                    business_number: '123-45-67890',
+                    business_license: null,
+                    status: 'active',
+                    representative_treatments: JSON.stringify(['여드름관리', '미백관리']),
+                    price_range: '50000-150000',
+                    operating_hours: JSON.stringify({
+                        weekday: '10:00-21:00',
+                        weekend: '10:00-19:00'
+                    })
                 },
                 {
                     id: 'demo_shop_seoul_gangnam',
-                    shop_name: '데모 피부관리실 (강남구점)',
-                    name: '데모 원장님',
+                    name: '데모 피부관리실 (강남구점)',
+                    owner_name: '데모 원장님',
                     email: 'demo2@shop.com',
-                    password: 'shop123',
                     phone: '02-2345-6789',
-                    user_type: 'shop',
-                    business_number: '234-56-78901',
+                    address: '서울특별시 강남구 역삼동 456-78 강남타워 5층',
                     state: '서울특별시',
                     district: '강남구',
-                    shop_state: '서울특별시',
-                    shop_district: '강남구',
-                    shop_address: '서울특별시 강남구 역삼동 456-78 강남타워 5층',
-                    address: '서울특별시 강남구 역삼동 456-78 강남타워 5층',
-                    status: 'approved',
-                    is_active: true,
-                    services: ['안티에이징', '리프팅', '화이트닝'],
+                    services: JSON.stringify(['안티에이징', '리프팅', '화이트닝']),
                     description: '강남구 최고급 피부관리실입니다.',
-                    rating: 4.9,
-                    review_count: 256,
-                    created_at: new Date().toISOString()
+                    business_number: '234-56-78901',
+                    business_license: null,
+                    status: 'active',
+                    representative_treatments: JSON.stringify(['안티에이징', '리프팅']),
+                    price_range: '100000-300000',
+                    operating_hours: JSON.stringify({
+                        weekday: '09:00-22:00',
+                        weekend: '09:00-20:00'
+                    })
                 }
             ];
             
@@ -1147,32 +1140,6 @@ async function loadDemoShops() {
             }
             
             console.log('✅ 데모 업체 정보가 생성되었습니다 (지역 정보 포함)');
-        } else {
-            // 기존 데모 업체의 지역 정보 업데이트
-            const demoShops = shopsData.data.filter(shop => 
-                shop.email?.includes('demo') || 
-                (shop.shop_name && shop.shop_name.includes('데모'))
-            );
-            
-            for (const shop of demoShops) {
-                if (!shop.state || !shop.district) {
-                    await fetch(`tables/skincare_shops/${shop.id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            state: '서울특별시',
-                            district: '금천구',
-                            shop_state: '서울특별시',
-                            shop_district: '금천구',
-                            status: 'approved'
-                        })
-                    });
-                }
-            }
-            
-            console.log('✅ 기존 데모 업체 지역 정보를 업데이트했습니다');
         }
         
     } catch (error) {
