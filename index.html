@@ -48,10 +48,13 @@
     <!-- 앱 아이콘 -->
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+       <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
     
-    <!-- 🚨 Cloudflare API 우선 로드 -->
-       <!-- 🚨 Cloudflare API Helper (최우선 로드) -->
+    <!-- 🚨 CRITICAL FIX: 최우선 실행 (Service Worker 제거 + API 오버라이드) -->
+    <script src="sw-unregister.js"></script>
+    <script src="api-global-override.js"></script>
+    
+    <!-- 🚨 Cloudflare API Helper (최우선 로드) -->
     <script src="js/api-helper.js"></script>
     <!-- Cloudflare API -->
     <script src="js/cloudflare-api.js"></script>
