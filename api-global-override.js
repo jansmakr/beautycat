@@ -24,7 +24,7 @@
         // Request 객체 처리
         if (url instanceof Request) {
             const originalUrl = url.url;
-            if (originalUrl.includes('/tables/')) {
+            if (originalUrl.includes('/tables/') || originalUrl.startsWith('tables/')) {
                 try {
                     let targetUrl = originalUrl;
                     
@@ -76,8 +76,8 @@
             return originalFetch(url, options);
         }
         
-        // /tables/ 경로가 포함되어 있는지 확인
-        if (url.includes('/tables/')) {
+        // /tables/ 또는 tables/ 경로가 포함되어 있는지 확인
+        if (url.includes('/tables/') || url.startsWith('tables/')) {
             try {
                 let targetUrl = url;
                 
@@ -129,24 +129,35 @@
         console.log('\n🧪 Fetch 오버라이드 테스트 시작...\n');
         
         const testCases = [
-            'tables/users?limit=1',
-            '/tables/users?limit=1',
-            'https://beautycat-v2.pages.dev/tables/users?limit=1'
+            { url: 'tables/users?limit=1', desc: '슬래시 없는 상대 경로' },
+            { url: '/tables/users?limit=1', desc: '슬래시 있는 상대 경로' },
+            { url: 'https://beautycat-v2.pages.dev/tables/users?limit=1', desc: 'Pages 절대 경로' },
+            { url: new Request('/tables/users?limit=1', { method: 'POST', body: '{}' }), desc: 'POST Request 객체' }
         ];
         
-        for (const testUrl of testCases) {
-            console.log(`테스트: ${testUrl}`);
+        for (const testCase of testCases) {
+            const testUrl = testCase.url;
+            const displayUrl = testUrl instanceof Request ? `Request(${testUrl.url})` : testUrl;
+            console.log(`\n📝 테스트: ${testCase.desc}`);
+            console.log(`   URL: ${displayUrl}`);
             try {
                 const response = await fetch(testUrl);
-                const data = await response.json();
-                console.log('✅ 성공:', response.status, data);
+                console.log(`   ✅ 결과: ${response.status} ${response.statusText}`);
+                console.log(`   📍 실제 URL: ${response.url}`);
+                if (response.ok) {
+                    try {
+                        const data = await response.json();
+                        console.log(`   📊 데이터: ${data.total || 0}개`);
+                    } catch (e) {
+                        console.log(`   ⚠️ JSON 파싱 실패`);
+                    }
+                }
             } catch (error) {
-                console.error('❌ 실패:', error.message);
+                console.error(`   ❌ 실패: ${error.message}`);
             }
-            console.log('');
         }
         
-        console.log('🧪 Fetch 오버라이드 테스트 완료\n');
+        console.log('\n🧪 Fetch 오버라이드 테스트 완료\n');
     };
     
 })();
