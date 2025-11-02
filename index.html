@@ -48,7 +48,7 @@
     <!-- 앱 아이콘 -->
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
-       <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 (Service Worker 제거 + API 오버라이드) -->
     <script src="sw-unregister.js"></script>
@@ -60,7 +60,6 @@
     <script src="js/cloudflare-api.js"></script>
     <!-- 개발 환경 핸들러 (Cloudflare API 리다이렉트 지원) -->
     <script src="js/dev-environment-handler.js"></script>
-
     <!-- 🎫 쿠폰 시스템 -->
     <script src="js/coupon-system.js"></script>
     <!-- 📅 예약 시스템 -->
@@ -69,14 +68,6 @@
     <script src="js/notification-system.js"></script>
     <!-- Emergency API 비활성화됨 -->
     <!-- <script src="js/emergency-api-fix.js"></script> -->
-    <!-- Firebase API 백엔드 (404 오류 해결) -->
-    <script src="js/firebase-api.js"></script>
-    <!-- API Bridge: 기존 호출을 Firebase로 변환 -->
-    <script src="js/api-bridge.js"></script>
-    <!-- API 자동 수정: 404 오류 자동 감지 및 처리 -->
-    <script src="js/api-auto-fix.js"></script>
-    <!-- API 오류 처리기 (마지막 로드) -->
-    <script src="js/api-error-handler.js"></script>
     
     <!-- 웹 매니페스트 (조건부 로딩) -->
     <script>
