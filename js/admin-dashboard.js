@@ -413,8 +413,8 @@ function displayShops(shops) {
         return `
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">${shop.shop_name}</div>
-                    <div class="text-sm text-gray-500">${shop.owner_name || shop.name || '-'}</div>
+                    <div class="text-sm font-medium text-gray-900">${shop.name || '업체명 없음'}</div>
+                    <div class="text-sm text-gray-500">${shop.owner_name || '-'}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${shop.region || `${shop.state || ''} ${shop.district || ''}`.trim() || '-'}
@@ -724,8 +724,8 @@ function viewShop(shopId) {
     }
     
     // Fill view modal with shop data
-    document.getElementById('view-shop-name').textContent = shop.shop_name || '-';
-    document.getElementById('view-owner-name').textContent = shop.owner_name || shop.name || '-';
+    document.getElementById('view-shop-name').textContent = shop.name || '-';
+    document.getElementById('view-owner-name').textContent = shop.owner_name || '-';
     document.getElementById('view-phone').textContent = shop.phone || '-';
     document.getElementById('view-email').textContent = shop.email || '-';
     document.getElementById('view-business-number').textContent = shop.business_number || '-';
@@ -894,7 +894,7 @@ function viewConsultation(consultationId) {
             return `
                 <div class="bg-white p-3 rounded border flex justify-between items-center">
                     <div>
-                        <div class="font-medium text-gray-900">${shop.shop_name}</div>
+                        <div class="font-medium text-gray-900">${shop.name || '업체명 없음'}</div>
                         <div class="text-sm text-gray-500">${shop.region || shop.location || ''}</div>
                     </div>
                     <div class="text-xs text-gray-400">
@@ -1225,7 +1225,7 @@ function displayRepresentativeShops(shops) {
         return `
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">${shop.shop_name}</div>
+                    <div class="text-sm font-medium text-gray-900">${shop.name || '업체명 없음'}</div>
                     <div class="text-sm text-gray-500">ID: ${shop.id}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
