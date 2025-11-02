@@ -1028,7 +1028,7 @@ async function loadDemoAccounts() {
             }
             usersData = await response.json();
         } catch (error) {
-            console.warn(⚠️ 사용자 테이블 접근 실패. 데모 계정 로드를 건너뜁니다.', error.message);
+            console.warn('⚠️ 사용자 테이블 접근 실패. 데모 계정 로드를 건너뜁니다.', error.message);
             return;
         }
         
