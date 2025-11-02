@@ -1,7 +1,7 @@
-// BeautyCat Service Worker - 리다이렉트 오류 완전 해결 버전
-const CACHE_NAME = 'beautycat-v2.3.0';
+// BeautyCat Service Worker - API 오버라이드 완전 지원 버전
+const CACHE_NAME = 'beautycat-v2.3.1';
 
-console.log('🐱 BeautyCat Service Worker 시작 - 리다이렉트 안전 모드');
+console.log('🐱 BeautyCat Service Worker 시작 - API 오버라이드 우선 모드');
 
 // Service Worker 설치
 self.addEventListener('install', event => {
@@ -28,45 +28,35 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch 이벤트 - 리다이렉트 문제 완전 우회
+// Fetch 이벤트 - API 요청은 완전히 건드리지 않음
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
   
-  console.log('🔍 Fetch 요청:', request.method, url.href);
-  
-  // 🚨 리다이렉트가 발생할 수 있는 모든 요청을 Service Worker에서 완전히 제외
-  const shouldBypass = (
-    // 1. 메인 도메인 및 루트 경로 (리다이렉트 위험)
-    url.pathname === '/' ||
-    url.pathname === '/index.html' ||
-    url.pathname === '' ||
-    
-    // 2. 네비게이션 요청 (브라우저가 처리해야 함)
-    request.mode === 'navigate' ||
-    request.destination === 'document' ||
-    
-    // 3. 다른 도메인 요청
-    url.origin !== self.location.origin ||
-    
-    // 4. API 요청
-    request.url.includes('/tables/') ||
-    request.url.includes('/api/') ||
-    
-    // 5. POST, PUT 등 비-GET 요청
-    request.method !== 'GET' ||
-    
-    // 6. 외부 리소스
-    url.hostname !== self.location.hostname
-  );
-  
-  if (shouldBypass) {
-    console.log('🚫 Service Worker 우회:', url.href);
-    // Service Worker가 개입하지 않음 - 브라우저가 직접 처리
+  // 🚨 중요: /tables/ 또는 /api/ 경로는 절대 처리하지 않음
+  // event.respondWith()를 호출하지 않으면 브라우저가 직접 fetch 실행
+  // 이를 통해 window.fetch 오버라이드가 정상 작동
+  if (request.url.includes('/tables/') || request.url.includes('/api/')) {
+    // 아무것도 하지 않음 - 브라우저가 직접 처리
+    // window.fetch 오버라이드가 작동하여 Workers API로 변환됨
     return;
   }
   
-  // 오직 안전한 정적 리소스만 처리 (JS, CSS, 이미지, 폰트)
+  // 메인 도메인 및 네비게이션 요청도 처리하지 않음
+  if (
+    url.pathname === '/' ||
+    url.pathname === '/index.html' ||
+    url.pathname === '' ||
+    request.mode === 'navigate' ||
+    request.destination === 'document' ||
+    url.origin !== self.location.origin ||
+    request.method !== 'GET' ||
+    url.hostname !== self.location.hostname
+  ) {
+    return; // 브라우저가 직접 처리
+  }
+  
+  // 오직 안전한 정적 리소스만 캐싱
   const isSafeStaticResource = (
     request.destination === 'script' || 
     request.destination === 'style' || 
@@ -82,103 +72,76 @@ self.addEventListener('fetch', event => {
     url.pathname.endsWith('.webp') ||
     url.pathname.endsWith('.woff') ||
     url.pathname.endsWith('.woff2') ||
-    url.pathname.endsWith('.ttf')
+    url.pathname.endsWith('.ttf') ||
+    url.pathname.endsWith('.ico')
   );
   
-  if (isSafeStaticResource) {
-    console.log('📦 정적 리소스 캐시 처리:', url.pathname);
-    
-    event.respondWith(
-      caches.match(request)
-        .then(cachedResponse => {
-          if (cachedResponse) {
-            console.log('💾 캐시에서 반환:', url.pathname);
-            return cachedResponse;
-          }
-          
-          // 캐시에 없으면 네트워크에서 가져오기 (리다이렉트 안전 설정)
-          return fetch(request.clone(), {
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'same-origin',
-            redirect: 'follow', // 리다이렉트 허용
-            cache: 'default'
-          }).then(response => {
-            console.log('🌐 네트워크에서 가져옴:', url.pathname, 'Status:', response.status);
-            
-            // 성공적인 응답만 캐시에 저장
-            if (response && response.status === 200 && response.type !== 'opaque') {
-              const responseClone = response.clone();
-              caches.open(CACHE_NAME).then(cache => {
-                cache.put(request, responseClone);
-                console.log('💾 캐시에 저장:', url.pathname);
-              }).catch(err => {
-                console.log('⚠️ 캐시 저장 실패:', err.message);
-              });
-            }
-            
-            return response;
-          }).catch(error => {
-            console.log('❌ 네트워크 요청 실패:', url.pathname, error.message);
-            
-            // 네트워크 실패 시 기본 응답
-            if (request.destination === 'image') {
-              return new Response('', { 
-                status: 404,
-                statusText: 'Image not found' 
-              });
-            }
-            
-            if (request.destination === 'script') {
-              return new Response('// Script unavailable offline', { 
-                status: 200,
-                headers: { 'Content-Type': 'text/javascript' }
-              });
-            }
-            
-            if (request.destination === 'style') {
-              return new Response('/* Style unavailable offline */', { 
-                status: 200,
-                headers: { 'Content-Type': 'text/css' }
-              });
-            }
-            
-            return new Response('Resource unavailable', { status: 503 });
-          });
-        })
-        .catch(error => {
-          console.log('❌ 캐시 조회 실패:', error.message);
-          return new Response('Cache error', { status: 500 });
-        })
-    );
-  } else {
-    console.log('🚫 처리하지 않는 리소스:', url.href);
-    // 처리하지 않는 리소스는 브라우저가 직접 처리
-    return;
+  if (!isSafeStaticResource) {
+    return; // 처리하지 않는 리소스는 브라우저가 직접 처리
   }
+  
+  // 정적 리소스만 캐시 전략 적용
+  event.respondWith(
+    caches.match(request)
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        return fetch(request.clone(), {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'same-origin',
+          redirect: 'follow',
+          cache: 'default'
+        }).then(response => {
+          // 성공적인 응답만 캐시
+          if (response && response.status === 200 && response.type !== 'opaque') {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(request, responseClone);
+            }).catch(err => {
+              console.warn('캐시 저장 실패:', err.message);
+            });
+          }
+          return response;
+        }).catch(error => {
+          console.warn('네트워크 요청 실패:', url.pathname, error.message);
+          
+          // 오프라인 대체 응답
+          if (request.destination === 'image') {
+            return new Response('', { status: 404, statusText: 'Image not found' });
+          }
+          if (request.destination === 'script') {
+            return new Response('// Offline', { 
+              status: 200,
+              headers: { 'Content-Type': 'text/javascript' }
+            });
+          }
+          if (request.destination === 'style') {
+            return new Response('/* Offline */', { 
+              status: 200,
+              headers: { 'Content-Type': 'text/css' }
+            });
+          }
+          return new Response('Resource unavailable', { status: 503 });
+        });
+      })
+      .catch(error => {
+        console.error('캐시 조회 실패:', error.message);
+        return new Response('Cache error', { status: 500 });
+      })
+  );
 });
 
 // 메시지 처리
 self.addEventListener('message', event => {
-  console.log('📨 메시지 수신:', event.data);
-  
   if (event.data && event.data.type === 'SKIP_WAITING') {
-    console.log('⏭️ skipWaiting 실행');
     self.skipWaiting();
   }
-  
   if (event.data && event.data.type === 'GET_VERSION') {
     event.ports[0].postMessage({ version: CACHE_NAME });
   }
 });
 
-// 오류 처리
-self.addEventListener('error', event => {
-  console.log('❌ Service Worker 오류:', event.error);
-});
-
-self.addEventListener('unhandledrejection', event => {
-  console.log('❌ Service Worker Promise 거부:', event.reason);
-});
-
-console.log('🎉 BeautyCat Service Worker 로드 완료 - 리다이렉트 안전 모드');
+console.log('🎉 BeautyCat Service Worker 로드 완료 - API 오버라이드 우선 모드');
