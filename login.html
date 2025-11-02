@@ -136,15 +136,21 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-3">사용자 유형</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="flex flex-col items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                        <label id="customer-label" class="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 transition-all relative">
                             <input type="radio" name="userType" value="customer" checked class="sr-only">
-                            <i class="fas fa-user text-primary-500 text-lg mb-1"></i>
-                            <span class="text-sm font-medium text-gray-700">고객</span>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                                <i class="fas fa-check text-white text-xs hidden"></i>
+                            </div>
+                            <i class="fas fa-user text-primary-500 text-2xl mb-2"></i>
+                            <span class="text-sm font-semibold text-gray-700">고객</span>
                         </label>
-                        <label class="flex flex-col items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                        <label id="shop-label" class="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 transition-all relative">
                             <input type="radio" name="userType" value="shop" class="sr-only">
-                            <i class="fas fa-store text-primary-500 text-lg mb-1"></i>
-                            <span class="text-sm font-medium text-gray-700">업체</span>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                                <i class="fas fa-check text-white text-xs hidden"></i>
+                            </div>
+                            <i class="fas fa-store text-primary-500 text-2xl mb-2"></i>
+                            <span class="text-sm font-semibold text-gray-700">업체</span>
                         </label>
                     </div>
                 </div>
@@ -215,22 +221,42 @@
     
     <script>
         // 사용자 유형 선택 시 스타일 변경
-        document.querySelectorAll('input[name="userType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                // 모든 라벨에서 선택 스타일 제거
-                document.querySelectorAll('label').forEach(label => {
-                    label.classList.remove('border-primary-500', 'bg-primary-50');
-                });
-                
-                // 선택된 라벨에 스타일 추가
-                if (this.checked) {
-                    this.parentElement.classList.add('border-primary-500', 'bg-primary-50');
-                }
+        function updateUserTypeSelection() {
+            const labels = {
+                'customer': document.getElementById('customer-label'),
+                'shop': document.getElementById('shop-label')
+            };
+            
+            // 모든 라벨 초기화
+            Object.values(labels).forEach(label => {
+                label.classList.remove('border-primary-500', 'bg-primary-50', 'shadow-md');
+                label.classList.add('border-gray-300');
+                const checkIcon = label.querySelector('.fa-check');
+                const checkCircle = checkIcon.parentElement;
+                checkCircle.classList.remove('bg-primary-500', 'border-primary-500');
+                checkCircle.classList.add('border-gray-300');
+                checkIcon.classList.add('hidden');
             });
+            
+            // 선택된 항목 강조
+            const selectedValue = document.querySelector('input[name="userType"]:checked').value;
+            const selectedLabel = labels[selectedValue];
+            selectedLabel.classList.remove('border-gray-300');
+            selectedLabel.classList.add('border-primary-500', 'bg-primary-50', 'shadow-md');
+            const checkIcon = selectedLabel.querySelector('.fa-check');
+            const checkCircle = checkIcon.parentElement;
+            checkCircle.classList.remove('border-gray-300');
+            checkCircle.classList.add('bg-primary-500', 'border-primary-500');
+            checkIcon.classList.remove('hidden');
+        }
+        
+        // 라디오 버튼 변경 이벤트
+        document.querySelectorAll('input[name="userType"]').forEach(radio => {
+            radio.addEventListener('change', updateUserTypeSelection);
         });
 
-        // 초기 선택 상태 설정
-        document.querySelector('input[name="userType"]:checked').parentElement.classList.add('border-primary-500', 'bg-primary-50');
+        // 페이지 로드 시 초기 선택 상태 설정
+        document.addEventListener('DOMContentLoaded', updateUserTypeSelection);
 
         // 비밀번호 표시/숨기기
         function togglePassword() {
