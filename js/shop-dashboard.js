@@ -858,7 +858,23 @@ function updateShopInfoForm() {
     }
     
     // 전문 분야 체크박스 설정
-    const specialties = currentShop?.treatment_types || currentShop?.services || currentShop?.specialties || [];
+    let specialties = currentShop?.treatment_types || currentShop?.services || currentShop?.specialties || [];
+    
+    // JSON 문자열인 경우 파싱
+    if (typeof specialties === 'string') {
+        try {
+            specialties = JSON.parse(specialties);
+        } catch (e) {
+            console.warn('⚠️ specialties 파싱 실패:', e);
+            specialties = [];
+        }
+    }
+    
+    // 배열이 아닌 경우 빈 배열로 처리
+    if (!Array.isArray(specialties)) {
+        specialties = [];
+    }
+    
     document.querySelectorAll('input[name="specialties"]').forEach(checkbox => {
         checkbox.checked = specialties.includes(checkbox.value);
     });
