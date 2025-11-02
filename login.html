@@ -13,46 +13,6 @@
     <!-- 개발 환경 오류 방지 -->
     <script src="js/dev-environment-handler.js"></script>
     
-    <!-- 콘솔 오류 필터링 (개발 환경용) -->
-    <script>
-        (function() {
-            // 원본 콘솔 메서드 백업
-            const originalConsole = {
-                log: console.log.bind(console),
-                warn: console.warn.bind(console),
-                error: console.error.bind(console)
-            };
-            
-            // 필터링할 메시지 패턴들
-            const filteredPatterns = [
-                '사용자 테이블 접근 실패',
-                '데모 계정 로드를 건너뜁니다',
-                'loadDemoAccounts',
-                '데모 계정 로드 오류',
-                'cdn.tailwindcss.com should not be used in production',
-                'Service Worker',
-                'workbox-',
-                'FetchEvent',
-                'redirect mode is not "follow"',
-                'redirected response'
-            ];
-            
-            // 콘솔 메서드 오버라이드
-            ['log', 'warn', 'error'].forEach(method => {
-                console[method] = function(...args) {
-                    const message = args.join(' ');
-                    const shouldFilter = filteredPatterns.some(pattern => 
-                        message.includes(pattern)
-                    );
-                    
-                    if (!shouldFilter) {
-                        originalConsole[method](...args);
-                    }
-                };
-            });
-        })();
-    </script>
-    
     <!-- Tailwind CSS (Local Production) -->
     <link rel="stylesheet" href="css/tailwind-production.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
