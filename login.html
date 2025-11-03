@@ -2,413 +2,409 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 - beautycat (뷰티+에티켓)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- 🔥 Cache Busting Timestamp: 2025-11-03 04:40 KST -->
+    <meta name="version" content="2.1.0-20251103-0440">
+    <title>로그인 | beautycat - 피부관리실 견적비교</title>
+    <meta name="description" content="beautycat 로그인 - 고객과 관리실을 위한 맞춤 로그인">
+    <meta name="keywords" content="피부관리실, 로그인, 고객 로그인, 관리실 로그인, 뷰티캣">
     
-    <!-- SEO 메타태그 -->
-    <meta name="description" content="beautycat 로그인 페이지. 고객, 피부관리실, 관리자 계정으로 로그인하여 맞춤형 피부관리 서비스를 이용하세요.">
-    <meta name="robots" content="noindex, follow">
-    <link rel="canonical" href="https://pposhop.kr/login.html">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
     
-    <!-- 🚨 CRITICAL FIX: 최우선 실행 (Service Worker 제거 + API 오버라이드) -->
-    <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 개발 환경 오류 방지 -->
-    <script src="js/dev-environment-handler.js"></script>
-    
-    <!-- Tailwind CSS (Local Production) -->
-    <link rel="stylesheet" href="css/tailwind-production.css">
-    
-    <!-- 모바일 최적화 CSS -->
-    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
-    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind Config 주석처리 (로컬 CSS 사용) -->
-    <!--
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': {
-                            50: '#fef2f2',
-                            100: '#fee2e2', 
-                            200: '#fecaca',
-                            300: '#fca5a5',
-                            400: '#f87171',
-                            500: '#ff2d92',
-                            600: '#dc2626',
-                            700: '#b91c1c',
-                            800: '#991b1b',
-                            900: '#7f1d1d',
-                        }
-                    },
-                    fontFamily: {
-                        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
-                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Mobile Optimized CSS with Cache Busting -->
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0-20251103-0440">
     
     <style>
-        * { 
-            font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
-        }
-        
         body {
-            background-color: #ffffff;
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 50%, #FFF8FA 100%);
+            min-height: 100vh;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #ff2d92, #e6297f);
-            color: white;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            font-weight: 600;
+        
+        /* 로고 스타일 */
+        .logo-emoji {
+            font-size: 2rem;
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent; /* 배경 제거 */
+            border: none; /* 테두리 제거 */
+            box-shadow: none; /* 그림자 제거 */
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 45, 146, 0.2);
         }
         
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #e6297f, #cc256c);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 45, 146, 0.35);
-            border-color: #ff2d92;
+        .logo-emoji:hover {
+            transform: scale(1.1) rotate(5deg);
         }
         
-        .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(255, 45, 146, 0.2);
-        }
-
-        .unni-input {
-            width: 100%;
-            padding: 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.2s ease;
+        /* 로그인 카드 */
+        .login-card {
             background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
         
-        .unni-input:focus {
-            outline: none;
-            border-color: #ff2d92;
-        }
-
-        .unni-card {
-            background: white;
-            border: 1px solid #f0f0f0;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-        
-        /* 사용자 유형 선택 버튼 호버 효과 */
+        /* 회원 유형 선택 버튼 - 검은색 테두리로 변경 */
         .user-type-btn {
-            background: white !important;
+            background: white;
             border: 2px solid #000000 !important; /* 검은색 테두리 */
             border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
         }
         
         .user-type-btn:hover {
-            border: 2px solid #000000 !important; /* 호버 시에도 검은색 */
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
+            border-color: #000000 !important;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
         }
         
-        /* 선택된 상태도 검은색 테두리 유지 */
-        .user-type-btn.bg-primary-50 {
-            border: 2px solid #000000 !important;
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%) !important;
+        .user-type-btn.selected {
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
+            border-color: #000000 !important; /* 선택 시에도 검은색 테두리 */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         }
         
-        .user-type-btn:hover i.fas {
-            transform: scale(1.1);
+        .user-type-btn .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
         
-        .user-type-btn:active {
+        .user-type-btn .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: #000000;
+        }
+        
+        .user-type-btn .description {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        /* 입력 필드 스타일 */
+        .input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #FF69B4;
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+        }
+        
+        /* 로그인 버튼 - 검은색 테두리로 변경 */
+        .btn-primary {
+            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
+            color: white;
+            border: 2px solid #000000 !important; /* 검은색 테두리 추가 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #FF1493 0%, #C71585 100%);
+            border: 2px solid #000000 !important; /* 호버 시에도 검은색 테두리 유지 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+        }
+        
+        .btn-primary:active {
             transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(255, 105, 180, 0.3);
         }
         
-        /* 링크 호버 효과 통일 */
-        a.text-primary-500:hover,
-        a.hover\\:text-primary-500:hover {
-            color: #e6297f;
+        /* 링크 스타일 */
+        .link {
+            color: #FF69B4;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .link:hover {
+            color: #FF1493;
             text-decoration: underline;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 3px;
-        }
-        
-        /* 관리자 로그인 버튼 호버 */
-        button.bg-gray-600:hover {
-            background: linear-gradient(135deg, #4B5563, #374151);
-            box-shadow: 0 2px 8px rgba(75, 85, 99, 0.3);
         }
         
         /* 모바일 최적화 */
         @media (max-width: 640px) {
-            .unni-card {
-                padding: 1.5rem !important;
-                margin-top: 2rem !important;
-            }
-            
-            h2 {
-                font-size: 1.5rem !important;
+            .login-card {
+                margin: 1rem;
             }
             
             .user-type-btn {
-                padding: 1rem !important;
-                min-height: 80px;
+                padding: 0.75rem;
+                min-height: 48px; /* 터치 타겟 최소 크기 */
             }
             
-            .user-type-btn i {
-                font-size: 1.75rem !important;
+            .user-type-btn .icon {
+                font-size: 1.5rem;
             }
             
-            .user-type-btn span {
-                font-size: 0.9375rem !important;
+            .user-type-btn .title {
+                font-size: 1rem;
             }
             
-            .unni-input {
-                font-size: 16px !important;
-                padding: 14px !important;
-                min-height: 52px;
+            .user-type-btn .description {
+                font-size: 0.75rem;
             }
             
             .btn-primary {
-                font-size: 16px !important;
-                padding: 14px 24px !important;
-                min-height: 52px;
+                min-height: 48px; /* 터치 타겟 최소 크기 */
+                font-size: 1rem;
             }
             
-            .text-sm {
-                font-size: 0.9375rem !important;
-            }
-            
-            .text-xs {
-                font-size: 0.8125rem !important;
+            .input-group input {
+                min-height: 48px; /* 터치 타겟 최소 크기 */
+                font-size: 16px; /* iOS 자동 줌 방지 */
             }
         }
     </style>
 </head>
-
-<body class="bg-gray-50">
-    <!-- 헤더 -->
-    <header class="bg-white border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
                 <!-- 로고 -->
-                <div class="logo-container">
-                    <div class="logo-emoji">🐱</div>
-                    <div class="logo-text">
-                        <span class="logo-title">beautycat</span>
-                        <span class="logo-subtitle">(뷰티+에티켓)</span>
-                    </div>
-                </div>
+                <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                    <span class="logo-emoji">🐱</span>
+                    <span class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                        beautycat
+                    </span>
+                </a>
                 
-                <!-- 뒤로가기 버튼 -->
-                <a href="index.html" class="text-gray-600 hover:text-primary-500 font-medium text-sm">
-                    <i class="fas fa-arrow-left mr-2"></i>홈으로
+                <!-- 홈으로 버튼 -->
+                <a href="index.html" class="btn-outline">
+                    <i class="fas fa-home mr-2"></i>
+                    홈으로
                 </a>
             </div>
         </div>
-    </header>
+    </nav>
 
     <!-- 로그인 폼 -->
-    <div class="max-w-md mx-auto mt-16 px-4">
-        <div class="unni-card p-8">
-            <!-- 제목 -->
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">로그인</h2>
-                <p class="text-gray-600">beautycat 계정으로 로그인하세요</p>
-            </div>
-
-            <!-- 로그인 폼 -->
-            <form id="loginForm" class="space-y-6">
-                <!-- 사용자 유형 선택 -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">사용자 유형</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label id="customer-label" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative">
-                            <input type="radio" name="userType" value="customer" checked class="sr-only">
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
-                                <i class="fas fa-check text-white text-xs hidden"></i>
-                            </div>
-                            <i class="fas fa-user text-primary-500 text-2xl mb-2 transition-all"></i>
-                            <span class="text-sm font-semibold text-gray-700">고객</span>
-                        </label>
-                        <label id="shop-label" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative">
-                            <input type="radio" name="userType" value="shop" class="sr-only">
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
-                                <i class="fas fa-check text-white text-xs hidden"></i>
-                            </div>
-                            <i class="fas fa-store text-primary-500 text-2xl mb-2 transition-all"></i>
-                            <span class="text-sm font-semibold text-gray-700">업체</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 이메일 -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">이메일</label>
-                    <input type="email" id="email" name="email" required class="unni-input" placeholder="이메일을 입력하세요">
-                </div>
-
-                <!-- 비밀번호 -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">비밀번호</label>
-                    <div class="relative">
-                        <input type="password" id="password" name="password" required class="unni-input pr-12" placeholder="비밀번호를 입력하세요">
-                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-eye" id="passwordToggle"></i>
-                        </button>
-                    </div>
-                </div>
-
-
-
-
-
-                <!-- 로그인 버튼 -->
-                <button type="submit" class="w-full btn-primary py-3 text-base font-semibold">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <div class="login-card p-8">
+            <!-- 헤더 -->
+            <div class="text-center mb-6">
+                <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                     로그인
-                </button>
-            </form>
-
-            <!-- 하단 링크 -->
-            <div class="mt-6 text-center space-y-3">
-                <div class="text-sm text-gray-600">
-                    계정이 없으신가요?
-                    <a href="register.html" class="text-primary-500 hover:underline font-medium">회원가입</a>
-                </div>
-                <div class="text-xs text-gray-500">
-                    <a href="#" class="hover:text-primary-500">비밀번호 찾기</a>
-                    <span class="mx-2">|</span>
-                    <a href="contact-inquiry.html" class="hover:text-primary-500">고객센터</a>
+                </h1>
+                <p class="text-gray-600">beautycat에 오신 것을 환영합니다</p>
+            </div>
+            
+            <!-- 회원 유형 선택 -->
+            <div class="mb-6">
+                <label class="block text-sm font-semibold mb-3 text-gray-700">회원 유형</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="user-type-btn selected" id="customer-btn" onclick="selectUserType('customer')">
+                        <div class="text-center">
+                            <div class="icon">👤</div>
+                            <div class="title">고객</div>
+                            <div class="description">관리 받으러 왔어요</div>
+                        </div>
+                    </div>
+                    <div class="user-type-btn" id="shop-btn" onclick="selectUserType('shop')">
+                        <div class="text-center">
+                            <div class="icon">🏪</div>
+                            <div class="title">관리실</div>
+                            <div class="description">고객을 관리해요</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <!-- 관리자 로그인 -->
-            <div class="mt-8 pt-6 border-t border-gray-200">
-                <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-2">관리자</p>
-                    <div class="flex justify-center">
-                        <input type="password" id="adminPassword" placeholder="관리자 비밀번호" 
-                               class="px-3 py-1 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary-500 w-32"
-                               onkeypress="checkAdminLogin(event)">
-                        <button onclick="adminLogin()" 
-                                class="px-4 py-1 text-sm bg-gray-600 text-white rounded-r-lg hover:bg-gray-700 transition-colors">
-                            로그인
-                        </button>
-                    </div>
+            <!-- 로그인 폼 -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="email">
+                        <i class="fas fa-envelope mr-1"></i>
+                        이메일
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="example@email.com"
+                        required
+                    >
                 </div>
+                
+                <div class="input-group">
+                    <label for="password">
+                        <i class="fas fa-lock mr-1"></i>
+                        비밀번호
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="비밀번호를 입력하세요"
+                        required
+                    >
+                </div>
+                
+                <!-- 비밀번호 찾기 -->
+                <div class="text-right mb-4">
+                    <a href="#" class="link text-sm">비밀번호를 잊으셨나요?</a>
+                </div>
+                
+                <!-- 로그인 버튼 -->
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    로그인
+                </button>
+            </form>
+            
+            <!-- 회원가입 링크 -->
+            <div class="text-center mt-6 pt-6 border-t border-gray-200">
+                <p class="text-gray-600">
+                    아직 회원이 아니신가요?
+                    <a href="register.html" class="link font-semibold">회원가입</a>
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- ℹ️ API 오버라이드는 이미 api-global-override.js에서 처리됨 -->
-    <script src="js/api-helper.js"></script>
-    
-    <script src="js/security.js"></script>
-    <script src="js/auth.js"></script>
-    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- 회사 정보 -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">🐱</span>
+                        <span class="text-xl font-bold">beautycat</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        전국 피부관리실을 한눈에<br>
+                        간편한 견적 비교와 예약
+                    </p>
+                </div>
+                
+                <!-- 서비스 -->
+                <div>
+                    <h3 class="font-bold mb-4">서비스</h3>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">견적 비교</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">관리실 찾기</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">리뷰 보기</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">이벤트</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 고객지원 -->
+                <div>
+                    <h3 class="font-bold mb-4">고객지원</h3>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">공지사항</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">1:1 문의</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">이용약관</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 관리실 전용 -->
+                <div>
+                    <h3 class="font-bold mb-4">관리실 전용</h3>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">입점 문의</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">관리자 페이지</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">수수료 안내</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">파트너 지원</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2024 beautycat. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // 사용자 유형 선택 시 스타일 변경
-        function updateUserTypeSelection() {
-            const labels = {
-                'customer': document.getElementById('customer-label'),
-                'shop': document.getElementById('shop-label')
-            };
+        let selectedUserType = 'customer'; // 기본값: 고객
+        
+        // 회원 유형 선택
+        function selectUserType(type) {
+            selectedUserType = type;
             
-            // 모든 라벨 초기화 (검은색 테두리 유지)
-            Object.values(labels).forEach(label => {
-                label.classList.remove('bg-primary-50', 'shadow-md');
-                const checkIcon = label.querySelector('.fa-check');
-                const checkCircle = checkIcon.parentElement;
-                checkCircle.classList.remove('bg-black');
-                checkIcon.classList.add('hidden');
-            });
+            // 버튼 스타일 업데이트
+            const customerBtn = document.getElementById('customer-btn');
+            const shopBtn = document.getElementById('shop-btn');
             
-            // 선택된 항목 강조
-            const selectedValue = document.querySelector('input[name="userType"]:checked').value;
-            const selectedLabel = labels[selectedValue];
-            selectedLabel.classList.add('bg-primary-50', 'shadow-md');
-            const checkIcon = selectedLabel.querySelector('.fa-check');
-            const checkCircle = checkIcon.parentElement;
-            checkCircle.classList.add('bg-black');
-            checkIcon.classList.remove('hidden');
+            if (type === 'customer') {
+                customerBtn.classList.add('selected');
+                shopBtn.classList.remove('selected');
+            } else {
+                shopBtn.classList.add('selected');
+                customerBtn.classList.remove('selected');
+            }
         }
         
-        // 라디오 버튼 변경 이벤트
-        document.querySelectorAll('input[name="userType"]').forEach(radio => {
-            radio.addEventListener('change', updateUserTypeSelection);
-        });
-
-        // 페이지 로드 시 초기 선택 상태 설정
-        document.addEventListener('DOMContentLoaded', updateUserTypeSelection);
-
-        // 비밀번호 표시/숨기기
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const passwordToggle = document.getElementById('passwordToggle');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordToggle.classList.remove('fa-eye');
-                passwordToggle.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                passwordToggle.classList.remove('fa-eye-slash');
-                passwordToggle.classList.add('fa-eye');
-            }
-        }
-
-        // 관리자 로그인 함수
-        function adminLogin() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === '5874') {
-                // 관리자 세션 설정
-                localStorage.setItem('adminAuth', 'true');
-                localStorage.setItem('adminLoginTime', new Date().getTime());
-                alert('관리자로 로그인되었습니다.');
-                window.location.href = 'admin-dashboard.html';
-            } else if (password === '') {
-                alert('비밀번호를 입력하세요.');
-            } else {
-                alert('잘못된 비밀번호입니다.');
-                document.getElementById('adminPassword').value = '';
-            }
-        }
-
-        // 엔터키로 관리자 로그인
-        function checkAdminLogin(event) {
-            if (event.key === 'Enter') {
-                adminLogin();
-            }
-        }
-
-        // 폼 제출 처리
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // 로그인 처리
+        function handleLogin(event) {
+            event.preventDefault();
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const userType = document.querySelector('input[name="userType"]:checked').value;
             
-            // auth.js의 로그인 함수 호출
-            if (typeof handleLogin === 'function') {
-                handleLogin(e);
-            } else {
-                // 임시 처리
-                alert('로그인 처리 중입니다...');
-            }
+            // 실제 구현 시에는 여기서 API 호출
+            console.log('로그인 시도:', {
+                userType: selectedUserType,
+                email: email,
+                password: password
+            });
+            
+            // 임시: 알림 표시
+            alert(`로그인 기능은 준비 중입니다.\n\n회원 유형: ${selectedUserType === 'customer' ? '고객' : '관리실'}\n이메일: ${email}`);
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 기본값 설정
+            selectUserType('customer');
         });
     </script>
 </body>
