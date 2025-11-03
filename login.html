@@ -252,14 +252,16 @@
             <div class="mb-6">
                 <label class="block text-sm font-semibold mb-3 text-gray-700">회원 유형</label>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="user-type-btn selected" id="customer-btn" onclick="selectUserType('customer')">
+                    <div class="user-type-btn selected" id="customer-btn" onclick="selectUserType('customer')" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
+
                         <div class="text-center">
                             <div class="icon">👤</div>
                             <div class="title">고객</div>
                             <div class="description">관리 받으러 왔어요</div>
                         </div>
                     </div>
-                    <div class="user-type-btn" id="shop-btn" onclick="selectUserType('shop')">
+                    <div class="user-type-btn" id="shop-btn" onclick="selectUserType('shop')" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
+
                         <div class="text-center">
                             <div class="icon">🏪</div>
                             <div class="title">관리실</div>
@@ -304,11 +306,12 @@
                     <a href="#" class="link text-sm">비밀번호를 잊으셨나요?</a>
                 </div>
                 
-                <!-- 로그인 버튼 -->
-                <button type="submit" class="btn-primary">
+                        <!-- 로그인 버튼 -->
+                <button type="submit" class="btn-primary" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important; background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%) !important; color: white !important;">
                     <i class="fas fa-sign-in-alt mr-2"></i>
                     로그인
                 </button>
+
             </form>
             
             <!-- 회원가입 링크 -->
