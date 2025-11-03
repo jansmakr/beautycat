@@ -19,6 +19,10 @@
     
     <!-- Tailwind CSS (Local Production) -->
     <link rel="stylesheet" href="css/tailwind-production.css">
+    
+    <!-- 모바일 최적화 CSS -->
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Tailwind Config 주석처리 (로컬 CSS 사용) -->
@@ -61,16 +65,25 @@
         }
 
         .btn-primary {
-            background: #ff2d92;
+            background: linear-gradient(135deg, #ff2d92, #e6297f);
             color: white;
-            border: none;
-            border-radius: 6px;
+            border: 2px solid transparent;
+            border-radius: 8px;
             font-weight: 600;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 45, 146, 0.2);
         }
         
         .btn-primary:hover {
-            background: #e6297f;
+            background: linear-gradient(135deg, #e6297f, #cc256c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 45, 146, 0.35);
+            border-color: #ff2d92;
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(255, 45, 146, 0.2);
         }
 
         .unni-input {
@@ -94,6 +107,42 @@
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
+        
+        /* 사용자 유형 선택 버튼 호버 효과 */
+        .user-type-btn {
+            background: white;
+            border-color: #000000 !important; /* 검은색 테두리 */
+        }
+        
+        .user-type-btn:hover {
+            border-color: #000000 !important; /* 호버 시에도 검은색 */
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .user-type-btn:hover i.fas {
+            transform: scale(1.1);
+        }
+        
+        .user-type-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* 링크 호버 효과 통일 */
+        a.text-primary-500:hover,
+        a.hover\\:text-primary-500:hover {
+            color: #e6297f;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+        }
+        
+        /* 관리자 로그인 버튼 호버 */
+        button.bg-gray-600:hover {
+            background: linear-gradient(135deg, #4B5563, #374151);
+            box-shadow: 0 2px 8px rgba(75, 85, 99, 0.3);
+        }
     </style>
 </head>
 
@@ -103,13 +152,11 @@
         <div class="max-w-6xl mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <!-- 로고 -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 flex items-center justify-center">
-                        <span class="text-xl">🐱</span>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
-                        <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                <div class="logo-container">
+                    <div class="logo-emoji">🐱</div>
+                    <div class="logo-text">
+                        <span class="logo-title">beautycat</span>
+                        <span class="logo-subtitle">(뷰티+에티켓)</span>
                     </div>
                 </div>
                 
@@ -136,20 +183,20 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-3">사용자 유형</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label id="customer-label" class="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 transition-all relative">
+                        <label id="customer-label" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative">
                             <input type="radio" name="userType" value="customer" checked class="sr-only">
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
                                 <i class="fas fa-check text-white text-xs hidden"></i>
                             </div>
-                            <i class="fas fa-user text-primary-500 text-2xl mb-2"></i>
+                            <i class="fas fa-user text-primary-500 text-2xl mb-2 transition-all"></i>
                             <span class="text-sm font-semibold text-gray-700">고객</span>
                         </label>
-                        <label id="shop-label" class="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-primary-500 transition-all relative">
+                        <label id="shop-label" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative">
                             <input type="radio" name="userType" value="shop" class="sr-only">
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
                                 <i class="fas fa-check text-white text-xs hidden"></i>
                             </div>
-                            <i class="fas fa-store text-primary-500 text-2xl mb-2"></i>
+                            <i class="fas fa-store text-primary-500 text-2xl mb-2 transition-all"></i>
                             <span class="text-sm font-semibold text-gray-700">업체</span>
                         </label>
                     </div>
@@ -227,26 +274,22 @@
                 'shop': document.getElementById('shop-label')
             };
             
-            // 모든 라벨 초기화
+            // 모든 라벨 초기화 (검은색 테두리 유지)
             Object.values(labels).forEach(label => {
-                label.classList.remove('border-primary-500', 'bg-primary-50', 'shadow-md');
-                label.classList.add('border-gray-300');
+                label.classList.remove('bg-primary-50', 'shadow-md');
                 const checkIcon = label.querySelector('.fa-check');
                 const checkCircle = checkIcon.parentElement;
-                checkCircle.classList.remove('bg-primary-500', 'border-primary-500');
-                checkCircle.classList.add('border-gray-300');
+                checkCircle.classList.remove('bg-black');
                 checkIcon.classList.add('hidden');
             });
             
             // 선택된 항목 강조
             const selectedValue = document.querySelector('input[name="userType"]:checked').value;
             const selectedLabel = labels[selectedValue];
-            selectedLabel.classList.remove('border-gray-300');
-            selectedLabel.classList.add('border-primary-500', 'bg-primary-50', 'shadow-md');
+            selectedLabel.classList.add('bg-primary-50', 'shadow-md');
             const checkIcon = selectedLabel.querySelector('.fa-check');
             const checkCircle = checkIcon.parentElement;
-            checkCircle.classList.remove('border-gray-300');
-            checkCircle.classList.add('bg-primary-500', 'border-primary-500');
+            checkCircle.classList.add('bg-black');
             checkIcon.classList.remove('hidden');
         }
         

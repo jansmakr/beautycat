@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>beautycat - 피부관리실 견적비교 | 전국 강남 홍대 피부케어 예약</title>
     <meta name="description" content="전국 강남, 홍대 피부관리실 견적을 한번에 비교하고 예약하세요. 피부케어, 여드름 관리, 미백케어 전문업체 매칭 플랫폼.">    
     <meta name="keywords" content="피부관리실, 피부케어, 강남 피부관리, 홍대 피부관리, 피부관리 예약, 여드름 관리, 미백케어, 피부관리 견적, 뷰티케어, 스킨케어">    
@@ -212,7 +215,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS (컴파일된 버전) -->
-    <link rel="stylesheet" href="css/tailwind-compiled.css">
+    <link rel="stylesheet" href="css/tailwind-compiled.css?v=2.1.0">
+    
+    <!-- 모바일 최적화 CSS (캐시 버스팅) -->
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
     <script>
         
         // 🚧 강력한 콘솔 정리 시스템 (즉시 적용)
@@ -248,6 +254,8 @@
                 '공지사항 로드 중 오류',
                 '대표샵 데이터 로드 오류',
                 '샘플 데이터 로드 오류',
+                '피부관리실 테이블에 접근할 수 없습니다',
+                '데이터 로드를 건너뜁니다',
                 'Deleting old cache',
                 'Opened cache',
                 'Service Worker',
@@ -391,17 +399,63 @@
             box-shadow: 0 0 0 3px rgba(255, 45, 146, 0.1);
         }
         
-        /* 모바일 네비게이션 */
+        /* 모바일 네비게이션 - 중앙 정렬 및 간격 최적화 */
         .mobile-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
             border-top: 1px solid #e5e7eb;
-            padding: 12px 0;
+            padding: env(safe-area-inset-bottom, 12px) 0 12px 0;
             z-index: 1000;
             display: none;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .mobile-nav .flex {
+            max-width: 100%;
+            margin: 0 auto;
+            justify-content: space-evenly !important;
+            gap: 1rem;
+        }
+        
+        .mobile-nav button {
+            flex: 1;
+            max-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            padding: 0.5rem;
+            min-height: 56px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-nav button:active {
+            transform: scale(0.95);
+            background: #FEF2F2;
+        }
+        
+        .mobile-nav button i {
+            font-size: 1.375rem;
+            color: #6B7280;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-nav button span {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #6B7280;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-nav button:active i,
+        .mobile-nav button:active span {
+            color: #EC4899;
         }
         
         @media (max-width: 768px) {
@@ -409,13 +463,30 @@
                 display: block;
             }
             body {
-                padding-bottom: 80px;
+                padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
+            }
+        }
+        
+        @media (max-width: 375px) {
+            .mobile-nav button {
+                min-height: 52px;
+            }
+            .mobile-nav button i {
+                font-size: 1.25rem;
+            }
+            .mobile-nav button span {
+                font-size: 0.75rem;
             }
         }
         
         /* 대형 텍스트 사이즈 커스텀 */
         .text-9xl {
             font-size: 8rem; /* 128px */
+            line-height: 1;
+        }
+        
+        .text-10xl {
+            font-size: 10rem; /* 160px */
             line-height: 1;
         }
         
@@ -546,34 +617,194 @@
         /* 모바일 최적화 개선 */
         @media (max-width: 640px) {
             .mobile-text-optimization {
-                line-height: 1.4;
+                line-height: 1.5;
             }
             
             /* 헤더 최적화 */
             header {
-                padding: 0.5rem 1rem;
+                padding: 0.75rem 1rem;
             }
             
             /* 히어로 섹션 간격 조정 */
             .hero-mobile {
-                padding-top: 1rem;
-                padding-bottom: 1rem;
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+            
+            /* 고양이 아이콘 크기 조정 */
+            .cat-container {
+                width: 128px !important;
+                height: 128px !important;
+                border-width: 4px;
+            }
+            
+            .cat-bounce {
+                font-size: 5.5rem !important;
             }
             
             /* 텍스트 크기 조정 */
             .mobile-title {
-                font-size: 0.95rem;
-                line-height: 1.3;
+                font-size: 1.125rem;
+                line-height: 1.4;
+                font-weight: 700;
+            }
+            
+            /* 히어로 텍스트 최적화 */
+            .hero-mobile h1 {
+                font-size: 1.5rem !important;
+                line-height: 1.35;
+                font-weight: 800;
+                margin-bottom: 0.75rem;
+            }
+            
+            .hero-mobile h2 {
+                font-size: 1.125rem !important;
+                line-height: 1.4;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-mobile p {
+                font-size: 0.9375rem;
+                line-height: 1.6;
+            }
+            
+            /* 카드 여백 조정 */
+            .card {
+                padding: 1.25rem;
+                margin: 1rem 0;
+                border-radius: 1rem;
+            }
+            
+            /* 모바일 섹션 배경 강조 */
+            .section-consultation {
+                padding: 1.5rem 1.25rem;
+                border-width: 2px;
+            }
+            
+            .section-representative {
+                padding: 1.5rem 1.25rem;
+                border-width: 2px;
+                margin: -1.5rem -1.5rem 0 -1.5rem;
+            }
+            
+            /* 섹션 제목 */
+            .card h2 {
+                font-size: 1.125rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+            }
+            
+            /* 버튼 최적화 */
+            .btn-primary {
+                font-size: 1rem;
+                padding: 0.875rem 1.5rem;
+                min-height: 48px;
+            }
+            
+            /* 폼 입력 최적화 */
+            .form-input {
+                font-size: 1rem;
+                padding: 0.875rem 1rem;
+                min-height: 48px;
             }
         }
         
-        /* 심플 헤더 */
+        /* 심플 헤더 - 모바일 최적화 */
         .simple-header {
             position: sticky;
             top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
             z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 섹션 배경색 - 눈에 띄게 구별 */
+        .section-consultation {
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
+            border: 2px solid #FED7E2;
+            box-shadow: 0 4px 16px rgba(236, 72, 153, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-consultation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .section-representative {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border: 2px solid #BAE6FD;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-representative::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .section-consultation h2,
+        .section-representative h2 {
+            color: #1F2937;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-consultation p {
+            color: #4B5563;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-representative p {
+            color: #4B5563;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-consultation .text-center,
+        .section-representative .text-center {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .simple-header .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .simple-header .py-3 {
+            padding-top: max(12px, env(safe-area-inset-top));
+            padding-bottom: 12px;
+        }
+        
+        @media (max-width: 640px) {
+            .simple-header .logo-container {
+                gap: 0.625rem;
+            }
+            
+            .simple-header .btn-secondary {
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+                min-height: 40px;
+                font-weight: 600;
+            }
         }
     </style>
 </head>
@@ -583,11 +814,11 @@
         <div class="px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- 로고 -->
-                <div class="flex items-center space-x-1">
-                    <span class="text-xl">🐱</span>
-                    <div class="flex flex-col">
-                        <h2 class="text-base font-bold text-gray-900 leading-tight">beautycat</h2>
-                        <p class="text-xs text-pink-500 font-medium leading-tight">피부관리실 견적 플랫폼</p>
+                <div class="logo-container">
+                    <div class="logo-emoji">🐱</div>
+                    <div class="logo-text">
+                        <span class="logo-title">beautycat</span>
+                        <span class="logo-subtitle">(뷰티+에티켓)</span>
                     </div>
                 </div>
                 
@@ -602,38 +833,38 @@
     </header>
 
     <!-- 메인 콘텐츠 -->
-    <main class="px-4 py-6 space-y-6">
+    <main class="px-4 py-4 space-y-5 sm:py-6 sm:space-y-6">
         <!-- 히어로 섹션 -->
-        <section class="text-center py-6 sm:py-8 hero-mobile">
-            <div class="mb-6">
+        <section class="text-center py-4 sm:py-8 hero-mobile">
+            <div class="mb-5 sm:mb-6">
                 <!-- 뷰냥이 아이콘 -->
-                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl flex items-center justify-center mx-auto mb-4 bg-gradient-to-br from-pink-50 to-purple-50 border-4 border-pink-200 shadow-lg cat-container">
-                    <span class="text-9xl sm:text-12xl cat-bounce">🐱</span>
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-5 bg-gradient-to-br from-pink-50 to-purple-50 border-4 sm:border-5 border-pink-200 shadow-lg cat-container">
+                    <span class="text-7xl sm:text-10xl cat-bounce">🐱</span>
                 </div>
                 
                 <!-- SEO 최적화된 메인 헤딩 -->
-                <div class="space-y-3">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+                <div class="space-y-2.5 sm:space-y-3">
+                    <h1 class="text-xl sm:text-3xl font-bold text-gray-900 leading-tight px-2">
                         전국 피부관리실 견적비교 예약 플랫폼
                     </h1>
-                    <h2 class="text-lg sm:text-xl font-semibold text-primary-500">
+                    <h2 class="text-base sm:text-xl font-semibold text-primary-500 px-2">
                         강남 · 홍대 · 잠실 피부케어 전문업체 매칭
                     </h2>
-                    <div class="text-sm sm:text-base text-gray-600 leading-relaxed mt-4">
-                        <p class="font-medium">🐱 안녕하세요? 뷰냥이 인사드림당^^</p>
+                    <div class="text-sm sm:text-base text-gray-600 leading-relaxed mt-3 sm:mt-4 px-2">
+                        <p class="font-medium text-base sm:text-lg">🐱 안녕하세요? 뷰냥이 인사드림당^^</p>
                         <p class="mt-2">상담신청만 남기면 우리 동네</p>
-                        <p><strong>피부관리실 견적을 한번에</strong> 비교해드려요!</p>
-                        <p class="text-primary-600 font-semibold mt-2">✨ 전문가 맞춤 케어!</p>
+                        <p><strong class="font-bold">피부관리실 견적을 한번에</strong> 비교해드려요!</p>
+                        <p class="text-primary-600 font-semibold mt-2 text-base">✨ 전문가 맞춤 케어!</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- 상담 및 견적 신청 폼 -->
-        <section id="consultation" class="card">
-            <div class="text-center mb-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-2">피부관리실 상담 및 견적 신청</h2>
-                <p class="text-gray-600 text-sm">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
+        <section id="consultation" class="card section-consultation">
+            <div class="text-center mb-5 sm:mb-6">
+                <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">피부관리실 상담 및 견적 신청</h2>
+                <p class="text-gray-700 text-sm sm:text-base font-medium">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
             </div>
             
             <!-- 간단한 초기 폼 (처음 접속 시 표시) -->
@@ -685,15 +916,15 @@
                 
                 
                 <!-- 지역별 대표샵 전화 상담 섹션 -->
-                <div class="mt-6 border-t border-gray-200 pt-6">
+                <div class="mt-6 border-t-0 pt-6 -mx-6 px-6 pb-6 rounded-2xl section-representative">
                     <div class="text-center mb-4">
                         <div class="flex items-center justify-center mb-2">
-                            <i class="fas fa-phone text-primary-500 mr-2"></i>
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-800">
+                            <i class="fas fa-phone text-blue-600 mr-2 text-lg"></i>
+                            <h3 class="text-base sm:text-lg font-bold text-gray-900">
                                 지역별 대표샵 전화 상담
                             </h3>
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
                             우리 동네 대표 피부관리실과<br class="sm:hidden">
                             바로 전화 상담하세요
                         </p>
@@ -1093,30 +1324,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- 전화상담 섹션 -->
-        <section id="phone-consultation" class="card">
-            <div class="text-center mb-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">📞 전화상담</h2>
-                <p class="text-gray-600 text-sm">우리 동네 피부관리실과 바로!</p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <select id="phoneState" onchange="loadDistricts('phone')" class="w-full px-3 py-2 border rounded-lg text-sm">
-                    <option value="">시/도 선택</option>
-                    <option value="서울특별시">서울특별시</option>
-                    <option value="부산광역시">부산광역시</option>
-                    <option value="대구광역시">대구광역시</option>
-                    <option value="인천광역시">인천광역시</option>
-                    <option value="광주광역시">광주광역시</option>
-                </select>
-                <select id="phoneDistrict" onchange="loadRepresentativeShops()" class="w-full px-3 py-2 border rounded-lg text-sm">
-                    <option value="">시/군/구 선택</option>
-                </select>
-            </div>
-
-            <div id="shopsList"></div>
-        </section>
     </main>
 
     <!-- 모바일 하단 네비게이션 -->
@@ -1133,10 +1340,6 @@
             <button class="flex flex-col items-center space-y-1 touch-feedback" onclick="openChat()">
                 <i class="fas fa-comments text-gray-600 text-lg"></i>
                 <span class="text-xs text-gray-600">채팅</span>
-            </button>
-            <button class="flex flex-col items-center space-y-1 touch-feedback" onclick="openPhoneConsultation()">
-                <i class="fas fa-phone text-gray-600 text-lg"></i>
-                <span class="text-xs text-gray-600">전화상담</span>
             </button>
         </div>
     </nav>
