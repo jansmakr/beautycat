@@ -6,11 +6,10 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- 🔥 Cache Busting Timestamp: 2025-11-03 04:40 KST -->
-    <meta name="version" content="2.1.0-20251103-0440">
+    <!-- 🔥 Cache Busting Timestamp -->
+    <meta name="version" content="2.1.3-20251103-0600">
     <title>회원가입 | beautycat - 피부관리실 견적비교</title>
     <meta name="description" content="beautycat 회원가입 - 고객과 관리실을 위한 맞춤 회원가입">
-    <meta name="keywords" content="피부관리실, 회원가입, 고객 가입, 관리실 가입, 뷰티캣">
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
@@ -24,8 +23,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Mobile Optimized CSS with Cache Busting -->
-    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0-20251103-0440">
+    <!-- Mobile Optimized CSS -->
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.3">
     
     <style>
         body {
@@ -34,7 +33,6 @@
             min-height: 100vh;
         }
         
-        /* 로고 스타일 */
         .logo-emoji {
             font-size: 2rem;
             width: auto;
@@ -42,9 +40,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: transparent; /* 배경 제거 */
-            border: none; /* 테두리 제거 */
-            box-shadow: none; /* 그림자 제거 */
+            background: transparent;
+            border: none;
+            box-shadow: none;
             transition: all 0.3s ease;
         }
         
@@ -52,7 +50,6 @@
             transform: scale(1.1) rotate(5deg);
         }
         
-        /* 회원가입 카드 */
         .register-card {
             background: white;
             border-radius: 1rem;
@@ -60,28 +57,27 @@
             overflow: hidden;
         }
         
-        /* 회원 유형 선택 버튼 - 검은색 테두리로 변경 */
+        /* 회원 유형 선택 버튼 - 인라인 스타일 강화 */
         .user-type-btn {
-            background: white;
-            border: 2px solid #000000 !important; /* 검은색 테두리 */
+            background: white !important;
+            border: 3px solid #000000 !important;
             border-radius: 0.5rem;
             padding: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            box-shadow: 0 0 0 1px #000000 !important;
         }
         
         .user-type-btn:hover {
-            border-color: #000000 !important;
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
             transform: translateY(-2px);
         }
         
         .user-type-btn.selected {
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
-            border-color: #000000 !important; /* 선택 시에도 검은색 테두리 */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
         }
         
         .user-type-btn .icon {
@@ -101,7 +97,6 @@
             color: #666;
         }
         
-        /* 입력 필드 스타일 */
         .input-group {
             position: relative;
             margin-bottom: 1rem;
@@ -119,7 +114,7 @@
         .input-group textarea {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 2px solid #E5E7EB;
+            border: 2px solid #000000 !important;
             border-radius: 0.5rem;
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -129,8 +124,8 @@
         .input-group select:focus,
         .input-group textarea:focus {
             outline: none;
-            border-color: #FF69B4;
-            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+            border: 3px solid #000000 !important;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
         }
         
         .input-group small {
@@ -140,38 +135,36 @@
             font-size: 0.875rem;
         }
         
-        /* 회원가입 버튼 - 검은색 테두리로 변경 */
+        /* 회원가입 버튼 - 인라인 스타일 강화 */
         .btn-primary {
-            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
-            color: white;
-            border: 2px solid #000000 !important; /* 검은색 테두리 추가 */
+            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%) !important;
+            color: white !important;
+            border: 3px solid #000000 !important;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
+            box-shadow: 0 0 0 1px #000000 !important;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #FF1493 0%, #C71585 100%);
-            border: 2px solid #000000 !important; /* 호버 시에도 검은색 테두리 유지 */
+            background: linear-gradient(135deg, #FF1493 0%, #C71585 100%) !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
         }
         
         .btn-primary:active {
             transform: translateY(0);
-            box-shadow: 0 2px 6px rgba(255, 105, 180, 0.3);
         }
         
         .btn-primary:disabled {
-            background: #ccc;
+            background: #ccc !important;
             cursor: not-allowed;
             transform: none;
         }
         
-        /* 체크박스 스타일 */
         .checkbox-group {
             display: flex;
             align-items: flex-start;
@@ -193,7 +186,6 @@
             margin: 0;
         }
         
-        /* 링크 스타일 */
         .link {
             color: #FF69B4;
             text-decoration: none;
@@ -205,13 +197,11 @@
             text-decoration: underline;
         }
         
-        /* 구분선 */
         .divider {
             border-top: 2px solid #F3F4F6;
             margin: 1.5rem 0;
         }
         
-        /* 관리실 전용 필드 */
         .shop-only-fields {
             display: none;
             animation: fadeIn 0.3s ease-in-out;
@@ -232,7 +222,6 @@
             }
         }
         
-        /* 모바일 최적화 */
         @media (max-width: 640px) {
             .register-card {
                 margin: 1rem;
@@ -240,31 +229,23 @@
             
             .user-type-btn {
                 padding: 0.75rem;
-                min-height: 48px; /* 터치 타겟 최소 크기 */
+                min-height: 48px;
             }
             
             .user-type-btn .icon {
                 font-size: 1.5rem;
             }
             
-            .user-type-btn .title {
-                font-size: 1rem;
-            }
-            
-            .user-type-btn .description {
-                font-size: 0.75rem;
-            }
-            
             .btn-primary {
-                min-height: 48px; /* 터치 타겟 최소 크기 */
+                min-height: 48px;
                 font-size: 1rem;
             }
             
             .input-group input,
             .input-group select,
             .input-group textarea {
-                min-height: 48px; /* 터치 타겟 최소 크기 */
-                font-size: 16px; /* iOS 자동 줌 방지 */
+                min-height: 48px;
+                font-size: 16px;
             }
             
             .checkbox-group input[type="checkbox"] {
@@ -279,7 +260,6 @@
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- 로고 -->
                 <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                     <span class="logo-emoji">🐱</span>
                     <span class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
@@ -287,8 +267,7 @@
                     </span>
                 </a>
                 
-                <!-- 홈으로 버튼 -->
-                <a href="index.html" class="btn-outline">
+                <a href="index.html" class="btn-outline" style="border: 2px solid #000000 !important; color: #000000 !important;">
                     <i class="fas fa-home mr-2"></i>
                     홈으로
                 </a>
@@ -299,7 +278,6 @@
     <!-- 회원가입 폼 -->
     <div class="container mx-auto px-4 py-8 max-w-2xl">
         <div class="register-card p-8">
-            <!-- 헤더 -->
             <div class="text-center mb-6">
                 <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                     회원가입
@@ -311,14 +289,14 @@
             <div class="mb-6">
                 <label class="block text-sm font-semibold mb-3 text-gray-700">회원 유형 선택 *</label>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="user-type-btn selected" id="customer-btn" onclick="selectUserType('customer')">
+                    <div class="user-type-btn selected" id="customer-btn" onclick="selectUserType('customer')" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
                         <div class="text-center">
                             <div class="icon">👤</div>
                             <div class="title">고객</div>
                             <div class="description">관리 받으러 왔어요</div>
                         </div>
                     </div>
-                    <div class="user-type-btn" id="shop-btn" onclick="selectUserType('shop')">
+                    <div class="user-type-btn" id="shop-btn" onclick="selectUserType('shop')" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
                         <div class="text-center">
                             <div class="icon">🏪</div>
                             <div class="title">관리실</div>
@@ -332,7 +310,6 @@
             
             <!-- 회원가입 폼 -->
             <form id="register-form" onsubmit="handleRegister(event)">
-                <!-- 공통 필드 -->
                 <div class="input-group">
                     <label for="email">
                         <i class="fas fa-envelope mr-1"></i>
@@ -344,6 +321,7 @@
                         name="email" 
                         placeholder="example@email.com"
                         required
+                        style="border: 2px solid #000000 !important;"
                     >
                     <small>로그인 시 사용할 이메일 주소를 입력하세요</small>
                 </div>
@@ -360,6 +338,7 @@
                         placeholder="8자 이상 입력하세요"
                         required
                         minlength="8"
+                        style="border: 2px solid #000000 !important;"
                     >
                     <small>영문, 숫자, 특수문자를 포함한 8자 이상</small>
                 </div>
@@ -375,6 +354,7 @@
                         name="password-confirm" 
                         placeholder="비밀번호를 다시 입력하세요"
                         required
+                        style="border: 2px solid #000000 !important;"
                     >
                 </div>
                 
@@ -389,6 +369,7 @@
                         name="name" 
                         placeholder="홍길동"
                         required
+                        style="border: 2px solid #000000 !important;"
                     >
                 </div>
                 
@@ -404,6 +385,7 @@
                         placeholder="010-1234-5678"
                         required
                         pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"
+                        style="border: 2px solid #000000 !important;"
                     >
                     <small>'-'를 포함하여 입력하세요 (예: 010-1234-5678)</small>
                 </div>
@@ -427,6 +409,7 @@
                             id="shop-name" 
                             name="shop-name" 
                             placeholder="뷰티캣 강남점"
+                            style="border: 2px solid #000000 !important;"
                         >
                     </div>
                     
@@ -441,6 +424,7 @@
                             name="business-number" 
                             placeholder="123-45-67890"
                             pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}"
+                            style="border: 2px solid #000000 !important;"
                         >
                         <small>'-'를 포함하여 입력하세요 (예: 123-45-67890)</small>
                     </div>
@@ -450,7 +434,7 @@
                             <i class="fas fa-map-marker-alt mr-1"></i>
                             지역 *
                         </label>
-                        <select id="region" name="region">
+                        <select id="region" name="region" style="border: 2px solid #000000 !important;">
                             <option value="">지역을 선택하세요</option>
                             <option value="서울">서울</option>
                             <option value="경기">경기</option>
@@ -482,6 +466,7 @@
                             id="address" 
                             name="address" 
                             placeholder="서울시 강남구 테헤란로 123"
+                            style="border: 2px solid #000000 !important;"
                         >
                     </div>
                     
@@ -495,6 +480,7 @@
                             name="description" 
                             rows="4" 
                             placeholder="관리실을 간단히 소개해주세요"
+                            style="border: 2px solid #000000 !important;"
                         ></textarea>
                         <small>고객에게 보여질 관리실 소개글입니다</small>
                     </div>
@@ -543,7 +529,7 @@
                 </div>
                 
                 <!-- 회원가입 버튼 -->
-                <button type="submit" class="btn-primary" id="submit-btn">
+                <button type="submit" class="btn-primary" id="submit-btn" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important; background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%) !important; color: white !important;">
                     <i class="fas fa-user-plus mr-2"></i>
                     회원가입
                 </button>
@@ -563,7 +549,6 @@
     <footer class="bg-gray-900 text-white py-12 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- 회사 정보 -->
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
                         <span class="text-2xl">🐱</span>
@@ -575,7 +560,6 @@
                     </p>
                 </div>
                 
-                <!-- 서비스 -->
                 <div>
                     <h3 class="font-bold mb-4">서비스</h3>
                     <ul class="space-y-2 text-gray-400 text-sm">
@@ -586,7 +570,6 @@
                     </ul>
                 </div>
                 
-                <!-- 고객지원 -->
                 <div>
                     <h3 class="font-bold mb-4">고객지원</h3>
                     <ul class="space-y-2 text-gray-400 text-sm">
@@ -597,7 +580,6 @@
                     </ul>
                 </div>
                 
-                <!-- 관리실 전용 -->
                 <div>
                     <h3 class="font-bold mb-4">관리실 전용</h3>
                     <ul class="space-y-2 text-gray-400 text-sm">
@@ -616,13 +598,11 @@
     </footer>
 
     <script>
-        let selectedUserType = 'customer'; // 기본값: 고객
+        let selectedUserType = 'customer';
         
-        // 회원 유형 선택
         function selectUserType(type) {
             selectedUserType = type;
             
-            // 버튼 스타일 업데이트
             const customerBtn = document.getElementById('customer-btn');
             const shopBtn = document.getElementById('shop-btn');
             const shopFields = document.getElementById('shop-only-fields');
@@ -632,7 +612,6 @@
                 shopBtn.classList.remove('selected');
                 shopFields.classList.remove('active');
                 
-                // 관리실 필드 required 제거
                 document.getElementById('shop-name').removeAttribute('required');
                 document.getElementById('business-number').removeAttribute('required');
                 document.getElementById('region').removeAttribute('required');
@@ -642,7 +621,6 @@
                 customerBtn.classList.remove('selected');
                 shopFields.classList.add('active');
                 
-                // 관리실 필드 required 추가
                 document.getElementById('shop-name').setAttribute('required', 'required');
                 document.getElementById('business-number').setAttribute('required', 'required');
                 document.getElementById('region').setAttribute('required', 'required');
@@ -650,7 +628,6 @@
             }
         }
         
-        // 전체 약관 동의 토글
         function toggleAllTerms() {
             const allCheckbox = document.getElementById('terms-all');
             const termItems = document.querySelectorAll('.terms-item');
@@ -660,7 +637,6 @@
             });
         }
         
-        // 개별 약관 체크 시 전체 동의 상태 업데이트
         document.addEventListener('DOMContentLoaded', function() {
             const termItems = document.querySelectorAll('.terms-item');
             const allCheckbox = document.getElementById('terms-all');
@@ -671,13 +647,13 @@
                     allCheckbox.checked = allChecked;
                 });
             });
+            
+            selectUserType('customer');
         });
         
-        // 회원가입 처리
         function handleRegister(event) {
             event.preventDefault();
             
-            // 비밀번호 확인
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password-confirm').value;
             
@@ -686,7 +662,6 @@
                 return;
             }
             
-            // 필수 약관 동의 확인
             const termsService = document.getElementById('terms-service').checked;
             const termsPrivacy = document.getElementById('terms-privacy').checked;
             const termsAge = document.getElementById('terms-age').checked;
@@ -696,7 +671,6 @@
                 return;
             }
             
-            // 폼 데이터 수집
             const formData = {
                 userType: selectedUserType,
                 email: document.getElementById('email').value,
@@ -706,7 +680,6 @@
                 marketing: document.getElementById('terms-marketing').checked
             };
             
-            // 관리실인 경우 추가 정보
             if (selectedUserType === 'shop') {
                 formData.shopName = document.getElementById('shop-name').value;
                 formData.businessNumber = document.getElementById('business-number').value;
@@ -715,18 +688,10 @@
                 formData.description = document.getElementById('description').value;
             }
             
-            // 실제 구현 시에는 여기서 API 호출
             console.log('회원가입 데이터:', formData);
             
-            // 임시: 알림 표시
             alert(`회원가입 기능은 준비 중입니다.\n\n회원 유형: ${selectedUserType === 'customer' ? '고객' : '관리실'}\n이메일: ${formData.email}`);
         }
-        
-        // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
-            // 기본값 설정
-            selectUserType('customer');
-        });
     </script>
 </body>
 </html>
