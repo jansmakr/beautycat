@@ -10,6 +10,10 @@
     <script src="api-global-override.js"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 모바일 최적화 CSS -->
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,13 +59,11 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <a href="index.html" class="flex items-center space-x-3 mr-8">
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <span class="text-xl">🐱</span>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+에티켓)</span></h1>
-                            <p class="text-xs text-primary-500 font-medium">피부관리실 견적 플랫폼</p>
+                    <a href="index.html" class="logo-container mr-8">
+                        <div class="logo-emoji">🐱</div>
+                        <div class="logo-text">
+                            <span class="logo-title">beautycat</span>
+                            <span class="logo-subtitle">(뷰티+에티켓)</span>
                         </div>
                     </a>
                     <nav class="hidden md:flex space-x-6">
@@ -791,14 +793,6 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">구/군</label>
                             <input type="text" id="edit-district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 강남구, 서초구">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">상태</label>
-                            <select id="edit-status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="pending">승인대기</option>
-                                <option value="approved">승인됨</option>
-                                <option value="rejected">거부됨</option>
-                            </select>
-                        </div>
                     </div>
                     
                     <div>
@@ -851,6 +845,46 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">업체 소개</label>
                         <textarea id="edit-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="업체 소개를 입력하세요..."></textarea>
+                    </div>
+                    
+                    <!-- 유튜브 URL 입력 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fab fa-youtube text-red-600 mr-1"></i>유튜브 URL
+                        </label>
+                        <input type="url" id="edit-youtube-url" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="https://www.youtube.com/watch?v=..." onblur="loadYoutubeThumbnail()">
+                        <p class="text-xs text-gray-500 mt-1">유튜브 영상 URL을 입력하면 썸네일이 자동으로 표시됩니다</p>
+                        <!-- 유튜브 썸네일 미리보기 -->
+                        <div id="youtube-thumbnail-preview" class="hidden mt-3">
+                            <img id="youtube-thumbnail-img" src="" alt="유튜브 썸네일" class="w-full max-w-md rounded-lg shadow-md">
+                            <a id="youtube-link" href="" target="_blank" class="inline-flex items-center mt-2 text-sm text-blue-600 hover:text-blue-800">
+                                <i class="fab fa-youtube mr-1"></i>유튜브에서 보기
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 파일 업로드 -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-image text-purple-600 mr-1"></i>샵 이미지 업로드
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-primary-500 transition-colors">
+                            <input type="file" id="edit-shop-image" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            <label for="edit-shop-image" class="cursor-pointer flex flex-col items-center">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <span class="text-sm text-gray-600">클릭하여 이미지 선택</span>
+                                <span class="text-xs text-gray-500 mt-1">최대 1MB, JPG/PNG/GIF 형식</span>
+                            </label>
+                        </div>
+                        <div id="image-preview" class="hidden mt-3">
+                            <div class="relative inline-block">
+                                <img id="preview-img" src="" alt="미리보기" class="max-w-xs rounded-lg shadow-md">
+                                <button type="button" onclick="removeImage()" class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
+                            </div>
+                            <div id="image-info" class="text-xs text-gray-600 mt-2"></div>
+                        </div>
                     </div>
                 </form>
                 
@@ -1141,5 +1175,239 @@
     <!-- <script src="js/api-bridge.js"></script> -->
 <script src="js/auth.js"></script>
     <script src="js/admin-dashboard.js"></script>
+
+<!-- 샵 정보 수정 폼 확장 기능 -->
+<script>
+// 전역 변수
+let uploadedImageFile = null;
+let uploadedImageDataUrl = null;
+
+// 유튜브 썸네일 로드
+function loadYoutubeThumbnail() {
+    const urlInput = document.getElementById('edit-youtube-url');
+    const url = urlInput.value.trim();
+    const preview = document.getElementById('youtube-thumbnail-preview');
+    const thumbnailImg = document.getElementById('youtube-thumbnail-img');
+    const youtubeLink = document.getElementById('youtube-link');
+    
+    if (!url) {
+        preview.classList.add('hidden');
+        return;
+    }
+    
+    // 유튜브 비디오 ID 추출
+    let videoId = null;
+    
+    // 다양한 유튜브 URL 형식 지원
+    const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\?\/]+)/,
+        /youtube\.com\/watch\?.*v=([^&]+)/
+    ];
+    
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) {
+            videoId = match[1];
+            break;
+        }
+    }
+    
+    if (videoId) {
+        // 유튜브 썸네일 URL (고화질)
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        thumbnailImg.src = thumbnailUrl;
+        youtubeLink.href = url;
+        preview.classList.remove('hidden');
+        
+        // 썸네일 로드 실패시 중간 화질로 대체
+        thumbnailImg.onerror = function() {
+            this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            this.onerror = null; // 무한 루프 방지
+        };
+    } else {
+        preview.classList.add('hidden');
+        alert('올바른 유튜브 URL을 입력해주세요.\\n예: https://www.youtube.com/watch?v=VIDEO_ID');
+    }
+}
+
+// 이미지 업로드 처리
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // 파일 크기 체크 (1MB = 1,048,576 bytes)
+    const maxSize = 1 * 1024 * 1024; // 1MB
+    if (file.size > maxSize) {
+        alert('파일 크기는 1MB 이하만 업로드 가능합니다.\\n현재 파일 크기: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB');
+        event.target.value = ''; // 파일 선택 초기화
+        return;
+    }
+    
+    // 이미지 파일 타입 체크
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('JPG, PNG, GIF, WEBP 형식의 이미지만 업로드 가능합니다.');
+        event.target.value = '';
+        return;
+    }
+    
+    // 파일 읽기
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedImageDataUrl = e.target.result;
+        uploadedImageFile = file;
+        
+        // 미리보기 표시
+        const preview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const imageInfo = document.getElementById('image-info');
+        
+        previewImg.src = e.target.result;
+        preview.classList.remove('hidden');
+        
+        // 파일 정보 표시
+        const fileSizeKB = (file.size / 1024).toFixed(2);
+        imageInfo.innerHTML = `
+            <i class="fas fa-check-circle text-green-500 mr-1"></i>
+            <strong>${file.name}</strong> (${fileSizeKB} KB)
+        `;
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// 이미지 제거
+function removeImage() {
+    uploadedImageFile = null;
+    uploadedImageDataUrl = null;
+    
+    document.getElementById('edit-shop-image').value = '';
+    document.getElementById('image-preview').classList.add('hidden');
+    document.getElementById('preview-img').src = '';
+}
+
+// 기존 saveShopChanges 함수 확장 (js/admin-dashboard.js의 status 필드 제거)
+const originalSaveShopChanges = window.saveShopChanges;
+window.saveShopChanges = async function() {
+    const shopId = document.getElementById('edit-shop-id').value;
+    
+    // 기본 정보 수집
+    const selectedTreatments = [];
+    document.querySelectorAll('.edit-treatment-checkbox:checked').forEach(checkbox => {
+        selectedTreatments.push(checkbox.value);
+    });
+    
+    const updatedData = {
+        shop_name: document.getElementById('edit-shop-name').value,
+        owner_name: document.getElementById('edit-owner-name').value,
+        phone: document.getElementById('edit-phone').value,
+        email: document.getElementById('edit-email').value,
+        business_number: document.getElementById('edit-business-number').value,
+        state: document.getElementById('edit-state').value,
+        district: document.getElementById('edit-district').value,
+        address: document.getElementById('edit-address').value,
+        treatment_types: selectedTreatments,
+        price_range: document.getElementById('edit-price-range').value,
+        description: document.getElementById('edit-description').value,
+        youtube_url: document.getElementById('edit-youtube-url').value || null,
+        shop_image: uploadedImageDataUrl || null,
+        shop_image_name: uploadedImageFile ? uploadedImageFile.name : null,
+        updated_at: new Date().toISOString()
+    };
+    
+    try {
+        const response = await fetch(`tables/skincare_shops/${shopId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData)
+        });
+        
+        if (response.ok) {
+            alert('샵 정보가 성공적으로 수정되었습니다.');
+            closeShopEditModal();
+            
+            // 업로드된 이미지 초기화
+            removeImage();
+            
+            if (typeof refreshShops === 'function') {
+                refreshShops();
+            }
+        } else {
+            throw new Error(`HTTP ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Shop update error:', error);
+        
+        // 로컬 데이터 업데이트
+        if (typeof allShops !== 'undefined') {
+            const shopIndex = allShops.findIndex(s => s.id === shopId);
+            if (shopIndex !== -1) {
+                allShops[shopIndex] = { ...allShops[shopIndex], ...updatedData };
+                if (typeof displayShops === 'function') {
+                    displayShops(allShops);
+                }
+                closeShopEditModal();
+                removeImage();
+                alert('샵 정보가 로컬에서 업데이트되었습니다.');
+            } else {
+                alert('샵 정보 수정에 실패했습니다.');
+            }
+        }
+    }
+};
+
+// 모달이 열릴 때 기존 데이터 로드
+const originalOpenShopEditModal = window.openShopEditModal;
+if (originalOpenShopEditModal) {
+    window.openShopEditModal = function(shopId) {
+        // 기존 함수 실행
+        originalOpenShopEditModal(shopId);
+        
+        // 추가 필드 초기화
+        setTimeout(() => {
+            const shop = allShops.find(s => s.id === shopId);
+            if (shop) {
+                // 유튜브 URL 로드
+                if (shop.youtube_url) {
+                    document.getElementById('edit-youtube-url').value = shop.youtube_url;
+                    loadYoutubeThumbnail();
+                } else {
+                    document.getElementById('edit-youtube-url').value = '';
+                    document.getElementById('youtube-thumbnail-preview').classList.add('hidden');
+                }
+                
+                // 이미지 로드
+                if (shop.shop_image) {
+                    document.getElementById('preview-img').src = shop.shop_image;
+                    document.getElementById('image-preview').classList.remove('hidden');
+                    if (shop.shop_image_name) {
+                        document.getElementById('image-info').innerHTML = `
+                            <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                            <strong>${shop.shop_image_name}</strong>
+                        `;
+                    }
+                    uploadedImageDataUrl = shop.shop_image;
+                } else {
+                    removeImage();
+                }
+            }
+        }, 100);
+    };
+}
+
+// 모달 닫을 때 초기화
+const originalCloseShopEditModal = window.closeShopEditModal;
+if (originalCloseShopEditModal) {
+    window.closeShopEditModal = function() {
+        originalCloseShopEditModal();
+        removeImage();
+        document.getElementById('edit-youtube-url').value = '';
+        document.getElementById('youtube-thumbnail-preview').classList.add('hidden');
+    };
+}
+</script>
+
 </body>
 </html>
