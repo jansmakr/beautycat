@@ -110,15 +110,23 @@
         
         /* 사용자 유형 선택 버튼 호버 효과 */
         .user-type-btn {
-            background: white;
-            border-color: #000000 !important; /* 검은색 테두리 */
+            background: white !important;
+            border: 2px solid #000000 !important; /* 검은색 테두리 */
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
         }
         
         .user-type-btn:hover {
-            border-color: #000000 !important; /* 호버 시에도 검은색 */
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
+            border: 2px solid #000000 !important; /* 호버 시에도 검은색 */
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
+        }
+        
+        /* 선택된 상태도 검은색 테두리 유지 */
+        .user-type-btn.bg-primary-50 {
+            border: 2px solid #000000 !important;
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%) !important;
         }
         
         .user-type-btn:hover i.fas {
@@ -142,6 +150,51 @@
         button.bg-gray-600:hover {
             background: linear-gradient(135deg, #4B5563, #374151);
             box-shadow: 0 2px 8px rgba(75, 85, 99, 0.3);
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 640px) {
+            .unni-card {
+                padding: 1.5rem !important;
+                margin-top: 2rem !important;
+            }
+            
+            h2 {
+                font-size: 1.5rem !important;
+            }
+            
+            .user-type-btn {
+                padding: 1rem !important;
+                min-height: 80px;
+            }
+            
+            .user-type-btn i {
+                font-size: 1.75rem !important;
+            }
+            
+            .user-type-btn span {
+                font-size: 0.9375rem !important;
+            }
+            
+            .unni-input {
+                font-size: 16px !important;
+                padding: 14px !important;
+                min-height: 52px;
+            }
+            
+            .btn-primary {
+                font-size: 16px !important;
+                padding: 14px 24px !important;
+                min-height: 52px;
+            }
+            
+            .text-sm {
+                font-size: 0.9375rem !important;
+            }
+            
+            .text-xs {
+                font-size: 0.8125rem !important;
+            }
         }
     </style>
 </head>
