@@ -1,889 +1,1148 @@
-# beautycat (뷰티+에티켓) - 피부관리실 견적 플랫폼
+# BeautyCat 플랫폼 - 최종 매뉴얼 및 시스템 정보
 
-## 🚀 **상용화 준비 완료!** (2024.10.31) ⭐ PRODUCTION READY!
+> **🔥 최신 업데이트: UI 대대적 개선 완료! (2025-11-03 16:45 KST)**
+> 
+> **최종 업데이트:** 2025-11-03 16:45 KST  
+> **버전:** v2.1.1 (검은색 테두리 통일 + 모바일 전면 최적화)  
+> **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
+> 
+> **🌐 프로덕션 URL:**
+> - 메인: https://beautycat.kr ✅
+> - www: https://www.beautycat.kr ✅
+> - API: https://api.beautycat.kr ✅ (Health Check: OK)
+> 
+> **📦 개발 환경:**
+> - 로컬: D:\beautycat\
+> - GitHub: https://github.com/jansmakr/beautycat
+> - 자동 배포: ✅ GitHub → Cloudflare Pages (1-2분)
+> 
+> **🎯 시스템 상태:**
+> - Frontend: ✅ Active
+> - Backend API: ✅ Active
+> - Database: ✅ Connected
+> - SSL/TLS: ✅ Active
+> - CDN: ✅ Global
+> - GitHub Auto-deploy: ✅ Enabled
 
-### ✅ 모든 시스템 통합 완료
+---
+
+## 📋 목차
+
+1. [플랫폼 개요](#플랫폼-개요)
+2. [계정 정보](#계정-정보)
+3. [시스템 아키텍처](#시스템-아키텍처)
+4. [배포 환경](#배포-환경)
+5. [데이터베이스 구조](#데이터베이스-구조)
+6. [관리자 매뉴얼](#관리자-매뉴얼)
+7. [개발 워크플로우](#개발-워크플로우)
+8. [문제 해결 가이드](#문제-해결-가이드)
+9. [API 엔드포인트](#api-엔드포인트)
+10. [보안 및 인증](#보안-및-인증)
+
+---
+
+## 🎯 플랫폼 개요
+
+### **BeautyCat (뷰티캣)**
+피부관리실과 고객을 연결하는 O2O 플랫폼
+
+**주요 기능:**
+- 🏪 **업체 관리**: 피부관리실 입점 신청, 승인, 정보 관리
+- 👤 **사용자 관리**: 고객, 업체 사장님, 관리자 3단계 권한
+- 💬 **상담 시스템**: 고객 ↔ 업체 견적 요청 및 응답
+- ⭐ **리뷰 시스템**: 예약 후 리뷰 작성 및 업체 응답
+- 📅 **예약 관리**: 고객 예약 생성 및 업체 승인
+- 📢 **공지사항**: 관리자 공지 및 이벤트 관리
+
+---
+
+## 🔐 계정 정보
+
+### **1. GitHub 계정**
+- **이메일:** jansmakr@gmail.com
+- **저장소:** https://github.com/jansmakr/beautycat ✅
+- **브랜치:** main
+- **접근 권한:** Owner
+- **자동 배포:** ✅ Cloudflare Pages Webhook 연동
+- **배포 트리거:** git push → 자동 빌드 (1-2분)
+
+### **2. Cloudflare 계정**
+- **이메일:** jansmakr@gmail.com
+- **대시보드:** https://dash.cloudflare.com
+- **Account ID:** (Cloudflare 대시보드에서 확인)
+
+#### **Cloudflare Pages (Frontend)**
+- **프로젝트명:** beautycat-v2 ⚠️
+- **배포 URL (내부):** https://beautycat-v2.pages.dev
+- **프로덕션 URL:** https://beautycat.kr ✅
+- **커스텀 도메인:**
+  - https://beautycat.kr (메인)
+  - https://www.beautycat.kr (서브도메인)
+- **도메인 등록:** 예스닉(Yesnic)
+- **DNS 관리:** Cloudflare
+- **네임서버:**
+  - becky.ns.cloudflare.com
+  - chip.ns.cloudflare.com
+- **빌드 설정:**
+  - Build command: (없음 - 정적 파일)
+  - Build output directory: `/`
+  - Root directory: `/`
+
+#### **Cloudflare Workers (Backend API)**
+- **Worker명:** beautycat-api
+- **프로덕션 URL:** https://api.beautycat.kr ✅
+- **Workers.dev URL:** https://beautycat-api.jansmakr.workers.dev
+- **Health Check:** https://api.beautycat.kr/api/health ✅
+- **형식:** ES Module
+- **런타임:** JavaScript
+- **CORS:** ✅ 모든 도메인 허용
+- **Route:** api.beautycat.kr/* → beautycat-api
+- **배포 방법:** `wrangler deploy cloudflare-workers-beautycat.js`
+
+#### **Cloudflare D1 Database**
+- **데이터베이스명:** beautycat-db
+- **UUID:** 4f238e14-6813-4667-a10b-77a02c75abdf
+- **바인딩명:** BEAUTYCAT_DB (Workers에서 사용)
+- **타입:** SQLite
+
+### **3. Supabase 연결 상태**
+**❌ 현재 Supabase는 연결되어 있지 않습니다.**
+
+**과거 상태:**
+- Firebase API가 이전에 사용되었으나 현재 비활성화됨
+- `js/firebase-api.js` 파일 존재하지만 사용되지 않음
+- `js/api-bridge.js` 주석 처리됨
+
+**현재 데이터베이스:**
+- ✅ Cloudflare D1 Database (beautycat-db) - 메인 데이터베이스
+- ❌ Supabase - 미연결
+- ❌ Firebase - 비활성화
+
+---
+
+## 🏗️ 시스템 아키텍처
+
+### **전체 시스템 다이어그램**
+
 ```
-✅ GitHub: jansmakr/beautycat (복원 완료)
-✅ Cloudflare Pages: beautycat-v2 (자동 배포)
-✅ Cloudflare Workers: beautycat-api (API 정상 작동!)
-✅ Cloudflare D1: beautycat-db (10개 테이블 준비 완료)
-✅ Custom Domain: api.beautycat.kr (설정 완료)
-✅ API Helper: js/api-helper.js (생성 완료!)
-✅ 설정 파일: deploy-ready-config.js (업데이트 완료!)
+                    👥 사용자
+                       │
+                       │ HTTPS
+                       ▼
+        ┌──────────────────────────────┐
+        │   Cloudflare CDN             │
+        │   DNS: becky/chip.ns.cf.com  │
+        │   SSL/TLS: Universal SSL     │
+        └──────────┬──────────┬────────┘
+                   │          │
+        ┌──────────▼─────┐    │
+        │ beautycat.kr   │    │
+        │ (Pages)        │    │
+        │ ✅ 자동 배포    │    │
+        │ GitHub 연동    │    │
+        └────────┬───────┘    │
+                 │            │
+                 │ API Calls  │
+                 ▼            │
+        ┌─────────────────────▼────────┐
+        │ api.beautycat.kr             │
+        │ (Workers)                    │
+        │ ✅ Health Check: OK          │
+        │ ✅ CORS: Enabled             │
+        └────────┬─────────────────────┘
+                 │
+                 │ SQL Queries
+                 ▼
+        ┌──────────────────────────────┐
+        │ beautycat-db (D1)            │
+        │ ✅ Connected                 │
+        │ SQLite Database              │
+        └──────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│              Cloudflare Pages (Frontend)                │
+│  - HTML/CSS/JavaScript (정적 파일)                      │
+│  - api-global-override.js (API 라우팅)                 │
+│  - Service Worker 제거됨 ✅                             │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     │ fetch('/tables/*')
+                     │ → 자동 변환
+                     │ → https://beautycat-api.jansmakr.workers.dev/api/tables/*
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│           Cloudflare Workers API (Backend)              │
+│  - ES Module 형식 ✅                                     │
+│  - RESTful API (GET, POST, PUT, PATCH, DELETE)         │
+│  - CORS 완벽 설정 ✅                                     │
+│  - TABLE_SCHEMAS 필드 필터링 (보안) ✅                  │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     │ D1 Binding: BEAUTYCAT_DB
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│              Cloudflare D1 Database                     │
+│  - 데이터베이스: beautycat-db                           │
+│  - 타입: SQLite                                         │
+│  - 테이블 수: 10개                                      │
+│  - UUID: 4f238e14-6813-4667-a10b-77a02c75abdf          │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### 🎊 상용화 가능!
+---
 
-**실제 사용자, 샵, 상담 데이터를 저장할 준비가 완료되었습니다!**
+## 🚀 배포 환경
 
+### **Frontend (Cloudflare Pages)**
+
+**배포 방식:** GitHub 연동 자동 배포
+
+**트리거:**
+- `main` 브랜치에 push 시 자동 배포
+- 배포 시간: 약 1-2분
+
+**배포 확인:**
+1. https://dash.cloudflare.com 접속
+2. Workers & Pages 클릭
+3. beautycat-v2 선택
+4. Deployments 탭에서 최신 배포 상태 확인
+
+### **Backend (Cloudflare Workers)**
+
+**배포 방식:** Cloudflare Dashboard에서 직접 배포
+
+**배포 단계:**
+1. https://dash.cloudflare.com 접속
+2. Workers & Pages → beautycat-api 선택
+3. Edit Code 클릭
+4. 코드 수정 후 "Save and Deploy" 클릭
+5. 배포 완료 대기 (5-10초)
+
+**현재 배포된 Workers 코드:**
+- ES Module 형식
+- CORS 헤더에 PATCH 메서드 포함
+- D1 Database 바인딩 설정됨
+
+---
+
+## 🗄️ 데이터베이스 구조
+
+### **Cloudflare D1: beautycat-db**
+
+#### **1. users (사용자)**
+```sql
+CREATE TABLE users (
+    id TEXT PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    password_salt TEXT,
+    name TEXT,
+    user_type TEXT CHECK(user_type IN ('customer', 'shop_owner', 'admin')),
+    phone TEXT,
+    status TEXT DEFAULT 'active',
+    shop_id TEXT,
+    email_verified INTEGER DEFAULT 0,
+    phone_verified INTEGER DEFAULT 0,
+    last_login_at INTEGER,
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (shop_id) REFERENCES skincare_shops(id)
+);
+```
+
+**user_type 값:**
+- `customer` - 일반 고객
+- `shop_owner` - 업체 사장님
+- `admin` - 플랫폼 관리자
+
+#### **2. skincare_shops (피부관리실)**
+```sql
+CREATE TABLE skincare_shops (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    owner_name TEXT,
+    phone TEXT,
+    email TEXT,
+    address TEXT,
+    state TEXT,
+    district TEXT,
+    services TEXT,  -- JSON array: ["여드름관리", "미백관리"]
+    description TEXT,
+    business_number TEXT,
+    business_license TEXT,
+    status TEXT DEFAULT 'pending',  -- pending, active, suspended
+    representative_treatments TEXT,  -- JSON array
+    price_range TEXT,
+    operating_hours TEXT,  -- JSON object
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0
+);
+```
+
+**status 값:**
+- `pending` - 승인 대기
+- `active` - 활성 (승인됨)
+- `suspended` - 정지
+
+#### **3. consultations (상담/견적 요청)**
+```sql
+CREATE TABLE consultations (
+    id TEXT PRIMARY KEY,
+    customer_id TEXT,
+    customer_name TEXT,
+    phone TEXT,
+    region TEXT,
+    treatment_type TEXT,
+    message TEXT,
+    status TEXT DEFAULT 'pending',
+    matched_shops TEXT,  -- JSON array
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (customer_id) REFERENCES users(id)
+);
+```
+
+#### **4. quotes (견적서)**
+```sql
+CREATE TABLE quotes (
+    id TEXT PRIMARY KEY,
+    consultation_id TEXT,
+    shop_id TEXT,
+    price INTEGER,
+    description TEXT,
+    status TEXT DEFAULT 'sent',
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (consultation_id) REFERENCES consultations(id),
+    FOREIGN KEY (shop_id) REFERENCES skincare_shops(id)
+);
+```
+
+#### **5. reservations (예약)**
+```sql
+CREATE TABLE reservations (
+    id TEXT PRIMARY KEY,
+    customer_id TEXT,
+    shop_id TEXT,
+    service_id TEXT,
+    reservation_date INTEGER,
+    start_time TEXT,
+    end_time TEXT,
+    status TEXT DEFAULT 'pending',
+    notes TEXT,
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (customer_id) REFERENCES users(id),
+    FOREIGN KEY (shop_id) REFERENCES skincare_shops(id)
+);
+```
+
+#### **6. reviews (리뷰)**
+```sql
+CREATE TABLE reviews (
+    id TEXT PRIMARY KEY,
+    customer_id TEXT,
+    shop_id TEXT,
+    reservation_id TEXT,
+    rating INTEGER CHECK(rating BETWEEN 1 AND 5),
+    comment TEXT,
+    response TEXT,  -- 업체 응답
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (customer_id) REFERENCES users(id),
+    FOREIGN KEY (shop_id) REFERENCES skincare_shops(id),
+    FOREIGN KEY (reservation_id) REFERENCES reservations(id)
+);
+```
+
+#### **7. messages (메시지)**
+```sql
+CREATE TABLE messages (
+    id TEXT PRIMARY KEY,
+    sender_id TEXT,
+    receiver_id TEXT,
+    content TEXT,
+    is_read INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_id) REFERENCES users(id)
+);
+```
+
+#### **8. notifications (알림)**
+```sql
+CREATE TABLE notifications (
+    id TEXT PRIMARY KEY,
+    user_id TEXT,
+    title TEXT,
+    message TEXT,
+    type TEXT,
+    is_read INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+#### **9. announcements (공지사항)**
+```sql
+CREATE TABLE announcements (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT,
+    author_id TEXT,
+    is_pinned INTEGER DEFAULT 0,
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (author_id) REFERENCES users(id)
+);
+```
+
+#### **10. representative_shops (대표 업체)**
+```sql
+CREATE TABLE representative_shops (
+    id TEXT PRIMARY KEY,
+    shop_id TEXT,
+    region TEXT,
+    display_order INTEGER,
+    created_at INTEGER,
+    updated_at INTEGER,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (shop_id) REFERENCES skincare_shops(id)
+);
+```
+
+---
+
+## 👨‍💼 관리자 매뉴얼
+
+### **로그인 정보**
+
+**관리자 계정:**
+- 이메일: admin@beautycat.com
+- 비밀번호: (설정된 비밀번호)
+- 권한: user_type = 'admin'
+
+**로그인 URL:**
+- https://beautycat-v2.pages.dev/login.html
+
+### **관리자 대시보드 기능**
+
+#### **1. 샵 입점 관리**
+**위치:** 관리자 대시보드 → 샵 입점 관리 탭
+
+**기능:**
+- ✅ 대기 중인 업체 목록 확인
+- ✅ 업체 정보 상세 보기
+- ✅ 업체 승인 (상태: pending → active)
+- ✅ 업체 정지 (상태: active → suspended)
+- ✅ 업체 삭제 (soft delete: deleted = 1)
+
+**승인 프로세스:**
+1. "샵 입점 관리" 탭 클릭
+2. 대기 중인 업체 목록에서 업체 선택
+3. "보기" 버튼으로 상세 정보 확인
+4. "입점승인" 버튼 클릭
+5. 상태가 "완성" → "활성"으로 변경됨
+6. 업체가 로그인하여 대시보드 사용 가능
+
+#### **2. 사용자 관리**
+**위치:** 관리자 대시보드 → 사용자 관리 탭
+
+**기능:**
+- 전체 사용자 목록 조회
+- 사용자 유형별 필터링 (고객, 업체, 관리자)
+- 사용자 상태 변경 (활성, 정지)
+- 사용자 정보 수정
+
+#### **3. 상담 관리**
+**위치:** 관리자 대시보드 → 상담 관리 탭
+
+**기능:**
+- 고객 상담 요청 목록
+- 매칭된 업체 확인
+- 상담 상태 모니터링
+
+#### **4. 공지사항 관리**
+**위치:** 관리자 대시보드 → 공지사항 탭
+
+**기능:**
+- 공지사항 작성
+- 공지사항 수정/삭제
+- 상단 고정 설정
+
+#### **5. 대표 업체 관리**
+**위치:** 관리자 대시보드 → 대표 업체 관리 탭
+
+**기능:**
+- 지역별 대표 업체 선정
+- 노출 순서 관리
+- 홈페이지 메인 표시
+
+---
+
+## 💻 개발 워크플로우
+
+### **로컬 개발 환경**
+
+**⚠️ 중요: 로컬 프로젝트 경로**
+```
+D:\beautycat\
+```
+
+**GitHub 연동 상태:** ❌ **연동 안됨** (수동 배포 필요)
+
+**디렉토리 구조:**
+```
+D:\beautycat\
+├── index.html              # 메인 페이지
+├── login.html              # 로그인 페이지
+├── register.html           # 회원가입 페이지
+├── admin-dashboard.html    # 관리자 대시보드
+├── shop-dashboard.html     # 업체 대시보드
+├── customer-dashboard.html # 고객 대시보드
+├── css/
+│   ├── style.css
+│   ├── mobile-optimized.css         # 모바일 최적화 CSS ✅
+│   └── ...
+├── js/
+│   ├── auth.js                      # 인증 관련
+│   ├── admin-dashboard.js           # 관리자 대시보드 ✅ 최근 수정
+│   ├── shop-dashboard.js            # 업체 대시보드 ✅ 최근 수정
+│   ├── customer-dashboard.js        # 고객 대시보드
+│   ├── api-global-override.js       # API 라우팅 ✅
+│   ├── sw-unregister.js             # Service Worker 제거 ✅
+│   ├── firebase-api.js              # ❌ 비활성화됨
+│   ├── api-bridge.js                # ❌ 비활성화됨
+│   └── ...
+├── images/
+│   ├── beautycat-logo.png           # 로고 이미지 (뷰냥이 아이콘)
+│   └── ...
+└── README.md                        # 이 파일 ✅
+```
+
+### **파일 수정 → 배포 전체 프로세스**
+
+#### **단계 1: 로컬에서 파일 수정**
+
+```bash
+# 1. 파일 탐색기에서 수정
+D:\beautycat\ 폴더 열기
+
+# 2. 원하는 파일 수정
+예: js/admin-dashboard.js 수정
+예: css/mobile-optimized.css 수정
+```
+
+#### **단계 2: Cloudflare Pages 수동 배포** ⚠️
+
+**GitHub 연동이 안되어 있으므로 수동 배포 필요**
+
+**방법 1: Wrangler CLI 사용 (권장)**
+
+```cmd
+# 1. Wrangler 설치 (처음 한번만)
+npm install -g wrangler
+
+# 2. Cloudflare 로그인
+wrangler login
+
+# 3. beautycat 폴더로 이동
+cd D:\beautycat
+
+# 4. Pages 배포
+wrangler pages publish . --project-name=beautycat-v2
+```
+
+**방법 2: Cloudflare Dashboard 직접 업로드**
+
+```
+1. https://dash.cloudflare.com 접속
+2. Workers & Pages 클릭
+3. beautycat-v2 선택
+4. 우측 "Create deployment" 버튼 클릭
+5. "Direct Upload" 선택
+6. D:\beautycat\ 폴더 전체를 ZIP으로 압축
+7. ZIP 파일 업로드
+8. "Deploy" 클릭
+```
+
+**방법 3: Git 수동 푸시 (GitHub 연동 복구 후)**
+
+```cmd
+# D:\beautycat 폴더에서 실행
+
+# Git 초기화 (처음 한번만)
+git init
+git remote add origin https://github.com/jansmakr/beautycat-v2.git
+
+# 파일 추가 및 커밋
+git add .
+git commit -m "feat: 뷰냥이 로고 및 모바일 최적화"
+
+# GitHub에 푸시
+git push -u origin main
+```
+
+#### **단계 3: 배포 확인**
+
+```
+1. 배포 확인 방법:
+   - https://dash.cloudflare.com 접속
+   - Workers & Pages 클릭
+   - beautycat-v2 선택
+   - Deployments 탭 확인
+
+2. 배포 상태:
+   - 🟡 Building... (빌드 중)
+   - 🟢 Success (성공)
+   - 🔴 Failed (실패)
+
+4. 배포 시간: 약 1-2분
+
+5. 배포 완료 후:
+   - https://beautycat-v2.pages.dev 접속
+   - Ctrl+Shift+R (하드 새로고침)
+   - 변경사항 확인
+```
+
+### **Backend (Workers) 수정 시**
+
+**Workers는 GitHub 연동이 없으므로 수동 배포 필요**
+
+```
+1. Cloudflare Dashboard 접속
+   - https://dash.cloudflare.com
+
+2. Workers & Pages → beautycat-api 선택
+
+3. Edit Code 클릭
+
+4. 코드 수정
+   - 주요 파일: 단일 JavaScript 파일 (ES Module)
+
+5. Save and Deploy 클릭
+
+6. 배포 완료 대기 (5-10초)
+
+7. 테스트:
+   curl https://beautycat-api.jansmakr.workers.dev/api/tables/users?limit=1
+```
+
+---
+
+## 🔧 문제 해결 가이드
+
+### **1. 페이지가 업데이트되지 않음**
+
+**원인:** 브라우저 캐시
+
+**해결:**
+```
+방법 1: 하드 새로고침
+- Ctrl + Shift + R
+
+방법 2: 캐시 삭제
+- F12 → Application → Clear storage → Clear site data
+
+방법 3: 시크릿 모드
+- Ctrl + Shift + N (새 시크릿 창)
+```
+
+### **2. API 요청이 실패함 (CORS 에러)**
+
+**원인:** CORS 헤더 설정 문제
+
+**확인 방법:**
+```cmd
+curl -X OPTIONS https://beautycat-api.jansmakr.workers.dev/api/tables/users -H "Access-Control-Request-Method: PATCH" -H "Origin: https://beautycat-v2.pages.dev" -i
+```
+
+**예상 응답:**
+```
+HTTP/2 204
+access-control-allow-methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+access-control-allow-origin: https://beautycat-v2.pages.dev
+```
+
+**해결:**
+- Cloudflare Workers 코드에서 CORS 헤더 확인
+- `getCorsHeaders()` 함수에 PATCH 포함 확인
+
+### **3. 데이터가 표시되지 않음 (undefined)**
+
+**원인:** 필드명 불일치
+
+**확인 방법:**
 ```javascript
-// API 사용 예시
-API.create('users', {
-    email: 'customer@beautycat.kr',
-    name: '홍길동',
-    user_type: 'customer'
-});
-
-API.create('consultations', {
-    customer_name: '김영희',
-    state: '서울',
-    district: '강남구'
-});
+// Console에서 실행
+fetch('tables/skincare_shops?limit=1')
+  .then(r => r.json())
+  .then(data => console.log(data.data[0]))
 ```
 
-### 📚 상용화 가이드 (필독!)
-1. **PRODUCTION_DATA_SETUP_GUIDE.md** - 🎯 데이터 저장 시스템 설정 (15분)
-2. **PRODUCTION_FRONTEND_INTEGRATION.md** - 🔌 프론트엔드 API 연동 (20분)
-3. **PRODUCTION_LAUNCH_CHECKLIST.md** - ✅ 최종 런칭 체크리스트 (45분)
-4. **js/api-helper.js** - API 헬퍼 함수 (바로 사용 가능!)
-5. **deploy-ready-config.js** - API URL 설정 (업데이트됨!)
+**해결:**
+- 데이터베이스 필드명과 JavaScript 코드 필드명 일치 확인
+- 예: `shop.shop_name` (X) → `shop.name` (O)
 
-### 🔥 즉시 시작하기
-```bash
-# 1. D1 데이터베이스 초기 데이터 설정 (5분)
-# Cloudflare Dashboard → D1 → beautycat-db → Console에서 SQL 실행
+### **4. GitHub Desktop Push 실패**
 
-# 2. API 테스트 (1분)
-curl https://beautycat-api.jansmakr.workers.dev/api/health
+**원인:** 인증 문제 또는 충돌
 
-# 3. 프론트엔드 연동 (10분)
-# PRODUCTION_FRONTEND_INTEGRATION.md 가이드 따라하기
-
-# 4. 베타 테스트 시작! 🎉
+**해결:**
 ```
+1. GitHub Desktop에서 로그아웃 후 재로그인
+2. Repository → Repository settings → Remote
+   - URL 확인: https://github.com/jansmakr/beautycat-v2.git
+3. 충돌 발생 시:
+   - Branch → Update from main
+   - 충돌 파일 수동 해결
+```
+
+### **5. Cloudflare Pages 배포 실패**
+
+**원인:** 빌드 오류 또는 설정 문제
+
+**확인:**
+```
+1. Cloudflare Dashboard → beautycat-v2 → Deployments
+2. 실패한 배포 클릭
+3. 로그 확인
+```
+
+**일반적 해결:**
+- 정적 파일만 사용하므로 빌드 명령어 없음
+- 루트 디렉토리 설정 확인: `/`
 
 ---
 
-## 🏪 **피부샵 입점 모집 전략 완료** (2024.10.23) ⭐
+## 🔌 API 엔드포인트
 
-### 📞 **업체 모집 시스템 완전 구축**
-- **✅ 업체 모집 전략 문서**: 강남/홍대/서초 35곳 타겟 업체 리스트 완성
-- **✅ 비즈니스 제안서**: A4 컬러 2페이지 전문 브로셔 및 상세 제안서 완성
-- **✅ 베타 파트너십 계약서**: 법적 효력을 갖춘 정식 계약서 템플릿 완성
-- **✅ 전화 컨택 스크립트**: 상황별 대응 및 성공 노하우가 담긴 완전한 스크립트
-- **✅ 온보딩 체크리스트**: 3.5일 온보딩 프로세스 완전 매뉴얼화
-- **✅ 즉시 실행 계획**: 오늘 바로 시작할 수 있는 3시간 액션 플랜
-
-### 🎯 **강남구 우선 타겟 (즉시 실행 준비 완료)**
+### **Base URL**
 ```
-1순위: 강남 프리미엄 스킨케어 (02-1234-5678) ⭐ 4.8점
-2순위: 청담 뷰티클리닉 (02-2345-6789) ⭐ 4.7점  
-3순위: 압구정 스킨솔루션 (02-3456-7890) ⭐ 4.6점
+https://beautycat-api.jansmakr.workers.dev/api
 ```
 
-### 💰 **베타 파트너 특별 혜택**
-- **🎁 플랫폼 수수료 0%** (베타 기간 3개월)
-- **📈 무료 프리미엄 노출** (검색 상단 배치)
-- **👨‍💼 전담 매니저 배정** (1:1 지원)
-- **📸 무료 콘텐츠 제작** (사진, 카피라이팅)
-- **💎 창립 파트너 혜택** (정식 서비스 후 6개월간 50% 할인)
+### **RESTful API 구조**
 
-### 📋 **준비된 실행 자료**
-- **BEAUTYCAT_SHOP_RECRUITMENT_STRATEGY.md**: 35곳 타겟 업체 완전 분석
-- **BEAUTYCAT_BUSINESS_PROPOSAL.md**: 10페이지 상세 제안서
-- **BEAUTYCAT_BETA_PARTNERSHIP_CONTRACT.md**: 정식 계약서 템플릿
-- **BEAUTYCAT_BUSINESS_BROCHURE.md**: A4 2페이지 인쇄용 브로셔  
-- **BEAUTYCAT_PHONE_SCRIPT.md**: 전화 컨택 완전 가이드
-- **BEAUTYCAT_ONBOARDING_CHECKLIST.md**: 업체 온보딩 매뉴얼
-- **BEAUTYCAT_IMMEDIATE_ACTION_PLAN.md**: 즉시 실행 계획
+#### **1. 목록 조회 (GET)**
+```
+GET /tables/{table_name}?page=1&limit=100&search=keyword&sort=created_at
+```
 
-### 🚀 **다음 즉시 액션**
-1. **오늘 30분**: 강남구 대표업체 3곳 전화 컨택
-2. **오늘 1시간**: 브로셔 인쇄 및 방문 자료 준비
-3. **오늘 1.5시간**: 홍대/서초 업체 정보 수집
-4. **내일**: 미팅 약속 업체 직접 방문 및 계약
-
-**📞 BeautyCat 대표번호: 070-7004-5902**
-
----
-
-## 🎉 **이전 업데이트** (2025.10.20)
-
-### 📞 **하단 메뉴 전화상담 개선** ⭐ NEW!
-- **✅ 채팅 버튼 로그인 체크**: 채팅 이용 시 로그인 필요 안내 및 자동 이동
-- **✅ 문의 → 전화상담 변경**: 하단 메뉴 "문의" 탭을 "전화상담"으로 변경
-- **✅ 간단한 전화상담 UI**: 기존 지역별 대표샵 시스템을 활용한 심플한 인터페이스
-- **✅ 원터치 통화**: 모바일에서 전화번호 터치 시 바로 통화 연결, PC에서는 클립보드 복사
-- **✅ 지역별 대표샵 연결**: 서울 강남/서초, 부산 해운대 등 6개 지역 대표샵 즉시 연결
-
-### 🔧 **Service Worker 리다이렉트 오류 완전 해결** ⭐ NEW!
-- **✅ Service Worker 임시 비활성화**: "redirect mode is not follow" 오류 완전 우회
-- **✅ 도메인 연결 안정화**: CNAME 설정 최적화로 beautycat.kr 안정적 연결
-- **✅ 네트워크 오류 방지**: fetch 이벤트 처리 완전 제거로 리다이렉트 문제 해결
-- **✅ sw-disabled.js 적용**: 기존 캐시 정리 후 Service Worker 기능 완전 비활성화
-
-### 🔧 **콘솔 오류 정리 완료** ⭐ NEW!
-- **✅ 데모 계정 관련 오류 숨김**: "사용자 테이블 접근 실패" 등 개발 환경 오류 완전 필터링
-- **✅ 안전한 API 호출**: auth.js에서 더 안전한 fetch API 사용으로 오류 방지
-- **✅ 전역 콘솔 필터링**: 모든 주요 페이지에 일관된 오류 필터링 시스템 적용
-- **✅ 프로덕션 환경 최적화**: 개발용 메시지는 개발 환경에서만 표시하도록 개선
-
-### 📋 **완전한 사용 매뉴얼 시스템 구축** ⭐ NEW!
-- **✅ 3종 매뉴얼 완성**: 고객용, 업체용, 관리자용 사용 매뉴얼 모두 완성
-- **📖 총 15,339자 규모**: 상용화 준비를 위한 완전한 사용자 문서화
-- **🎯 매뉴얼별 특화 구성**:
-  - **고객용** (3,657자): 회원가입부터 시술 완료까지 전체 프로세스 가이드
-  - **업체용** (4,377자): 피부관리실 사업자를 위한 운영 및 고객 관리 시스템
-  - **관리자용** (7,305자): 플랫폼 전체 운영, 보안, 위기 대응 종합 관리 가이드
-- **✅ Placeholder 이미지 오류 수정**: via.placeholder.com 의존성 제거하여 네트워크 오류 완전 해결
-  - **customer-dashboard.html**: 프로필 이미지를 CSS 기반 그라디언트 아바타로 교체
-  - **shop-dashboard.html**: 업체 프로필을 아이콘 기반 아바타로 변경
-  - **네트워크 독립성**: 외부 이미지 서비스 의존성 완전 제거로 안정성 향상
-
-### 🎯 **사용 매뉴얼 주요 특징**:
-- **CUSTOMER_MANUAL.md**: 회원가입, 상담 신청, 견적 비교, 결제까지 고객 여정 완전 가이드
-- **BUSINESS_MANUAL.md**: 업체 등록, 상담 관리, 견적 작성, 매출 분석, CRM 활용 완전 가이드  
-- **ADMIN_MANUAL.md**: 시스템 모니터링, 사용자 관리, 보안, 성과 분석, 위기 대응 완전 가이드
-- **실무 활용**: 체크리스트, FAQ, 연락처, 교육 프로그램까지 상용화 운영에 필요한 모든 정보 포함
-
-## 🎉 **이전 업데이트** (2025.10.18)
-
-### 🏪 **지역별 대표샵 전화 상담 시스템** ⭐ NEW!
-- **✅ 데이터베이스 완전 구축**: `representative_shops` 및 `call_statistics` 테이블 생성 완료
-- **✅ 6개 지역 데모 대표샵 데이터**: 서울(강남구, 서초구), 부산(해운대구), 대구(수성구), 인천(남동구), 광주(북구)
-- **✅ 404 오류 해결**: API 엔드포인트 정상 작동 및 실시간 데이터 로딩 확인
-- **✅ 관리자 UI/UX 개선**: 승인 버튼 의미 명확화 및 기능 구분
-- **즉시 전화 상담**: 상세 정보 입력 없이도 우리 동네 대표샵과 바로 전화 연결
-- **지역별 맞춤 서비스**:
-  - **시/도 + 시/군/구 선택**: 2단계 지역 선택으로 정확한 위치 매칭
-  - **대표샵 자동 검색**: 선택한 지역의 승인된 대표샵 자동 표시
-  - **실시간 정보**: 상호, 전화번호, 대표 관리 프로그램 즉시 확인
-- **스마트 전화 연결**:
-  - **모바일**: 전화앱 자동 실행으로 원터치 통화
-  - **데스크톱**: 전화번호 클립보드 복사 및 확인 메시지
-  - **통계 기록**: 전화 상담 횟수 자동 집계 (관리자용)
-- **사용자 친화적 디자인**:
-  - 대표샵 정보를 카드 형태로 직관적 표시
-  - 대표 관리 프로그램을 태그로 한눈에 확인
-  - 승인된 우수 업체 표시로 신뢰도 향상
-
-### 🛠️ **관리자 통합 관리 시스템 완성** ⭐ NEW!
-
-#### **📋 샵 관리 시스템**
-- **완전한 샵 관리 기능**: 관리자 대시보드에서 피부관리실 정보를 완벽하게 관리 가능
-- **새로 추가된 기능들**:
-  - **📋 샵 상세 보기**: 샵의 모든 정보를 깔끔한 모달로 확인 (기본정보, 위치정보, 서비스정보, 등록정보)
-  - **🗑️ 샵 삭제**: 안전한 확인 절차를 거쳐 샵 삭제 가능
-  - **🔍 실시간 검색**: 샵명, 대표자명, 이메일, 사업자번호로 실시간 검색
-  - **🎯 스마트 필터링**: 지역별, 상태별 필터링으로 빠른 샵 찾기
-  - **📊 검색 결과 표시**: 필터 적용 시 검색된 결과 수 실시간 표시
-
-#### **💬 상담 관리 시스템** ⭐ NEW!
-- **완전한 상담 관리 기능**: 고객의 모든 상담 요청을 체계적으로 관리
-- **상담 상세보기 기능**:
-  - **👤 고객 정보**: 이름, 연령대, 전화번호, 성별 등 기본 정보
-  - **📍 위치 정보**: 지역 및 상세 지역 정보로 매칭 지역 확인
-  - **💄 관심 서비스**: 피부타입, 관심관리, 예산, 희망빈도, 추가요청사항
-  - **📈 처리 정보**: 현재 상태, 신청일시, 처리일시 추적
-  - **🏪 매칭된 업체**: 연결된 피부관리실 정보 (있는 경우)
-- **상담 상태 관리**:
-  - **실시간 상태 변경**: 대기중 → 진행중 → 완료/취소
-  - **API 연동**: RESTful API로 상담 상태 업데이트
-  - **로컬 백업**: API 실패 시 로컬 데이터 동기화
-- **편의 기능**:
-  - **📄 인쇄 기능**: 상담 요청서를 깔끔한 형태로 인쇄
-  - **🔍 상태별 필터링**: 대기중, 진행중, 완료, 취소 상태별 조회
-  - **📊 실시간 통계**: 상담 현황을 한눈에 파악
-
-#### **🏪 대표샵 관리 시스템** ⭐ NEW!
-- **완전한 대표샵 승인 관리**: 지역별 대표샵 신청부터 승인까지 체계적 관리
-- **대표샵 관리 기능**:
-  - **📊 실시간 통계**: 승인된 대표샵, 승인대기, 커버 지역, 전화상담 현황
-  - **🎯 승인/거부/취소**: 원클릭으로 대표샵 상태 변경
-  - **👀 상세 정보**: 각 대표샵의 전체 정보 확인 (지역, 전화, 대표관리, 등록일)
-  - **🗑️ 완전 삭제**: 필요시 대표샵 등록 완전 제거
-- **지역별 대표샵 현황**:
-  - 전국 시/도별, 시/군/구별 대표샵 현황 한눈에 파악
-  - 미커버 지역 식별로 서비스 확장 전략 수립 지원
-  - 대표샵별 전화 상담 통계 실시간 모니터링
-
-#### **🏆 샵 대표샵 신청 시스템** ⭐ NEW!
-- **완전한 대표샵 신청 기능**: 피부관리실에서 직접 대표샵 신청 가능
-- **신청 프로세스**:
-  - **📋 신청 폼**: 대표 관리 프로그램 선택 (최대 3개), 신청 사유 작성
-  - **📍 지역 기반**: 업체의 등록 지역(시/도, 시/군/구) 기준으로 신청
-  - **✅ 약관 동의**: 서비스 이용약관 및 대표샵 책임사항 동의
-  - **🔄 상태 관리**: 신청 → 심사중 → 승인/거부 상태 실시간 확인
-- **신청 현황 관리**:
-  - **🔔 실시간 상태**: 네비게이션 메뉴에 상태 배지로 현황 표시
-  - **📊 신청 정보**: 신청일, 선택한 관리 프로그램, 신청 사유 확인
-  - **📞 승인 혜택**: 승인 시 지역 대표업체로 고객 전화상담 우선 연결
-- **사용자 친화적 UI**:
-  - 대표샵 혜택 및 책임사항 명확한 안내
-  - 신청 불가 조건 실시간 체크 (이미 신청한 경우, 심사 중인 경우)
-  - 승인/거부 시 상세 피드백 및 재신청 가이드
-
-#### **🏪 샵 정보 관리 시스템 개선** ⭐ NEW!
-- **완전한 샵 상세 정보 관리**: 기존 단순 정보를 세분화된 전문 정보로 확장
-- **샵 소개 정보**:
-  - **📋 대표 관리 (노출)**: 주요 서비스 명시하여 고객에게 노출
-  - **💰 1회 관리 가격 (노출)**: 투명한 가격 정보로 고객 신뢰도 향상
-  - **🧴 관리용 화장품 (브랜드)**: 사용 브랜드 명시로 전문성 어필
-  - **⚙️ 주요 피부미용기기**: 보유 장비로 기술력 홍보
-  - **✨ 샵 특징 및 차별 포인트**: 고유의 강점과 차별화 요소 강조
-  - **📏 시설 정보**: 평수, 베드 수, 직원 수로 규모 및 서비스 수준 표시
-- **원장 소개 정보**:
-  - **👨‍⚕️ 주요 프로필**: 학력, 자격증, 전문 분야 등 신뢰성 구축
-  - **💼 주요 경력**: 근무 이력과 전문성으로 고객 안심감 제공
-- **실시간 노출 연동**:
-  - **사이드바 표시**: 샵명과 함께 대표 관리, 가격이 실시간 노출
-  - **정보 수정 즉시 반영**: 업체 정보 수정 시 즉시 UI 업데이트
-
-#### **🔧 관리자 UI/UX 개선** ⭐ NEW!
-- **승인 기능 명확화**: 
-  - **샵 입점관리**: 플랫폼 견적 서비스 참여 승인 (일반 업체 등록)
-  - **대표샵 지정**: 지역별 전화상담 대표업체 지정 (별도 관리)
-- **직관적 메뉴 구조**: "샵 입점관리" ↔ "대표샵 지정" 명확한 구분
-- **상세 안내 제공**: 각 승인의 목적과 효과를 명시한 도움말 추가
-
-#### **🎛️ 통합 관리 기능**
-- **직관적인 UI/UX**: 상태별 컬러 코딩으로 한눈에 파악 가능
-- **반응형 디자인**: 모바일/태블릿에서도 완벽하게 작동
-- **관리자 접근**: 로그인 페이지에서 관리자 비밀번호 "5874" 입력 후 이용 가능
-
-### 🔧 **회원가입 폼 검증 오류 수정 완료**
-- **문제 해결**: register.html에서 숨겨진 필수 필드로 인한 폼 제출 실패 문제 완전 해결
-- **주요 수정사항**:
-  - 모든 업체 전용 필드에서 `required` 속성 제거하고 `shop-required` 클래스로 대체
-  - 사용자 유형 선택 시 조건부 필수 필드 동적 관리 구현
-  - 페이지 로딩 시 초기 상태에서도 올바른 required 속성 설정
-  - `shop_address`, `business_number`, `business_license_number`, `naver_cafe_id`, `shop_state`, `shop_district` 필드 최적화
-- **기술적 개선**: 
-  - JavaScript에서 `.shop-required` 클래스 기반으로 조건부 검증 처리
-  - 고객/업체 선택에 따른 실시간 필드 상태 관리
-  - auth.js에서 서버측 검증과 연동하여 완전한 이중 검증 구현
-
-## 🎉 **이전 업데이트** (2025.10.16)
-
-### 🚀 **브랜드 리뉴얼 완료** - beautycat (뷰티+에티켓) 런칭! ⭐ NEW!
-- **브랜드명 변경**: "뽀샵" → "beautycat (뷰티+에티켓)" 완전 리뉴얼
-- **서비스 포지셔닝**: "피부관리실 견적 플랫폼"으로 명확화
-- **메시지 업데이트**: "상담신청만 남기면, 우리 동네 피부관리실 정보와 견적을 한번에 받아볼 수 있어요"
-- **관리자 시스템 개선**: 
-  - 관리자 대시보드에 샵 정보 수정 기능 추가
-  - 로그인 페이지에서 관리자 옵션 제거, 별도 관리자 로그인 추가
-  - 관리자 비밀번호: 5874 (아이디 없이 비밀번호만 입력)
-- **로고 디자인 변경**: P 핑크색 배경 → 🐱 예쁜 고양이 이모티콘으로 beautycat(뷰티+에티켓) 브랜드 강화
-- **개발 환경 최적화**: PWA 매니페스트 401 오류 해결
-  - 개발 환경에서 매니페스트/Service Worker 로딩 조건부 처리
-  - `js/dev-environment-handler.js` 추가로 개발 환경 오류 방지
-- **전체 플랫폼 브랜딩**: 22개 핵심 파일 업데이트 완료
-
-## 🎉 **이전 업데이트** (2025.09.29)
-
-### 🛠️ **긴급 UI, PWA 및 JavaScript 오류 수정 완료** ⭐ NEW!
-- **로그인 버튼 수정**: 로그인 버튼 클릭 시 상담신청 화면으로 가는 문제 해결
-  - 원인: `updateAuthUI()` 함수가 innerHTML로 버튼을 덮어쓰면서 onclick 핸들러 손실
-  - 해결: DOM 요소 직접 생성으로 이벤트 핸들러 보존
-- **PWA 매니페스트 및 서비스워커 오류 해결**: 완전한 PWA 안정성 확보
-  - 매니페스트 아이콘: SVG base64 → PNG 파일로 완전 교체
-  - 서비스워커 캐시: 절대경로 → 상대경로로 수정하여 캐시 오류 해결
-  - 캐시 전략 개선: `Promise.allSettled`로 실패한 리소스 건너뛰기
-  - 버전 관리: v2.0.1로 업데이트하여 브라우저 캐시 무효화
-- **JavaScript 오류 및 지역 매칭 완전 해결**: 모든 런타임 오류 제거
-  - `ReferenceError: originalText is not defined` 해결: 안전한 변수 초기화
-  - 지역 매칭 개선: `shop_state/shop_district` 필드 추가 지원
-  - 캐시 버스팅: 스크립트 파일에 v2.0.1 버전 파라미터 추가
-  - 디버깅 강화: 버튼 복원 실패 시 경고 로그 추가
-- **고객 대시보드 상담 신청 개선**: 로그인 상태에 따른 차별화된 UX 제공
-  - 비로그인 상태: 회원 전용 안내 모달 표시 + 로그인/회원가입 유도
-  - 로그인 상태: 바로 견적서 작성 폼으로 이동 (index.html#consultation)
-  - 상단에 홈 버튼 추가로 편의성 향상
-- **업체 등록 강화**: 사업자등록번호 및 사업자등록증번호 필드 추가
-- **무료 서비스 기간**: 2025년 9월 29일 ~ 2026년 5월 30일 (243일)
-- **네이버 카페 연동**: 사업자 등록 시 네이버 카페 회원 인증 시스템
-- **견적 요청 매칭 시스템 완전 수정**: 데모 고객 → 데모 업체 견적서 확인 가능
-  - 업체 ID 통일: `demo_shop_seoul_geumcheon`으로 일치시켜 정상 매칭
-  - 지역 필터링 개선: 빈 지역 정보 견적 요청 제외 처리
-  - 디버깅 로그 추가: 견적 요청 매칭 과정 실시간 확인 가능
-- **견적 신청 폼 대폭 개선**: 더 정확한 상담을 위한 추가 정보 수집
-  - 제목 변경: "상담신청" → "상담 및 견적 신청" (목적 명확화)
-  - 피부상태 입력: 텍스트 영역으로 자세한 현재 상태 기록 가능
-  - 사진 업로드: 최대 2MB, 여러 장 업로드 지원 (정면/측면 권장)
-  - 실시간 미리보기: 업로드된 사진 즉시 확인 및 개별 삭제 가능
-
-### ✅ **📱 모바일 앱 등록 준비 완료!**
-- **PWA 완전 지원**: `manifest.json`, `sw.js` 서비스워커 구현
-- **모바일 UI 최적화**: 터치 친화적 심플 디자인으로 전면 리뉴얼
-- **앱스토어 등록 준비**: Google Play, Apple App Store 등록 가능
-- **네이티브 앱 빌드**: Capacitor/Cordova 지원으로 실제 앱 제작 가능
-- **오프라인 지원**: 서비스워커로 오프라인 상황에서도 기본 기능 사용 가능
-
-### ✅ **사용자 경험 및 인증 시스템 최적화**
-- **자동 폼 입력**: 로그인된 사용자 정보 자동 채움 기능 구현
-- **관리자 권한 자동 수정**: 로그인 시 권한 문제 자동 해결
-- **내부 인증 시스템**: Level1BasicAuth 백엔드 클래스 완전 통합 (내부용)
-- **UI/UX 심플화**: 불필요한 인증 관련 노출 제거로 깔끔한 사용자 경험
-- **🏪 업체 회원가입 강화**: 사업자등록번호 + 영업신고증 번호 필수 입력 및 서류 제출 안내
-- **🔒 개인정보 보호 강화**: 고객 연락처 완전 비공개 - 업체에게 노출되지 않음
-
-### ✅ **관리자 대시보드 네이버 카페 ID 기능 완료** ⭐ NEW!
-- **네이버 카페 ID 표시**: 관리자가 샵 승인 시 네이버 카페 회원 ID 확인 가능
-- **카페 확인 기능**: 네이버 카페 직접 연결로 회원 확인 프로세스 간소화
-- **승인 워크플로우 개선**: 네이버 카페 회원 인증 → 샵 승인 단계별 관리
-- **테스트 환경 제공**: `admin-dashboard-test.html`로 기능 검증 및 디버깅
-- **실시간 상태 업데이트**: 샵 승인 상태 즉시 반영 및 알림
-
-### ✅ **완전한 샵 평점 및 리뷰 시스템 구축** 🌟 NEW!
-- **고객 리뷰 작성 시스템**: 5단계 별점 + 세부 평점 (서비스 품질, 가격 만족도, 시설 청결도, 직원 친절도)
-- **샵 리뷰 관리 대시보드**: 평균 평점, 총 리뷰 수, 추천률, 월별 통계 실시간 표시
-- **리뷰 필터링 및 정렬**: 평점별 필터, 최신순/오래된순/평점순 정렬 기능
-- **추천 시스템**: 고객이 다른 분들에게 추천 여부 표시 및 추천률 계산
-- **완전한 테스트 환경**: `review-system-test.html`로 모든 리뷰 기능 검증
-- **"업체" → "샵" 용어 통일**: 모든 페이지에서 일관된 용어 사용으로 브랜딩 강화
-
-### ✅ **지역별 견적 매칭 시스템 필드명 호환성 완전 해결**
-- **필드명 통일**: `state/shop_state`, `district/shop_district` 호환성 완벽 구현
-- **업체 정보 관리**: 업체 대시보드에서 지역 정보 자동 입력 및 저장 완료
-- **매칭 로직 강화**: 서울 금천구 등 모든 지역에서 100% 매칭 보장
-
-### ✅ **UI 정리 및 사용자 경험 최적화**
-- **인기업체 섹션 완전 제거**: 메인 페이지가 더 깔끔하고 핵심 기능에 집중
-- **자동 입력 기능**: 로그인된 사용자의 폼 필드 자동 채움 완성
-- **전체 플랫폼 안정성**: 모든 인증 및 매칭 시스템 통합 완료
-
-**"beautycat (뷰티+에티켓) - 피부관리실 견적 플랫폼"**
-
-## 🌐 **사이트 접속 방법**
-
-### **메인 도메인**
-- **https://www.beautycat.kr** (권장)
-- **https://beautycat.kr** (리다이렉트)
-
-### **백업 접속 URL** (도메인 문제 시 사용)
-- **https://jansmakr.github.io/beautycat** (GitHub Pages 직접)
-- **https://beautycat-kr.pages.dev** (Cloudflare Pages 백업)
-
-### **도메인 연결 상태 확인**
+**예시:**
 ```bash
-# DNS 확인
-nslookup www.beautycat.kr
-nslookup beautycat.kr
+# 사용자 목록 조회
+curl "https://beautycat-api.jansmakr.workers.dev/api/tables/users?limit=10"
 
-# 연결 테스트  
-curl -I https://www.beautycat.kr
-curl -I https://beautycat.kr
+# 업체 목록 조회 (검색)
+curl "https://beautycat-api.jansmakr.workers.dev/api/tables/skincare_shops?search=강남&limit=20"
 ```
 
-## 🌐 **플랫폼 등록 완료 현황**
-
-### **검색엔진 등록 준비완료**
-- ✅ **네이버 웹마스터도구**: beautycat.kr로 등록 가능
-- ✅ **구글 Search Console**: sitemap.xml 제출 준비
-- ✅ **다음 검색등록**: 사이트 등록 및 검색 노출
-
-### **소셜 미디어 최적화 완료**
-- ✅ **카카오톡 링크 미리보기**: Open Graph 메타태그 완성
-- ✅ **페이스북 공유**: og:image, og:description 최적화
-- ✅ **트위터 카드**: summary_large_image 설정
-- ✅ **인스타그램 바이오**: 링크 연결 준비
-
-### **비즈니스 등록 지원**
-- ✅ **네이버 플레이스**: 업체 홈페이지 등록
-- ✅ **구글 비즈니스 프로필**: 웹사이트 연결
-- ✅ **네이버 쇼핑**: 쇼핑몰 등록 (필요시)
-
-**상담신청만 남기면, 우리 동네 피부관리실 정보와 견적을 한번에 받아볼 수 있는** 지역 기반 스마트 매칭 플랫폼입니다. 강남언니(UNNI) 스타일의 깔끔하고 신뢰할 수 있는 UI/UX를 제공합니다.
-
-## 🗺️ **지역별 견적 매칭 시스템 + 버그 수정 완료!** (2024.12.26)
-
-### 🚨 **긴급 버그 수정: 서울 금천구 매칭 문제 해결**
-- **문제**: 데모 고객(서울 금천구) → 데모 업체(서울 금천구) 매칭이 안되는 현상
-- **원인 분석**: 
-  1. 데모 업체 데이터에 지역 정보(state, district) 누락
-  2. regional-matching.js 초기화 타이밍 문제
-  3. 데이터베이스 스키마 불일치 (shop_state vs state 필드)
-- **해결 방안**:
-  1. ✅ `matching-quick-fix.html` 긴급 수정 도구 제공
-  2. ✅ `regional-matching-debug.html` 상세 디버깅 도구 제공  
-  3. ✅ `js/main.js`에 폴백 매칭 시스템 추가
-  4. ✅ `js/auth.js`에 데모 업체 자동 생성 로직 개선
-
-### 🎯 **스마트 지역 매칭으로 정확한 견적 전달**
-- **정확한 지역 매칭**: 고객이 시/구 선택 시 해당 지역 샵들이 자동으로 견적 요청 수신
-- **17개 시도 + 250개 구군**: 전국 모든 행정구역 커버
-- **확장 검색 기능**: 해당 지역에 샵이 없으면 인근 지역까지 자동 확장
-- **실시간 알림**: 견적 요청 시 해당 지역 샵들에게 즉시 알림 발송
-
-### ⚡ **매칭 시스템 주요 기능**
-1. **지역별 자동 필터링**: 고객 위치 → 해당 지역 샵 자동 검색
-2. **스마트 견적 배포**: 1:N 견적 요청으로 여러 업체 동시 매칭
-3. **인근 지역 확장**: 지역 내 샵 부족 시 자동 확장 검색
-4. **실시간 통계**: 지역별 샵 분포 및 매칭 현황 제공
-5. **🔧 버그 수정**: 데모 환경에서도 완벽한 매칭 보장
-
-### 📊 **매칭 효율성**
-- **매칭 정확도**: 95%+ (정확한 지역 기반 매칭)
-- **견적 수신률**: 평균 3-5개 업체/요청
-- **응답 시간**: 24시간 내 90%+ 업체 응답
-- **🚨 버그 수정률**: 100% (서울 금천구 문제 완전 해결)
-
-## 🔐 **내부 인증 시스템 완성!** (2024.12.26)
-
-### ✅ **백엔드 인증 시스템 통합 완료** (내부 관리용)
-- **내부 시스템 통합**: `js/main.js`에 Level1BasicAuth 클래스 통합 (관리자용)
-- **백엔드 연동**: `js/auth.js`에서 내부 실명인증 시스템 완비
-- **관리 도구**: `level1-auth-test.html` 전용 관리 테스트 페이지
-- **비용 최적화**: 내부적으로 87% 인증비용 절약 달성
-
-### 🎯 **완성된 내부 기능들**
-1. **자동 입력 기능**: 로그인된 사용자 폼 필드 자동 채움 (다중 필드 지원)
-2. **관리자 권한 자동 수정**: 로그인 시 권한 문제 자동 해결
-3. **업체 정보 자동 관리**: 지역 정보 자동 입력 및 필드명 호환성 완벽 구현
-4. **백엔드 실명인증**: 회원 실명 확인을 위한 내부 인증 시스템
-5. **비용 효율화**: 기존 300원 → 40원으로 87% 인증비용 절약
-
-### 💡 **내부 시스템 최적화**
-- **관리자 도구**: 테스트 코드 123456, 000000으로 개발 환경 테스트
-- **비용 효율성**: 월 1,000건 기준 29만원 절약 (33만원 → 4만원)
-- **자동화**: 사용자 노출 없이 백엔드에서 자동 실명인증 처리
-
-### ⚡ **3단계 스마트 인증 시스템**
-1. **Level 1 기본 인증** (40원/건): 이메일 + SMS - **✅ 메인 플랫폼 적용 완료**
-2. **Level 2 강화 인증** (180원/건): 휴대폰 본인확인 - 예약/결제용  
-3. **Level 3 완전 인증** (300원/건): 실명인증 - 고가치 거래용
-
-### 🛡️ **보안 & 사용자 경험 동시 만족**
-- **인증 완료율**: 95%+ (기존 대비 15% 향상)
-- **평균 인증 시간**: 5분 이내 (기존 90초 → 빠른 인증)
-- **사용자 만족도**: 4.8/5.0 (간편함 + 보안 양립)
-
-## 🎨 디자인 업데이트 완료 (2024.12.19)
-
-전체 HTML 파일을 **강남언니(UNNI) 스타일**로 디자인 시스템 통합 완료:
-
-### ✅ 완료된 파일들
-1. **index.html** - 메인 페이지
-2. **chat.html** - 채팅 페이지
-3. **customer-dashboard.html** - 고객 대시보드
-4. **shop-dashboard.html** - 업체 대시보드
-5. **admin-dashboard.html** - 관리자 대시보드
-6. **shop-registration.html** - 업체 등록
-7. **contact-inquiry.html** - 문의하기
-
-### 🎨 적용된 디자인 시스템
-- **폰트**: Pretendard + Noto Sans KR
-- **메인 컬러**: Primary #ff2d92 (beautycat 핑크)
-- **카드 디자인**: `.unni-card` 클래스 통합
-- **브랜딩**: "beautycat (뷰티+에티켓) - 피부관리실 견적 플랫폼" 슬로건
-- **일관성**: 모든 입력 필드, 버튼, 호버 효과 통일
-
-## 🛒 **상용화 준비 완료!** 외부 결제 시스템 구축 완성
-
-### 🎯 **핵심 인프라 5가지 모두 구현 완료**
-✅ **실제 데이터베이스**: RESTful Table API 완전 구축  
-✅ **사용자 인증**: JWT 토큰 + SHA-256 암호화  
-✅ **결제 시스템**: 카페24 자사몰 + 네이버 스마트스토어 연동  
-✅ **데이터 암호화**: XOR + Base64 고객정보 보안 전송  
-✅ **HTTPS 보안**: SSL 인증서 적용 준비 완료
-
-### 🏪 **카페24 자사몰 자동 정보 입력** - 신기술 적용!
-- **beautycat → 카페24**: 암호화된 고객정보 자동 전송
-- **자동 폼 채우기**: 이름, 전화번호, 이메일 자동 입력
-- **원클릭 결제**: 고객이 정보 재입력 없이 바로 결제 가능
-- **웹훅 동기화**: 결제 완료 시 beautycat에 자동 알림
-
-## 🚀 주요 기능
-
-### 👥 고객 (Customer)
-- **🗺️ 지역별 상담 신청**: 시/구 선택으로 정확한 지역 매칭
-- **💄 세분화된 관리 프로그램 선택**: 페이스/바디로 구분된 관심 프로그램 선택 ⭐ NEW!
-  - **페이스 케어**: 여드름/트러블, 미백/브라이트닝, 주름/안티에이징, 모공 케어, 수분/보습 + 기타/모름
-  - **바디 케어**: 셀룰라이트 관리, 바디 화이트닝, 튼살 개선, 바디 보습, 바디 라인 관리 + 기타/모름
-  - **기타 입력**: 각 영역에서 "기타/모름" 선택 시 직접 텍스트 입력 가능
-- **🎯 맞춤형 업체 추천**: 피부관리실 선택시 중요사항 입력으로 개인화된 추천 ⭐ NEW!
-  - **중요사항 입력**: 금액, 위생, 전문성, 시설, 위치, 후기 등 우선순위 직접 입력
-  - **기존 예산 필드 대체**: 단순한 예산 범위 → 종합적인 선택 기준으로 개선
-- **견적 비교**: 여러 업체의 견적서 비교 검토
-- **🆕 원클릭 결제**: 카페24/네이버에서 정보 재입력 없이 바로 결제
-- **실시간 채팅**: 업체와 1:1 상담 채팅
-- **예약 관리**: 상담 예약 및 일정 관리
-- **리뷰 시스템**: 이용 후 업체 평가 및 리뷰 작성
-
-### 🏪 피부관리실 (Shop)
-- **🗺️ 지역별 견적 수신**: 업체 지역과 일치하는 고객 요청만 자동 수신
-- **📋 마이 페이지**: 대시보드에서 "마이 페이지"로 용어 개선 ⭐ NEW!
-- **💄 세분화된 상담 요청 관리**: 페이스/바디 구분된 관심 프로그램으로 정확한 상담 요청 파악 ⭐ NEW!
-- **상담 요청 관리**: 들어온 상담 요청 확인 및 응답
-- **견적서 작성**: 맞춤형 견적서 작성 및 전송
-- **🆕 결제 연동**: 외부 결제 완료 시 자동 알림 수신
-- **고객 채팅**: 실시간 고객 상담 및 문의 응답
-- **예약 관리**: 상담 예약 스케줄 관리
-- **매출 분석**: 월별/일별 상담 및 매출 통계
-- **🏆 대표샵 신청**: 지역 대표업체로 전화상담 우선권 신청 및 관리
-
-### 🛠️ 관리자 (Admin)
-- **🗺️ 지역별 매칭 모니터링**: 지역별 샵 분포 및 매칭 현황 관리
-- **사용자 관리**: 고객 및 업체 회원 관리
-- **업체 승인**: 신규 업체 등록 심사 및 승인 (지역 정보 포함)
-- **🆕 결제 모니터링**: 외부 결제 현황 실시간 추적
-- **상담 모니터링**: 전체 상담 현황 모니터링
-- **지역별 통계**: 시/구별 상담 요청 및 매칭 성공률 분석
-- **공지사항 관리**: 전체 사용자 대상 공지사항 발송
-
-## 📱 페이지 구조
-
-### 🎯 메인 페이지 (`index.html`)
-- 서비스 소개 및 주요 기능 안내
-- **회원 전용 상담 신청 시스템** - 로그인 필수 인증
-- **🗺️ 지역별 스마트 매칭**: 시/구 선택으로 정확한 업체 매칭
-- 지역별 상담 신청 폼 (전국 17개 시도, 250+ 시군구 지원)
-- 관심 분야 선택 (9개 카테고리)
-- 예산 및 일정 선택 기능
-- 실시간 폼 유효성 검사 및 제출
-- **Level 1 기본인증 소개**: 40원 인증 시스템 홍보 및 데모
-- **자동 입력 기능**: 로그인된 사용자 폼 자동 채움
-- 데모 로그인 기능 (테스트용)
-- 고객 리뷰 및 성공사례
-- **✅ UI 정리 완료**: 인기업체 섹션 제거로 핵심 기능에 집중
-
-### 💬 실시간 채팅 (`chat.html`)
-- 고객-업체 간 1:1 실시간 채팅
-- 파일 및 이미지 전송 기능
-- 채팅 히스토리 관리
-- 상담 상태 업데이트
-
-### 📊 대시보드
-- **고객용** (`customer-dashboard.html`): 상담 신청 현황, 견적서 관리
-- **업체용** (`shop-dashboard.html`): 상담 요청 관리, 견적 작성
-- **관리자용** (`admin-dashboard.html`): 전체 플랫폼 관리
-
-### 📝 업체 등록 (`shop-registration.html`)
-- 피부관리실 기본 정보 입력
-- 서비스 전문 분야 선택
-- 사진 업로드 및 소개글 작성
-- 약관 동의 및 등록 신청
-
-### 📞 문의하기 (`contact-inquiry.html`)
-- 카카오톡 상담 연결
-- 온라인 문의 폼
-- FAQ 섹션
-- 실시간 알림 시스템
-
-## 🛠️ 기술 스택
-
-### Frontend
-- **HTML5**: 시맨틱 마크업
-- **Tailwind CSS**: 유틸리티 기반 스타일링
-- **JavaScript (ES6+)**: 동적 인터랙션
-- **Font Awesome**: 아이콘 시스템
-- **Pretendard/Noto Sans KR**: 타이포그래피
-
-### 🛒 **External Payment System (외부 결제 연동)**
-- **카페24 자사몰**: 자동 정보 입력 + PG 결제
-- **네이버 스마트스토어**: 상품 등록 + API 연동
-- **웹훅 시스템**: 결제 상태 실시간 동기화
-- **데이터 암호화**: XOR + Base64 고객정보 보안
-
-### 🔐 **Security & Authentication**
-- **JWT 토큰**: 세션 기반 사용자 인증
-- **SHA-256**: 비밀번호 해싱 + 솔트
-- **로그인 제한**: 무차별 대입 공격 방지
-- **HTTPS**: SSL 인증서 적용 준비
-
-### Data Management
-- **RESTful Table API**: 완전한 데이터 CRUD 시스템
-- **Local Storage**: 클라이언트 상태 관리
-- **Session Storage**: 임시 데이터 저장
-- **Webhook Handler**: 외부 결제 상태 처리
-
-## 🎨 디자인 가이드
-
-### 컬러 팔레트
-```css
-:root {
-  --primary-50: #fff0f8;
-  --primary-100: #ffe3f2;
-  --primary-500: #ff2d92; /* 메인 브랜드 컬러 */
-  --primary-600: #e6297f;
-  --primary-700: #cc256c;
+**응답:**
+```json
+{
+  "data": [...],
+  "total": 100,
+  "page": 1,
+  "limit": 10,
+  "table": "users",
+  "schema": ["id", "email", "name", ...]
 }
 ```
 
-### 타이포그래피
-- **Primary Font**: Pretendard (웹폰트)
-- **Fallback Font**: Noto Sans KR
-- **System Font**: -apple-system, BlinkMacSystemFont, system-ui
-
-### 컴포넌트
-- **카드**: `.unni-card` - 12px 라운드, 미니멀 섀도우
-- **버튼**: primary-500 컬러, 12px 라운드
-- **폼**: 통일된 스타일, primary 포커스 상태
-
-## 🔄 상태 관리
-
-### 사용자 상태
-- **비회원**: 상담 신청 및 기본 정보 조회 가능
-- **고객 회원**: 전체 서비스 이용 가능
-- **업체 회원**: 상담 관리 및 고객 응대 가능
-- **관리자**: 플랫폼 전체 관리 권한
-
-### 상담 상태
-- **접수**: 고객이 상담 신청 완료
-- **매칭**: 지역 내 업체에 전달
-- **견적**: 업체가 견적서 전송
-- **확정**: 고객이 업체 선택 및 예약
-- **완료**: 상담 서비스 완료
-
-## 📈 향후 개발 계획
-
-### ✅ **Phase 1 완료** - 상용화 준비 완성!
-- ✅ 기본 UI/UX 구현 및 강남언니 스타일 적용
-- ✅ 상담 신청 및 견적 시스템
-- ✅ 전국 시도/시군구 지역 선택 기능
-- ✅ 상담 신청 폼 제출 및 유효성 검사
-- ✅ **회원 전용 상담 시스템** - 로그인 필수
-- ✅ 회원가입 시스템 (고객/업체 구분, 업체 추가 정보)
-- ✅ 데모 로그인 기능 (테스트용)
-- ✅ 실시간 채팅 기능
-- ✅ 관리자 대시보드
-- ✅ **외부 결제 시스템** - 카페24/네이버 완전 연동
-- ✅ **자동 정보 입력** - 혁신적인 UX 개선
-- ✅ **보안 인프라** - 인증/암호화/웹훅 완성
-- ✅ **내부 인증 시스템 최적화** - 87% 비용절약 백엔드 시스템 ⭐
-
-### 🚀 **Phase 2 (즉시 상용화 가능)**
-- ✅ 실제 백엔드 API 연동 완료
-- ✅ 결제 시스템 통합 완료 (카페24/네이버)
-- ✅ **📱 모바일 앱 등록 준비 완료** - PWA + 네이티브 앱 빌드 지원 ⭐ NEW!
-- ✅ **내부 인증 시스템 통합 완료** - 백엔드 실명인증 최적화
-- ✅ **지역별 매칭 필드명 호환성 완료** - 모든 지역에서 완벽 매칭
-- ✅ **사용자 경험 최적화 완료** - 자동 입력 및 관리자 권한 수정
-- ✅ **UI 정리 완료** - 심플 모바일 디자인으로 전면 리뉴얼
-- [ ] 푸시 알림 시스템
-- [ ] 모바일 앱 개발
-- [ ] **실제 카페24 설치** - CAFE24_SETUP_GUIDE.md 참조
-- [ ] **네이버 스마트스토어 상품 등록**
-- [ ] **SSL 인증서 적용**
-
-### Phase 3 (예정)
-- [ ] AI 기반 매칭 알고리즘
-- [ ] 화상 상담 기능
-- [ ] 리뷰 및 평점 시스템 고도화
-- [ ] 마케팅 자동화 도구
-
-## 📊 프로젝트 상태 정보
-
-### 📋 **핵심 문서 (우선순위 순)**
-
-#### **🚀 즉시 실행 가이드**
-1. **[QUICK_RESTORATION_CHECKLIST.md](QUICK_RESTORATION_CHECKLIST.md)** - ⚡ **5분 빠른 복원 체크리스트** ⭐
-2. **[CLOUDFLARE_CORRECT_RESTORATION_GUIDE.md](CLOUDFLARE_CORRECT_RESTORATION_GUIDE.md)** - ✅ **올바른 Cloudflare 복원 가이드** ⭐
-
-#### **📋 상세 분석 문서**
-3. **[EXTERNAL_SERVICES_CHECKPOINT_222.md](EXTERNAL_SERVICES_CHECKPOINT_222.md)** - 🌐 **모든 외부 서비스 복원 시점 상태**
-4. **[CLOUDFLARE_CURRENT_STATUS.md](CLOUDFLARE_CURRENT_STATUS.md)** - ☁️ **Cloudflare 실시간 배포 현황**
-5. **[CLOUDFLARE_DB_VERSION_CHECK.md](CLOUDFLARE_DB_VERSION_CHECK.md)** - 🔍 **DB 버전 확인 가이드**
-
-#### **🗂️ 프로젝트 관리**
-6. **[PROJECT_STATUS.md](PROJECT_STATUS.md)** - 📊 **실시간 프로젝트 현황판** (지속 업데이트)
-7. **[CHECKPOINT_-222_STATUS_REPORT.md](CHECKPOINT_-222_STATUS_REPORT.md)** - 📝 **저장지점 -222 상세 리포트**
-
-#### **🧹 정리 가이드**
-8. **[CLOUDFLARE_CLEANUP_GUIDE.md](CLOUDFLARE_CLEANUP_GUIDE.md)** - 🧹 **Cloudflare 프로젝트 정리**
-
-### 🔄 **최신 업데이트** (2024-10-31 오후)
-
-#### **✅ 복원 시점 Workers 식별 완료**
-- beautycat-api (구버전) = 복원 시점 -222의 올바른 Workers ⭐
-- beautycat-api-v3 (최신) = 복원 시점 이후 생성 (사용 안함)
-
-#### **✅ 전체 외부 서비스 확인 완료**
-- GitHub: 저장지점 -222 자동 복원 ✅
-- Cloudflare Pages: beautycat-v2 (최신) ✅
-- Cloudflare Workers: beautycat-api (복원 시점) ✅
-- Cloudflare D1: beautycat-db (10개 테이블) ✅
-- Firebase: 미사용 (Mock 데이터용)
-- Supabase: 미사용
-
-#### **✅ 모든 복원 가이드 완성**
-- 5분 빠른 체크리스트 작성
-- 올바른 Cloudflare 복원 가이드 작성
-- 전체 외부 서비스 상태 문서화
-- 프로젝트 정리 가이드 작성
-
-### 🔄 **최신 업데이트** (2024-10-31 오전)
-- ✅ 저장지점 -222 복원 완료
-- ✅ Cloudflare + GitHub 연동 상태 체크 완료
-- ✅ 외부 사이트 변경 가이드 작성
-- ✅ 프로젝트 현황판 시스템 구축
-
----
-
-## 📊 **현재 기능적 엔트리 URI**
-
-### 🎉 **최신 완성 기능들** (저장지점 -222 기준 2024.10.23)
-- ✅ **Level 1 기본인증 메인 통합**: `js/main.js`에 Level1BasicAuth 완전 통합
-- ✅ **자동 입력 시스템**: `fillUserDataIfLoggedIn()` 다중 필드 자동 채움
-- ✅ **관리자 권한 자동 수정**: `js/auth.js`에서 로그인 시 권한 문제 자동 해결
-- ✅ **지역별 매칭 호환성**: `js/shop-dashboard.js` 필드명 호환성 완벽 구현
-- ✅ **UI 최적화**: `index.html` 인기업체 섹션 완전 제거
-
-### 🎯 **메인 서비스**
-- `index.html` - 메인 플랫폼 (상담신청/로그인)
-- `customer-dashboard.html` - 고객 대시보드 (상담현황/결제)
-- `shop-dashboard.html` - 업체 대시보드 (견적작성/매출관리)
-- `chat.html` - 실시간 상담 채팅
-
-### 🔐 **내부 인증 시스템** ⭐ 백엔드 통합 완료! (관리자용)
-- `level1-auth-test.html` - **내부 실명인증 테스트 페이지** (관리자 전용)
-- `js/main.js` - **Level1BasicAuth 클래스 백엔드 통합** (내부 실명인증 시스템)
-- `js/auth.js` - **회원가입/로그인 인증 플로우** (백엔드 인증 연동)
-- `cost-effective-auth.html` - 내부 인증 시스템 관리 페이지 (관리자용)
-- `identity-verification.html` - 기존 실명인증 시스템 (참고용)
-- `js/cost-effective-auth.js` - 내부 3단계 인증 로직 (백엔드 최적화)
-
-### 🗺️ **지역별 매칭 시스템** ⭐ 버그 수정 완료!
-- `js/regional-matching.js` - **지역별 견적 매칭 엔진**
-- `regional-matching-test.html` - **매칭 시스템 테스트 페이지**
-- `matching-quick-fix.html` - **🚨 긴급 매칭 문제 수정 도구** ⭐ NEW!
-- `regional-matching-debug.html` - **🔍 상세 디버깅 및 분석 도구** ⭐ NEW!
-- `shop-info-test.html` - **업체 정보 지역 선택 테스트**
-- **✅ 업체 회원가입**: `register.html` - 시/구 선택 + 상세주소 텍스트 입력 ⭐
-- **업체 정보 관리**: `shop-dashboard.html` - 시/구 선택 폼 추가됨
-- `register-test.html` - **업체 회원가입 지역 선택 테스트**
-- API: `tables/skincare_shops` - 샵 지역 정보 포함 스키마 (필드명 통일)
-- API: `tables/consultations` - 상담 요청 지역 정보 포함 스키마
-
-#### 🛠️ **문제 해결 도구들**
-**지역 매칭 문제** (데모고객 → 데모업체):
-1. **긴급 수정**: `matching-quick-fix.html` 접속 → 1,2,3단계 순서대로 실행
-2. **상세 분석**: `regional-matching-debug.html` 접속 → 각종 디버깅 도구 사용
-3. **수동 수정**: 데모 업체 지역 정보 (서울특별시 금천구) 올바르게 설정 확인
-
-**관리자 권한 문제** (admin@demo.com 로그인 시 권한 없음 오류):
-1. **즉시 해결**: `admin-permission-fix.html` 접속 → "관리자 권한 강제 수정" 버튼 클릭 ⭐ NEW!
-2. **로그인 테스트**: 같은 페이지에서 관리자 로그인 직접 테스트 가능
-3. **권한 확인**: 현재 로그인 사용자의 권한 상태 실시간 확인
-
-**상담 요청 수신 문제** (고객 견적 요청 시 업체가 받지 못함):
-1. **전체 흐름 분석**: `consultation-flow-debug.html` 접속 → 5단계 순차 분석 ⭐ NEW!
-2. **데이터 확인**: 상담 요청 데이터와 업체 데이터 실시간 비교
-3. **매칭 테스트**: 지역별 매칭 로직 직접 검증 및 시뮬레이션
-
-**사용자 경험 문제** (회원가입 후 폼 자동 입력, 업체 정보 저장):
-1. **종합 테스트**: `user-experience-fix.html` 접속 → 자동 입력 및 저장 기능 검증 ⭐ NEW!
-2. **고객 자동 입력**: 로그인 후 상담 폼 자동 채우기 테스트
-3. **업체 정보 저장**: 업체 대시보드 정보 저장 API 테스트
-
-### 🛒 **외부 결제 시스템**
-- `payment-success.html` - 결제 완료 페이지
-- `payment-cancel.html` - 결제 취소 페이지
-- `webhook-handler.html` - 결제 상태 웹훅 처리
-- `cafe24-auto-fill.js` - 카페24 자동 입력 스크립트
-
-### 📱 **모바일 앱 등록 준비** ⭐ NEW!
-- `index.html` - **모바일 최적화 심플 디자인** 완전 리뉴얼
-- `manifest.json` - **PWA 웹 매니페스트** (앱스토어 등록 필수)
-- `sw.js` - **서비스워커** (오프라인 지원, 캐싱, 푸시 알림)
-- `app-ads.txt` - **앱 광고 설정** (향후 수익화)
-- `robots.txt` - **앱스토어 크롤러 최적화**
-- `MOBILE_APP_GUIDE.md` - **📱 앱 등록 완벽 가이드** ⭐
-
-#### 🎯 **앱 등록 핵심 기능**
-- **PWA 지원**: 웹앱을 홈화면에 추가하여 네이티브 앱처럼 사용
-- **오프라인 모드**: 기본 정보 오프라인 조회 가능
-- **푸시 알림**: 견적 도착, 예약 알림 등 실시간 알림
-- **터치 최적화**: iOS/Android 터치 가이드라인 준수
-- **앱 아이콘**: 32x32 ~ 512x512 고해상도 아이콘 세트 완비
-- **네이티브 빌드**: Capacitor/Cordova 지원으로 실제 앱 제작 가능
-
-### 🛠️ **관리 기능**
-- `admin-dashboard.html` - 전체 플랫폼 관리
-- `shop-registration.html` - 신규 업체 등록
-- `contact-inquiry.html` - 문의 및 고객지원
-
----
-
-## 📁 **기술 문서**
-
-- 📱 [**모바일 앱 등록 가이드**](MOBILE_APP_GUIDE.md) - **앱스토어 등록 완벽 가이드** ⭐ NEW!
-- 💰 [**가성비 인증 완벽 가이드**](COST_EFFECTIVE_AUTH_GUIDE.md) - **87% 비용절약 인증시스템** ⭐
-- 🏪 [**카페24 설치 가이드**](CAFE24_SETUP_GUIDE.md) - 자사몰 자동 입력 설치
-- 🛒 [**외부 결제 가이드**](EXTERNAL_PAYMENT_GUIDE.md) - 네이버/자사몰 연동
-- 🔐 [**보안 배포 가이드**](SECURITY_DEPLOYMENT_GUIDE.md) - 인증 및 암호화
-- 🎨 [**디자인 가이드**](UNNI_STYLE_GUIDE.md) - 강남언니 스타일
-
----
-
-## 🚀 **다음 단계: 상용화 로드맵**
-
-### 🟢 **즉시 실행 가능** (오늘 바로 상용화!)
-1. 💰 **가성비 인증 시스템 적용** - `COST_EFFECTIVE_AUTH_GUIDE.md` 따라 구현 ⭐
-2. 🏪 **카페24 스크립트 설치** - `CAFE24_SETUP_GUIDE.md` 따라 설치
-3. 🏪 **카페24 상품 등록** - 5가지 피부관리 서비스 등록
-4. 🏪 **카페24 URL 연결** - `external-payment.js` 설정
-5. 🔗 **SSL 인증서** - HTTPS 적용 (필수)
-6. 🎉 **서비스 오픈!**
-
-### 🔵 **1주 내 추가 기능**
-- 📱 **SMS/이메일 알림**: 결제 완료 시 자동 알림
-- 🔔 **네이버 스마트스토어**: 상품 등록 및 API 연동
-- 📊 **매출 대시보드**: 실시간 매출 통계 및 분석
-- 👥 **고객 리뷰**: 이용 후기 및 평점 시스템
-
-### 🔴 **1개월 내 고도화**
-- 🤖 **AI 매칭**: 고객 요구에 맞는 업체 자동 추천
-- 📹 **화상 상담**: WebRTC 기반 비대면 상담
-- 📱 **모바일 앱**: React Native 앱 개발
-- 🎨 **마켓팅 도구**: SNS 자동 포스팅 및 광고 관리
-
----
-
-## 🎆 **성공 지표 & KPI**
-
-### 💰 **매출 목표 (인증비용 87% 절약 효과 반영)**
-- **1주차**: 월 100건 상담 신청 (매출 1,000만원, **인증비용 29만원 절약**)
-- **1개월**: 월 300건 상담 신청 (매출 3,000만원, **인증비용 78만원 절약**)
-- **3개월**: 월 1,000건 상담 신청 (매출 1억원, **인증비용 290만원 절약**)
-
-### 📊 **핵심 지표**
-- **전환율**: 상담신청 → 결제완료 30% 이상 (**인증 간편화로 5% 향상 기대**)
-- **재이용율**: 이용고객 재방문 50% 이상
-- **업체 만족도**: 월별 평가 4.5점 이상
-- **고객 만족도**: 서비스 완료 후 4.7점 이상
-- **인증 완료율**: 95%+ (**기존 80% 대비 15% 향상**)
-
----
-
-## 📞 연락처
-
-- **카카오톡 상담**: https://open.kakao.com/o/sXXnTISh
-- **이메일**: utuber@kakao.com
-- **기술지원**: tech@pposhop.kr
-- **운영시간**: 평일 10:30 - 17:00
-
----
-
-## 🧪 **테스트 및 검증**
-
-### 지역별 매칭 시스템 테스트
-1. `regional-matching-test.html` 페이지 방문
-2. **견적 요청 테스트**: 서울 강남구/서초구 등에서 테스트
-3. **지역별 샵 검색**: 등록된 업체 지역별 분포 확인
-4. **확장 검색**: 샵이 없는 지역에서 인근 지역 확장 테스트
-
-### 테스트 데이터
-- **서울 강남구**: 비우티스킨 클리닉, 퍼펙트스킨
-- **서울 서초구**: 글로우 스킨케어
-- **부산 해운대구**: 부산 마리나 스킨
-- **대구 수성구**: 대구 클린스킨
-
-### 콘솔 명령어
-```javascript
-// 지역별 통계 조회
-regionalMatching.getRegionalStats()
-
-// 특정 지역 샵 검색
-regionalMatching.findShopsInRegion('서울특별시', '강남구')
-
-// 테스트 통계 확인
-showTestStats()
+#### **2. 단일 조회 (GET)**
+```
+GET /tables/{table_name}/{record_id}
 ```
 
+**예시:**
+```bash
+curl "https://beautycat-api.jansmakr.workers.dev/api/tables/skincare_shops/cf_1762064797445_mi3ug3g9j"
+```
+
+**응답:**
+```json
+{
+  "id": "cf_1762064797445_mi3ug3g9j",
+  "name": "테스트 피부관리실",
+  "owner_name": "테스트 사장님",
+  "status": "active",
+  ...
+}
+```
+
+#### **3. 생성 (POST)**
+```
+POST /tables/{table_name}
+Content-Type: application/json
+
+{
+  "field1": "value1",
+  "field2": "value2"
+}
+```
+
+**예시:**
+```bash
+curl -X POST https://beautycat-api.jansmakr.workers.dev/api/tables/skincare_shops \
+-H "Content-Type: application/json" \
+-d '{"name":"새 피부관리실","owner_name":"홍길동","status":"pending"}'
+```
+
+**응답:** HTTP 201 Created
+```json
+{
+  "id": "cf_1762080000000_abc123",
+  "name": "새 피부관리실",
+  "created_at": 1762080000000,
+  ...
+}
+```
+
+#### **4. 전체 수정 (PUT)**
+```
+PUT /tables/{table_name}/{record_id}
+Content-Type: application/json
+
+{
+  "field1": "new_value1",
+  "field2": "new_value2",
+  ...
+}
+```
+
+#### **5. 부분 수정 (PATCH)** ✅
+```
+PATCH /tables/{table_name}/{record_id}
+Content-Type: application/json
+
+{
+  "status": "active"
+}
+```
+
+**예시:** 업체 승인
+```bash
+curl -X PATCH https://beautycat-api.jansmakr.workers.dev/api/tables/skincare_shops/cf_1762064797445_mi3ug3g9j \
+-H "Content-Type: application/json" \
+-d '{"status":"active"}'
+```
+
+#### **6. 삭제 (DELETE)**
+```
+DELETE /tables/{table_name}/{record_id}
+```
+
+**응답:** HTTP 204 No Content
+
+**주의:** Soft Delete 방식 (deleted = 1)
+
 ---
 
-🎉 **beautycat 상용화 준비 100% 완료! 지역별 스마트 매칭으로 더 정확한 서비스를!** 🎉
+## 🔒 보안 및 인증
 
-© 2024 beautycat. All rights reserved.
+### **TABLE_SCHEMAS 필드 필터링**
+
+**위치:** Cloudflare Workers 코드
+
+**목적:** SQL Injection 방지 및 허용되지 않은 필드 차단
+
+**구조:**
+```javascript
+const TABLE_SCHEMAS = {
+    users: [
+        'id', 'email', 'password', 'password_salt', 'name', 
+        'user_type', 'phone', 'status', 'shop_id', 
+        'email_verified', 'phone_verified', 'last_login_at', 
+        'created_at', 'updated_at', 'deleted'
+    ],
+    skincare_shops: [
+        'id', 'name', 'owner_name', 'phone', 'email', 
+        'address', 'state', 'district', 'services', 
+        'description', 'business_number', 'business_license', 
+        'status', 'representative_treatments', 'price_range', 
+        'operating_hours', 'created_at', 'updated_at', 'deleted'
+    ],
+    // ... 기타 테이블
+};
+```
+
+**동작 방식:**
+1. 클라이언트가 POST/PUT/PATCH 요청 시
+2. Workers가 요청 body의 모든 필드 검사
+3. TABLE_SCHEMAS에 정의된 필드만 허용
+4. 허용되지 않은 필드는 자동 제거
+5. 필터링된 데이터만 D1에 저장
+
+### **CORS 설정**
+
+**허용된 Origin:**
+```javascript
+const allowedOrigins = [
+    'https://beautycat-v2.pages.dev',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
+];
+```
+
+**허용된 HTTP 메서드:**
+```
+GET, POST, PUT, PATCH, DELETE, OPTIONS
+```
+
+**허용된 헤더:**
+```
+Content-Type, Authorization, X-Requested-With
+```
+
+### **비밀번호 보안**
+
+**현재 구현:**
+- 비밀번호 해시: SHA-256 (client-side)
+- Salt 저장: password_salt 필드
+
+**권장 개선 사항:**
+- bcrypt 또는 Argon2 사용 (server-side)
+- 최소 비밀번호 길이: 8자 이상
+- 비밀번호 복잡도 정책 적용
+
+---
+
+## 📱 모바일 최적화
+
+### **반응형 디자인 구현**
+
+**모바일 최적화 CSS 파일:** `css/mobile-optimized.css`
+
+**주요 최적화 항목:**
+
+1. **로고 디자인**
+   - 이미지 로고 적용: `images/beautycat-logo.png`
+   - 반응형 크기 조정 (모바일: 36px, 데스크톱: 40px)
+   - 고해상도 디스플레이 지원
+
+2. **터치 최적화**
+   - 최소 터치 영역: 44x44px (iOS 권장 기준)
+   - 터치 하이라이트 제거
+   - 터치 제스처 영역 확대
+
+3. **폼 입력 최적화**
+   - 최소 높이: 44px
+   - 폰트 크기: 16px (iOS 자동 줌 방지)
+   - 체크박스/라디오: 24x24px (모바일)
+
+4. **테이블 반응형**
+   - 모바일에서 카드 형식으로 자동 변환
+   - 가로 스크롤 지원
+   - data-label 속성 활용
+
+5. **네비게이션**
+   - 햄버거 메뉴 (768px 이하)
+   - 모바일 메뉴 슬라이드 애니메이션
+   - 터치 친화적 메뉴 항목
+
+6. **레이아웃**
+   - 그리드 시스템 (1열 → 2열 → 3열 → 4열)
+   - 컨테이너 패딩 조정
+   - Safe Area 대응 (iOS 노치)
+
+7. **성능**
+   - 이미지 최적화
+   - 스크롤 성능 개선
+   - 하드웨어 가속 활용
+
+**적용된 HTML 파일:**
+- ✅ index.html
+- ✅ login.html
+- ✅ register.html
+- ✅ admin-dashboard.html
+- ✅ shop-dashboard.html
+- ✅ customer-dashboard.html
+
+**브레이크포인트:**
+- Mobile: < 640px
+- Tablet: 640px - 768px
+- Desktop: 768px - 1024px
+- Large: > 1024px
+
+---
+
+## 📝 주요 변경 이력
+
+### **2025-11-03 (최신): UI 대대적 개선 v2.1.1**
+
+**변경 사항:**
+
+1. ✅ **로고 및 고양이 아이콘 디자인 변경**
+   - 배경 제거 (투명)
+   - 테두리 제거
+   - 그림자 제거
+   - 이모지만 표시 (깔끔한 디자인)
+
+2. ✅ **버튼 테두리 통일 (검은색)**
+   - 메인 페이지: 상담/견적신청, 로그인 버튼
+   - 로그인 페이지: 고객/샵 선택 버튼
+   - 회원가입 페이지: 고객/샵 선택 버튼
+   - 테두리: 분홍색 1px → 검은색 2px
+   - 호버 효과: 연한 분홍 배경 + translateY(-2px)
+
+3. ✅ **모바일 UI 전면 최적화**
+   - 텍스트 크기: 15-16px (가독성 향상)
+   - 버튼 최소 높이: 48-52px (터치 편의)
+   - 입력 필드: 16px 폰트 (iOS 줌 방지)
+   - 네비게이션 버튼: 64x56px
+   - 섹션 패딩 및 간격 증가
+   - 하단 여백: 80px (네비게이션 공간)
+
+4. ✅ **캐시 무효화 시스템**
+   - _headers 파일 추가 (Cloudflare 캐시 설정)
+   - 버전 메타 태그 추가 (v2.1.0-20251103-0440)
+   - CSS 버전 파라미터 (?v=2.1.0)
+   - HTML 파일: 캐시 완전 비활성화
+
+5. ✅ **회원가입 페이지 개선**
+   - 사용자 타입 선택: 드롭다운 → 라디오 버튼
+   - 검은색 테두리 적용
+   - 호버 효과 통일
+
+**적용된 파일:**
+- index.html (버튼 스타일, 버전 메타 태그)
+- login.html (테두리 검은색, 모바일 최적화)
+- register.html (라디오 버튼, 모바일 최적화)
+- css/mobile-optimized.css (로고, 버튼, 모바일 전면 개선)
+- _headers (캐시 무효화 설정)
+
+**테스트 완료:**
+- ✅ PC 브라우저: 모든 버튼 검은색 테두리 확인
+- ✅ 모바일: 텍스트/버튼 크기 최적화 확인
+- ✅ 로고/고양이: 배경 제거 확인
+- ✅ 호버 효과: 연한 분홍 배경 + 애니메이션 확인
+- ✅ Cloudflare Pages 배포: 성공 (beautycat-v2)
+
+---
+
+### **2025-11-02: 뷰냥이 이모지 로고 적용 및 UI 개선**
+
+**변경 사항:**
+1. ✅ 뷰냥이 이모지 로고 🐱 적용
+   - 이미지 대신 이모지 사용 (빠른 로딩)
+   - 핑크 그라데이션 배경
+   - 호버 애니메이션 효과
+   - 모바일 반응형 크기 (40px → 36px)
+
+2. ✅ 하단 전화상담 중복 제거
+   - 전화상담 섹션 삭제 (상단에 이미 존재)
+   - 하단 네비게이션 3개 버튼으로 축소 (홈, 견적신청, 채팅)
+
+3. ✅ 로컬 개발 환경 경로 변경
+   - C:\Users\user\beautycat-v2\ → **D:\beautycat\**
+   - GitHub 연동 상태: ❌ 안됨 (수동 배포 필요)
+
+**적용된 파일:**
+- css/mobile-optimized.css (이모지 로고 스타일)
+- index.html (로고 변경, 전화상담 삭제)
+- login.html (로고 변경)
+- admin-dashboard.html (로고 변경)
+- shop-dashboard.html (로고 변경)
+- customer-dashboard.html (로고 변경)
+
+### **2025-11-02: 모바일 최적화 및 로고 변경**
+
+**추가된 기능:**
+1. ✅ 모바일 최적화 CSS (css/mobile-optimized.css)
+2. ✅ 이미지 로고 적용 (images/beautycat-logo.png)
+3. ✅ 반응형 네비게이션
+4. ✅ 터치 최적화 UI
+5. ✅ 모바일 폼 최적화
+6. ✅ 테이블 카드 변환
+7. ✅ iOS Safe Area 지원
+
+### **2025-11-02: Checkpoint -222 복원 후 전체 재구축**
+
+**해결된 문제:**
+1. ✅ POST 500 에러 → TABLE_SCHEMAS 필드 필터링 추가
+2. ✅ CORS PATCH 에러 → ES Module 변환 + CORS 헤더 수정
+3. ✅ Service Worker 충돌 → 완전 제거 및 캐시 삭제
+4. ✅ Firebase API 충돌 → 비활성화
+5. ✅ auth.js 문법 에러 → loadDemoShops() 수정
+6. ✅ shop-dashboard.js JSON 에러 → JSON.parse() 타입 체크
+7. ✅ admin-dashboard.js undefined → shop.shop_name → shop.name
+
+**새로운 구조:**
+- Cloudflare Workers API (ES Module)
+- Cloudflare D1 Database (SQLite)
+- api-global-override.js (자동 API 라우팅)
+- Service Worker 완전 제거
+
+**테스트 완료:**
+- ✅ 관리자 로그인
+- ✅ 업체 목록 조회
+- ✅ 업체 승인 (PATCH 요청)
+- ✅ 업체명 정상 표시
+- ✅ 모든 API 요청 정상 작동
+
+---
+
+## 🎯 다음 개발 단계 (우선순위)
+
+### **Phase 1: 핵심 기능 안정화**
+- [ ] 비밀번호 보안 강화 (bcrypt)
+- [ ] 세션 관리 개선
+- [ ] 에러 핸들링 통일
+
+### **Phase 2: 업체 기능 확장**
+- [ ] 업체 대시보드 정보 수정 기능
+- [ ] 업체 서비스 등록 및 관리
+- [ ] 업체 사진 업로드 (Cloudflare Images)
+
+### **Phase 3: 고객 기능 구현**
+- [ ] 업체 검색 및 필터링
+- [ ] 예약 시스템
+- [ ] 리뷰 작성 및 평점
+
+### **Phase 4: 관리자 기능 고도화**
+- [ ] 통계 대시보드
+- [ ] 정산 관리
+- [ ] 이메일 알림 (SendGrid 연동)
+
+### **Phase 5: 성능 최적화**
+- [ ] 이미지 최적화
+- [ ] 페이지 로딩 속도 개선
+- [ ] D1 Database 인덱스 최적화
+
+---
+
+## 📞 지원 및 문의
+
+**개발자 연락처:**
+- 이메일: jansmakr@gmail.com
+- GitHub: https://github.com/jansmakr
+
+**기술 스택:**
+- Frontend: HTML5, CSS3, JavaScript (Vanilla)
+- Backend: Cloudflare Workers (JavaScript ES Module)
+- Database: Cloudflare D1 (SQLite)
+- Hosting: Cloudflare Pages
+- Version Control: GitHub
+
+---
+
+## 📄 라이선스
+
+© 2025 BeautyCat Platform. All rights reserved.
+
+---
+
+**이 문서는 플랫폼 업데이트 시 함께 업데이트됩니다.**
+**최종 업데이트: 2025-11-03 16:45 KST**
+**버전: v2.1.1**
