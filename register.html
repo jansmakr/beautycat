@@ -2,696 +2,320 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <!-- 🔥 Cache Busting Timestamp -->
-    <meta name="version" content="2.1.3-20251103-0600">
-    <title>회원가입 | beautycat - 피부관리실 견적비교</title>
-    <meta name="description" content="beautycat 회원가입 - 고객과 관리실을 위한 맞춤 회원가입">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - beautycat (뷰티+에티켓)</title>
     
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
-    
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Mobile Optimized CSS -->
-    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.3">
+<!-- 모바일 최적화 CSS -->
+<link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
+<!-- Firebase API 백엔드 - Cloudflare Workers 사용으로 비활성화 -->
+<!-- <script src="js/firebase-api.js"></script> -->
+<!-- <script src="js/api-bridge.js"></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 50%, #FFF8FA 100%);
-            min-height: 100vh;
+        body { 
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
         
-        .logo-emoji {
-            font-size: 2rem;
-            width: auto;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            border: none;
-            box-shadow: none;
+        /* 입력 필드 호버 및 포커스 효과 */
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        input[type="tel"],
+        select {
             transition: all 0.3s ease;
         }
         
-        .logo-emoji:hover {
-            transform: scale(1.1) rotate(5deg);
+        input:hover,
+        select:hover {
+            border-color: #ff2d92;
+            box-shadow: 0 0 0 3px rgba(255, 45, 146, 0.05);
         }
         
-        .register-card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        input:focus,
+        select:focus {
+            border-color: #ff2d92;
+            box-shadow: 0 0 0 3px rgba(255, 45, 146, 0.1);
         }
         
-        /* 회원 유형 선택 버튼 - 인라인 스타일 강화 */
-        .user-type-btn {
-            background: white !important;
-            border: 3px solid #000000 !important;
-            border-radius: 0.5rem;
-            padding: 1rem;
+        /* 버튼 호버 효과 */
+        button[type="submit"] {
+            background: linear-gradient(135deg, #ff2d92, #e6297f);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 45, 146, 0.2);
+        }
+        
+        button[type="submit"]:hover {
+            background: linear-gradient(135deg, #e6297f, #cc256c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 45, 146, 0.35);
+        }
+        
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(255, 45, 146, 0.2);
+        }
+        
+        /* 링크 호버 효과 */
+        a.text-pink-500:hover {
+            color: #e6297f;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+        }
+        
+        /* 체크박스 커스터마이징 */
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
+            accent-color: #ff2d92;
+        }
+        
+        input[type="checkbox"]:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Select 드롭다운 화살표 */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            appearance: none;
+        }
+        
+        /* 카드 호버 효과 */
+        .bg-white.p-8 {
             transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 0 0 1px #000000 !important;
+        }
+        
+        /* 사용자 유형 선택 버튼 호버 효과 */
+        .user-type-btn {
+            background: white;
+            border-color: #000000 !important; /* 검은색 테두리 */
         }
         
         .user-type-btn:hover {
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            border-color: #000000 !important; /* 호버 시에도 검은색 */
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
         }
         
-        .user-type-btn.selected {
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+        .user-type-btn:hover i.fas {
+            transform: scale(1.1);
         }
         
-        .user-type-btn .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .user-type-btn .title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
-            color: #000000;
-        }
-        
-        .user-type-btn .description {
-            font-size: 0.875rem;
-            color: #666;
-        }
-        
-        .input-group {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-        
-        .input-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-        
-        .input-group input,
-        .input-group select,
-        .input-group textarea {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid #000000 !important;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .input-group input:focus,
-        .input-group select:focus,
-        .input-group textarea:focus {
-            outline: none;
-            border: 3px solid #000000 !important;
-            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
-        }
-        
-        .input-group small {
-            display: block;
-            margin-top: 0.25rem;
-            color: #666;
-            font-size: 0.875rem;
-        }
-        
-        /* 회원가입 버튼 - 인라인 스타일 강화 */
-        .btn-primary {
-            background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%) !important;
-            color: white !important;
-            border: 3px solid #000000 !important;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            box-shadow: 0 0 0 1px #000000 !important;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #FF1493 0%, #C71585 100%) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-        }
-        
-        .btn-primary:active {
+        .user-type-btn:active {
             transform: translateY(0);
         }
         
-        .btn-primary:disabled {
-            background: #ccc !important;
-            cursor: not-allowed;
-            transform: none;
+        /* 선택된 상태도 검은색 테두리 유지 */
+        .user-type-btn.bg-primary-50 {
+            border: 2px solid #000000 !important;
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%) !important;
         }
         
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 0.75rem;
-        }
-        
-        .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 0.5rem;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        
-        .checkbox-group label {
-            cursor: pointer;
-            font-size: 0.875rem;
-            color: #333;
-            margin: 0;
-        }
-        
-        .link {
-            color: #FF69B4;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .link:hover {
-            color: #FF1493;
-            text-decoration: underline;
-        }
-        
-        .divider {
-            border-top: 2px solid #F3F4F6;
-            margin: 1.5rem 0;
-        }
-        
-        .shop-only-fields {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        .shop-only-fields.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
+        /* 모바일 최적화 */
         @media (max-width: 640px) {
-            .register-card {
-                margin: 1rem;
+            .bg-white.p-8 {
+                padding: 1.5rem !important;
+                margin: 1rem !important;
+            }
+            
+            h1 {
+                font-size: 1.75rem !important;
+            }
+            
+            h2 {
+                font-size: 1.375rem !important;
             }
             
             .user-type-btn {
-                padding: 0.75rem;
-                min-height: 48px;
+                padding: 1rem !important;
+                min-height: 80px;
             }
             
-            .user-type-btn .icon {
-                font-size: 1.5rem;
+            .user-type-btn i {
+                font-size: 1.75rem !important;
             }
             
-            .btn-primary {
-                min-height: 48px;
-                font-size: 1rem;
+            .user-type-btn span {
+                font-size: 0.9375rem !important;
             }
             
-            .input-group input,
-            .input-group select,
-            .input-group textarea {
-                min-height: 48px;
-                font-size: 16px;
+            input[type="email"],
+            input[type="password"],
+            input[type="text"],
+            input[type="tel"],
+            select {
+                font-size: 16px !important;
+                padding: 14px 12px !important;
+                min-height: 52px;
             }
             
-            .checkbox-group input[type="checkbox"] {
-                width: 24px;
-                height: 24px;
+            button[type="submit"] {
+                font-size: 16px !important;
+                padding: 14px 24px !important;
+                min-height: 52px;
+            }
+            
+            .text-sm {
+                font-size: 0.9375rem !important;
+            }
+            
+            .space-y-4 > * + * {
+                margin-top: 1rem !important;
+            }
+            
+            label {
+                font-size: 0.9375rem !important;
+                margin-bottom: 0.5rem !important;
             }
         }
     </style>
 </head>
-<body>
-    <!-- 네비게이션 바 -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                    <span class="logo-emoji">🐱</span>
-                    <span class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                        beautycat
-                    </span>
-                </a>
-                
-                <a href="index.html" class="btn-outline" style="border: 2px solid #000000 !important; color: #000000 !important;">
-                    <i class="fas fa-home mr-2"></i>
-                    홈으로
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- 회원가입 폼 -->
-    <div class="container mx-auto px-4 py-8 max-w-2xl">
-        <div class="register-card p-8">
-            <div class="text-center mb-6">
-                <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-                    회원가입
-                </h1>
-                <p class="text-gray-600">beautycat과 함께 시작하세요</p>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-pink-500 mb-2">beautycat</h1>
+                <p class="text-gray-600">뷰티+에티켓 피부관리 플랫폼</p>
             </div>
             
-            <!-- 회원 유형 선택 -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold mb-3 text-gray-700">회원 유형 선택 *</label>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="user-type-btn selected" id="customer-btn" onclick="selectUserType('customer')" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
-                        <div class="text-center">
-                            <div class="icon">👤</div>
-                            <div class="title">고객</div>
-                            <div class="description">관리 받으러 왔어요</div>
-                        </div>
-                    </div>
-                    <div class="user-type-btn" id="shop-btn" onclick="selectUserType('shop')" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
-                        <div class="text-center">
-                            <div class="icon">🏪</div>
-                            <div class="title">관리실</div>
-                            <div class="description">고객을 관리해요</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <h2 class="text-2xl font-bold text-center mb-6">회원가입</h2>
             
-            <div class="divider"></div>
-            
-            <!-- 회원가입 폼 -->
-            <form id="register-form" onsubmit="handleRegister(event)">
-                <div class="input-group">
-                    <label for="email">
-                        <i class="fas fa-envelope mr-1"></i>
-                        이메일 *
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                    <input type="email" id="email" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">비밀번호</label>
+                    <input type="password" id="password" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">비밀번호 확인</label>
+                    <input type="password" id="confirmPassword" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
+                    <input type="text" id="name" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                    <input type="tel" id="phone" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">회원 유형</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label id="customer-label-register" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
+                            <input type="radio" name="userType" id="userType" value="customer" checked class="sr-only" required>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
+                                <i class="fas fa-check text-white text-xs hidden"></i>
+                            </div>
+                            <i class="fas fa-user text-pink-500 text-2xl mb-2 transition-all"></i>
+                            <span class="text-sm font-semibold text-gray-700">고객</span>
+                        </label>
+                        <label id="shop-label-register" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
+                            <input type="radio" name="userType" value="shop" class="sr-only">
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
+                                <i class="fas fa-check text-white text-xs hidden"></i>
+                            </div>
+                            <i class="fas fa-store text-pink-500 text-2xl mb-2 transition-all"></i>
+                            <span class="text-sm font-semibold text-gray-700">업체</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" id="terms" required class="mr-2">
+                    <label for="terms" class="text-sm text-gray-600">
+                        <a href="#" class="text-pink-500 hover:underline">이용약관</a> 및 
+                        <a href="#" class="text-pink-500 hover:underline">개인정보처리방침</a>에 동의합니다.
                     </label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        placeholder="example@email.com"
-                        required
-                        style="border: 2px solid #000000 !important;"
-                    >
-                    <small>로그인 시 사용할 이메일 주소를 입력하세요</small>
                 </div>
                 
-                <div class="input-group">
-                    <label for="password">
-                        <i class="fas fa-lock mr-1"></i>
-                        비밀번호 *
-                    </label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        placeholder="8자 이상 입력하세요"
-                        required
-                        minlength="8"
-                        style="border: 2px solid #000000 !important;"
-                    >
-                    <small>영문, 숫자, 특수문자를 포함한 8자 이상</small>
-                </div>
-                
-                <div class="input-group">
-                    <label for="password-confirm">
-                        <i class="fas fa-lock mr-1"></i>
-                        비밀번호 확인 *
-                    </label>
-                    <input 
-                        type="password" 
-                        id="password-confirm" 
-                        name="password-confirm" 
-                        placeholder="비밀번호를 다시 입력하세요"
-                        required
-                        style="border: 2px solid #000000 !important;"
-                    >
-                </div>
-                
-                <div class="input-group">
-                    <label for="name">
-                        <i class="fas fa-user mr-1"></i>
-                        이름 *
-                    </label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        placeholder="홍길동"
-                        required
-                        style="border: 2px solid #000000 !important;"
-                    >
-                </div>
-                
-                <div class="input-group">
-                    <label for="phone">
-                        <i class="fas fa-phone mr-1"></i>
-                        전화번호 *
-                    </label>
-                    <input 
-                        type="tel" 
-                        id="phone" 
-                        name="phone" 
-                        placeholder="010-1234-5678"
-                        required
-                        pattern="[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}"
-                        style="border: 2px solid #000000 !important;"
-                    >
-                    <small>'-'를 포함하여 입력하세요 (예: 010-1234-5678)</small>
-                </div>
-                
-                <!-- 관리실 전용 필드 -->
-                <div id="shop-only-fields" class="shop-only-fields">
-                    <div class="divider"></div>
-                    
-                    <h3 class="text-lg font-bold mb-4 text-pink-600">
-                        <i class="fas fa-store mr-2"></i>
-                        관리실 정보
-                    </h3>
-                    
-                    <div class="input-group">
-                        <label for="shop-name">
-                            <i class="fas fa-store mr-1"></i>
-                            관리실 이름 *
-                        </label>
-                        <input 
-                            type="text" 
-                            id="shop-name" 
-                            name="shop-name" 
-                            placeholder="뷰티캣 강남점"
-                            style="border: 2px solid #000000 !important;"
-                        >
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="business-number">
-                            <i class="fas fa-file-invoice mr-1"></i>
-                            사업자등록번호 *
-                        </label>
-                        <input 
-                            type="text" 
-                            id="business-number" 
-                            name="business-number" 
-                            placeholder="123-45-67890"
-                            pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}"
-                            style="border: 2px solid #000000 !important;"
-                        >
-                        <small>'-'를 포함하여 입력하세요 (예: 123-45-67890)</small>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="region">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            지역 *
-                        </label>
-                        <select id="region" name="region" style="border: 2px solid #000000 !important;">
-                            <option value="">지역을 선택하세요</option>
-                            <option value="서울">서울</option>
-                            <option value="경기">경기</option>
-                            <option value="인천">인천</option>
-                            <option value="부산">부산</option>
-                            <option value="대구">대구</option>
-                            <option value="광주">광주</option>
-                            <option value="대전">대전</option>
-                            <option value="울산">울산</option>
-                            <option value="세종">세종</option>
-                            <option value="강원">강원</option>
-                            <option value="충북">충북</option>
-                            <option value="충남">충남</option>
-                            <option value="전북">전북</option>
-                            <option value="전남">전남</option>
-                            <option value="경북">경북</option>
-                            <option value="경남">경남</option>
-                            <option value="제주">제주</option>
-                        </select>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="address">
-                            <i class="fas fa-map-marked-alt mr-1"></i>
-                            상세 주소 *
-                        </label>
-                        <input 
-                            type="text" 
-                            id="address" 
-                            name="address" 
-                            placeholder="서울시 강남구 테헤란로 123"
-                            style="border: 2px solid #000000 !important;"
-                        >
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="description">
-                            <i class="fas fa-align-left mr-1"></i>
-                            관리실 소개
-                        </label>
-                        <textarea 
-                            id="description" 
-                            name="description" 
-                            rows="4" 
-                            placeholder="관리실을 간단히 소개해주세요"
-                            style="border: 2px solid #000000 !important;"
-                        ></textarea>
-                        <small>고객에게 보여질 관리실 소개글입니다</small>
-                    </div>
-                </div>
-                
-                <div class="divider"></div>
-                
-                <!-- 약관 동의 -->
-                <div class="mb-6">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="terms-all" onchange="toggleAllTerms()">
-                        <label for="terms-all">
-                            <strong>전체 동의</strong>
-                        </label>
-                    </div>
-                    
-                    <div class="ml-8 space-y-2">
-                        <div class="checkbox-group">
-                            <input type="checkbox" class="terms-item" id="terms-service" required>
-                            <label for="terms-service">
-                                <a href="#" class="link">(필수)</a> 이용약관 동의
-                            </label>
-                        </div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" class="terms-item" id="terms-privacy" required>
-                            <label for="terms-privacy">
-                                <a href="#" class="link">(필수)</a> 개인정보 처리방침 동의
-                            </label>
-                        </div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" class="terms-item" id="terms-age" required>
-                            <label for="terms-age">
-                                (필수) 만 14세 이상입니다
-                            </label>
-                        </div>
-                        
-                        <div class="checkbox-group">
-                            <input type="checkbox" class="terms-item" id="terms-marketing">
-                            <label for="terms-marketing">
-                                (선택) 마케팅 정보 수신 동의
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 회원가입 버튼 -->
-                <button type="submit" class="btn-primary" id="submit-btn" style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important; background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%) !important; color: white !important;">
-                    <i class="fas fa-user-plus mr-2"></i>
-                    회원가입
+                <button type="submit" 
+                        class="w-full bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200" 
+                        style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
+                    가입하기
                 </button>
             </form>
             
-            <!-- 로그인 링크 -->
-            <div class="text-center mt-6 pt-6 border-t border-gray-200">
+            <div class="text-center mt-6">
                 <p class="text-gray-600">
-                    이미 회원이신가요?
-                    <a href="login.html" class="link font-semibold">로그인</a>
+                    이미 계정이 있으신가요? 
+                    <a href="login.html" class="text-pink-500 hover:underline">로그인</a>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-2xl">🐱</span>
-                        <span class="text-xl font-bold">beautycat</span>
-                    </div>
-                    <p class="text-gray-400 text-sm">
-                        전국 피부관리실을 한눈에<br>
-                        간편한 견적 비교와 예약
-                    </p>
-                </div>
-                
-                <div>
-                    <h3 class="font-bold mb-4">서비스</h3>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="#" class="hover:text-white transition-colors">견적 비교</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">관리실 찾기</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">리뷰 보기</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">이벤트</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="font-bold mb-4">고객지원</h3>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="#" class="hover:text-white transition-colors">공지사항</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">1:1 문의</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">이용약관</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="font-bold mb-4">관리실 전용</h3>
-                    <ul class="space-y-2 text-gray-400 text-sm">
-                        <li><a href="#" class="hover:text-white transition-colors">입점 문의</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">관리자 페이지</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">수수료 안내</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">파트너 지원</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
-                <p>&copy; 2024 beautycat. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        let selectedUserType = 'customer';
-        
-        function selectUserType(type) {
-            selectedUserType = type;
+        // 사용자 유형 선택 효과
+        function updateUserTypeSelection() {
+            const labels = {
+                'customer': document.getElementById('customer-label-register'),
+                'shop': document.getElementById('shop-label-register')
+            };
             
-            const customerBtn = document.getElementById('customer-btn');
-            const shopBtn = document.getElementById('shop-btn');
-            const shopFields = document.getElementById('shop-only-fields');
-            
-            if (type === 'customer') {
-                customerBtn.classList.add('selected');
-                shopBtn.classList.remove('selected');
-                shopFields.classList.remove('active');
-                
-                document.getElementById('shop-name').removeAttribute('required');
-                document.getElementById('business-number').removeAttribute('required');
-                document.getElementById('region').removeAttribute('required');
-                document.getElementById('address').removeAttribute('required');
-            } else {
-                shopBtn.classList.add('selected');
-                customerBtn.classList.remove('selected');
-                shopFields.classList.add('active');
-                
-                document.getElementById('shop-name').setAttribute('required', 'required');
-                document.getElementById('business-number').setAttribute('required', 'required');
-                document.getElementById('region').setAttribute('required', 'required');
-                document.getElementById('address').setAttribute('required', 'required');
-            }
-        }
-        
-        function toggleAllTerms() {
-            const allCheckbox = document.getElementById('terms-all');
-            const termItems = document.querySelectorAll('.terms-item');
-            
-            termItems.forEach(item => {
-                item.checked = allCheckbox.checked;
-            });
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const termItems = document.querySelectorAll('.terms-item');
-            const allCheckbox = document.getElementById('terms-all');
-            
-            termItems.forEach(item => {
-                item.addEventListener('change', function() {
-                    const allChecked = Array.from(termItems).every(el => el.checked);
-                    allCheckbox.checked = allChecked;
-                });
+            // 모든 라벨 초기화 (검은색 테두리 유지)
+            Object.values(labels).forEach(label => {
+                label.classList.remove('bg-pink-50', 'shadow-md');
+                const checkIcon = label.querySelector('.fa-check');
+                const checkCircle = checkIcon.parentElement;
+                checkCircle.classList.remove('bg-black');
+                checkIcon.classList.add('hidden');
             });
             
-            selectUserType('customer');
+            // 선택된 항목 강조
+            const selectedValue = document.querySelector('input[name="userType"]:checked').value;
+            const selectedLabel = labels[selectedValue];
+            selectedLabel.classList.add('bg-pink-50', 'shadow-md');
+            const checkIcon = selectedLabel.querySelector('.fa-check');
+            const checkCircle = checkIcon.parentElement;
+            checkCircle.classList.add('bg-black');
+            checkIcon.classList.remove('hidden');
+        }
+        
+        // 라디오 버튼 변경 이벤트
+        document.querySelectorAll('input[name="userType"]').forEach(radio => {
+            radio.addEventListener('change', updateUserTypeSelection);
         });
         
-        function handleRegister(event) {
-            event.preventDefault();
+        // 초기 상태 설정
+        document.addEventListener('DOMContentLoaded', updateUserTypeSelection);
+        
+        // 폼 제출
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
             const password = document.getElementById('password').value;
-            const passwordConfirm = document.getElementById('password-confirm').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             
-            if (password !== passwordConfirm) {
+            if (password !== confirmPassword) {
                 alert('비밀번호가 일치하지 않습니다.');
                 return;
             }
             
-            const termsService = document.getElementById('terms-service').checked;
-            const termsPrivacy = document.getElementById('terms-privacy').checked;
-            const termsAge = document.getElementById('terms-age').checked;
-            
-            if (!termsService || !termsPrivacy || !termsAge) {
-                alert('필수 약관에 동의해주세요.');
-                return;
-            }
-            
-            const formData = {
-                userType: selectedUserType,
-                email: document.getElementById('email').value,
-                password: password,
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                marketing: document.getElementById('terms-marketing').checked
-            };
-            
-            if (selectedUserType === 'shop') {
-                formData.shopName = document.getElementById('shop-name').value;
-                formData.businessNumber = document.getElementById('business-number').value;
-                formData.region = document.getElementById('region').value;
-                formData.address = document.getElementById('address').value;
-                formData.description = document.getElementById('description').value;
-            }
-            
-            console.log('회원가입 데이터:', formData);
-            
-            alert(`회원가입 기능은 준비 중입니다.\n\n회원 유형: ${selectedUserType === 'customer' ? '고객' : '관리실'}\n이메일: ${formData.email}`);
-        }
+            // 회원가입 처리
+            alert('회원가입이 완료되었습니다!');
+            window.location.href = 'login.html';
+        });
     </script>
 </body>
 </html>
