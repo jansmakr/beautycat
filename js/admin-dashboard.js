@@ -398,7 +398,7 @@ function displayShops(shops) {
     const tableBody = document.getElementById('shops-table');
     
     if (shops.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
         return;
     }
     
@@ -409,6 +409,34 @@ function displayShops(shops) {
             'inactive': 'text-red-600 bg-red-100',
             'pending': 'text-yellow-600 bg-yellow-100'
         };
+        
+        // 대표샵 상태 확인
+        const isRepresentative = shop.is_representative === true || shop.is_representative === 'true';
+        const repStatus = shop.representative_status || 'none';
+        
+        // 대표샵 상태 표시
+        let repStatusHtml = '';
+        if (isRepresentative && repStatus === 'approved') {
+            repStatusHtml = `
+                <div class="flex items-center">
+                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        <i class="fas fa-star mr-1"></i>대표샵
+                    </span>
+                    <button onclick="toggleRepresentativeStatus('${shop.id}', false)" 
+                            class="ml-2 text-red-600 hover:text-red-800" title="대표샵 해제">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </div>
+            `;
+        } else {
+            repStatusHtml = `
+                <button onclick="toggleRepresentativeStatus('${shop.id}', true)" 
+                        class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-blue-100 hover:text-blue-700"
+                        title="대표샵으로 지정">
+                    <i class="fas fa-star mr-1"></i>대표샵 지정
+                </button>
+            `;
+        }
         
         return `
             <tr>
@@ -434,6 +462,9 @@ function displayShops(shops) {
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[status]}">
                         ${status === 'active' ? '활성' : status === 'inactive' ? '비활성' : '승인대기'}
                     </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    ${repStatusHtml}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onclick="viewShop('${shop.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">
@@ -2007,7 +2038,6 @@ async function saveShopChanges() {
         treatment_types: selectedTreatments,
         price_range: document.getElementById('edit-price-range').value,
         description: document.getElementById('edit-description').value,
-        status: document.getElementById('edit-status').value,
         updated_at: new Date().toISOString()
     };
     
@@ -2171,4 +2201,117 @@ function clearShopFilters() {
     
     // Show all shops
     displayShops(allShops);
+}
+
+// Toggle representative shop status
+async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
+    try {
+        // 샵 정보 찾기
+        const shop = allShops.find(s => s.id === shopId);
+        if (!shop) {
+            alert('샵 정보를 찾을 수 없습니다.');
+            return;
+        }
+        
+        // 지역 정보 확인
+        const state = shop.state;
+        const district = shop.district;
+        
+        if (!state || !district) {
+            alert('샵의 지역 정보가 없습니다. 샵 정보를 먼저 수정해주세요.');
+            return;
+        }
+        
+        if (setAsRepresentative) {
+            // 대표샵으로 지정
+            const confirmMsg = `${shop.name}을(를) ${state} ${district}의 대표샵으로 지정하시겠습니까?\n\n대표샵으로 지정되면:\n- 해당 지역 메인 페이지에서 전화상담 버튼으로 노출됩니다\n- 고객이 바로 전화 상담할 수 있습니다`;
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            // 해당 지역에 이미 대표샵이 있는지 확인
+            const existingRep = allShops.find(s => 
+                s.state === state && 
+                s.district === district && 
+                s.is_representative === true && 
+                s.id !== shopId
+            );
+            
+            if (existingRep) {
+                if (!confirm(`${state} ${district}에는 이미 대표샵 "${existingRep.name}"이(가) 있습니다.\n기존 대표샵을 해제하고 새로 지정하시겠습니까?`)) {
+                    return;
+                }
+                
+                // 기존 대표샵 해제
+                await updateShopRepresentativeStatus(existingRep.id, false);
+            }
+            
+            // 새로운 대표샵 지정
+            await updateShopRepresentativeStatus(shopId, true);
+            
+        } else {
+            // 대표샵 해제
+            if (!confirm(`${shop.name}의 대표샵 지정을 해제하시겠습니까?`)) {
+                return;
+            }
+            
+            await updateShopRepresentativeStatus(shopId, false);
+        }
+        
+        // 목록 새로고침
+        await refreshShops();
+        
+    } catch (error) {
+        console.error('Representative status toggle error:', error);
+        alert('대표샵 상태 변경 중 오류가 발생했습니다.');
+    }
+}
+
+// Update shop representative status via API
+async function updateShopRepresentativeStatus(shopId, isRepresentative) {
+    try {
+        const updateData = {
+            is_representative: isRepresentative,
+            representative_status: isRepresentative ? 'approved' : 'none',
+            representative_approved_at: isRepresentative ? new Date().toISOString() : null
+        };
+        
+        const response = await fetch(`tables/skincare_shops/${shopId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Representative status updated:', result);
+        
+        // 로컬 데이터 업데이트
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex !== -1) {
+            allShops[shopIndex] = { ...allShops[shopIndex], ...updateData };
+        }
+        
+        alert(isRepresentative ? '대표샵으로 지정되었습니다.' : '대표샵 지정이 해제되었습니다.');
+        
+    } catch (error) {
+        console.error('Representative status update error:', error);
+        
+        // API 실패 시 로컬 업데이트
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex !== -1) {
+            allShops[shopIndex].is_representative = isRepresentative;
+            allShops[shopIndex].representative_status = isRepresentative ? 'approved' : 'none';
+            displayShops(allShops);
+            alert(isRepresentative ? '대표샵으로 지정되었습니다 (로컬).' : '대표샵 지정이 해제되었습니다 (로컬).');
+        } else {
+            throw error;
+        }
+    }
 }
