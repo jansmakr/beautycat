@@ -1,0 +1,374 @@
+/* BeautyCat 모바일 프로덕션 CSS */
+/* Version: 2.3.0 */
+/* Optimized for Mobile Performance */
+
+/* ==========================================================================
+   1. 모바일 기본 설정
+   ========================================================================== */
+
+/* 터치 최적화 */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+button, a, input, select, textarea {
+    touch-action: manipulation;
+}
+
+/* iOS 안전 영역 */
+body {
+    padding-bottom: max(72px, calc(72px + env(safe-area-inset-bottom)));
+}
+
+/* ==========================================================================
+   2. 타이포그래피 (모바일 최적화)
+   ========================================================================== */
+
+/* 모바일 폰트 크기 */
+@media (max-width: 640px) {
+    html {
+        font-size: 14px; /* 기본 폰트 축소 */
+    }
+    
+    h1 {
+        font-size: 1.25rem;
+        line-height: 1.4;
+    }
+    
+    h2 {
+        font-size: 1.125rem;
+        line-height: 1.4;
+    }
+    
+    h3 {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+    
+    p {
+        font-size: 0.875rem;
+        line-height: 1.6;
+    }
+    
+    small {
+        font-size: 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   3. 버튼 및 인터랙티브 요소
+   ========================================================================== */
+
+/* 터치 피드백 */
+.touch-feedback {
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.touch-feedback:active {
+    transform: scale(0.96);
+    opacity: 0.85;
+}
+
+/* 버튼 최소 크기 (iOS HIG) */
+button, .btn, a.btn {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* 큰 터치 영역 */
+@media (max-width: 640px) {
+    button, .btn {
+        min-height: 48px;
+        padding: 12px 20px;
+        font-size: 0.9375rem;
+    }
+}
+
+/* ==========================================================================
+   4. 폼 요소 (모바일 최적화)
+   ========================================================================== */
+
+/* iOS 줌 방지 */
+input, select, textarea {
+    font-size: 16px !important;
+}
+
+/* 입력 필드 터치 영역 */
+@media (max-width: 640px) {
+    input, select, textarea {
+        min-height: 48px;
+        padding: 14px;
+    }
+}
+
+/* 체크박스/라디오 확대 */
+@media (max-width: 640px) {
+    input[type="checkbox"],
+    input[type="radio"] {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* ==========================================================================
+   5. 레이아웃 (모바일 우선)
+   ========================================================================== */
+
+/* 컨테이너 패딩 */
+@media (max-width: 640px) {
+    .container {
+        padding: 12px;
+    }
+    
+    .card {
+        padding: 16px;
+        margin: 12px 0;
+    }
+}
+
+/* 간격 조정 */
+@media (max-width: 640px) {
+    .hero {
+        padding: 20px 0;
+    }
+    
+    section {
+        margin-bottom: 20px;
+    }
+}
+
+/* ==========================================================================
+   6. 네비게이션 (모바일)
+   ========================================================================== */
+
+/* 하단 네비게이션 최적화 */
+@media (max-width: 640px) {
+    .mobile-nav {
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+    
+    .nav-btn {
+        min-height: 56px;
+        padding: 10px 8px;
+    }
+    
+    .nav-btn i {
+        font-size: 1.375rem;
+    }
+    
+    .nav-btn span {
+        font-size: 0.75rem;
+    }
+}
+
+/* iPhone SE 대응 */
+@media (max-width: 375px) {
+    .nav-btn {
+        min-height: 52px;
+        padding: 8px 6px;
+    }
+    
+    .nav-btn i {
+        font-size: 1.25rem;
+    }
+    
+    .nav-btn span {
+        font-size: 0.6875rem;
+    }
+}
+
+/* ==========================================================================
+   7. 이미지 최적화
+   ========================================================================== */
+
+/* 이미지 반응형 */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* 로고 크기 */
+@media (max-width: 640px) {
+    .logo-img {
+        height: 32px;
+    }
+    
+    .logo-emoji {
+        font-size: 1.75rem;
+    }
+}
+
+/* 고양이 아이콘 */
+@media (max-width: 640px) {
+    .cat-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 4.5rem;
+    }
+}
+
+/* ==========================================================================
+   8. 성능 최적화
+   ========================================================================== */
+
+/* GPU 가속 */
+.hardware-accelerated,
+.btn,
+.nav-btn,
+.touch-feedback {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* 애니메이션 최적화 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================================================
+   9. 스크롤 최적화
+   ========================================================================== */
+
+/* 부드러운 스크롤 */
+html {
+    scroll-behavior: smooth;
+}
+
+/* 오버스크롤 방지 */
+body {
+    overscroll-behavior-y: none;
+}
+
+/* ==========================================================================
+   10. 가독성 개선
+   ========================================================================== */
+
+/* 텍스트 가독성 */
+@media (max-width: 640px) {
+    body {
+        line-height: 1.6;
+        letter-spacing: -0.01em;
+    }
+    
+    .hero-desc {
+        line-height: 1.7;
+    }
+}
+
+/* 대비 개선 */
+@media (prefers-contrast: high) {
+    .btn-secondary {
+        border-width: 2px;
+    }
+}
+
+/* ==========================================================================
+   11. 프린트 최적화
+   ========================================================================== */
+
+@media print {
+    .mobile-nav,
+    .header {
+        display: none;
+    }
+    
+    body {
+        padding-bottom: 0;
+    }
+}
+
+/* ==========================================================================
+   12. 다크 모드 준비
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* 다크모드는 추후 구현 */
+}
+
+/* ==========================================================================
+   13. 로딩 최적화
+   ========================================================================== */
+
+/* 폰트 로딩 */
+@font-face {
+    font-family: 'Pretendard';
+    font-display: swap; /* 텍스트 즉시 표시 */
+}
+
+/* 이미지 로딩 placeholder */
+img[loading="lazy"] {
+    background: #f3f4f6;
+}
+
+/* ==========================================================================
+   14. 특수 기기 대응
+   ========================================================================== */
+
+/* iPhone X 이상 (노치) */
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+    }
+}
+
+/* 폴더블 폰 대응 */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        max-width: 100%;
+    }
+}
+
+/* ==========================================================================
+   15. 접근성
+   ========================================================================== */
+
+/* 포커스 표시 */
+*:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+}
+
+/* 스크린 리더 전용 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ==========================================================================
+   16. 추가 유틸리티
+   ========================================================================== */
+
+/* 빠른 탭 피드백 */
+@media (hover: none) {
+    button:active,
+    a:active,
+    .btn:active {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+}
+
+/* 세이프 에리어 대응 */
+.safe-area-bottom {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.safe-area-top {
+    padding-top: max(16px, env(safe-area-inset-top));
+}
+
+/* ==========================================================================
+   끝
+   ========================================================================== */
