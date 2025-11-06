@@ -1,9 +1,9 @@
 # BeautyCat 플랫폼 - 최종 매뉴얼 및 시스템 정보
 
-> **🚀 최신 업데이트: 관리자 대시보드 대표샵 관리 개선! (2025-11-05 01:30 KST)**
+> **✨ 최신 업데이트: 배너에 "지역별 대표 상담샵 모집" 문구 추가! (2025-11-05 19:50 KST)**
 > 
-> **최종 업데이트:** 2025-11-05 01:30 KST  
-> **버전:** v2.3.1 (샵 리스트에서 대표샵 직접 관리 기능 추가)  
+> **최종 업데이트:** 2025-11-05 19:50 KST  
+> **버전:** v2.2.3+++ (배너 모집 문구 추가)  
 > **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
 > 
 > **🌐 프로덕션 URL:**
@@ -53,6 +53,264 @@
 - ⭐ **리뷰 시스템**: 예약 후 리뷰 작성 및 업체 응답
 - 📅 **예약 관리**: 고객 예약 생성 및 업체 승인
 - 📢 **공지사항**: 관리자 공지 및 이벤트 관리
+
+---
+
+## 🚀 v2.2.3+++ 배너 모집 문구 추가 (2025-11-05)
+
+### **모든 배너에 "지역별 대표 상담샵 모집" 문구 추가**
+
+#### 1. **배너 내용 구성**
+각 배너는 이제 3줄 구성:
+1. **BeautyCat** (브랜드명 - 큰 글씨)
+2. **피부관리실 전국 플랫폼** (서브 타이틀)
+3. **지역별 대표 상담샵 모집** (핵심 메시지 - 핑크색 강조)
+
+#### 2. **추가된 배너 (9개)**
+- ✅ Instagram 정사각형
+- ✅ Instagram 스토리
+- ✅ 네이버 카페
+- ✅ 다음 카페
+- ✅ 네이버 밴드
+- ✅ Threads
+- ✅ 이메일 배너
+- ✅ 카카오톡 채널
+- ✅ YouTube 썸네일
+
+#### 3. **스타일링**
+- 📝 **텍스트 색상**: `#ff2d92` (핑크색)
+- 📏 **글씨 크기**: 18-24px (배너 크기에 따라)
+- 💪 **폰트 굵기**: 800 (Extra Bold)
+- 🎯 **z-index**: 1 (고양이 이모지 위에 표시)
+
+### **변경된 파일**
+- `banner-download.html`: 9개 배너에 모집 문구 추가
+- `README.md`: 버전 업데이트
+
+---
+
+## 🚀 v2.2.3++ 배너 고양이 이모지 추가 (2025-11-05)
+
+### **모든 홍보 배너에 큰 고양이 이모지 워터마크 추가**
+
+#### 1. **고양이 이모지 워터마크 추가**
+- ✅ **Instagram 정사각형**: 🐱 200px (opacity 0.15)
+- ✅ **Instagram 스토리**: 🐱 180px (opacity 0.15)
+- ✅ **네이버 카페**: 🐱 200px (opacity 0.15)
+- ✅ **다음 카페**: 🐱 220px (opacity 0.15)
+- ✅ **네이버 밴드**: 🐱 220px (opacity 0.15)
+- ✅ **Threads**: 🐱 200px (opacity 0.15)
+- ✅ **이메일 배너**: 🐱 180px (opacity 0.15)
+- ✅ **카카오톡**: 🐱 200px (opacity 0.15)
+- ✅ **YouTube 썸네일**: 🐱 240px (opacity 0.15)
+
+#### 2. **디자인 효과**
+- ✅ CSS `::before` 가상 요소로 구현
+- ✅ 황금색 그림자 효과: `drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3))`
+- ✅ 중앙 정렬: `position: absolute` + `transform: translate(-50%, -50%)`
+- ✅ 텍스트 위에 자연스럽게 배치
+
+#### 3. **브랜드 이미지 강화**
+- ✅ BeautyCat의 고양이 브랜드 정체성 강화
+- ✅ 따뜻하고 친근한 느낌
+- ✅ 배경에 은은하게 들어가 전문성 유지
+
+### **변경된 파일**
+- `banner-download.html`: 9개 배너 클래스에 고양이 이모지 추가
+- `README.md`: 버전 업데이트
+
+---
+
+## 🚀 v2.2.3+ 대표샵 모집 페이지 개선 (2025-11-05)
+
+### **대표샵 모집 배너 내용 업데이트**
+
+#### 1. **혜택 섹션 개선**
+- ✅ **제목 변경**: "메인 지역별 대표샵 전화 상담 탭" → "메인 페이지 노출"
+- ✅ **이미지 추가**: 메인 페이지 캡쳐 이미지 삽입
+- ✅ **시각적 개선**: 실제 노출 화면 예시 제공
+
+#### 2. **4대 혜택 구성**
+1. 📍 **메인 페이지 노출** - 캡쳐 이미지 포함
+2. ⭐ **대표샵으로 프리미엄 샵 이미지**
+3. 🎯 **초기 우선 고객 매칭 가능**
+4. ~~📢 마케팅 지원~~ (삭제)
+
+#### 3. **지원 자격 명확화**
+- ✅ "친절한 상담 가능자" 조건 유지
+- ✅ 전화 상담 응대 능력 강조
+
+### **변경된 파일**
+- `banners/representative-shop-recruitment.html`: 혜택 섹션 개선
+- `README.md`: 버전 업데이트
+
+---
+
+## 🚀 v2.2.3 복원 완료 (2025-11-05)
+
+### **원래 황금색 배너 스타일로 복원**
+
+#### 1. **이미지 제거 및 텍스트로 복원**
+- ✅ **기존 v2.2.9**: beautycat-logo-new.png 이미지 사용
+- ✅ **복원 v2.2.3**: 이미지 제거, 텍스트만 사용
+- ✅ **효과**: 깔끔하고 빠른 로딩
+
+#### 2. **황금색 그라데이션 배경**
+- ✅ 배경: `linear-gradient(135deg, #ffd700, #ffed4e, #ffc107)`
+- ✅ 고양이 이모지(🐱) 배경 워터마크
+- ✅ 텍스트: "BeautyCat" + "피부관리실 전국 플랫폼"
+
+#### 3. **복원된 파일**
+- ✅ `banner-download.html`: 이미지 → 텍스트
+- ✅ `banners/representative-shop-recruitment.html`: 이미지 제거
+- ✅ `banners/online-banners.html`: 이미지 제거
+- ✅ `banners/print-poster-a4.html`: 이미지 제거
+
+---
+
+## 🚀 v2.2.9 주요 개선 사항 (2025-11-05)
+
+### **BeautyCat 로고 이미지로 전체 통일**
+
+#### 1. **모든 배너 이미지를 beautycat-logo.png로 교체**
+- ✅ **기존**: 외부 URL 이미지 (검은색 배경 포함)
+- ✅ **변경**: 로컬 `beautycat-logo.png` 이미지 사용
+- ✅ **효과**: 깔끔한 브랜드 일관성 + 빠른 로딩
+
+#### 2. **교체된 이미지 수**
+- ✅ `banner-download.html`: 10개 이미지
+- ✅ `banners/representative-shop-recruitment.html`: 1개 이미지
+- ✅ `banners/online-banners.html`: 6개 이미지
+- ✅ `banners/print-poster-a4.html`: 1개 이미지
+- ✅ **총 18개 이미지 교체 완료**
+
+#### 3. **mix-blend-mode 제거**
+- ✅ 17개 `mix-blend-mode: multiply` 제거
+- ✅ 이미지가 더 선명하고 깔끔하게 표시
+- ✅ CSS 코드 간소화
+
+#### 4. **개선 효과**
+- ✅ **브랜드 일관성**: 모든 배너에서 동일한 로고 사용
+- ✅ **로딩 속도**: 로컬 이미지로 더 빠른 로딩
+- ✅ **유지보수**: 이미지 변경 시 한 곳만 수정
+- ✅ **깔끔함**: 검은색 배경 완전 제거
+
+### **변경된 파일**
+- `banner-download.html`: 10개 이미지 URL 교체
+- `banners/representative-shop-recruitment.html`: 1개 이미지 URL 교체
+- `banners/online-banners.html`: 6개 이미지 URL 교체
+- `banners/print-poster-a4.html`: 1개 이미지 URL 교체
+- `README.md`: 버전 v2.2.9로 업데이트
+
+---
+
+## 🚀 v2.2.8 주요 개선 사항 (2025-11-05)
+
+### **검은색 배경 박스 완전 제거**
+
+#### 1. **모든 CTA 버튼 검은색 제거**
+- ✅ **기존**: 검은색 배경(`#3c1e1e`) + 황금색 텍스트
+- ✅ **변경**: 화이트 반투명 배경(`rgba(255, 255, 255, 0.95)`) + 다크 텍스트
+- ✅ **효과**: 훨씬 깔끔하고 현대적인 디자인
+- ✅ **가독성**: 배경과 자연스럽게 어울리며 가독성 향상
+
+#### 2. **변경된 버튼 스타일**
+**대표샵 모집 페이지 (representative-shop-recruitment.html):**
+- ✅ `.cta-button` - 메인 CTA 버튼
+- ✅ `.contact-button` - 연락처 버튼들
+
+**온라인 배너 페이지 (online-banners.html):**
+- ✅ `.story-cta` - Instagram 스토리 CTA
+- ✅ `.feed-cta` - Instagram 피드 CTA
+- ✅ `.kakao-cta` - 카카오톡 CTA
+
+#### 3. **디자인 개선 효과**
+- ✅ **시각적 가벼움**: 무거운 검은색 → 가벼운 화이트
+- ✅ **배경 조화**: 황금색 그라데이션과 완벽한 조화
+- ✅ **현대적 느낌**: 깔끔하고 세련된 UI
+- ✅ **가독성 향상**: 명확한 대비로 텍스트 읽기 쉬움
+
+#### 4. **Before & After**
+```css
+/* Before (검은색 박스) */
+background: #3c1e1e;
+color: #ffd700;
+
+/* After (화이트 투명) */
+background: rgba(255, 255, 255, 0.95);
+color: #3c1e1e;
+```
+
+### **변경된 파일**
+- `banners/representative-shop-recruitment.html`: 2개 버튼 스타일 수정
+- `banners/online-banners.html`: 3개 버튼 스타일 수정
+- `README.md`: 버전 v2.2.8로 업데이트
+
+---
+
+## 🚀 v2.2.7 주요 개선 사항 (2025-11-05)
+
+### **투명 배경 누끼 이미지 적용**
+
+#### 1. **모든 배너 이미지 일괄 교체**
+- ✅ **누끼(cutout) 이미지 적용**: 투명 배경으로 완벽한 배경 통합
+- ✅ **18개 이미지 일괄 변경**: 모든 SNS 및 홍보 배너 업데이트
+- ✅ **이미지 URL**: https://page.gensparksite.com/v1/base64_upload/ce20cf5661dea3020a8b445a845ca3d1
+
+#### 2. **적용된 파일 및 이미지 개수**
+- ✅ **banner-download.html**: 10개 이미지 (Instagram, Naver, Daum, Kakao, Threads, YouTube, Email)
+- ✅ **banners/representative-shop-recruitment.html**: 1개 이미지
+- ✅ **banners/online-banners.html**: 6개 이미지 (Instagram story/feed, Facebook, Naver blog, Kakao, YouTube)
+- ✅ **banners/print-poster-a4.html**: 1개 이미지
+
+#### 3. **이미지 특징**
+- ✅ **투명 배경**: PNG 누끼 이미지로 어떤 배경에도 자연스럽게 어울림
+- ✅ **고품질**: 선명하고 깔끔한 컷아웃 처리
+- ✅ **반응형**: 다양한 크기 (80px ~ 250px)에서 완벽한 표현
+- ✅ **CSS 효과 유지**: mix-blend-mode: multiply 그대로 유지
+
+#### 4. **개선 효과**
+- ✅ **배경 통합**: 투명 배경으로 골든 그라데이션 배경과 완벽한 조화
+- ✅ **시각적 일관성**: 모든 배너에서 동일한 고품질 이미지 사용
+- ✅ **전문적인 느낌**: 누끼 처리로 프로페셔널한 디자인 완성
+
+### **변경된 파일**
+- `banner-download.html`: 10개 이미지 URL 교체
+- `banners/representative-shop-recruitment.html`: 1개 이미지 URL 교체
+- `banners/online-banners.html`: 6개 이미지 URL 교체
+- `banners/print-poster-a4.html`: 1개 이미지 URL 교체
+- `README.md`: 버전 v2.2.7로 업데이트
+
+---
+
+## 🚀 v2.3.2 주요 개선 사항 (2025-11-05)
+
+### **배너 이미지 통일 작업**
+
+#### 1. **로고 이미지 표준화**
+- ✅ **index.html**: `beautycat-logo-v2.png` → `beautycat-logo.png`로 변경
+- ✅ **전체 프로젝트**: 모든 페이지에서 `beautycat-logo.png` 사용
+- ✅ **일관성 확보**: 브랜드 이미지 통일
+
+#### 2. **확인된 파일 목록**
+- ✅ index.html - 메인 페이지 로고 변경
+- ✅ banner-download.html - 이미 표준 로고 사용 중
+- ✅ admin-dashboard.html - 이미 표준 로고 사용 중
+- ✅ shop-dashboard.html - 이미 표준 로고 사용 중
+- ✅ customer-dashboard.html - 이미 표준 로고 사용 중
+- ✅ banners/index.html - 이미 표준 로고 사용 중
+- ✅ banners/online-banners.html - 이미 표준 로고 사용 중
+- ✅ banners/representative-shop-recruitment.html - 이미 표준 로고 사용 중
+- ✅ banners/print-poster-a4.html - 이미 표준 로고 사용 중
+
+#### 3. **개선 효과**
+- ✅ 전체 프로젝트에서 단일 로고 이미지 사용
+- ✅ 브랜드 일관성 향상
+- ✅ 유지보수 편의성 증대
+
+### **변경된 파일**
+- `index.html`: 로고 경로 수정 (line 367)
+- `README.md`: 버전 및 변경 이력 업데이트
 
 ---
 
@@ -1463,5 +1721,5 @@ Content-Type, Authorization, X-Requested-With
 ---
 
 **이 문서는 플랫폼 업데이트 시 함께 업데이트됩니다.**
-**최종 업데이트: 2025-11-05 01:30 KST**
-**버전: v2.3.1**
+**최종 업데이트: 2025-11-05 19:50 KST**
+**버전: v2.2.3+++**
