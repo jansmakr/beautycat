@@ -4,21 +4,418 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BeautyCat 홍보 배너 다운로드</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+        }
+        
+        .banner-preview {
+            background: linear-gradient(135deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0),
+                        linear-gradient(135deg, #f0f0f0 25%, transparent 25%, transparent 75%, #f0f0f0 75%, #f0f0f0);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        
         .banner-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(255, 45, 146, 0.2);
         }
+        
         .banner-card {
             transition: all 0.3s ease;
         }
+        
         .download-btn:hover {
             transform: scale(1.05);
         }
+        
         .download-btn {
             transition: all 0.2s ease;
+        }
+
+        /* 실제 배너 스타일 */
+        .banner-item {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Instagram 정사각형 */
+        .instagram-square {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .instagram-square::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .instagram-square .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .instagram-square h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .instagram-square p {
+            font-size: 20px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        /* Instagram 스토리 */
+        .instagram-story {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: linear-gradient(180deg, #ffd700 0%, #ffed4e 50%, #ff9800 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .instagram-story::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 180px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .instagram-story h2 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .instagram-story p {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* 네이버 카페 */
+        .naver-cafe {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .naver-cafe::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .naver-cafe h2 {
+            font-size: 40px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .naver-cafe p {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* 다음 카페 */
+        .daum-cafe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ff9800 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .daum-cafe::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 220px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .daum-cafe h2 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .daum-cafe p {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 네이버 밴드 */
+        .naver-band {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .naver-band::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 220px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .naver-band h2 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .naver-band p {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* 쓰레드 */
+        .threads-banner {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .threads-banner::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .threads-banner h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .threads-banner p {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* 이메일 배너 */
+        .email-banner {
+            width: 100%;
+            aspect-ratio: 2/1;
+            background: linear-gradient(90deg, #ffd700 0%, #ffed4e 50%, #ff9800 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #3c1e1e;
+            padding: 40px 50px;
+            position: relative;
+        }
+
+        .email-banner::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 180px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .email-banner .left {
+            flex: 1;
+        }
+
+        .email-banner h2 {
+            font-size: 38px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .email-banner p {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .email-banner .emoji {
+            font-size: 120px;
+            opacity: 0.3;
+        }
+
+        /* 카카오톡 채널 */
+        .kakao-channel {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .kakao-channel::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .kakao-channel h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .kakao-channel p {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* YouTube 썸네일 */
+        .youtube-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ff9800 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #3c1e1e;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .youtube-thumbnail::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 240px;
+            opacity: 0.15;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 4px 8px rgba(255, 215, 0, 0.3));
+        }
+
+        .youtube-thumbnail h2 {
+            font-size: 52px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .youtube-thumbnail p {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .emoji-large {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .logo-image {
+            max-width: 600px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .logo-image-small {
+            max-width: 360px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .instagram-square h2 { font-size: 32px; }
+            .instagram-story h2 { font-size: 28px; }
+            .naver-cafe h2 { font-size: 28px; }
+            .daum-cafe h2 { font-size: 28px; }
+            .naver-band h2 { font-size: 28px; }
+            .threads-banner h2 { font-size: 32px; }
+            .email-banner h2 { font-size: 24px; }
+            .kakao-channel h2 { font-size: 32px; }
+            .youtube-thumbnail h2 { font-size: 32px; }
         }
     </style>
 </head>
@@ -28,14 +425,9 @@
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-cat text-white text-lg"></i>
-                    </div>
+                    <img src="images/beautycat-logo-new.png" alt="BeautyCat Logo" class="h-12" style="width: auto;">
                     <div>
-                        <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                            BeautyCat 홍보 배너
-                        </h1>
-                        <p class="text-gray-600 text-sm">SNS 및 온라인 홍보용 배너 모음</p>
+                        <p class="text-gray-600 text-sm">각종 온라인 채널별 홍보용 배너</p>
                     </div>
                 </div>
                 <a href="/" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all">
@@ -56,173 +448,285 @@
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 mb-2">📢 사용 안내</h2>
                     <div class="text-gray-600 space-y-2">
-                        <p>• <strong>뷰냥이 캐릭터</strong>와 <strong>BeautyCat.kr</strong> 브랜드명만 포함된 깔끔한 템플릿입니다</p>
-                        <p>• 각 배너에는 <strong>충분한 여백</strong>이 있어 원하는 홍보 문구를 자유롭게 추가할 수 있습니다</p>
-                        <p>• 포토샵, 캔바, 피그마 등의 툴로 텍스트를 오버레이하여 사용하세요</p>
-                        <p>• 모든 배너는 <strong>고해상도</strong>로 제작되어 인쇄용으로도 활용 가능합니다</p>
+                        <p>• 각 채널에 최적화된 <strong>고품질 배너</strong>를 제공합니다</p>
+                        <p>• 마우스 우클릭 → "이미지를 다른 이름으로 저장" 또는 스크린샷 도구 사용</p>
+                        <p>• 모든 배너는 <strong>BeautyCat 브랜드</strong>로 제작되었습니다</p>
+                        <p>• 네이버 카페, 다음 카페, 밴드, 인스타그램, 쓰레드, 이메일 등 다양한 채널 지원</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SNS 배너 섹션 -->
+        <!-- Instagram 배너 -->
         <div class="mb-12">
             <div class="flex items-center mb-6">
                 <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fas fa-share-alt text-white"></i>
+                    <i class="fab fa-instagram text-white"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">SNS 홍보 배너</h2>
+                <h2 class="text-2xl font-bold text-gray-800">Instagram 배너</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Instagram 정사각형 -->
                 <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
-                    <div class="aspect-square bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 overflow-hidden">
-                        <img src="banners/sns-instagram-square.png" alt="Instagram 정사각형 배너" 
-                             class="w-full h-full object-cover">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="instagram-square banner-item">
+                            <div class="content">
+                                <h2 style="position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="position: relative; z-index: 1; margin-bottom: 10px;">피부관리실 전국 플랫폼</p>
+                                <p style="position: relative; z-index: 1; font-size: 24px; font-weight: 800; color: #ff2d92;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-bold text-gray-800 mb-2">Instagram 포스트</h3>
-                        <p class="text-sm text-gray-600 mb-4">1:1 정사각형 • 1024×1024px</p>
-                        <a href="banners/sns-instagram-square.png" download="BeautyCat_Instagram_Square.png"
-                           class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2">
+                        <h3 class="font-bold text-gray-800 mb-2">Instagram 피드 (정사각형)</h3>
+                        <p class="text-sm text-gray-600 mb-4">1080×1080px • 피드 게시물용</p>
+                        <button onclick="captureElement('instagram-square')" class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
                             <i class="fas fa-download"></i>
-                            <span>다운로드</span>
-                        </a>
+                            <span>저장 방법 보기</span>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Instagram 스토리 -->
                 <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
-                    <div class="aspect-[9/16] bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 overflow-hidden max-h-64 mx-auto">
-                        <img src="banners/sns-instagram-story.png" alt="Instagram 스토리 배너" 
-                             class="w-full h-full object-cover">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="instagram-story banner-item mx-auto" style="max-width: 300px;">
+                            <h2 style="position: relative; z-index: 1;">BeautyCat</h2>
+                            <p style="position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                            <p style="position: relative; z-index: 1; font-size: 20px; font-weight: 800; color: #ff2d92;">지역별 대표 상담샵 모집</p>
+                        </div>
                     </div>
                     <div class="text-center">
-                        <h3 class="font-bold text-gray-800 mb-2">Instagram 스토리</h3>
-                        <p class="text-sm text-gray-600 mb-4">9:16 세로형 • 768×1365px</p>
-                        <a href="banners/sns-instagram-story.png" download="BeautyCat_Instagram_Story.png"
-                           class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2">
+                        <h3 class="font-bold text-gray-800 mb-2">Instagram 스토리 (세로)</h3>
+                        <p class="text-sm text-gray-600 mb-4">1080×1920px • 스토리용</p>
+                        <button onclick="captureElement('instagram-story')" class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
                             <i class="fas fa-download"></i>
-                            <span>다운로드</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Facebook 커버 -->
-                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
-                    <div class="aspect-video bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 overflow-hidden">
-                        <img src="banners/sns-facebook-cover.png" alt="Facebook 커버 배너" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-gray-800 mb-2">Facebook 커버</h3>
-                        <p class="text-sm text-gray-600 mb-4">16:9 가로형 • 1365×768px</p>
-                        <a href="banners/sns-facebook-cover.png" download="BeautyCat_Facebook_Cover.png"
-                           class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2">
-                            <i class="fas fa-download"></i>
-                            <span>다운로드</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Twitter 헤더 -->
-                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
-                    <div class="aspect-video bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 overflow-hidden">
-                        <img src="banners/sns-twitter-header.png" alt="Twitter 헤더 배너" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-gray-800 mb-2">Twitter/X 헤더</h3>
-                        <p class="text-sm text-gray-600 mb-4">3:1 와이드 • 1365×768px</p>
-                        <a href="banners/sns-twitter-header.png" download="BeautyCat_Twitter_Header.png"
-                           class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2">
-                            <i class="fas fa-download"></i>
-                            <span>다운로드</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- YouTube 썸네일 -->
-                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
-                    <div class="aspect-video bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 overflow-hidden">
-                        <img src="banners/sns-youtube-thumbnail.png" alt="YouTube 썸네일 배너" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-gray-800 mb-2">YouTube 썸네일</h3>
-                        <p class="text-sm text-gray-600 mb-4">16:9 가로형 • 1365×768px</p>
-                        <a href="banners/sns-youtube-thumbnail.png" download="BeautyCat_YouTube_Thumbnail.png"
-                           class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2">
-                            <i class="fas fa-download"></i>
-                            <span>다운로드</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 네이버 카페 -->
-                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
-                    <div class="aspect-[4/3] bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 overflow-hidden">
-                        <img src="banners/sns-naver-cafe.png" alt="네이버 카페 배너" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    <div class="text-center">
-                        <h3 class="font-bold text-gray-800 mb-2">네이버 카페</h3>
-                        <p class="text-sm text-gray-600 mb-4">4:3 가로형 • 1024×768px</p>
-                        <a href="banners/sns-naver-cafe.png" download="BeautyCat_Naver_Cafe.png"
-                           class="download-btn bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2">
-                            <i class="fas fa-download"></i>
-                            <span>다운로드</span>
-                        </a>
+                            <span>저장 방법 보기</span>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 일괄 다운로드 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-pink-200/50 text-center">
-            <div class="mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-download text-white text-2xl"></i>
+        <!-- 네이버 배너 -->
+        <div class="mb-12">
+            <div class="flex items-center mb-6">
+                <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-n text-white font-bold"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">🎁 모든 배너 한번에 받기</h2>
-                <p class="text-gray-600">위의 모든 SNS용 배너를 ZIP 파일로 한번에 다운로드하세요</p>
+                <h2 class="text-2xl font-bold text-gray-800">네이버 카페 & 밴드</h2>
             </div>
-            
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                <div class="flex items-center justify-center space-x-2 text-yellow-800">
-                    <i class="fas fa-info-circle"></i>
-                    <span class="font-medium">개별 다운로드 권장</span>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 네이버 카페 -->
+                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="naver-cafe banner-item">
+                            <div>
+                                <h2 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="font-size: 18px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                                <p style="font-size: 22px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 mb-2">네이버 카페 배너</h3>
+                        <p class="text-sm text-gray-600 mb-4">1024×768px • 카페 상단 배너</p>
+                        <button onclick="captureElement('naver-cafe')" class="download-btn bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
+                            <i class="fas fa-download"></i>
+                            <span>저장 방법 보기</span>
+                        </button>
+                    </div>
                 </div>
-                <p class="text-sm text-yellow-700 mt-1">현재는 각 배너를 개별적으로 다운로드해주세요.</p>
+
+                <!-- 네이버 밴드 -->
+                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="naver-band banner-item">
+                            <div>
+                                <h2 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="font-size: 18px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                                <p style="font-size: 22px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 mb-2">네이버 밴드 커버</h3>
+                        <p class="text-sm text-gray-600 mb-4">1200×630px • 밴드 커버 이미지</p>
+                        <button onclick="captureElement('naver-band')" class="download-btn bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
+                            <i class="fas fa-download"></i>
+                            <span>저장 방법 보기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 다음 카페 & 카카오톡 -->
+        <div class="mb-12">
+            <div class="flex items-center mb-6">
+                <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-comment text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">다음 카페 & 카카오톡</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 다음 카페 -->
+                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="daum-cafe banner-item">
+                            <div>
+                                <h2 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="font-size: 18px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                                <p style="font-size: 22px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 mb-2">다음 카페 배너</h3>
+                        <p class="text-sm text-gray-600 mb-4">1200×675px • 카페 헤더</p>
+                        <button onclick="captureElement('daum-cafe')" class="download-btn bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
+                            <i class="fas fa-download"></i>
+                            <span>저장 방법 보기</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 카카오톡 채널 -->
+                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="kakao-channel banner-item">
+                            <div>
+                                <h2 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="font-size: 18px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                                <p style="font-size: 22px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 mb-2">카카오톡 채널 프로필</h3>
+                        <p class="text-sm text-gray-600 mb-4">960×960px • 채널 이미지</p>
+                        <button onclick="captureElement('kakao-channel')" class="download-btn bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
+                            <i class="fas fa-download"></i>
+                            <span>저장 방법 보기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 쓰레드 & YouTube -->
+        <div class="mb-12">
+            <div class="flex items-center mb-6">
+                <div class="w-8 h-8 bg-gradient-to-r from-gray-700 to-black rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-video text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">쓰레드 & YouTube</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 쓰레드 -->
+                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="threads-banner banner-item">
+                            <div>
+                                <h2 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="font-size: 18px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                                <p style="font-size: 22px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 mb-2">쓰레드 (Threads) 배너</h3>
+                        <p class="text-sm text-gray-600 mb-4">1080×1080px • 쓰레드 게시물</p>
+                        <button onclick="captureElement('threads-banner')" class="download-btn bg-gradient-to-r from-gray-700 to-black text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
+                            <i class="fas fa-download"></i>
+                            <span>저장 방법 보기</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- YouTube -->
+                <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                    <div class="banner-preview rounded-xl mb-4 p-2">
+                        <div class="youtube-thumbnail banner-item">
+                            <div>
+                                <h2 style="font-size: 48px; font-weight: 900; margin-bottom: 10px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                                <p style="font-size: 18px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 8px;">피부관리실 전국 플랫폼</p>
+                                <p style="font-size: 22px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="font-bold text-gray-800 mb-2">YouTube 썸네일</h3>
+                        <p class="text-sm text-gray-600 mb-4">1280×720px • 영상 썸네일</p>
+                        <button onclick="captureElement('youtube-thumbnail')" class="download-btn bg-gradient-to-r from-red-500 to-red-700 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center">
+                            <i class="fas fa-download"></i>
+                            <span>저장 방법 보기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 이메일 발송용 -->
+        <div class="mb-12">
+            <div class="flex items-center mb-6">
+                <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                    <i class="fas fa-envelope text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">이메일 발송용</h2>
+            </div>
+
+            <div class="banner-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/50">
+                <div class="banner-preview rounded-xl mb-4 p-2">
+                    <div class="email-banner banner-item">
+                        <div class="left">
+                            <h2 style="font-size: 38px; font-weight: 900; margin-bottom: 8px; color: #3c1e1e; position: relative; z-index: 1;">BeautyCat</h2>
+                        <p style="font-size: 15px; font-weight: 600; color: #3c1e1e; position: relative; z-index: 1; margin-bottom: 6px;">피부관리실 전국 플랫폼</p>
+                        <p style="font-size: 18px; font-weight: 800; color: #ff2d92; position: relative; z-index: 1;">지역별 대표 상담샵 모집</p>
+                        </div>
+                        <div class="emoji">⭐</div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-bold text-gray-800 mb-2">이메일 헤더 배너</h3>
+                    <p class="text-sm text-gray-600 mb-4">1200×600px • 이메일 상단 배너</p>
+                    <button onclick="captureElement('email-banner')" class="download-btn bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg inline-flex items-center space-x-2 w-full justify-center max-w-md mx-auto">
+                        <i class="fas fa-download"></i>
+                        <span>저장 방법 보기</span>
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- 사용 가이드 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-pink-200/50 mt-8">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-pink-200/50">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                 <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
-                배너 활용 가이드
+                배너 저장 가이드
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-4">
-                    <h3 class="font-bold text-gray-800 mb-3">🎨 추천 텍스트 예시</h3>
+                    <h3 class="font-bold text-gray-800 mb-3">💾 저장 방법</h3>
                     <div class="space-y-2 text-gray-600">
-                        <p>• <strong>고객 대상:</strong> "피부관리 견적 비교는 뷰티캣에서!"</p>
-                        <p>• <strong>업체 대상:</strong> "새로운 고객과 만나보세요"</p>
-                        <p>• <strong>이벤트:</strong> "지금 가입하면 첫 견적 무료!"</p>
-                        <p>• <strong>브랜딩:</strong> "믿을 수 있는 피부관리 파트너"</p>
+                        <p>• <strong>방법 1:</strong> 배너 위에서 마우스 우클릭 → "이미지를 다른 이름으로 저장"</p>
+                        <p>• <strong>방법 2:</strong> 윈도우 캡처 도구 (Win + Shift + S)</p>
+                        <p>• <strong>방법 3:</strong> Mac 스크린샷 (Cmd + Shift + 4)</p>
+                        <p>• <strong>방법 4:</strong> 브라우저 개발자 도구로 요소 복사</p>
                     </div>
                 </div>
                 
                 <div class="space-y-4">
-                    <h3 class="font-bold text-gray-800 mb-3">🛠️ 편집 도구 추천</h3>
+                    <h3 class="font-bold text-gray-800 mb-3">📤 채널별 권장 사용법</h3>
                     <div class="space-y-2 text-gray-600">
-                        <p>• <strong>무료:</strong> Canva, GIMP, Paint.NET</p>
-                        <p>• <strong>유료:</strong> Photoshop, Figma Pro</p>
-                        <p>• <strong>모바일:</strong> Canva 앱, Snapseed</p>
-                        <p>• <strong>온라인:</strong> Photopea, Remove.bg</p>
+                        <p>• <strong>네이버 카페:</strong> 카페 상단 배너로 등록</p>
+                        <p>• <strong>이메일:</strong> 뉴스레터 헤더에 삽입</p>
+                        <p>• <strong>Instagram:</strong> 피드 & 스토리 동시 활용</p>
+                        <p>• <strong>카카오톡:</strong> 채널 프로필 이미지로 설정</p>
                     </div>
                 </div>
             </div>
@@ -233,15 +737,10 @@
     <div class="bg-white/50 border-t border-pink-200/50 py-8 mt-12">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <div class="flex items-center justify-center space-x-2 mb-4">
-                <div class="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-cat text-white"></i>
-                </div>
-                <span class="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                    BeautyCat.kr
-                </span>
+                <img src="images/beautycat-logo-new.png" alt="BeautyCat 황금고양이" class="h-10" style="width: auto;">
             </div>
             <p class="text-gray-600 text-sm">
-                피부관리실 견적 비교의 새로운 기준 • 뷰냥이와 함께하는 뷰티 플랫폼
+                피부관리실 견적 비교의 새로운 기준 • 뷰티캣 플랫폼
             </p>
             <p class="text-gray-500 text-xs mt-2">
                 © 2024 BeautyCat. All rights reserved. • 배너는 홍보 목적으로 자유롭게 사용 가능합니다.
@@ -250,25 +749,11 @@
     </div>
 
     <script>
-        // 다운로드 클릭 이벤트 추적
-        document.addEventListener('DOMContentLoaded', function() {
-            const downloadButtons = document.querySelectorAll('.download-btn');
-            
-            downloadButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const bannerName = this.getAttribute('download');
-                    console.log(`배너 다운로드: ${bannerName}`);
-                    
-                    // 클릭 효과
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1.05)';
-                    }, 150);
-                });
-            });
-        });
+        function captureElement(className) {
+            alert('💾 배너 저장 방법:\n\n1. 배너 위에서 마우스 우클릭\n2. "이미지를 다른 이름으로 저장" 선택\n\n또는\n\n윈도우: Win + Shift + S (캡처 도구)\nMac: Cmd + Shift + 4 (스크린샷)\n\n원하는 영역을 선택하여 저장하세요!');
+        }
 
-        // 호버 효과 강화
+        // 호버 효과
         document.querySelectorAll('.banner-card').forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-8px) scale(1.02)';
@@ -276,6 +761,16 @@
             
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // 다운로드 버튼 클릭 효과
+        document.querySelectorAll('.download-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.05)';
+                }, 150);
             });
         });
     </script>
