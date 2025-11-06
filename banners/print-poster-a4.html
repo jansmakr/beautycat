@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뷰티캣 대표샵 모집 포스터 (A4)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        
+        .poster-container {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 상단 헤더 */
+        .header {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: #3c1e1e;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .logo {
+            font-size: 80px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .subtitle {
+            font-size: 24px;
+            font-weight: 700;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 메인 컨텐츠 */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffa500;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        /* 혜택 박스 */
+        .benefits {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .benefit-box {
+            background: linear-gradient(135deg, #fffaf0 0%, #ffffff 100%);
+            border: 2px solid #ffa500;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .benefit-box .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .benefit-box .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .benefit-box .desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        /* 조건 섹션 */
+        .requirements {
+            background: #fff9e6;
+            border: 2px dashed #ffc107;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .requirements h3 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .requirement-item .check {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #4caf50;
+        }
+        
+        .requirement-item .text {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        /* 하단 CTA */
+        .cta-section {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffc107 100%);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: #3c1e1e;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section h2 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        .contact-item .icon {
+            font-size: 24px;
+        }
+        
+        /* QR 코드 영역 */
+        .qr-section {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border: 3px solid #333;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        
+        .qr-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+        }
+        
+        /* 하단 푸터 */
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #333;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .footer .website {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        /* 프린트 최적화 */
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            
+            .poster-container {
+                box-shadow: none;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="poster-container">
+        <!-- 헤더 -->
+        <div class="header">
+            
+            <h1>지역별 대표 상담샵<br>모집합니다</h1>
+            <div class="subtitle">입점 업체 특별 모집</div>
+        </div>
+        
+        <!-- 메인 컨텐츠 -->
+        <div class="content">
+            <!-- 혜택 섹션 -->
+            <div class="section-title">🎁 대표샵 특별 혜택</div>
+            <div class="benefits">
+                <div class="benefit-box">
+                    <div class="icon">📞</div>
+                    <div class="title">메인 페이지 노출</div>
+                    <div class="desc">지역 고객에게 전화번호 바로 노출</div>
+                </div>
+                <div class="benefit-box">
+                    <div class="icon">⭐</div>
+                    <div class="title">대표샵 배지</div>
+                    <div class="desc">신뢰도 향상 배지 부여</div>
+                </div>
+                <div class="benefit-box">
+                    <div class="icon">🎯</div>
+                    <div class="title">우선 매칭</div>
+                    <div class="desc">견적 요청 최우선 배정</div>
+                </div>
+                <div class="benefit-box">
+                    <div class="icon">💰</div>
+                    <div class="title">무료 마케팅</div>
+                    <div class="desc">별도 비용 없는 홍보 지원</div>
+                </div>
+            </div>
+            
+            <!-- 조건 섹션 -->
+            <div class="requirements">
+                <h3>✅ 신청 조건</h3>
+                <div class="requirement-item">
+                    <span class="check">✓</span>
+                    <span class="text">뷰티캣 플랫폼 정식 가입 업체</span>
+                </div>
+                <div class="requirement-item">
+                    <span class="check">✓</span>
+                    <span class="text">사업자등록증 보유 피부관리실</span>
+                </div>
+                <div class="requirement-item">
+                    <span class="check">✓</span>
+                    <span class="text">전화 상담 대응 가능</span>
+                </div>
+                <div class="requirement-item">
+                    <span class="check">✓</span>
+                    <span class="text">우수한 서비스 품질 (심사 진행)</span>
+                </div>
+                <div class="requirement-item">
+                    <span class="check">✓</span>
+                    <span class="text">지역당 1개 업체만 선정 (선착순)</span>
+                </div>
+            </div>
+            
+            <!-- CTA 섹션 -->
+            <div class="cta-section">
+                <h2>🚀 지금 바로 신청하세요!</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <span>전화: 02-1234-5678</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">✉️</span>
+                        <span>이메일: partner@beautycat.kr</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">🌐</span>
+                        <span>웹사이트: beautycat.kr</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- QR 코드 -->
+            <div class="qr-section">
+                <div class="qr-placeholder">📱</div>
+                <div class="qr-text">QR 코드 스캔하고<br>온라인으로 신청하기</div>
+            </div>
+        </div>
+        
+        <!-- 푸터 -->
+        <div class="footer">
+            <div class="website">beautycat.kr</div>
+            <div>뷰티캣 | 피부관리실 견적비교 예약 플랫폼</div>
+        </div>
+    </div>
+</body>
+</html>
