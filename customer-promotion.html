@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>뷰티캣 고객 홍보용 SNS 배너</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff2d92 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .banner-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-desc {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .banner-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        /* Instagram 스토리 (1080x1920) - 견적 비교 */
+        .instagram-story-1 {
+            width: 540px;
+            height: 960px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #ff2d92 100%);
+            border-radius: 24px;
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instagram-story-1::before {
+            content: '💝';
+            position: absolute;
+            font-size: 400px;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+        }
+
+        /* Instagram 스토리 (1080x1920) - 무료 견적 */
+        .instagram-story-2 {
+            width: 540px;
+            height: 960px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #f093fb 0%, #f5576c 50%, #ff2d92 100%);
+            border-radius: 24px;
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instagram-story-2::before {
+            content: '✨';
+            position: absolute;
+            font-size: 400px;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .story-top {
+            position: relative;
+            z-index: 1;
+        }
+
+        .story-badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .story-emoji {
+            font-size: 120px;
+            margin-bottom: 20px;
+        }
+
+        .story-title {
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .story-subtitle {
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .story-bottom {
+            position: relative;
+            z-index: 1;
+        }
+
+        .story-cta {
+            background: white;
+            color: #ff2d92;
+            padding: 24px;
+            border-radius: 16px;
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Instagram 피드 (1080x1080) - 정사각형 */
+        .instagram-feed {
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ff2d92 100%);
+            border-radius: 16px;
+            padding: 50px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instagram-feed::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 500px;
+            opacity: 0.08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .feed-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feed-emoji {
+            font-size: 100px;
+            margin-bottom: 25px;
+        }
+
+        .feed-title {
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .feed-subtitle {
+            font-size: 22px;
+            font-weight: 600;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .feed-cta {
+            background: white;
+            color: #ff2d92;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        /* Facebook 커버 (820x312) */
+        .facebook-cover {
+            width: 820px;
+            height: 312px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #ff2d92 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 60px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .facebook-cover::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .cover-left {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cover-emoji {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+
+        .cover-title {
+            font-size: 38px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .cover-right {
+            font-size: 180px;
+            opacity: 0.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 네이버 블로그 배너 (800x300) */
+        .naver-blog {
+            width: 800px;
+            height: 300px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ff2d92 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 40px 50px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .naver-blog::before {
+            content: '💕';
+            position: absolute;
+            font-size: 350px;
+            opacity: 0.1;
+            right: -50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .blog-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .blog-emoji {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        .blog-title {
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .blog-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        /* 카카오톡 채널 (960x960) */
+        .kakao-channel {
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ff2d92 0%, #667eea 100%);
+            border-radius: 16px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kakao-channel::before {
+            content: '💬';
+            position: absolute;
+            font-size: 500px;
+            opacity: 0.08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .kakao-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .kakao-emoji {
+            font-size: 100px;
+            margin-bottom: 25px;
+        }
+
+        .kakao-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .kakao-subtitle {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .kakao-cta {
+            background: white;
+            color: #ff2d92;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        /* 유튜브 썸네일 (1280x720) */
+        .youtube-thumbnail {
+            width: 1000px;
+            height: 563px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #ff2d92 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .youtube-thumbnail::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -150px;
+            right: -150px;
+        }
+
+        .yt-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .yt-badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 20px;
+            font-weight: 700;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+        }
+
+        .yt-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .yt-subtitle {
+            font-size: 28px;
+            font-weight: 700;
+            opacity: 0.95;
+        }
+
+        /* 웹 배너 (728x90) */
+        .web-banner-large {
+            width: 728px;
+            height: 90px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, #ff2d92 0%, #667eea 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+        }
+
+        .web-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .web-emoji {
+            font-size: 50px;
+        }
+
+        .web-text h3 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 3px;
+        }
+
+        .web-text p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .web-cta {
+            background: white;
+            color: #ff2d92;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        /* 다운로드 버튼 */
+        .download-info {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .download-info p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        /* 반응형 */
+        @media (max-width: 1200px) {
+            .instagram-story-1,
+            .instagram-story-2 {
+                width: 432px;
+                height: 768px;
+                padding: 48px 32px;
+            }
+
+            .story-title {
+                font-size: 42px;
+            }
+
+            .instagram-feed {
+                width: 500px;
+                height: 500px;
+            }
+
+            .youtube-thumbnail {
+                width: 800px;
+                height: 450px;
+            }
+
+            .facebook-cover {
+                width: 700px;
+                height: 266px;
+            }
+
+            .naver-blog {
+                width: 700px;
+                height: 263px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .instagram-story-1,
+            .instagram-story-2 {
+                width: 324px;
+                height: 576px;
+                padding: 36px 24px;
+            }
+
+            .story-title {
+                font-size: 32px;
+            }
+
+            .instagram-feed {
+                width: 400px;
+                height: 400px;
+            }
+
+            .youtube-thumbnail {
+                width: 600px;
+                height: 338px;
+            }
+
+            .facebook-cover,
+            .naver-blog,
+            .kakao-channel,
+            .web-banner-large {
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <h1>🎨 뷰티캣 고객 홍보용 배너</h1>
+            <p>SNS 및 온라인 홍보용 배너 모음 | 우클릭 → 이미지 저장</p>
+        </div>
+
+        <!-- Instagram 스토리 1 - 견적 비교 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>📱</span>
+                <span>Instagram 스토리 #1 - 견적 비교</span>
+            </div>
+            <div class="section-desc">1080 x 1920px | 모바일 세로형</div>
+            <div class="banner-wrapper">
+                <div class="instagram-story-1">
+                    <div class="story-top">
+                        <div class="story-badge">🐱 뷰티캣</div>
+                        <div class="story-emoji">💝</div>
+                        <div class="story-title">피부관리실<br>견적비교<br>플랫폼</div>
+                        <div class="story-subtitle">우리 동네<br>피부관리실 견적을<br>한번에 비교해요!</div>
+                    </div>
+                    <div class="story-bottom">
+                        <div class="story-cta">👆 무료 견적 신청하기</div>
+                    </div>
+                </div>
+                <div class="download-info">
+                    <p>Instagram 스토리에 최적화된 세로형 배너 - 견적 비교 강조</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instagram 스토리 2 - 무료 견적 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>📱</span>
+                <span>Instagram 스토리 #2 - 무료 견적</span>
+            </div>
+            <div class="section-desc">1080 x 1920px | 모바일 세로형</div>
+            <div class="banner-wrapper">
+                <div class="instagram-story-2">
+                    <div class="story-top">
+                        <div class="story-badge">✨ 무료 견적</div>
+                        <div class="story-emoji">🐱</div>
+                        <div class="story-title">강남·홍대·잠실<br>피부케어<br>전문업체 매칭</div>
+                        <div class="story-subtitle">상담신청만 남기면<br>전문가 맞춤 케어<br>견적을 받아볼 수 있어요!</div>
+                    </div>
+                    <div class="story-bottom">
+                        <div class="story-cta">👆 지금 바로 신청하기</div>
+                    </div>
+                </div>
+                <div class="download-info">
+                    <p>Instagram 스토리에 최적화된 세로형 배너 - 무료 견적 강조</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instagram 피드 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>📸</span>
+                <span>Instagram 피드 (정사각형)</span>
+            </div>
+            <div class="section-desc">1080 x 1080px | 정사각형</div>
+            <div class="banner-wrapper">
+                <div class="instagram-feed">
+                    <div class="feed-content">
+                        <div class="feed-emoji">🐱</div>
+                        <div class="feed-title">뷰티캣<br>견적비교<br>플랫폼</div>
+                        <div class="feed-subtitle">우리 동네 피부관리실<br>견적을 한번에 비교!</div>
+                        <div class="feed-cta">무료 견적 신청 →</div>
+                    </div>
+                </div>
+                <div class="download-info">
+                    <p>Instagram 일반 게시물용 정사각형 배너</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Facebook 커버 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>👍</span>
+                <span>Facebook 커버 이미지</span>
+            </div>
+            <div class="section-desc">820 x 312px | 페이스북 페이지 커버</div>
+            <div class="banner-wrapper">
+                <div class="facebook-cover">
+                    <div class="cover-left">
+                        <div class="cover-emoji">🐱</div>
+                        <div class="cover-title">뷰티캣 피부관리실<br>견적비교 플랫폼</div>
+                        <div class="cover-subtitle">우리 동네 피부관리실 견적을 한번에</div>
+                    </div>
+                    <div class="cover-right">💝</div>
+                </div>
+                <div class="download-info">
+                    <p>Facebook 페이지 상단 커버 이미지</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 네이버 블로그 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>📝</span>
+                <span>네이버 블로그 배너</span>
+            </div>
+            <div class="section-desc">800 x 300px | 블로그 상단 배너</div>
+            <div class="banner-wrapper">
+                <div class="naver-blog">
+                    <div class="blog-content">
+                        <div class="blog-emoji">🐱</div>
+                        <div class="blog-title">뷰티캣<br>피부관리실 견적비교</div>
+                        <div class="blog-subtitle">강남·홍대·잠실 전문업체 무료 견적</div>
+                    </div>
+                </div>
+                <div class="download-info">
+                    <p>네이버 블로그 상단 이미지 배너</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 카카오톡 채널 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>💬</span>
+                <span>카카오톡 채널 프로필</span>
+            </div>
+            <div class="section-desc">960 x 960px | 카카오톡 채널 이미지</div>
+            <div class="banner-wrapper">
+                <div class="kakao-channel">
+                    <div class="kakao-content">
+                        <div class="kakao-emoji">🐱</div>
+                        <div class="kakao-title">뷰티캣<br>견적비교</div>
+                        <div class="kakao-subtitle">우리 동네 피부관리실<br>견적을 한번에!</div>
+                        <div class="kakao-cta">무료 견적 신청</div>
+                    </div>
+                </div>
+                <div class="download-info">
+                    <p>카카오톡 채널 프로필 이미지</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 유튜브 썸네일 -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>🎥</span>
+                <span>YouTube 썸네일</span>
+            </div>
+            <div class="section-desc">1280 x 720px | 유튜브 영상 썸네일</div>
+            <div class="banner-wrapper">
+                <div class="youtube-thumbnail">
+                    <div class="yt-content">
+                        <div class="yt-badge">🐱 뷰티캣</div>
+                        <div class="yt-title">피부관리실<br>견적비교 플랫폼</div>
+                        <div class="yt-subtitle">강남·홍대·잠실 전문업체 무료 견적 신청</div>
+                    </div>
+                </div>
+                <div class="download-info">
+                    <p>YouTube 영상 썸네일 이미지</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 웹 배너 (대형) -->
+        <div class="banner-section">
+            <div class="section-title">
+                <span>🌐</span>
+                <span>웹사이트 배너 (대형)</span>
+            </div>
+            <div class="section-desc">728 x 90px | 웹사이트 상단 배너</div>
+            <div class="banner-wrapper">
+                <div class="web-banner-large">
+                    <div class="web-left">
+                        <div class="web-emoji">🐱</div>
+                        <div class="web-text">
+                            <h3>뷰티캣 피부관리실 견적비교 플랫폼</h3>
+                            <p>강남·홍대·잠실 전문업체 무료 견적 신청</p>
+                        </div>
+                    </div>
+                    <div class="web-cta">견적 신청 →</div>
+                </div>
+                <div class="download-info">
+                    <p>웹사이트 상단 또는 사이드바 배너 (리더보드)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 사용 안내 -->
+        <div style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); margin-top: 60px;">
+            <h2 style="font-size: 24px; font-weight: 800; color: #333; margin-bottom: 20px;">📥 배너 다운로드 방법</h2>
+            <ol style="color: #666; line-height: 2; padding-left: 20px;">
+                <li><strong>마우스 우클릭</strong> → "이미지를 다른 이름으로 저장" 선택</li>
+                <li><strong>스크린샷 도구</strong>를 사용하여 원하는 영역만 캡처</li>
+                <li>각 배너 이름으로 저장 (예: instagram-story.png)</li>
+                <li>SNS 또는 웹사이트에 업로드</li>
+            </ol>
+            <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(255, 45, 146, 0.1) 100%); border-radius: 8px;">
+                <p style="color: #333; font-weight: 700; margin-bottom: 10px;">💡 활용 팁</p>
+                <ul style="color: #666; line-height: 1.8; padding-left: 20px;">
+                    <li>Instagram 스토리: 24시간 하이라이트로 고정하여 지속 노출</li>
+                    <li>Facebook 커버: 페이지 상단에 배치하여 첫인상 강화</li>
+                    <li>카카오톡 채널: 프로필 이미지로 설정하여 브랜드 각인</li>
+                    <li>유튜브 썸네일: 서비스 소개 영상에 활용</li>
+                    <li>웹 배너: 관련 블로그나 커뮤니티에 배너 광고</li>
+                    <li>두 가지 Instagram 스토리를 번갈아 올려 다양한 메시지 전달</li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 20px; background: #fff9e6; border-radius: 8px; border-left: 4px solid #ff2d92;">
+                <p style="color: #333; font-weight: 700; margin-bottom: 10px;">🎯 타겟 고객</p>
+                <ul style="color: #666; line-height: 1.8; padding-left: 20px;">
+                    <li><strong>20-40대 여성</strong>: 피부 관리에 관심 많은 주 고객층</li>
+                    <li><strong>강남/홍대/잠실 거주자</strong>: 서비스 제공 지역 주민</li>
+                    <li><strong>피부 고민자</strong>: 여드름, 미백, 주름 등 피부 문제 해결 희망</li>
+                    <li><strong>합리적 소비자</strong>: 여러 업체 비교 후 결정하는 성향</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 배너 다운로드 안내
+        document.querySelectorAll('.instagram-story-1, .instagram-story-2, .instagram-feed, .facebook-cover, .naver-blog, .kakao-channel, .youtube-thumbnail, .web-banner-large').forEach(banner => {
+            banner.style.cursor = 'pointer';
+            banner.addEventListener('click', function() {
+                alert('💾 배너 저장 방법:\n\n1. 마우스 우클릭\n2. "이미지를 다른 이름으로 저장" 선택\n3. 원하는 위치에 저장\n\n또는 스크린샷 도구 사용!');
+            });
+        });
+    </script>
+</body>
+</html>
