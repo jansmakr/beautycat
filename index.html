@@ -478,17 +478,18 @@
         
         .mobile-nav button {
             flex: 1;
-            max-width: 120px;
+            max-width: 80px;
+            width: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 0.375rem;
             padding: 0.5rem;
-            min-height: 56px;
+            min-height: 64px;
             border-radius: 12px;
-            transition: all 0.15s ease; /* 0.2s → 0.15s 빠른 반응 */
-            transform: translateZ(0); /* GPU 가속 */
+            transition: all 0.15s ease;
+            transform: translateZ(0);
             will-change: transform, background;
         }
         
@@ -937,17 +938,17 @@
         <section class="text-center py-5 sm:py-8 hero-mobile">
             <div class="mb-6 sm:mb-8">
                 <!-- 뷰냥이 아이콘 -->
-                <div class="w-24 h-24 sm:w-48 sm:h-48 rounded-3xl flex items-center justify-center mx-auto mb-5 sm:mb-6 bg-gradient-to-br from-pink-50 to-purple-50 border-3 sm:border-5 border-pink-200 shadow-lg cat-container">
+                <div class="w-24 h-24 sm:w-48 sm:h-48 rounded-3xl flex items-center justify-center mx-auto mb-5 sm:mb-6 bg-gradient-to-br from-yellow-100 to-amber-100 border-3 sm:border-5 border-yellow-300 shadow-lg cat-container">
                     <span class="text-6xl sm:text-10xl cat-bounce">🐱</span>
                 </div>
                 
                 <!-- SEO 최적화된 메인 헤딩 -->
                 <div class="space-y-4 sm:space-y-3">
                     <h1 class="text-base sm:text-3xl font-bold text-gray-900 leading-snug px-4 sm:px-2">
-                        전국 피부관리실 견적비교 예약 플랫폼
+                        전국 피부관리실<br class="sm:hidden">견적비교 예약 플랫폼
                     </h1>
                     <h2 class="text-xs sm:text-xl font-semibold text-primary-500 px-4 sm:px-2 leading-relaxed">
-                        강남 · 홍대 · 잠실 피부케어 전문업체 매칭
+                        강남 · 홍대 · 잠실<br class="sm:hidden">피부케어 전문업체 매칭
                     </h2>
                     <div class="text-xs sm:text-lg text-gray-600 leading-relaxed mt-5 sm:mt-5 px-4 sm:px-2 space-y-3">
                         <p class="font-medium text-xs sm:text-lg">🐱 안녕하세요? 뷰냥이 인사드림당^^</p>
@@ -961,8 +962,8 @@
         <!-- 상담 및 견적 신청 폼 -->
         <section id="consultation" class="card section-consultation">
             <div class="text-center mb-5 sm:mb-6">
-                <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">피부관리실 상담 및 견적 신청</h2>
-                <p class="text-gray-700 text-sm sm:text-base font-medium">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
+                <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-2">피부관리실<br class="sm:hidden">상담 및 견적 신청</h2>
+                <p class="text-gray-700 text-sm sm:text-base font-medium">강남/홍대/잠실 지역별<br class="sm:hidden">맞춤 피부케어 견적을<br class="sm:hidden">무료로 받아보세요</p>
             </div>
             
             <!-- 간단한 초기 폼 (처음 접속 시 표시) -->
@@ -1104,8 +1105,8 @@
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
                             <i class="fas fa-info-circle text-gray-400 text-2xl mb-2"></i>
                             <p class="text-gray-600 text-sm">
-                                아직 해당 지역에 대표샵이 지정되지 않았습니다.<br>
-                                <span class="text-primary-500 font-medium">상세 정보 입력하기</span>를 통해 견적을 받아보세요.
+                                아직 해당 지역에<br class="sm:hidden">대표샵이 지정되지 않았습니다.<br>
+                                <span class="text-primary-500 font-medium">상세 정보 입력하기</span>를 통해<br class="sm:hidden">견적을 받아보세요.
                             </p>
                         </div>
                     </div>
@@ -1130,7 +1131,7 @@
                             <i class="fas fa-info-circle text-blue-500 mr-2"></i>
                             <span class="text-blue-800 font-medium">비회원 상담 및 견적 신청</span>
                         </div>
-                        <p class="text-blue-700 text-sm mb-3">비회원으로도 상담 및 견적 신청이 가능합니다. 더 정확한 매칭을 원하시면 회원가입을 추천드립니다.</p>
+                        <p class="text-blue-700 text-sm mb-3">비회원으로도 상담 및 견적<br class="sm:hidden">신청이 가능합니다.<br>더 정확한 매칭을 원하시면<br class="sm:hidden">회원가입을 추천드립니다.</p>
                         <div class="flex gap-2">
                             <button type="button" class="flex-1 touch-feedback" onclick="location.href='login.html'" style="border: 1px solid #000000 !important; background: white; color: #000000; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s;">
                                 로그인
@@ -1344,7 +1345,7 @@
 
         <!-- 서비스 특징 -->
         <section class="space-y-4">
-            <h2 class="text-lg font-bold text-gray-900 text-center mb-4">왜 beautycat 피부관리 플랫폼을 선택해야 할까요?</h2>
+            <h2 class="text-lg font-bold text-gray-900 text-center mb-4">왜 beautycat<br class="sm:hidden">피부관리 플랫폼을<br class="sm:hidden">선택해야 할까요?</h2>
             
             <div class="card">
                 <div class="flex items-start space-x-4">
@@ -1353,7 +1354,7 @@
                     </div>
                     <div>
                         <h4 class="font-semibold text-gray-900 mb-1">지역 기반 매칭</h4>
-                        <p class="text-gray-600 text-sm">우리 동네 피부관리실만 정확하게 추천해드립니다</p>
+                        <p class="text-gray-600 text-sm">우리 동네 피부관리실만<br class="sm:hidden">정확하게 추천해드립니다</p>
                     </div>
                 </div>
             </div>
@@ -1365,7 +1366,7 @@
                     </div>
                     <div>
                         <h4 class="font-semibold text-gray-900 mb-1">안전한 인증</h4>
-                        <p class="text-gray-600 text-sm">안전하고 신뢰할 수 있는 회원 인증 시스템</p>
+                        <p class="text-gray-600 text-sm">안전하고 신뢰할 수 있는<br class="sm:hidden">회원 인증 시스템</p>
                     </div>
                 </div>
             </div>
@@ -1385,7 +1386,7 @@
 
         <!-- 고객 리뷰 -->
         <section class="card">
-            <h2 class="text-lg font-bold text-gray-900 text-center mb-4">피부관리 고객 후기 및 리뷰</h2>
+            <h2 class="text-lg font-bold text-gray-900 text-center mb-4">피부관리<br class="sm:hidden">고객 후기 및 리뷰</h2>
             <div class="space-y-4">
                 <div class="bg-gray-50 rounded-lg p-4">
                     <div class="flex items-center mb-2">
@@ -1401,7 +1402,7 @@
                             <i class="fas fa-star text-yellow-400 text-xs"></i>
                         </div>
                     </div>
-                    <p class="text-gray-700 text-sm">"집 근처 샵을 쉽게 찾을 수 있어서 너무 편리해요!"</p>
+                    <p class="text-gray-700 text-sm">"집 근처 샵을<br class="sm:hidden">쉽게 찾을 수 있어서<br class="sm:hidden">너무 편리해요!"</p>
                 </div>
                 
                 <div class="bg-gray-50 rounded-lg p-4">
@@ -1418,7 +1419,7 @@
                             <i class="fas fa-star text-yellow-400 text-xs"></i>
                         </div>
                     </div>
-                    <p class="text-gray-700 text-sm">"여러 샵 견적을 한 번에 받아볼 수 있어 좋아요!"</p>
+                    <p class="text-gray-700 text-sm">"여러 샵 견적을<br class="sm:hidden">한 번에 받아볼 수 있어<br class="sm:hidden">좋아요!"</p>
                 </div>
             </div>
         </section>
