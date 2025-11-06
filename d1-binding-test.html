@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat D1 Binding 진단</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .status-pending {
+            background: #ffc107;
+            color: white;
+        }
+        
+        .status-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-error {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .test-result {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .test-result pre {
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .error-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .error-box ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .success-box h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .code-snippet {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .endpoint-info {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .endpoint-info code {
+            background: #d0e8ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 BeautyCat D1 Binding 진단 도구</h1>
+        <p class="subtitle">Cloudflare Workers API와 D1 데이터베이스 연결 상태를 확인합니다</p>
+        
+        <div class="endpoint-info">
+            <strong>테스트 대상:</strong><br>
+            <code>https://beautycat-api.jansmakr.workers.dev</code>
+        </div>
+        
+        <button onclick="runAllTests()" id="testBtn">🚀 전체 테스트 시작</button>
+        
+        <!-- Test 1: Health Check -->
+        <div class="test-section" id="test1">
+            <div class="test-title">
+                <span class="status-icon status-pending" id="test1-icon">?</span>
+                테스트 1: API Health Check
+            </div>
+            <div class="test-result" id="test1-result" style="display:none;"></div>
+        </div>
+        
+        <!-- Test 2: Users Table -->
+        <div class="test-section" id="test2">
+            <div class="test-title">
+                <span class="status-icon status-pending" id="test2-icon">?</span>
+                테스트 2: Users Table 조회
+            </div>
+            <div class="test-result" id="test2-result" style="display:none;"></div>
+        </div>
+        
+        <!-- Test 3: Consultations Table -->
+        <div class="test-section" id="test3">
+            <div class="test-title">
+                <span class="status-icon status-pending" id="test3-icon">?</span>
+                테스트 3: Consultations Table 조회
+            </div>
+            <div class="test-result" id="test3-result" style="display:none;"></div>
+        </div>
+        
+        <!-- Test 4: Shops Table -->
+        <div class="test-section" id="test4">
+            <div class="test-title">
+                <span class="status-icon status-pending" id="test4-icon">?</span>
+                테스트 4: Skincare Shops Table 조회
+            </div>
+            <div class="test-result" id="test4-result" style="display:none;"></div>
+        </div>
+        
+        <!-- Diagnosis Result -->
+        <div id="diagnosis" style="display:none;"></div>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://beautycat-api.jansmakr.workers.dev';
+        let testResults = {};
+        
+        async function runAllTests() {
+            document.getElementById('testBtn').disabled = true;
+            document.getElementById('testBtn').innerHTML = '<span class="loading"></span> 테스트 중...';
+            
+            // Reset
+            testResults = {};
+            
+            // Run tests
+            await test1_HealthCheck();
+            await test2_UsersTable();
+            await test3_ConsultationsTable();
+            await test4_ShopsTable();
+            
+            // Show diagnosis
+            showDiagnosis();
+            
+            document.getElementById('testBtn').disabled = false;
+            document.getElementById('testBtn').textContent = '🔄 다시 테스트';
+        }
+        
+        async function test1_HealthCheck() {
+            const testId = 'test1';
+            const icon = document.getElementById(testId + '-icon');
+            const result = document.getElementById(testId + '-result');
+            
+            icon.className = 'status-icon status-pending';
+            icon.textContent = '...';
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> 테스트 중...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    icon.className = 'status-icon status-success';
+                    icon.textContent = '✓';
+                    result.innerHTML = `
+                        <strong>✅ 성공</strong>
+                        <p>API 서버가 정상적으로 작동하고 있습니다.</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    testResults[testId] = { success: true, data };
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                icon.className = 'status-icon status-error';
+                icon.textContent = '✗';
+                result.innerHTML = `
+                    <strong>❌ 실패</strong>
+                    <p>API 서버에 연결할 수 없습니다.</p>
+                    <pre>${error.message}</pre>
+                `;
+                testResults[testId] = { success: false, error: error.message };
+            }
+        }
+        
+        async function test2_UsersTable() {
+            const testId = 'test2';
+            const icon = document.getElementById(testId + '-icon');
+            const result = document.getElementById(testId + '-result');
+            
+            icon.className = 'status-icon status-pending';
+            icon.textContent = '...';
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> 테스트 중...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/tables/users?limit=10`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    icon.className = 'status-icon status-success';
+                    icon.textContent = '✓';
+                    result.innerHTML = `
+                        <strong>✅ 성공</strong>
+                        <p>D1 데이터베이스가 정상적으로 연결되었습니다!</p>
+                        <p>조회된 사용자 수: <strong>${data.total || 0}</strong>명</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    testResults[testId] = { success: true, data };
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                icon.className = 'status-icon status-error';
+                icon.textContent = '✗';
+                result.innerHTML = `
+                    <strong>❌ D1 Binding 오류</strong>
+                    <p>데이터베이스 연결에 실패했습니다.</p>
+                    <pre>${error.message}</pre>
+                `;
+                testResults[testId] = { success: false, error: error.message };
+            }
+        }
+        
+        async function test3_ConsultationsTable() {
+            const testId = 'test3';
+            const icon = document.getElementById(testId + '-icon');
+            const result = document.getElementById(testId + '-result');
+            
+            icon.className = 'status-icon status-pending';
+            icon.textContent = '...';
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> 테스트 중...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/tables/consultations?limit=10`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    icon.className = 'status-icon status-success';
+                    icon.textContent = '✓';
+                    result.innerHTML = `
+                        <strong>✅ 성공</strong>
+                        <p>상담 데이터를 정상적으로 조회했습니다.</p>
+                        <p>조회된 상담 수: <strong>${data.total || 0}</strong>건</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    testResults[testId] = { success: true, data };
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                icon.className = 'status-icon status-error';
+                icon.textContent = '✗';
+                result.innerHTML = `
+                    <strong>❌ 실패</strong>
+                    <pre>${error.message}</pre>
+                `;
+                testResults[testId] = { success: false, error: error.message };
+            }
+        }
+        
+        async function test4_ShopsTable() {
+            const testId = 'test4';
+            const icon = document.getElementById(testId + '-icon');
+            const result = document.getElementById(testId + '-result');
+            
+            icon.className = 'status-icon status-pending';
+            icon.textContent = '...';
+            result.style.display = 'block';
+            result.innerHTML = '<span class="loading"></span> 테스트 중...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/tables/skincare_shops?limit=10`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    icon.className = 'status-icon status-success';
+                    icon.textContent = '✓';
+                    result.innerHTML = `
+                        <strong>✅ 성공</strong>
+                        <p>피부샵 데이터를 정상적으로 조회했습니다.</p>
+                        <p>등록된 샵 수: <strong>${data.total || 0}</strong>개</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    testResults[testId] = { success: true, data };
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`);
+                }
+            } catch (error) {
+                icon.className = 'status-icon status-error';
+                icon.textContent = '✗';
+                result.innerHTML = `
+                    <strong>❌ 실패</strong>
+                    <pre>${error.message}</pre>
+                `;
+                testResults[testId] = { success: false, error: error.message };
+            }
+        }
+        
+        function showDiagnosis() {
+            const diagnosisDiv = document.getElementById('diagnosis');
+            diagnosisDiv.style.display = 'block';
+            
+            const successCount = Object.values(testResults).filter(r => r.success).length;
+            const totalTests = Object.keys(testResults).length;
+            
+            if (successCount === totalTests) {
+                diagnosisDiv.innerHTML = `
+                    <div class="success-box">
+                        <h3>🎉 모든 테스트 통과!</h3>
+                        <p>D1 데이터베이스가 정상적으로 연결되었습니다.</p>
+                        <p><strong>다음 단계:</strong></p>
+                        <ul>
+                            <li>PRODUCTION_QUICK_START.md 가이드에 따라 초기 데이터 생성</li>
+                            <li>admin@beautycat.kr 계정으로 로그인 테스트</li>
+                            <li>베타 테스트 시작!</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (testResults.test1 && testResults.test1.success) {
+                diagnosisDiv.innerHTML = `
+                    <div class="error-box">
+                        <h3>⚠️ D1 Binding 설정 필요</h3>
+                        <p>API 서버는 작동하지만 D1 데이터베이스 연결이 안 됩니다.</p>
+                        <p><strong>해결 방법:</strong></p>
+                        <ul>
+                            <li><strong>WRANGLER_TOML_SETUP.md</strong> 가이드 참고 (5분 소요)</li>
+                            <li>또는 <strong>FINAL_DEPLOYMENT_SOLUTION.md</strong> 상세 가이드 확인</li>
+                        </ul>
+                        <p><strong>빠른 해결 단계:</strong></p>
+                        <ol>
+                            <li>Cloudflare Dashboard → D1 → beautycat-db → Database ID 복사</li>
+                            <li>프로젝트의 wrangler.toml 파일에서 Database ID 수정</li>
+                            <li>Workers 재배포 (wrangler deploy)</li>
+                            <li>이 페이지에서 다시 테스트</li>
+                        </ol>
+                    </div>
+                `;
+            } else {
+                diagnosisDiv.innerHTML = `
+                    <div class="error-box">
+                        <h3>❌ API 서버 연결 실패</h3>
+                        <p>Cloudflare Workers API에 연결할 수 없습니다.</p>
+                        <p><strong>확인 사항:</strong></p>
+                        <ul>
+                            <li>Workers가 배포되어 있는지 확인</li>
+                            <li>API URL이 올바른지 확인: ${API_BASE}</li>
+                            <li>네트워크 연결 상태 확인</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

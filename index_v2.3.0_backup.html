@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <!-- 버전 정보 -->
+    <meta name="version" content="2.3.0-production">
+    
+    <!-- 타이틀 및 SEO -->
+    <title>beautycat - 피부관리실 견적비교 | 전국 강남 홍대 피부케어 예약</title>
+    <meta name="description" content="전국 강남, 홍대 피부관리실 견적을 한번에 비교하고 예약하세요. 피부케어, 여드름 관리, 미백케어 전문업체 매칭 플랫폼.">    
+    <meta name="keywords" content="피부관리실, 피부케어, 강남 피부관리, 홍대 피부관리, 피부관리 예약, 여드름 관리, 미백케어, 피부관리 견적, 뷰티케어, 스킨케어">    
+    <meta name="author" content="beautycat">
+    <meta name="robots" content="index, follow">
+    
+    <!-- 캐노니컬 URL -->
+    <link rel="canonical" href="https://beautycat.kr/">
+    
+    <!-- Open Graph -->
+    <meta property="og:url" content="https://beautycat.kr">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="beautycat - 전국 피부관리실 견적비교 예약 플랫폼">
+    <meta property="og:description" content="전국 강남, 홍대 최고 피부관리실 견적을 한번에 비교하고 예약하세요. 피부케어 전문가와 상담 후 최적의 케어를 받으세요.">
+    <meta property="og:image" content="https://beautycat.kr/icons/icon-512x512.png">
+    <meta property="og:site_name" content="beautycat - 피부관리실 예약 플랫폼">
+    
+    <!-- PWA 설정 -->
+    <meta name="theme-color" content="#ff2d92">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="beautycat">
+    
+    <!-- 앱 아이콘 -->
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- 웹폰트 최적화 (display=swap으로 텍스트 즉시 표시) -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (최소 버전) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    
+    <!-- Critical CSS (인라인) -->
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-500: #ff2d92;
+            --primary-600: #e6297f;
+            --primary-50: #fff0f8;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+        
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background: var(--gray-50);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 모바일 최적화 - 터치 영역 */
+        button, a, input, select, textarea {
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+        }
+        
+        /* 헤더 */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .header-inner {
+            max-width: 100%;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-emoji {
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+        
+        .logo-img {
+            height: 32px;
+            width: auto;
+        }
+        
+        @media (min-width: 640px) {
+            .logo-emoji {
+                font-size: 2rem;
+            }
+            .logo-img {
+                height: 36px;
+            }
+        }
+        
+        /* 버튼 스타일 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            min-height: 44px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(255, 45, 146, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 45, 146, 0.35);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--gray-900);
+            border: 1px solid var(--gray-900);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gray-50);
+        }
+        
+        /* 메인 컨테이너 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* 히어로 섹션 */
+        .hero {
+            text-align: center;
+            padding: 24px 0;
+        }
+        
+        .cat-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #fef0f7, #f8e8f5);
+            border-radius: 24px;
+            border: 4px solid #fcd3e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            box-shadow: 0 4px 16px rgba(255, 45, 146, 0.15);
+        }
+        
+        .hero-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .hero-subtitle {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-500);
+            margin-bottom: 16px;
+        }
+        
+        .hero-desc {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+        
+        @media (min-width: 640px) {
+            .cat-icon {
+                width: 150px;
+                height: 150px;
+                font-size: 6rem;
+            }
+            .hero-title {
+                font-size: 1.75rem;
+            }
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+        }
+        
+        /* 카드 */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* 폼 입력 */
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(255, 45, 146, 0.1);
+        }
+        
+        /* 하단 네비게이션 */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #e5e7eb;
+            padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 0 8px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            max-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            background: none;
+            border: none;
+            color: var(--gray-600);
+            font-size: 0.75rem;
+            cursor: pointer;
+            min-height: 56px;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-btn:active {
+            transform: scale(0.92);
+            background: var(--primary-50);
+        }
+        
+        .nav-btn i {
+            font-size: 1.25rem;
+            transition: color 0.15s;
+        }
+        
+        .nav-btn:active i,
+        .nav-btn:active span {
+            color: var(--primary-500);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: block;
+            }
+            body {
+                padding-bottom: max(72px, calc(72px + env(safe-area-inset-bottom)));
+            }
+        }
+        
+        /* 로딩 상태 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 유틸리티 */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mb-4 { margin-bottom: 16px; }
+        .mt-4 { margin-top: 16px; }
+        .w-full { width: 100%; }
+    </style>
+    
+    <!-- Service Worker 제거 스크립트 (인라인) -->
+    <script>
+        (async function() {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (const reg of registrations) await reg.unregister();
+                const caches = await window.caches.keys();
+                for (const cache of caches) await window.caches.delete(cache);
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo-container">
+                <span class="logo-emoji">🐱</span>
+                <img src="images/beautycat-logo.png" alt="beautycat" class="logo-img" width="120" height="32">
+            </div>
+            <button id="loginBtn" class="btn btn-secondary" onclick="location.href='login.html'">
+                로그인
+            </button>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="container">
+        <!-- 히어로 섹션 -->
+        <section class="hero">
+            <div class="cat-icon">🐱</div>
+            <h1 class="hero-title">전국 피부관리실 견적비교 예약 플랫폼</h1>
+            <h2 class="hero-subtitle">강남 · 홍대 · 잠실 피부케어 전문업체 매칭</h2>
+            <div class="hero-desc">
+                <p><strong>🐱 안녕하세요? 뷰냥이 인사드림당^^</strong></p>
+                <p class="mt-4">상담신청만 남기면 우리 동네<br><strong>피부관리실 견적을 한번에</strong> 비교해드려요!</p>
+                <p class="mt-4" style="color: var(--primary-500); font-weight: 600;">✨ 전문가 맞춤 케어!</p>
+            </div>
+        </section>
+
+        <!-- 상담 신청 폼 -->
+        <section class="card">
+            <h2 class="text-center mb-4" style="font-size: 1.125rem; font-weight: 700;">피부관리실 상담 및 견적 신청</h2>
+            <p class="text-center mb-4" style="font-size: 0.875rem; color: var(--gray-600);">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
+            
+            <form id="consultationForm">
+                <div class="mb-4">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">이름</label>
+                    <input type="text" id="customerName" class="form-input" placeholder="이름을 입력하세요" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">연락처</label>
+                    <input type="tel" id="customerPhone" class="form-input" placeholder="전화번호를 입력하세요">
+                </div>
+                
+                <div class="mb-4">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px;">지역 선택</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <select id="customerState" class="form-input" required>
+                            <option value="">시/도 선택</option>
+                            <option value="서울특별시">서울특별시</option>
+                            <option value="경기도">경기도</option>
+                            <option value="부산광역시">부산광역시</option>
+                        </select>
+                        <select id="customerDistrict" class="form-input" required>
+                            <option value="">구/군 선택</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-full">
+                    <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                    견적 요청하기
+                </button>
+            </form>
+        </section>
+
+        <!-- 서비스 특징 -->
+        <section style="margin-top: 24px;">
+            <h2 class="text-center mb-4" style="font-size: 1.125rem; font-weight: 700;">왜 beautycat을 선택해야 할까요?</h2>
+            
+            <div class="card">
+                <div style="display: flex; gap: 16px;">
+                    <div style="width: 48px; height: 48px; background: #dbeafe; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-map-marker-alt" style="color: #2563eb; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-weight: 600; margin-bottom: 4px;">지역 기반 매칭</h3>
+                        <p style="font-size: 0.875rem; color: var(--gray-600);">우리 동네 피부관리실만 정확하게 추천해드립니다</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="display: flex; gap: 16px;">
+                    <div style="width: 48px; height: 48px; background: #d1fae5; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-shield-alt" style="color: #059669; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-weight: 600; margin-bottom: 4px;">안전한 인증</h3>
+                        <p style="font-size: 0.875rem; color: var(--gray-600);">안전하고 신뢰할 수 있는 회원 인증 시스템</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="display: flex; gap: 16px;">
+                    <div style="width: 48px; height: 48px; background: #e9d5ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-comments" style="color: #9333ea; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <h3 style="font-weight: 600; margin-bottom: 4px;">실시간 상담</h3>
+                        <p style="font-size: 0.875rem; color: var(--gray-600);">샵과 직접 채팅으로 상담받으세요</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 모바일 하단 네비게이션 -->
+    <nav class="mobile-nav">
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="scrollToTop()">
+                <i class="fas fa-home"></i>
+                <span>홈</span>
+            </button>
+            <button class="nav-btn" onclick="scrollToForm()">
+                <i class="fas fa-clipboard-list"></i>
+                <span>견적신청</span>
+            </button>
+            <button class="nav-btn" onclick="openChat()">
+                <i class="fas fa-comments"></i>
+                <span>채팅</span>
+            </button>
+            <button class="nav-btn" onclick="openPhone()">
+                <i class="fas fa-phone"></i>
+                <span>전화상담</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 푸터 -->
+    <footer style="background: var(--gray-900); color: white; padding: 48px 16px; margin-top: 48px;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-500); margin-bottom: 16px;">
+                beautycat 🐱
+            </div>
+            <p style="color: #9ca3af; font-size: 0.875rem; margin-bottom: 24px;">
+                피부관리실 견적 비교의 혁신<br>투명하고 편리한 뷰티 플랫폼
+            </p>
+            <div style="font-size: 0.75rem; color: #6b7280;">
+                <p>© 2024 beautycat. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript (비동기 로드) -->
+    <script>
+        // 스크롤 함수
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function scrollToForm() {
+            document.getElementById('consultationForm').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function openChat() {
+            const token = localStorage.getItem('beautycat_token');
+            if (!token) {
+                if (confirm('채팅 기능을 이용하려면 로그인이 필요합니다.\n로그인 페이지로 이동하시겠습니까?')) {
+                    location.href = 'login.html';
+                }
+                return;
+            }
+            location.href = 'chat.html';
+        }
+        
+        function openPhone() {
+            alert('전화상담 기능 준비중입니다.');
+        }
+        
+        // 폼 제출
+        document.getElementById('consultationForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const state = document.getElementById('customerState').value;
+            const district = document.getElementById('customerDistrict').value;
+            
+            if (!name || !state || !district) {
+                alert('필수 항목을 모두 입력해주세요.');
+                return;
+            }
+            
+            // API 호출 (실제 구현 필요)
+            alert('견적 요청이 접수되었습니다!\n곧 연락드리겠습니다.');
+        });
+        
+        // 지역 선택
+        const districts = {
+            '서울특별시': ['강남구', '서초구', '송파구', '강동구', '마포구', '용산구'],
+            '경기도': ['수원시', '성남시', '고양시', '용인시'],
+            '부산광역시': ['해운대구', '부산진구', '동래구']
+        };
+        
+        document.getElementById('customerState')?.addEventListener('change', function() {
+            const state = this.value;
+            const districtSelect = document.getElementById('customerDistrict');
+            districtSelect.innerHTML = '<option value="">구/군 선택</option>';
+            
+            if (districts[state]) {
+                districts[state].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+    
+    <!-- 외부 스크립트 비동기 로드 -->
+    <script src="js/config.js" defer></script>
+    <script src="js/auth.js" defer></script>
+</body>
+</html>

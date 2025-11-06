@@ -587,7 +587,10 @@ async function loadSampleShops() {
         );
         
         if (!shopsData) {
-            console.warn('⚠️ 피부관리실 테이블에 접근할 수 없습니다. 데이터 로드를 건너뜁니다.');
+            // 프로덕션에서는 조용히 넘어감 (정상 동작)
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                console.log('💡 [개발 모드] 피부관리실 데이터가 아직 없습니다. 샘플 데이터를 생성합니다.');
+            }
             return;
         }
         

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>beautycat - 피부관리실 견적비교 | 전국 강남 홍대 피부케어 예약</title>
+    
+    <!-- 모바일 최적화 CSS (캐시 버스팅) -->
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
+    
+    <!-- 나머지는 기존 index.html과 동일 -->
