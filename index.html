@@ -365,10 +365,20 @@
             
         })();
     </script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <!-- 웹폰트는 서비스 워커에서 캐시하여 오프라인에서도 사용 가능 -->
+    <!-- Font Awesome (비동기 로딩) -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    
+    <!-- 폰트 최적화 -->
+    <style>
+        /* 시스템 폰트 우선 사용 (빠른 렌더링) */
+        @font-face {
+            font-family: 'Pretendard';
+            font-display: swap;
+            src: local('Pretendard'), local('Pretendard Variable');
+        }
+    </style>
     
     <style>
         :root {
@@ -383,6 +393,38 @@
             font-family: 'Pretendard', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* 전역 성능 최적화 */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        /* 하드웨어 가속 */
+        .hw-accelerate {
+            transform: translateZ(0);
+            will-change: transform;
+        }
+        
+        /* 스크롤 성능 최적화 */
+        html {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* 이미지 로딩 최적화 */
+        img {
+            content-visibility: auto;
+        }
+        
+        img.lazy {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        img.lazy.loaded {
+            opacity: 1;
         }
         
         /* 모바일 최적화 */
@@ -753,7 +795,7 @@
             /* 카드 여백 조정 */
             .card {
                 padding: 1.25rem;
-                margin: 1rem 0;
+                margin: 1rem auto;  /* 가운데 정렬 유지 */
                 border-radius: 1rem;
             }
             
@@ -938,8 +980,138 @@
             }
         }
     </style>
+    
+    <!-- 로딩 화면 스타일 -->
+    <style>
+        /* 로딩 오버레이 */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        #loadingScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* 로딩 고양이 애니메이션 */
+        .loading-cat {
+            font-size: 4rem;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
+        }
+        
+        /* 로딩 텍스트 */
+        .loading-text {
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ff2d92;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        /* 프로그레스 바 */
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 45, 146, 0.2);
+            border-radius: 2px;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+        
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff2d92, #e6297f);
+            border-radius: 2px;
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% {
+                width: 0%;
+                transform: translateX(0);
+            }
+            50% {
+                width: 70%;
+            }
+            100% {
+                width: 100%;
+                transform: translateX(0);
+            }
+        }
+        
+        /* 로딩 서브 텍스트 */
+        .loading-subtext {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #9CA3AF;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 640px) {
+            .loading-cat {
+                font-size: 3rem;
+            }
+            
+            .loading-text {
+                font-size: 1rem;
+            }
+            
+            .loading-progress {
+                width: 150px;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
+    <!-- 로딩 화면 -->
+    <div id="loadingScreen">
+        <div class="loading-cat">🐱</div>
+        <div class="loading-text">beautycat</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+        </div>
+        <div class="loading-subtext">피부관리 플랫폼을 준비하고 있어요...</div>
+    </div>
+
     <!-- 심플 헤더 -->
     <header class="simple-header border-b border-gray-200">
         <div class="px-4 py-3">
@@ -947,7 +1119,7 @@
                 <!-- 로고 -->
                 <div class="logo-container" style="display: flex; align-items: center; gap: 0.5rem;">
                     <span style="font-size: 1.75rem;">🐱</span>
-                    <img src="images/beautycat-logo-v3.png?v=2.2.5" alt="beautycat 로고" style="height: 36px; width: auto;">
+                    <img src="images/beautycat-logo-v3.png?v=2.2.5" alt="beautycat 로고" style="height: 36px; width: auto;" loading="eager" decoding="async">
                 </div>
                 
                 <!-- 사용자 메뉴 -->
@@ -1479,6 +1651,7 @@
     </nav>
 
     <!-- 기존 JavaScript 포함 + 모바일 최적화 (defer로 로딩 속도 개선) -->
+    <script src="js/legal-contents.js?v=2.4.1" defer></script>
     <script src="js/config.js?v=2.1.3" defer></script>
     <script src="js/logger.js?v=2.1.3" defer></script>
     <script src="js/main.js?v=2.1.3" defer></script>
@@ -2074,6 +2247,61 @@
         
         // 페이지 로드 시 도메인 상태 체크
         window.addEventListener('load', checkDomainStatus);
+        
+        // 로딩 화면 제거
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            
+            // 최소 로딩 시간 (0.8초) 후 페이드아웃
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                
+                // 완전히 제거 (1초 후)
+                setTimeout(() => {
+                    loadingScreen.remove();
+                }, 500);
+            }, 800);
+        });
+        
+        // 이미지 레이지 로딩
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            images.forEach(img => {
+                img.src = img.dataset.src || img.src;
+            });
+        } else {
+            // 폴백: Intersection Observer
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        img.classList.remove('lazy');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('img.lazy').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+        
+        // 스크롤 성능 최적화
+        let ticking = false;
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    // 스크롤 이벤트 처리
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+        
+        // 터치 이벤트 최적화
+        document.addEventListener('touchstart', function() {}, { passive: true });
+        document.addEventListener('touchmove', function() {}, { passive: true });
     </script>
 
     <!-- 공유 모달 -->
@@ -2369,144 +2597,28 @@
             }, 2000);
         }
         
-        // 이용약관 내용
+        // 이용약관 내용 (외부 파일에서 로드)
         function getTermsContent() {
-            return `
-                <div class="space-y-6">
-                    <p class="text-sm text-gray-500">최종 수정일: 2025년 1월 1일 | 시행일: 2025년 1월 1일</p>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제1조 (목적)</h3>
-                        <p>본 약관은 k-beautics(이하 "회사")가 운영하는 beautycat 플랫폼(이하 "서비스")의 이용조건 및 절차, 회사와 회원 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.</p>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제2조 (용어의 정의)</h3>
-                        <p class="mb-2">본 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
-                        <ul class="list-disc pl-6 space-y-1">
-                            <li><strong>"서비스":</strong> 회사가 제공하는 피부관리실 검색, 상담, 예약 등의 온라인 플랫폼 서비스</li>
-                            <li><strong>"회원":</strong> 본 약관에 동의하고 회사와 서비스 이용계약을 체결한 자</li>
-                            <li><strong>"고객":</strong> 피부관리 서비스를 이용하고자 하는 일반 소비자 회원</li>
-                            <li><strong>"업체":</strong> 피부관리실을 운영하며 플랫폼에 입점한 사업자 회원</li>
-                            <li><strong>"아이디(ID)":</strong> 회원의 식별과 서비스 이용을 위해 회원이 설정하고 회사가 승인한 이메일 주소</li>
-                        </ul>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제3조 (약관의 효력 및 변경)</h3>
-                        <ol class="list-decimal pl-6 space-y-2">
-                            <li>본 약관은 서비스 화면에 게시하거나 기타의 방법으로 공지함으로써 효력이 발생합니다.</li>
-                            <li>회사는 필요한 경우 관련 법령을 위배하지 않는 범위에서 본 약관을 변경할 수 있습니다.</li>
-                            <li>약관이 변경되는 경우 회사는 변경사항을 시행일자 7일 전부터 공지합니다.</li>
-                            <li>회원이 변경된 약관에 동의하지 않는 경우 서비스 이용을 중단하고 탈퇴할 수 있습니다.</li>
-                        </ol>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제4조 (회원가입)</h3>
-                        <ol class="list-decimal pl-6 space-y-2">
-                            <li>회원가입은 이용자가 약관의 내용에 동의하고 회원가입 신청을 한 후 회사가 이를 승낙함으로써 체결됩니다.</li>
-                            <li>회원가입 시 제공하는 모든 정보는 실제 데이터로 작성해야 하며, 허위 정보 기재 시 법적 보호를 받을 수 없습니다.</li>
-                            <li>만 14세 미만은 회원가입이 제한되며, 법정대리인의 동의가 필요합니다.</li>
-                        </ol>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제5조 (서비스의 제공)</h3>
-                        <p class="mb-2">회사는 다음과 같은 서비스를 제공합니다.</p>
-                        <ul class="list-disc pl-6 space-y-1">
-                            <li>피부관리실 정보 검색 및 비교</li>
-                            <li>피부관리실 상담 신청 및 견적 비교</li>
-                            <li>고객과 업체 간 매칭 서비스</li>
-                            <li>리뷰 및 평가 서비스</li>
-                            <li>기타 회사가 정하는 부가 서비스</li>
-                        </ul>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제6조 (회원의 의무)</h3>
-                        <p class="mb-2">회원은 다음 행위를 하여서는 안 됩니다.</p>
-                        <ul class="list-disc pl-6 space-y-1">
-                            <li>신청 또는 변경 시 허위내용 등록</li>
-                            <li>타인의 정보 도용</li>
-                            <li>회사가 게시한 정보의 변경</li>
-                            <li>회사가 정한 정보 이외의 정보(컴퓨터 프로그램 등) 송신 또는 게시</li>
-                            <li>회사와 기타 제3자의 저작권 등 지적재산권 침해</li>
-                            <li>회사 및 기타 제3자의 명예를 손상시키거나 업무를 방해하는 행위</li>
-                        </ul>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제7조 (서비스 이용의 제한)</h3>
-                        <p>회사는 회원이 본 약관의 의무를 위반하거나 서비스의 정상적인 운영을 방해한 경우, 경고, 일시정지, 영구이용정지 등으로 서비스 이용을 단계적으로 제한할 수 있습니다.</p>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제8조 (면책조항)</h3>
-                        <ol class="list-decimal pl-6 space-y-2">
-                            <li>회사는 천재지변, 전쟁, 기간통신사업자의 서비스 중지 등 불가항력적 사유로 서비스를 제공할 수 없는 경우 책임이 면제됩니다.</li>
-                            <li>회사는 회원의 귀책사유로 인한 서비스 이용 장애에 대하여 책임을 지지 않습니다.</li>
-                            <li>회사는 회원이 서비스를 이용하여 기대하는 수익을 상실한 것에 대하여 책임을 지지 않습니다.</li>
-                            <li>회사는 고객과 업체 간 발생한 분쟁에 대해 중재 의무는 없으며, 이로 인한 손해를 배상할 책임이 없습니다.</li>
-                        </ol>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제9조 (분쟁 해결)</h3>
-                        <ol class="list-decimal pl-6 space-y-2">
-                            <li>회사는 회원으로부터 제출되는 불만사항 및 의견을 우선적으로 처리합니다.</li>
-                            <li>회사와 회원 간 발생한 분쟁은 전자문서 및 전자거래 기본법에 따른 전자문서·전자거래분쟁조정위원회에 조정을 신청할 수 있습니다.</li>
-                        </ol>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제10조 (준거법 및 재판관할)</h3>
-                        <ol class="list-decimal pl-6 space-y-2">
-                            <li>회사와 회원 간 제기된 소송은 대한민국법을 준거법으로 합니다.</li>
-                            <li>회사와 회원 간 발생한 분쟁에 관한 소송은 서울중앙지방법원을 관할 법원으로 합니다.</li>
-                        </ol>
-                    </section>
-                    
-                    <div class="mt-8 pt-6 border-t border-gray-200">
-                        <p class="text-sm text-gray-500">부칙: 본 약관은 2025년 1월 1일부터 시행합니다.</p>
-                    </div>
-                </div>
-            `;
+            return window.legalContents?.terms || '<p class="text-red-600">콘텐츠를 불러올 수 없습니다.</p>';
         }
         
-        // 개인정보처리방침 내용
+        // 개인정보처리방침 내용 (외부 파일에서 로드)
         function getPrivacyContent() {
-            return `
-                <div class="space-y-6">
-                    <p class="text-sm text-gray-500">최종 수정일: 2025년 1월 1일 | 시행일: 2025년 1월 1일</p>
-                    
-                    <section>
-                        <p class="font-semibold mb-2">k-beautics(이하 "회사")는 「개인정보 보호법」 제30조에 따라 정보주체의 개인정보를 보호하고 이와 관련한 고충을 신속하고 원활하게 처리할 수 있도록 다음과 같이 개인정보 처리방침을 수립·공개합니다.</p>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제1조 (개인정보의 처리 목적)</h3>
-                        <p class="mb-2">회사는 다음의 목적을 위하여 개인정보를 처리합니다. 처리하고 있는 개인정보는 다음의 목적 이외의 용도로는 이용되지 않으며, 이용 목적이 변경되는 경우에는 「개인정보 보호법」 제18조에 따라 별도의 동의를 받는 등 필요한 조치를 이행할 예정입니다.</p>
-                        
-                        <div class="ml-4 space-y-3">
-                            <div>
-                                <p class="font-semibold">1. 회원가입 및 관리</p>
-                                <p class="text-sm">회원 가입의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증, 회원자격 유지·관리, 서비스 부정이용 방지, 각종 고지·통지 목적</p>
-                            </div>
-                            
-                            <div>
-                                <p class="font-semibold">2. 피부관리 상담 및 매칭 서비스 제공</p>
-                                <p class="text-sm">고객과 피부관리실 간 상담 신청, 견적 비교, 업체 매칭, 서비스 이용 내역 관리</p>
-                            </div>
-                            
-                            <div>
-                                <p class="font-semibold">3. 고충처리</p>
-                                <p class="text-sm">민원인의 신원 확인, 민원사항 확인, 사실조사를 위한 연락·통지, 처리결과 통보</p>
-                            </div>
-                            
-                            <div>
-                                <p class="font-semibold">4. 마케팅 및 광고 활용</p>
-                                <p class="text-sm">신규 서비스 개발 및 맞춤 서비스 제공, 이벤트 및 광고성 정보 제공 (선택적 동의 사항)</p>
+            return window.legalContents?.privacy || '<p class="text-red-600">콘텐츠를 불러올 수 없습니다.</p>';
+        }
+        
+        // 청소년보호정책 내용 (외부 파일에서 로드)
+        function getYouthContent() {
+            return window.legalContents?.youth || '<p class="text-red-600">콘텐츠를 불러올 수 없습니다.</p>';
+        }
+        
+        // 사업자정보확인 내용 (외부 파일에서 로드)
+        function getBusinessContent() {
+            return window.legalContents?.business || '<p class="text-red-600">콘텐츠를 불러올 수 없습니다.</p>';
+        }
+    </script>
+</body>
+</html>
                             </div>
                         </div>
                     </section>
