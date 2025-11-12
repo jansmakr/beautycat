@@ -952,12 +952,25 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
         
         .section-reviews {
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
+        }
+        
+        /* 푸터 가운데 정렬 강화 */
+        footer {
+            display: flex;
+            justify-content: center;
+        }
+        
+        footer > div {
+            width: 100%;
+            max-width: 1000px;
         }
         
         /* 히어로 섹션 가운데 정렬 */
@@ -1127,7 +1140,7 @@
                     <button onclick="openShareModal()" class="text-gray-600 hover:text-primary-500 p-2 transition-colors" title="공유하기">
                         <i class="fas fa-share-alt text-xl"></i>
                     </button>
-                    <button id="loginBtn" class="btn-secondary text-sm px-4 py-2 touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important;">
+                    <button id="loginBtn" class="btn-secondary text-xs px-3 py-1.5 touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important; font-size: 0.75rem;">
                         로그인
                     </button>
                 </div>
@@ -1547,7 +1560,7 @@
         </section>
 
         <!-- 서비스 특징 -->
-        <section class="space-y-4 section-features">
+        <section class="space-y-4 section-features" style="max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem;">
             <h2 class="text-lg font-bold text-gray-900 text-center mb-4">왜 beautycat<br class="sm:hidden">피부관리 플랫폼을<br class="sm:hidden">선택해야 할까요?</h2>
             
             <div class="card">
@@ -1588,7 +1601,7 @@
         </section>
 
         <!-- 고객 리뷰 -->
-        <section class="card section-reviews">
+        <section class="card section-reviews" style="max-width: 1000px; margin-left: auto; margin-right: auto;">
             <h2 class="text-lg font-bold text-gray-900 text-center mb-4">피부관리<br class="sm:hidden">고객 후기 및 리뷰</h2>
             <div class="space-y-4">
                 <div class="bg-gray-50 rounded-lg p-4">
@@ -1631,21 +1644,21 @@
     <!-- 모바일 하단 네비게이션 -->
     <nav class="mobile-nav">
         <div class="flex justify-evenly items-center px-4">
-            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="scrollToTop()">
-                <i class="fas fa-home text-gray-600 text-lg"></i>
-                <span class="text-xs text-gray-600">홈</span>
+            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="scrollToTop()" style="width: 64px;">
+                <i class="fas fa-home text-gray-600" style="font-size: 20px;"></i>
+                <span class="text-gray-600" style="font-size: 11px;">홈</span>
             </button>
-            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="fastScrollTo('consultation')">
-                <i class="fas fa-clipboard-list text-gray-600 text-lg"></i>
-                <span class="text-xs text-gray-600">견적신청</span>
+            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="fastScrollTo('consultation')" style="width: 64px;">
+                <i class="fas fa-clipboard-list text-gray-600" style="font-size: 20px;"></i>
+                <span class="text-gray-600" style="font-size: 11px;">견적신청</span>
             </button>
-            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="openChat()">
-                <i class="fas fa-comments text-gray-600 text-lg"></i>
-                <span class="text-xs text-gray-600">채팅</span>
+            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="openChat()" style="width: 64px;">
+                <i class="fas fa-comments text-gray-600" style="font-size: 20px;"></i>
+                <span class="text-gray-600" style="font-size: 11px;">채팅</span>
             </button>
-            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="alert('전화상담 기능 준비중입니다')">
-                <i class="fas fa-phone text-gray-600 text-lg"></i>
-                <span class="text-xs text-gray-600">전화상담</span>
+            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="alert('전화상담 기능 준비중입니다')" style="width: 64px;">
+                <i class="fas fa-phone text-gray-600" style="font-size: 20px;"></i>
+                <span class="text-gray-600" style="font-size: 11px;">전화상담</span>
             </button>
         </div>
     </nav>
@@ -2353,8 +2366,8 @@
     </div>
 
     <!-- 법적 표시사항 (하단) -->
-    <footer class="bg-white py-12 mt-16 border-t border-gray-200">
-        <div class="max-w-4xl mx-auto px-4">
+    <footer class="bg-white py-12 mt-16 border-t border-gray-200" style="display: flex; justify-content: center;">
+        <div class="max-w-4xl mx-auto px-4" style="width: 100%; max-width: 1000px;">
             <!-- 회사 정보 -->
             <div class="mb-8">
                 <div class="flex items-center mb-6">
@@ -2619,27 +2632,6 @@
     </script>
 </body>
 </html>
-                            </div>
-                        </div>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제2조 (개인정보의 처리 및 보유 기간)</h3>
-                        <ol class="list-decimal pl-6 space-y-2">
-                            <li>회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집 시에 동의받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다.</li>
-                            <li>각각의 개인정보 처리 및 보유 기간은 다음과 같습니다:
-                                <ul class="list-disc pl-6 mt-2 space-y-1">
-                                    <li><strong>회원정보:</strong> 회원 탈퇴 시까지 (단, 관계법령 위반에 따른 수사·조사 등이 진행중인 경우 해당 수사·조사 종료 시까지)</li>
-                                    <li><strong>상담 및 견적 정보:</strong> 서비스 이용 종료 후 5년</li>
-                                    <li><strong>대금결제 및 재화 등의 공급에 관한 기록:</strong> 5년 (전자상거래법)</li>
-                                    <li><strong>소비자 불만 또는 분쟁처리 기록:</strong> 3년 (전자상거래법)</li>
-                                </ul>
-                            </li>
-                        </ol>
-                    </section>
-                    
-                    <section>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">제3조 (처리하는 개인정보의 항목)</h3>
                         
                         <div class="space-y-3">
                             <div>
