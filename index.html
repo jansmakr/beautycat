@@ -1138,11 +1138,8 @@
                 </div>
                 
                 <!-- 사용자 메뉴 -->
-                <div id="userMenu" class="flex items-center space-x-2">
-                    <button onclick="openShareModal()" class="text-gray-600 hover:text-primary-500 p-2 transition-colors" title="공유하기">
-                        <i class="fas fa-share-alt text-xl"></i>
-                    </button>
-                    <button id="loginBtn" class="btn-secondary text-xs px-3 py-1.5 touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important; font-size: 0.75rem;">
+                <div id="userMenu" class="flex items-center">
+                    <button id="loginBtn" class="btn-secondary touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important; padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem;">
                         로그인
                     </button>
                 </div>
@@ -1648,7 +1645,7 @@
         <div class="flex justify-evenly items-center px-4">
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="scrollToTop()" style="width: 64px;">
                 <i class="fas fa-home text-gray-600" style="font-size: 20px;"></i>
-                <span class="text-gray-600" style="font-size: 11px;">홈</span>
+                <span class="text-gray-600" style="font-size: 11px;">메인가기</span>
             </button>
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="fastScrollTo('consultation')" style="width: 64px;">
                 <i class="fas fa-clipboard-list text-gray-600" style="font-size: 20px;"></i>
@@ -1656,7 +1653,7 @@
             </button>
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="openChat()" style="width: 64px;">
                 <i class="fas fa-comments text-gray-600" style="font-size: 20px;"></i>
-                <span class="text-gray-600" style="font-size: 11px;">채팅</span>
+                <span class="text-gray-600" style="font-size: 11px;">채팅하기</span>
             </button>
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="alert('전화상담 기능 준비중입니다')" style="width: 64px;">
                 <i class="fas fa-phone text-gray-600" style="font-size: 20px;"></i>
