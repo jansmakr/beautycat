@@ -1292,7 +1292,7 @@
 
     <!-- 심플 헤더 -->
     <header class="simple-header border-b border-gray-200">
-        <div class="px-4 py-3">
+        <div class="max-w-5xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- 로고 -->
                 <div class="logo-container" style="display: flex; align-items: center; gap: 0.5rem;">
@@ -1311,14 +1311,14 @@
     </header>
 
     <!-- 메인 콘텐츠 -->
-    <main class="max-w-6xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6">
+    <main class="max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto;">
         <!-- 히어로 섹션 (야놀자 스타일) -->
-        <section class="gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in">
-            <div class="max-w-4xl mx-auto text-center">
+        <section class="gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+            <div class="max-w-4xl mx-auto text-center" style="margin-left: auto; margin-right: auto;">
                 <!-- 뷰냥이 아이콘 -->
                 <div class="inline-block mb-6">
                     <div class="icon-bg-soft" style="padding: 24px;">
-                        <span class="text-8xl sm:text-9xl">🐱</span>
+                        <span class="text-9xl sm:text-9xl" style="font-size: 8rem;">🐱</span>
                     </div>
                 </div>
                 
@@ -1348,11 +1348,11 @@
         </section>
 
         <!-- 상담 방법 선택 (야놀자 스타일) -->
-        <section class="mb-12 animate-fade-in">
+        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
             <h2 class="section-title-soft text-center">어떤 상담이<br class="sm:hidden"> 필요하신가요?</h2>
             <p class="section-subtitle-soft text-center">원하시는 상담 방법을 선택해주세요</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto" style="margin-left: auto; margin-right: auto;">
                 <!-- 견적 상담 버튼 -->
                 <div class="card-soft p-8 text-center cursor-pointer choice-button" onclick="showConsultationForm()">
                     <div class="icon-bg-soft mb-6 mx-auto w-fit">
@@ -1418,28 +1418,7 @@
                     </div>
                 </div>
                 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">관심있는 관리 프로그램</label>
-                    <select id="simpleInterest" class="form-input" onchange="showFullForm()">
-                        <option value="">관심 분야를 선택하세요</option>
-                        <optgroup label="페이스 케어">
-                            <option value="acne">여드름/트러블 케어</option>
-                            <option value="whitening">미백/브라이트닝</option>
-                            <option value="anti-aging">주름/안티에이징</option>
-                            <option value="pore">모공 케어</option>
-                            <option value="moisturizing">수분/보습 케어</option>
-                            <option value="face-other">페이스 기타/모름</option>
-                        </optgroup>
-                        <optgroup label="바디 케어">
-                            <option value="cellulite">셀룰라이트 관리</option>
-                            <option value="body-whitening">바디 화이트닝</option>
-                            <option value="stretch-marks">튼살 개선</option>
-                            <option value="body-moisturizing">바디 보습 케어</option>
-                            <option value="body-contouring">바디 라인 관리</option>
-                            <option value="body-other">바디 기타/모름</option>
-                        </optgroup>
-                    </select>
-                </div>
+
                 
                 <button type="button" class="btn-soft-primary w-full touch-feedback hardware-accelerated" onclick="showFullForm()" style="height: 52px; font-size: 16px;">
                     <i class="fas fa-arrow-right mr-2"></i>
@@ -1639,97 +1618,8 @@
                         </div>
                     </div>
                 </div>
-                    
-                <!-- 2️⃣ 관심 프로그램 섹션 -->
-                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                    <div class="flex items-center mb-5">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center mr-3">
-                            <span class="text-xl">✨</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-gray-900 text-lg">관심있는 관리 프로그램</h3>
-                            <p class="text-xs text-gray-500">원하시는 케어를 선택해주세요 (복수 선택 가능)</p>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        <!-- 페이스 케어 -->
-                        <div>
-                            <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center bg-pink-50 px-3 py-2 rounded-lg">
-                                <i class="fas fa-user-circle mr-2 text-pink-500 text-lg"></i>
-                                페이스 케어
-                            </h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <label class="flex items-center p-3 border border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 cursor-pointer transition-all">
-                                    <input type="checkbox" name="faceServices" value="acne" class="rounded-md border-gray-300 text-pink-500 focus:ring-pink-400 focus:ring-2 mr-3 w-5 h-5">
-                                    <span class="text-sm text-gray-700">여드름/트러블 케어</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="faceServices" value="whitening" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">미백/브라이트닝</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="faceServices" value="anti-aging" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">주름/안티에이징</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="faceServices" value="pore" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">모공 케어</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="faceServices" value="moisturizing" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">수분/보습 케어</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="faceServices" value="face-other" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3" onchange="toggleOtherInput('face')">
-                                    <span class="text-sm text-gray-700">기타/모름</span>
-                                </label>
-                            </div>
-                            <div id="face-other-input" class="hidden mt-3">
-                                <input type="text" name="faceOtherText" placeholder="원하시는 페이스 케어를 직접 입력해주세요" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm">
-                            </div>
-                        </div>
-
-                        <!-- 바디 케어 -->
-                        <div>
-                            <h4 class="text-sm font-bold text-gray-800 mb-3 flex items-center bg-blue-50 px-3 py-2 rounded-lg">
-                                <i class="fas fa-female mr-2 text-blue-500 text-lg"></i>
-                                바디 케어
-                            </h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="bodyServices" value="cellulite" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">셀룰라이트 관리</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="bodyServices" value="body-whitening" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">바디 화이트닝</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="bodyServices" value="stretch-marks" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">튼살 개선</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="bodyServices" value="body-moisturizing" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">바디 보습 케어</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="bodyServices" value="body-contouring" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3">
-                                    <span class="text-sm text-gray-700">바디 라인 관리</span>
-                                </label>
-                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                    <input type="checkbox" name="bodyServices" value="body-other" class="rounded border-gray-300 text-primary-500 focus:ring-primary-500 mr-3" onchange="toggleOtherInput('body')">
-                                    <span class="text-sm text-gray-700">기타/모름</span>
-                                </label>
-                            </div>
-                            <div id="body-other-input" class="hidden mt-3">
-                                <input type="text" name="bodyOtherText" placeholder="원하시는 바디 케어를 직접 입력해주세요" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm">
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
-                <!-- 3️⃣ 중요사항 섹션 -->
+                <!-- 2️⃣ 추가 정보 섹션 -->
                 <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
                     <div class="flex items-center mb-4">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center mr-3">
@@ -1883,11 +1773,11 @@
         </section>
 
         <!-- 왜 BeautyCat? (야놀자 스타일) -->
-        <section class="mb-12 animate-fade-in">
+        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
             <h2 class="section-title-soft text-center">왜 BeautyCat을<br class="sm:hidden"> 선택해야 할까요?</h2>
             <p class="section-subtitle-soft text-center">피부관리를 쉽고 안전하게 시작하세요</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto" style="margin-left: auto; margin-right: auto;">
                 <!-- 지역 기반 매칭 -->
                 <div class="card-soft p-8 text-center">
                     <div class="icon-bg-soft mb-6 mx-auto w-fit">
@@ -1927,11 +1817,11 @@
         </section>
 
         <!-- 피부관리 고객 후기 및 리뷰 -->
-        <section class="mb-12 animate-fade-in">
+        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
             <h2 class="section-title-soft text-center">피부관리<br class="sm:hidden"> 고객 후기 및 리뷰</h2>
             <p class="text-center text-gray-600 mb-8">BeautyCat과 함께한 고객님들의 생생한 이야기</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto" style="margin-left: auto; margin-right: auto;">
                 <!-- 후기 1 -->
                 <div class="card-soft p-8">
                     <div class="flex items-center justify-center mb-4">
@@ -1974,19 +1864,19 @@
         <div class="flex justify-evenly items-center px-4">
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="scrollToTop()" style="width: 64px;">
                 <i class="fas fa-home text-gray-600" style="font-size: 20px;"></i>
-                <span class="text-gray-600" style="font-size: 11px;">메인가기</span>
+                <span class="text-gray-600" style="font-size: 11px;">메인</span>
             </button>
-            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="fastScrollTo('consultation')" style="width: 64px;">
+            <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="showConsultationForm()" style="width: 64px;">
                 <i class="fas fa-clipboard-list text-gray-600" style="font-size: 20px;"></i>
-                <span class="text-gray-600" style="font-size: 11px;">견적신청</span>
+                <span class="text-gray-600" style="font-size: 11px;">상담</span>
             </button>
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="openChat()" style="width: 64px;">
                 <i class="fas fa-comments text-gray-600" style="font-size: 20px;"></i>
-                <span class="text-gray-600" style="font-size: 11px;">채팅하기</span>
+                <span class="text-gray-600" style="font-size: 11px;">채팅</span>
             </button>
             <button class="flex flex-col items-center space-y-1 touch-feedback hardware-accelerated" onclick="alert('전화상담 기능 준비중입니다')" style="width: 64px;">
                 <i class="fas fa-phone text-gray-600" style="font-size: 20px;"></i>
-                <span class="text-gray-600" style="font-size: 11px;">전화상담</span>
+                <span class="text-gray-600" style="font-size: 11px;">전화</span>
             </button>
         </div>
     </nav>
@@ -2710,6 +2600,7 @@
                     <p><strong>사업자등록번호:</strong> 693-47-00786</p>
                     <p><strong>통신판매업등록번호:</strong> 제 2025-서울강서-2423호</p>
                     <p><strong>주소:</strong> 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
+                    <p><strong>상담센터:</strong> 서울 금천구 디지털로10길 78, 가산테라타워 10층</p>
                     <p><strong>개인정보처리담당자:</strong> 박지원</p>
                     <p><strong>TEL:</strong> 0507-1310-5873</p>
                     <p><strong>E-MAIL:</strong> utuber@kakao.com</p>
@@ -2807,6 +2698,13 @@
         
         // 야놀자 스타일: 상담 폼 표시/숨김
         function showConsultationForm() {
+            // 로그인 확인
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!currentUser) {
+                alert('견적 상담은 로그인 후 이용하실 수 있습니다.');
+                location.href = 'login.html';
+                return;
+            }
             document.getElementById('consultation').style.display = 'block';
             document.getElementById('consultation').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
