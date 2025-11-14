@@ -1277,6 +1277,129 @@
                 width: 150px;
             }
         }
+        
+        /* 🎨 상담신청 폼 새 디자인 (v2.3.3) */
+        /* 섹션 카드 - 각 섹션별 색상 */
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            border-left: 4px solid;
+        }
+        
+        .section-card.pink { border-color: #FF6B9D; }
+        .section-card.blue { border-color: #60A5FA; }
+        .section-card.purple { border-color: #A78BFA; }
+        .section-card.green { border-color: #34D399; }
+        .section-card.orange { border-color: #FB923C; }
+        
+        /* 질문 텍스트 - 진하고 크게 */
+        .question {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .question-icon {
+            font-size: 20px;
+        }
+        
+        .icon-pink { color: #FF6B9D; }
+        .icon-blue { color: #60A5FA; }
+        .icon-purple { color: #A78BFA; }
+        .icon-green { color: #34D399; }
+        .icon-orange { color: #FB923C; }
+        
+        /* 입력 필드 새 스타일 */
+        .input-field-new {
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 14px 16px;
+            width: 100%;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .input-field-new:focus {
+            outline: none;
+            border-color: #FF6B9D;
+            box-shadow: 0 0 0 3px rgba(255,107,157,0.1);
+        }
+        
+        .input-field-new:disabled {
+            background: #F3F4F6;
+            cursor: not-allowed;
+        }
+        
+        /* 체크박스 그룹 */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        @media (max-width: 640px) {
+            .checkbox-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .checkbox-option {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+        }
+        
+        .checkbox-option:hover {
+            background: #FFF0F5;
+            border-color: #FECDD3;
+        }
+        
+        .checkbox-option.selected {
+            background: linear-gradient(135deg, #FFE8F0, #FFF5F7);
+            border-color: #FF6B9D;
+            color: #FF6B9D;
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            display: none;
+        }
+        
+        /* 파일 업로드 영역 */
+        .upload-area-new {
+            border: 2px dashed #D1D5DB;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #F9FAFB;
+        }
+        
+        .upload-area-new:hover {
+            border-color: #FF6B9D;
+            background: #FFF5F7;
+        }
+        
+        /* 헬퍼 텍스트 */
+        .helper-text {
+            font-size: 14px;
+            color: #6B7280;
+        }
     </style>
 </head>
 <body style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
@@ -1397,6 +1520,16 @@
                 </button>
                 <h2 class="section-title-soft mb-3">피부관리실<br class="sm:hidden"> 상담 및 견적 신청</h2>
                 <p class="text-gray-600 text-base">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
+                
+                <!-- 새 디자인 체험 배너 -->
+                <div class="mt-6 mb-4">
+                    <a href="consultation-form-optimized.html" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105" style="text-decoration: none;">
+                        <i class="fas fa-sparkles"></i>
+                        <span>✨ 새로워진 상담신청 폼 체험하기</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <p class="text-xs text-gray-500 mt-2">컬러풀하고 직관적인 새 디자인 | 전국 17개 시/도 지원</p>
+                </div>
             </div>
             
             <!-- 간단한 초기 폼 (처음 접속 시 표시) -->
