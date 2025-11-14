@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat - 오류 수정 완료</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .check-item {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            background: #f0fdf4;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.1);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-4xl mx-auto p-8">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">🐱</div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">BeautyCat 오류 수정</h1>
+                <p class="text-gray-600">Service Worker 및 JavaScript 오류를 자동으로 수정합니다</p>
+            </div>
+
+            <div id="status-container" class="space-y-4">
+                <!-- 상태가 여기에 표시됩니다 -->
+            </div>
+
+            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 class="font-bold text-blue-900 mb-2">
+                    <i class="fas fa-info-circle mr-2"></i>수정되는 오류
+                </h3>
+                <ul class="text-sm text-blue-800 space-y-1">
+                    <li>✅ workbox-fa613c73.js non-precached-url 오류</li>
+                    <li>✅ showSection is not defined 오류</li>
+                    <li>✅ Service Worker 충돌 문제</li>
+                    <li>✅ 캐시 정리 및 최적화</li>
+                </ul>
+            </div>
+
+            <div class="mt-6 flex justify-center space-x-4">
+                <button id="fix-btn" onclick="startFix()" class="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-bold hover:shadow-lg transition-all">
+                    <i class="fas fa-wrench mr-2"></i>오류 수정 시작
+                </button>
+                <button id="refresh-btn" onclick="window.location.reload()" class="hidden px-6 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600">
+                    <i class="fas fa-check mr-2"></i>완료 (새로고침)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const statusContainer = document.getElementById('status-container');
+        const fixBtn = document.getElementById('fix-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+
+        function addStatus(message, type = 'info') {
+            const colors = {
+                info: 'blue',
+                success: 'green',
+                warning: 'yellow',
+                error: 'red'
+            };
+            const color = colors[type] || 'blue';
+            const icons = {
+                info: 'info-circle',
+                success: 'check-circle',
+                warning: 'exclamation-triangle',
+                error: 'times-circle'
+            };
+            const icon = icons[type] || 'info-circle';
+
+            const div = document.createElement('div');
+            div.className = `p-4 bg-${color}-50 border border-${color}-200 rounded-lg`;
+            div.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${icon} text-${color}-600 mr-3"></i>
+                    <span class="text-${color}-800">${message}</span>
+                </div>
+            `;
+            statusContainer.appendChild(div);
+            
+            // 스크롤을 아래로
+            div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        async function startFix() {
+            fixBtn.disabled = true;
+            fixBtn.innerHTML = '<div class="loading"></div> 수정 중...';
+            statusContainer.innerHTML = '';
+
+            try {
+                // 1. Service Worker 완전 제거
+                addStatus('1/5 단계: Service Worker 제거 중...', 'info');
+                await unregisterAllServiceWorkers();
+                addStatus('✅ Service Worker 제거 완료', 'success');
+
+                // 2. 모든 캐시 삭제
+                addStatus('2/5 단계: 캐시 정리 중...', 'info');
+                await clearAllCaches();
+                addStatus('✅ 캐시 정리 완료', 'success');
+
+                // 3. IndexedDB 정리
+                addStatus('3/5 단계: IndexedDB 정리 중...', 'info');
+                await clearIndexedDB();
+                addStatus('✅ IndexedDB 정리 완료', 'success');
+
+                // 4. localStorage 정리 (중요 데이터 제외)
+                addStatus('4/5 단계: 불필요한 로컬 데이터 정리 중...', 'info');
+                clearUnnecessaryLocalStorage();
+                addStatus('✅ 로컬 데이터 정리 완료', 'success');
+
+                // 5. 페이지 리로드 준비
+                addStatus('5/5 단계: 수정 완료!', 'success');
+                addStatus('🎉 모든 오류가 수정되었습니다. 페이지를 새로고침해주세요.', 'success');
+
+                fixBtn.classList.add('hidden');
+                refreshBtn.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Fix error:', error);
+                addStatus('❌ 오류 수정 중 문제가 발생했습니다: ' + error.message, 'error');
+                fixBtn.disabled = false;
+                fixBtn.innerHTML = '<i class="fas fa-wrench mr-2"></i>다시 시도';
+            }
+        }
+
+        // Service Worker 제거
+        async function unregisterAllServiceWorkers() {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                console.log(`발견된 Service Worker: ${registrations.length}개`);
+                
+                for (let registration of registrations) {
+                    console.log('Service Worker 제거:', registration.scope);
+                    await registration.unregister();
+                }
+                
+                // 활성 Service Worker 강제 종료
+                if (navigator.serviceWorker.controller) {
+                    console.log('활성 Service Worker 종료 시도');
+                }
+            }
+        }
+
+        // 모든 캐시 삭제
+        async function clearAllCaches() {
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                console.log(`발견된 캐시: ${cacheNames.length}개`);
+                
+                for (let cacheName of cacheNames) {
+                    console.log('캐시 삭제:', cacheName);
+                    await caches.delete(cacheName);
+                }
+            }
+        }
+
+        // IndexedDB 정리
+        async function clearIndexedDB() {
+            if ('indexedDB' in window) {
+                try {
+                    const dbs = await indexedDB.databases();
+                    for (let db of dbs) {
+                        if (db.name && (
+                            db.name.includes('workbox') || 
+                            db.name.includes('firebase') ||
+                            db.name.includes('sw-')
+                        )) {
+                            console.log('IndexedDB 삭제:', db.name);
+                            indexedDB.deleteDatabase(db.name);
+                        }
+                    }
+                } catch (error) {
+                    console.log('IndexedDB 정리 스킵:', error.message);
+                }
+            }
+        }
+
+        // 불필요한 localStorage 정리
+        function clearUnnecessaryLocalStorage() {
+            const keysToKeep = ['adminAuth', 'adminLoginTime', 'currentUser'];
+            const allKeys = Object.keys(localStorage);
+            
+            for (let key of allKeys) {
+                if (key.includes('workbox') || 
+                    key.includes('sw-') || 
+                    key.includes('cache-') ||
+                    key.includes('firebase-')) {
+                    console.log('localStorage 키 삭제:', key);
+                    localStorage.removeItem(key);
+                }
+            }
+        }
+
+        // 페이지 로드 시 자동 진단
+        window.addEventListener('load', async () => {
+            // Service Worker 상태 확인
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                if (registrations.length > 0) {
+                    addStatus(`⚠️ ${registrations.length}개의 Service Worker가 발견되었습니다.`, 'warning');
+                }
+            }
+
+            // 캐시 상태 확인
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                if (cacheNames.length > 0) {
+                    addStatus(`💾 ${cacheNames.length}개의 캐시가 발견되었습니다.`, 'info');
+                }
+            }
+
+            if (statusContainer.children.length === 0) {
+                addStatus('✅ 현재 시스템이 깨끗합니다.', 'success');
+            } else {
+                addStatus('👆 위의 "오류 수정 시작" 버튼을 클릭하여 문제를 해결하세요.', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

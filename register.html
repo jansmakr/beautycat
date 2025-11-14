@@ -466,6 +466,48 @@
         // 초기 상태 설정
         document.addEventListener('DOMContentLoaded', updateUserTypeSelection);
         
+        // 사용자 데이터를 데이터베이스에 저장
+        async function saveUserToDatabase(formData) {
+            try {
+                const userData = {
+                    email: formData.email,
+                    name: formData.name,
+                    phone: formData.phone,
+                    user_type: formData.userType, // customer 또는 shop
+                    state: formData.state,
+                    district: formData.district,
+                    detail_address: formData.detailAddress,
+                    status: 'active',
+                    is_verified: false,
+                    // 제휴 카페 정보 (업체인 경우)
+                    cafe_platform: formData.cafeInfo ? formData.cafeInfo.platform : null,
+                    cafe_id: formData.cafeInfo ? formData.cafeInfo.id : null
+                };
+                
+                const response = await fetch('tables/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('사용자 정보 저장 실패');
+                }
+                
+                const result = await response.json();
+                console.log('사용자 정보 저장 성공:', result);
+                
+                return result;
+            } catch (error) {
+                console.error('Database save error:', error);
+                // 에러가 발생해도 일단 로컬 스토리지에 저장
+                localStorage.setItem('tempUser_' + formData.email, JSON.stringify(formData));
+                throw error;
+            }
+        }
+        
         // 폼 제출
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -514,17 +556,23 @@
             
             console.log('회원가입 데이터:', formData);
             
-            // 회원가입 처리
-            let message = '회원가입이 완료되었습니다!\n\n견적 신청 시 ' + state + ' ' + district + ' 지역의 업체에 견적이 전달됩니다.';
-            
-            // 제휴 카페 정보가 있는 경우 추가 메시지
-            if (formData.cafeInfo) {
-                const platformName = formData.cafeInfo.platform === 'naver' ? '네이버' : '다음';
-                message += '\n\n🎉 제휴 카페 회원 혜택이 적용되었습니다! (' + platformName + ' 카페)';
-            }
-            
-            alert(message);
-            window.location.href = 'login.html';
+            // 회원가입 데이터를 users 테이블에 저장
+            saveUserToDatabase(formData).then(() => {
+                // 회원가입 처리
+                let message = '회원가입이 완료되었습니다!\n\n견적 신청 시 ' + state + ' ' + district + ' 지역의 업체에 견적이 전달됩니다.';
+                
+                // 제휴 카페 정보가 있는 경우 추가 메시지
+                if (formData.cafeInfo) {
+                    const platformName = formData.cafeInfo.platform === 'naver' ? '네이버' : '다음';
+                    message += '\n\n🎉 제휴 카페 회원 혜택이 적용되었습니다! (' + platformName + ' 카페)';
+                }
+                
+                alert(message);
+                window.location.href = 'login.html';
+            }).catch(error => {
+                console.error('회원가입 오류:', error);
+                alert('회원가입 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+            });
         });
     </script>
 </body>
