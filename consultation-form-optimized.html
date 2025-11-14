@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상담 신청 - BeautyCat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(180deg, #FFF5F7 0%, #FFF 100%);
+        }
+        
+        /* 섹션 카드 - 각 섹션별 색상 */
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            border-left: 4px solid;
+        }
+        
+        .section-card.pink { border-color: #FF6B9D; }
+        .section-card.blue { border-color: #60A5FA; }
+        .section-card.purple { border-color: #A78BFA; }
+        .section-card.green { border-color: #34D399; }
+        .section-card.orange { border-color: #FB923C; }
+        
+        /* 질문 텍스트 - 진하고 크게 */
+        .question {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .question-icon {
+            font-size: 20px;
+        }
+        
+        /* 입력 필드 */
+        .input-field {
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 14px 16px;
+            width: 100%;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #FF6B9D;
+            box-shadow: 0 0 0 3px rgba(255,107,157,0.1);
+        }
+        
+        /* 체크박스 그룹 */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        @media (max-width: 640px) {
+            .checkbox-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .checkbox-option {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .checkbox-option:hover {
+            background: #FFF0F5;
+            border-color: #FECDD3;
+        }
+        
+        .checkbox-option.selected {
+            background: linear-gradient(135deg, #FFE8F0, #FFF5F7);
+            border-color: #FF6B9D;
+            color: #FF6B9D;
+        }
+        
+        .checkbox-option input {
+            display: none;
+        }
+        
+        /* 제출 버튼 */
+        .submit-btn {
+            background: linear-gradient(135deg, #FF6B9D, #FFA8C5);
+            color: white;
+            border-radius: 16px;
+            padding: 18px;
+            font-weight: 700;
+            font-size: 18px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255,107,157,0.3);
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,107,157,0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* 파일 업로드 */
+        .upload-area {
+            border: 2px dashed #D1D5DB;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #F9FAFB;
+        }
+        
+        .upload-area:hover {
+            border-color: #FF6B9D;
+            background: #FFF5F7;
+        }
+        
+        /* 헤더 */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        /* 도움말 텍스트 */
+        .helper-text {
+            font-size: 13px;
+            color: #6B7280;
+            margin-top: 6px;
+        }
+        
+        /* 아이콘 강조 */
+        .icon-pink { color: #FF6B9D; }
+        .icon-blue { color: #60A5FA; }
+        .icon-purple { color: #A78BFA; }
+        .icon-green { color: #34D399; }
+        .icon-orange { color: #FB923C; }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <button onclick="goHome()" class="flex items-center gap-2 text-gray-700 hover:text-pink-500 transition-colors">
+                <i class="fas fa-arrow-left text-lg"></i>
+                <span class="font-semibold">뒤로</span>
+            </button>
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🐱</span>
+                <span class="text-lg font-bold" style="background:linear-gradient(135deg,#FF6B9D,#FFA8C5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">BeautyCat</span>
+            </div>
+            <div style="width:60px"></div>
+        </div>
+    </header>
+
+    <!-- 메인 -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        
+        <!-- 타이틀 -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4" style="background:linear-gradient(135deg,#FFE8F0,#FFF5F8);">
+                <i class="fas fa-clipboard-list text-3xl icon-pink"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">무료 상담 신청</h1>
+            <p class="text-gray-600">24시간 내 맞춤 견적을 받아보세요</p>
+        </div>
+
+        <!-- 폼 -->
+        <form id="consultForm" class="space-y-5">
+            
+            <!-- 1. 기본 정보 -->
+            <div class="section-card pink">
+                <div class="question">
+                    <i class="fas fa-user question-icon icon-pink"></i>
+                    <span>기본 정보</span>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <input type="text" id="name" class="input-field" placeholder="이름" required>
+                    </div>
+                    <div>
+                        <input type="tel" id="phone" class="input-field" placeholder="전화번호 (010-1234-5678)" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 지역 -->
+            <div class="section-card blue">
+                <div class="question">
+                    <i class="fas fa-map-marker-alt question-icon icon-blue"></i>
+                    <span>어느 지역이신가요?</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="state" class="input-field" required>
+                        <option value="">시/도</option>
+                        <option value="서울특별시">서울특별시</option>
+                        <option value="부산광역시">부산광역시</option>
+                        <option value="인천광역시">인천광역시</option>
+                        <option value="대구광역시">대구광역시</option>
+                        <option value="경기도">경기도</option>
+                    </select>
+                    <select id="district" class="input-field" required disabled>
+                        <option value="">구/군</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 3. 관심 관리 -->
+            <div class="section-card purple">
+                <div class="question">
+                    <i class="fas fa-spa question-icon icon-purple"></i>
+                    <span>어떤 관리를 받고 싶으세요?</span>
+                </div>
+                <p class="helper-text mb-4">여러 개 선택 가능해요</p>
+                
+                <div class="checkbox-grid">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="트러블관리">
+                        <span>트러블관리</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="베이직관리">
+                        <span>베이직관리</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="여드름">
+                        <span>여드름</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="미백/톤업">
+                        <span>미백/톤업</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="주름개선">
+                        <span>주름개선</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="모공관리">
+                        <span>모공관리</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="리프팅">
+                        <span>리프팅</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="아쿠아필">
+                        <span>아쿠아필</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="treatment" value="스킨케어">
+                        <span>스킨케어</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 4. 예산 -->
+            <div class="section-card green">
+                <div class="question">
+                    <i class="fas fa-won-sign question-icon icon-green"></i>
+                    <span>예산은 어느 정도인가요?</span>
+                </div>
+                
+                <select id="budget" class="input-field" required>
+                    <option value="">선택하세요</option>
+                    <option value="5만원 이하">5만원 이하</option>
+                    <option value="5-10만원">5-10만원</option>
+                    <option value="10-20만원">10-20만원</option>
+                    <option value="20-30만원">20-30만원</option>
+                    <option value="30만원 이상">30만원 이상</option>
+                </select>
+            </div>
+
+            <!-- 5. 사진 업로드 -->
+            <div class="section-card orange">
+                <div class="question">
+                    <i class="fas fa-camera question-icon icon-orange"></i>
+                    <span>트러블 부위 사진 (선택)</span>
+                </div>
+                <p class="helper-text mb-4">트러블 부위만 촬영해주세요 (전체 얼굴 X)</p>
+                
+                <div class="upload-area" onclick="document.getElementById('photo').click()">
+                    <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+                    <p class="text-gray-600 font-semibold">클릭하여 사진 선택</p>
+                    <p class="text-sm text-gray-500 mt-1">또는 드래그 앤 드롭</p>
+                </div>
+                <input type="file" id="photo" accept="image/*" multiple style="display:none" onchange="handleFiles(event)">
+                <div id="fileList" class="mt-3 space-y-2"></div>
+            </div>
+
+            <!-- 6. 추가 요청 -->
+            <div class="section-card pink">
+                <div class="question">
+                    <i class="fas fa-comment-dots question-icon icon-pink"></i>
+                    <span>추가 요청사항 (선택)</span>
+                </div>
+                
+                <textarea id="notes" class="input-field" rows="4" placeholder="특별히 원하는 사항을 자유롭게 적어주세요"></textarea>
+            </div>
+
+            <!-- 제출 버튼 -->
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane mr-2"></i>
+                무료 견적 받기
+            </button>
+
+            <!-- 혜택 안내 -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
+                <p class="text-blue-900 font-bold">
+                    <i class="fas fa-gift mr-1"></i>
+                    회원가입 시 <span class="text-xl">5,000원</span> 할인 쿠폰 즉시 지급!
+                </p>
+            </div>
+        </form>
+
+    </main>
+
+    <script>
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // 체크박스 토글
+        document.querySelectorAll('.checkbox-option').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if(e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input');
+                    checkbox.checked = !checkbox.checked;
+                }
+                this.classList.toggle('selected', this.querySelector('input').checked);
+            });
+        });
+
+        // 파일 처리
+        function handleFiles(e) {
+            const files = e.target.files;
+            const list = document.getElementById('fileList');
+            list.innerHTML = '';
+            
+            Array.from(files).forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-orange-50 border border-orange-200 p-3 rounded-lg';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-image text-orange-500"></i>
+                        <span class="text-sm font-medium text-gray-700">${file.name}</span>
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-gray-400 hover:text-red-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // 드래그 앤 드롭
+        const uploadArea = document.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#FF6B9D';
+            uploadArea.style.background = '#FFF5F7';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#D1D5DB';
+            uploadArea.style.background = '#F9FAFB';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#D1D5DB';
+            uploadArea.style.background = '#F9FAFB';
+            
+            document.getElementById('photo').files = e.dataTransfer.files;
+            handleFiles({ target: { files: e.dataTransfer.files } });
+        });
+
+        // 지역 데이터
+        const regions = {
+            "서울특별시": ["강남구","강동구","강북구","강서구","관악구","광진구","구로구","금천구","노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구","성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구"],
+            "부산광역시": ["강서구","금정구","남구","동구","동래구","부산진구","북구","사상구","사하구","서구","수영구","연제구","영도구","중구","해운대구","기장군"],
+            "인천광역시": ["계양구","남동구","동구","미추홀구","부평구","서구","연수구","중구","강화군","옹진군"],
+            "대구광역시": ["남구","달서구","동구","북구","서구","수성구","중구","달성군"],
+            "경기도": ["수원시","성남시","고양시","용인시","부천시","안산시","안양시","남양주시","화성시","평택시","의정부시","시흥시","파주시","광명시","김포시","군포시","광주시","이천시","양주시","오산시","구리시","안성시","포천시","의왕시","하남시","여주시","양평군","동두천시","과천시","가평군","연천군"]
+        };
+
+        document.getElementById('state').addEventListener('change', function() {
+            const district = document.getElementById('district');
+            district.innerHTML = '<option value="">구/군</option>';
+            
+            if(this.value && regions[this.value]) {
+                district.disabled = false;
+                regions[this.value].forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d;
+                    opt.textContent = d;
+                    district.appendChild(opt);
+                });
+            } else {
+                district.disabled = true;
+            }
+        });
+
+        // 폼 제출
+        document.getElementById('consultForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                state: document.getElementById('state').value,
+                district: document.getElementById('district').value,
+                treatments: Array.from(document.querySelectorAll('input[name="treatment"]:checked')).map(cb => cb.value),
+                budget: document.getElementById('budget').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            console.log('상담 신청:', data);
+            
+            // TODO: API 연동
+            // await fetch('tables/consultations', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify(data)
+            // });
+            
+            alert('✅ 상담 신청이 완료되었습니다!\n24시간 내 맞춤 견적을 받아보실 수 있어요.');
+            
+            this.reset();
+            document.querySelectorAll('.checkbox-option').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('district').disabled = true;
+        });
+    </script>
+</body>
+</html>
