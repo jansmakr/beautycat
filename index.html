@@ -2974,22 +2974,7 @@
 
         // ========== 상담신청 폼 새 디자인 JavaScript (v2.3.5) ==========
         
-        // 페이지 로드 후 실행
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // 체크박스 토글
-            document.querySelectorAll('.checkbox-option').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if(e.target.tagName !== 'INPUT') {
-                        const checkbox = this.querySelector('input');
-                        checkbox.checked = !checkbox.checked;
-                    }
-                    this.classList.toggle('selected', this.querySelector('input').checked);
-                });
-            });
-        });
-
-        // 파일 업로드 처리
+        // 파일 업로드 처리 (전역 함수로 유지)
         function handleSkinPhotoUpload(input) {
             const files = input.files;
             const preview = document.getElementById('photo-preview');
@@ -3012,6 +2997,20 @@
             });
         }
 
+
+        // 페이지 로드 후 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 체크박스 토글
+            document.querySelectorAll('.checkbox-option').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if(e.target.tagName !== 'INPUT') {
+                        const checkbox = this.querySelector('input');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    this.classList.toggle('selected', this.querySelector('input').checked);
+                });
+            });
 
             // 드래그 앤 드롭
             const uploadAreaNew = document.querySelector('.upload-area-new');
