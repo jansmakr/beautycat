@@ -237,6 +237,9 @@
     <link rel="stylesheet" href="css/mobile-optimized.css?v=2.2.5" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="css/mobile-optimized.css?v=2.2.5"></noscript>
     
+    <!-- 🚀 고속 전환 최적화 CSS -->
+    <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
+    
     <!-- 🚨 Workbox Service Worker 즉시 제거 (최우선 실행) -->
     <script>
         (async function() {
@@ -1424,10 +1427,29 @@
                 </div>
                 
                 <!-- 사용자 메뉴 -->
-                <div id="userMenu" class="flex items-center">
+                <div id="userMenu" class="flex items-center gap-2">
+                    <!-- 로그인 전 -->
                     <button id="loginBtn" class="btn-secondary touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important; padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem;">
                         로그인
                     </button>
+                    
+                    <!-- 로그인 후 (숨김 상태로 시작) -->
+                    <div id="loggedInMenu" class="hidden flex items-center gap-2">
+                        <!-- 홈 버튼 -->
+                        <button onclick="location.href='index.html'" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-all" title="홈으로">
+                            <i class="fas fa-home mr-1"></i>홈
+                        </button>
+                        
+                        <!-- 대시보드 버튼 -->
+                        <button id="dashboardBtn" onclick="goToDashboard()" class="px-3 py-2 text-sm font-medium text-white bg-pink-500 hover:bg-pink-600 rounded-lg transition-all" title="대시보드">
+                            <i class="fas fa-tachometer-alt mr-1"></i>대시보드
+                        </button>
+                        
+                        <!-- 로그아웃 버튼 -->
+                        <button onclick="handleLogout()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="로그아웃">
+                            <i class="fas fa-sign-out-alt mr-1"></i>로그아웃
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2627,6 +2649,76 @@
         // 터치 이벤트 최적화
         document.addEventListener('touchstart', function() {}, { passive: true });
         document.addEventListener('touchmove', function() {}, { passive: true });
+        
+        // 🔥 로그인 상태 확인 및 메뉴 표시
+        function checkLoginStatus() {
+            const token = localStorage.getItem('session_token') || localStorage.getItem('beautycat_token');
+            const userDataStr = localStorage.getItem('user_data') || localStorage.getItem('beautycat_user');
+            const userType = localStorage.getItem('user_type');
+            
+            const loginBtn = document.getElementById('loginBtn');
+            const loggedInMenu = document.getElementById('loggedInMenu');
+            
+            if (token && userDataStr && userType) {
+                // 로그인 상태
+                loginBtn.classList.add('hidden');
+                loggedInMenu.classList.remove('hidden');
+                loggedInMenu.classList.add('flex');
+                
+                console.log('✅ 로그인 상태:', userType);
+            } else {
+                // 로그아웃 상태
+                loginBtn.classList.remove('hidden');
+                loggedInMenu.classList.add('hidden');
+                loggedInMenu.classList.remove('flex');
+            }
+        }
+        
+        // 대시보드로 이동
+        function goToDashboard() {
+            const userType = localStorage.getItem('user_type');
+            
+            if (!userType) {
+                alert('로그인이 필요합니다.');
+                location.href = 'login.html';
+                return;
+            }
+            
+            // 사용자 타입에 따라 대시보드로 이동
+            switch(userType) {
+                case 'customer':
+                    location.href = 'customer-dashboard.html';
+                    break;
+                case 'shop':
+                    location.href = 'shop-dashboard.html';
+                    break;
+                case 'admin':
+                    location.href = 'admin-dashboard.html';
+                    break;
+                default:
+                    alert('알 수 없는 사용자 유형입니다.');
+                    location.href = 'login.html';
+            }
+        }
+        
+        // 로그아웃 처리
+        function handleLogout() {
+            if (confirm('로그아웃하시겠습니까?')) {
+                // 로컬 스토리지 클리어
+                localStorage.removeItem('session_token');
+                localStorage.removeItem('beautycat_token');
+                localStorage.removeItem('user_data');
+                localStorage.removeItem('beautycat_user');
+                localStorage.removeItem('user_type');
+                
+                // 페이지 새로고침
+                alert('로그아웃되었습니다.');
+                location.reload();
+            }
+        }
+        
+        // 페이지 로드 시 로그인 상태 확인
+        checkLoginStatus();
     </script>
 
     <!-- 공유 모달 -->
