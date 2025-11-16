@@ -7,7 +7,7 @@
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js"></script>
+    <script src="api-global-override.js?v=2.4.2"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -194,6 +194,7 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">사용자</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">타입</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">비밀번호</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">가입일</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
@@ -591,18 +592,91 @@
 
         <!-- Test section for demo -->
         <div id="test" class="section hidden">
-            <div class="unni-card p-6">
-                <h2 class="text-xl font-semibold text-gray-900 mb-6">기능 테스트</h2>
-                <div class="space-y-4">
-                    <button onclick="viewUser('demo_customer_1')" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg mr-2">
-                        고객 상세보기 테스트
-                    </button>
-                    <button onclick="viewUser('demo_shop_1')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg mr-2">
-                        상점 상세보기 테스트
-                    </button>
-                    <button onclick="console.log('Users loaded:', allUsers)" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
-                        사용자 데이터 확인
-                    </button>
+            <div class="space-y-6">
+                <!-- 데이터 검증 테스트 -->
+                <div class="unni-card p-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">데이터 검증 테스트</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="console.log('전체 사용자:', allUsers)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-users mr-2"></i>사용자 데이터 확인
+                        </button>
+                        <button onclick="console.log('전체 샵:', allShops)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-store mr-2"></i>샵 데이터 확인
+                        </button>
+                        <button onclick="console.log('전체 상담:', allConsultations)" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-comments mr-2"></i>상담 데이터 확인
+                        </button>
+                        <button onclick="console.log('전체 공지사항:', allAnnouncements)" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-bullhorn mr-2"></i>공지사항 데이터 확인
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- API 테스트 -->
+                <div class="unni-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">API 연결 테스트</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">users API</span>
+                            <button onclick="testAPI('tables/users')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
+                                테스트
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">shops API</span>
+                            <button onclick="testAPI('tables/skincare_shops')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
+                                테스트
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">consultations API</span>
+                            <button onclick="testAPI('tables/consultations')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
+                                테스트
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">announcements API</span>
+                            <button onclick="testAPI('tables/announcements')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
+                                테스트
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 모달 테스트 -->
+                <div class="unni-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">UI 컴포넌트 테스트</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="showAnnouncementModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>공지사항 작성 모달
+                        </button>
+                        <button onclick="testNotification()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-bell mr-2"></i>알림 테스트
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 시스템 정보 -->
+                <div class="unni-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">시스템 정보</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">관리자 ID:</span>
+                            <span class="font-mono" id="test-admin-id">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">세션 시작:</span>
+                            <span class="font-mono" id="test-session-time">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">API 베이스 URL:</span>
+                            <span class="font-mono text-xs" id="test-api-url">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">브라우저:</span>
+                            <span class="font-mono text-xs" id="test-browser">-</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1424,6 +1498,195 @@ if (originalCloseShopEditModal) {
         document.getElementById('youtube-thumbnail-preview').classList.add('hidden');
     };
 }
+</script>
+
+<!-- 상담 상세보기 모달 -->
+<div id="consultation-view-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-start mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">상담 상세 정보</h3>
+                <button onclick="closeConsultationModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 상태 배지 -->
+            <div class="mb-6">
+                <span id="view-consultation-status-badge" class="px-3 py-1 text-sm font-semibold rounded-full">대기중</span>
+            </div>
+
+            <!-- 고객 정보 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">고객명</label>
+                    <p id="view-consultation-name" class="text-gray-900 font-medium">-</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">전화번호</label>
+                    <p id="view-consultation-phone" class="text-gray-900">-</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">지역</label>
+                    <p id="view-consultation-region" class="text-gray-900">-</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">예산</label>
+                    <p id="view-consultation-budget" class="text-gray-900">-</p>
+                </div>
+            </div>
+
+            <!-- 관리 정보 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">관심 관리</label>
+                <p id="view-consultation-treatments" class="text-gray-900 bg-gray-50 p-3 rounded-lg">-</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">피부 상태</label>
+                <p id="view-consultation-skin-condition" class="text-gray-900 bg-gray-50 p-3 rounded-lg">-</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">추가 요청사항</label>
+                <p id="view-consultation-notes" class="text-gray-900 bg-gray-50 p-3 rounded-lg whitespace-pre-wrap">-</p>
+            </div>
+
+            <!-- 신청일시 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">신청일시</label>
+                    <p id="view-consultation-created-at" class="text-gray-600 text-sm">-</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">최종 수정</label>
+                    <p id="view-consultation-updated-at" class="text-gray-600 text-sm">-</p>
+                </div>
+            </div>
+
+            <!-- 상태 변경 -->
+            <div class="border-t pt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">상태 변경</label>
+                <div class="flex space-x-3">
+                    <select id="consultation-status-change" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <option value="pending">대기중</option>
+                        <option value="in_progress">진행중</option>
+                        <option value="completed">완료</option>
+                        <option value="cancelled">취소</option>
+                    </select>
+                    <button onclick="updateConsultationStatus()" class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                        변경
+                    </button>
+                </div>
+            </div>
+
+            <!-- 매칭된 업체 (있는 경우) -->
+            <div id="matched-shops-section" class="hidden border-t mt-6 pt-6">
+                <label class="block text-sm font-medium text-gray-700 mb-3">매칭된 업체</label>
+                <div id="matched-shops-list" class="space-y-2">
+                    <!-- Matched shops will be loaded here -->
+                </div>
+            </div>
+
+            <!-- 닫기 버튼 -->
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeConsultationModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 상담 모달 열기/닫기 함수
+function closeConsultationModal() {
+    document.getElementById('consultation-view-modal').classList.add('hidden');
+}
+
+// ESC 키로 모달 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeConsultationModal();
+    }
+});
+
+// 모달 외부 클릭시 닫기
+document.getElementById('consultation-view-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeConsultationModal();
+    }
+});
+</script>
+
+<!-- 공지사항 관리 시스템 -->
+<script src="js/announcements.js"></script>
+
+<!-- 🔥 긴급 핫픽스: PATCH → GET + PUT 변환 -->
+<script>
+console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환');
+
+// 원본 fetch 저장
+const originalFetch = window.fetch;
+
+// fetch 오버라이드
+window.fetch = async function(url, options = {}) {
+    // PATCH 요청을 감지
+    if (options.method === 'PATCH' || options.method === 'patch') {
+        console.log(`🔄 PATCH 감지: ${url} → GET + PUT로 변환`);
+        
+        try {
+            // 1. 먼저 기존 데이터 가져오기 (GET)
+            const getResponse = await originalFetch(url, {
+                method: 'GET',
+                headers: options.headers
+            });
+            
+            if (!getResponse.ok) {
+                console.error('GET 실패:', url);
+                return getResponse;
+            }
+            
+            const existingData = await getResponse.json();
+            
+            // 2. PATCH 데이터 파싱
+            let patchData = {};
+            if (options.body) {
+                try {
+                    patchData = JSON.parse(options.body);
+                } catch (e) {
+                    patchData = options.body;
+                }
+            }
+            
+            // 3. 기존 데이터 + PATCH 데이터 병합
+            const mergedData = {
+                ...existingData,
+                ...patchData,
+                updated_at: Date.now()
+            };
+            
+            console.log('📦 병합된 데이터:', mergedData);
+            
+            // 4. PUT 요청으로 전송
+            return await originalFetch(url, {
+                ...options,
+                method: 'PUT',
+                body: JSON.stringify(mergedData)
+            });
+            
+        } catch (error) {
+            console.error('PATCH → PUT 변환 오류:', error);
+            // 실패 시 원본 요청 그대로 전송
+            return await originalFetch(url, options);
+        }
+    }
+    
+    // PATCH가 아니면 그대로 전송
+    return await originalFetch(url, options);
+};
+
+console.log('✅ PATCH 자동 변환 활성화 완료');
 </script>
 
 </body>

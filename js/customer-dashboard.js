@@ -119,16 +119,35 @@ async function loadConsultations() {
         const data = await response.json();
         
         // 현재 사용자의 상담만 필터링
-        currentConsultations = data.data.filter(consultation => 
-            consultation.customer_email === currentUser.email ||
-            consultation.customer_name === currentUser.name
-        );
+        currentConsultations = (data.data || []).filter(consultation => {
+            // customer_id가 있는 경우 (로그인 사용자)
+            if (consultation.customer_id && currentUser.id) {
+                return consultation.customer_id === currentUser.id;
+            }
+            // customer_email이 있는 경우
+            if (consultation.customer_email && currentUser.email) {
+                return consultation.customer_email === currentUser.email;
+            }
+            // customer_phone으로 매칭 (비회원의 경우)
+            if (consultation.customer_phone && currentUser.phone) {
+                return consultation.customer_phone === currentUser.phone;
+            }
+            // customer_name으로 매칭 (마지막 수단)
+            if (consultation.customer_name && currentUser.name) {
+                return consultation.customer_name === currentUser.name;
+            }
+            return false;
+        });
         
-        console.log('로드된 상담 내역:', currentConsultations.length);
+        console.log('로드된 상담 내역:', currentConsultations.length, currentConsultations);
+        
+        // 상담 목록 표시
+        displayConsultationsList();
         
     } catch (error) {
         console.error('상담 내역 로드 오류:', error);
         currentConsultations = [];
+        displayConsultationsList();
     }
 }
 
@@ -140,11 +159,15 @@ async function loadQuotes() {
         
         // 현재 사용자의 상담과 연결된 견적서만 필터링
         const consultationIds = currentConsultations.map(c => c.id);
+        console.log('🔍 consultationIds:', consultationIds);
+        console.log('🔍 전체 quotes 데이터:', data.data);
+        
         currentQuotes = data.data.filter(quote => 
             consultationIds.includes(quote.consultation_id)
         );
         
-        console.log('로드된 견적서:', currentQuotes.length);
+        console.log('✅ 로드된 견적서:', currentQuotes.length);
+        console.log('✅ 견적서 상세:', JSON.stringify(currentQuotes, null, 2));
         
     } catch (error) {
         console.error('견적서 로드 오류:', error);
@@ -286,44 +309,63 @@ function displayConsultationsList() {
         return;
     }
     
-    container.innerHTML = currentConsultations.map(consultation => `
-        <div class="p-6">
-            <div class="flex items-start justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center mb-2">
-                        <h3 class="text-lg font-semibold text-gray-900 mr-3">${consultation.region}</h3>
-                        <span class="px-3 py-1 text-sm rounded-full ${getStatusBadgeClass(consultation.status)}">
-                            ${getStatusText(consultation.status)}
-                        </span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
-                        <div><strong>관심 프로그램:</strong> ${consultation.treatment_type}</div>
-                        <div><strong>예산:</strong> ${consultation.budget_range || '미설정'}</div>
-                        <div><strong>선호 일정:</strong> ${consultation.preferred_schedule || '미설정'}</div>
-                        <div><strong>신청일:</strong> ${formatDate(consultation.created_at)}</div>
-                    </div>
-                    ${consultation.consultation_text ? `
-                        <div class="bg-gray-50 p-3 rounded-lg text-sm text-gray-700 mb-4">
-                            ${consultation.consultation_text}
+    container.innerHTML = currentConsultations.map(consultation => {
+        // message 필드에서 추가 정보 파싱
+        let additionalInfo = {};
+        try {
+            if (consultation.message) {
+                additionalInfo = JSON.parse(consultation.message);
+            }
+        } catch (e) {
+            console.log('메시지 파싱 실패:', consultation.message);
+            additionalInfo = { notes: consultation.message };
+        }
+        
+        return `
+            <div class="p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center mb-2">
+                            <h3 class="text-lg font-semibold text-gray-900 mr-3">${consultation.region || (consultation.state && consultation.district ? `${consultation.state} ${consultation.district}` : '지역 미설정')}</h3>
+                            <span class="px-3 py-1 text-sm rounded-full ${getStatusBadgeClass(consultation.status)}">
+                                ${getStatusText(consultation.status)}
+                            </span>
                         </div>
-                    ` : ''}
-                </div>
-                <div class="flex space-x-2">
-                    <button onclick="openChat('${consultation.id}')" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
-                        <i class="fas fa-comments mr-1"></i>채팅
-                    </button>
-                    <button onclick="viewConsultationQuotes('${consultation.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
-                        <i class="fas fa-file-invoice-dollar mr-1"></i>견적서
-                    </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
+                            <div><strong>관심 관리:</strong> ${consultation.treatments || consultation.treatment_type || consultation.treatment_types || '미설정'}</div>
+                            <div><strong>예산:</strong> ${consultation.budget || consultation.budget_range || additionalInfo.budget || '미설정'}</div>
+                            <div><strong>피부 상태:</strong> ${consultation.skin_condition || consultation.skin_concerns || additionalInfo.skin_condition || '미설정'}</div>
+                            <div><strong>신청일:</strong> ${formatDate(consultation.created_at)}</div>
+                        </div>
+                        ${additionalInfo.notes ? `
+                            <div class="bg-gray-50 p-3 rounded-lg text-sm text-gray-700 mb-4">
+                                <strong>추가 요청사항:</strong><br>
+                                ${additionalInfo.notes}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="openChat('${consultation.id}')" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
+                            <i class="fas fa-comments mr-1"></i>채팅
+                        </button>
+                        <button onclick="viewConsultationQuotes('${consultation.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                            <i class="fas fa-file-invoice-dollar mr-1"></i>견적서
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // 견적서 목록 표시
 function displayQuotesList() {
     const container = document.getElementById('quotes-list');
+    
+    // 🔍 디버깅: 견적서 데이터 확인
+    console.log('📋 displayQuotesList 호출됨');
+    console.log('   currentQuotes 개수:', currentQuotes.length);
+    console.log('   currentQuotes 데이터:', JSON.stringify(currentQuotes, null, 2));
     
     if (currentQuotes.length === 0) {
         container.innerHTML = `
@@ -339,7 +381,12 @@ function displayQuotesList() {
         return;
     }
     
-    container.innerHTML = currentQuotes.map(quote => {
+    container.innerHTML = currentQuotes.map((quote, index) => {
+        // 🔍 디버깅: 각 견적서 데이터 확인
+        console.log(`   [${index}] quote.id:`, quote.id);
+        console.log(`   [${index}] quote.consultation_id:`, quote.consultation_id);
+        console.log(`   [${index}] quote 전체:`, JSON.stringify(quote, null, 2));
+        
         const consultation = currentConsultations.find(c => c.id === quote.consultation_id);
         return `
             <div class="p-6">
@@ -352,7 +399,7 @@ function displayQuotesList() {
                             </span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
-                            <div><strong>관련 상담:</strong> ${consultation?.region} - ${consultation?.treatment_type}</div>
+                            <div><strong>관련 상담:</strong> ${consultation?.region || (consultation?.state && consultation?.district ? `${consultation.state} ${consultation.district}` : '지역 미설정')} - ${consultation?.treatments || consultation?.treatment_type || consultation?.treatment_types || '미설정'}</div>
                             <div><strong>가격:</strong> <span class="text-lg font-semibold text-pink-600">${quote.price?.toLocaleString()}원</span></div>
                             <div><strong>소요시간:</strong> ${quote.duration}</div>
                             <div><strong>받은 날짜:</strong> ${formatDate(quote.created_at)}</div>
@@ -367,15 +414,15 @@ function displayQuotesList() {
                         ` : ''}
                     </div>
                     <div class="flex flex-col space-y-2">
-                        <button onclick="showQuoteDetail('${quote.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                        <button onclick="window.showQuoteDetail('${quote.id || ''}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" data-quote-id="${quote.id || ''}">
                             <i class="fas fa-eye mr-1"></i>상세보기
                         </button>
                         ${quote.status === 'sent' ? `
-                            <button onclick="acceptQuote('${quote.id}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+                            <button onclick="window.acceptQuote('${quote.id || ''}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm" data-quote-id="${quote.id || ''}">
                                 <i class="fas fa-check mr-1"></i>수락
                             </button>
                         ` : ''}
-                        <button onclick="openChat('${quote.consultation_id}')" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
+                        <button onclick="window.openChat('${quote.consultation_id || ''}')" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm" data-consultation-id="${quote.consultation_id || ''}">
                             <i class="fas fa-comments mr-1"></i>채팅
                         </button>
                     </div>
@@ -383,6 +430,65 @@ function displayQuotesList() {
             </div>
         `;
     }).join('');
+    
+    // 🔥 이벤트 위임 방식으로 버튼 핸들러 추가 (백업)
+    setupQuoteButtonHandlers();
+}
+
+// 견적서 버튼 이벤트 핸들러 설정 (이벤트 위임)
+function setupQuoteButtonHandlers() {
+    const container = document.getElementById('quotes-list');
+    if (!container) return;
+    
+    // 기존 리스너 제거 (중복 방지)
+    const newContainer = container.cloneNode(true);
+    container.parentNode.replaceChild(newContainer, container);
+    
+    // 새로운 이벤트 리스너 추가
+    newContainer.addEventListener('click', function(e) {
+        const button = e.target.closest('button');
+        if (!button) return;
+        
+        const quoteId = button.getAttribute('data-quote-id');
+        const consultationId = button.getAttribute('data-consultation-id');
+        
+        console.log('🔘 버튼 클릭됨:', {
+            button: button.textContent.trim(),
+            quoteId,
+            consultationId
+        });
+        
+        // 상세보기 버튼
+        if (button.textContent.includes('상세보기')) {
+            console.log('📌 상세보기 버튼 클릭');
+            if (quoteId && quoteId !== 'undefined' && quoteId !== '') {
+                showQuoteDetail(quoteId);
+            } else {
+                console.error('❌ 유효하지 않은 quoteId:', quoteId);
+                showNotification('견적서를 찾을 수 없습니다.', 'error');
+            }
+        }
+        // 수락 버튼
+        else if (button.textContent.includes('수락')) {
+            console.log('📌 수락 버튼 클릭');
+            if (quoteId && quoteId !== 'undefined' && quoteId !== '') {
+                acceptQuote(quoteId);
+            } else {
+                console.error('❌ 유효하지 않은 quoteId:', quoteId);
+                showNotification('견적서를 찾을 수 없습니다.', 'error');
+            }
+        }
+        // 채팅 버튼
+        else if (button.textContent.includes('채팅')) {
+            console.log('📌 채팅 버튼 클릭');
+            if (consultationId && consultationId !== 'undefined' && consultationId !== '') {
+                openChat(consultationId);
+            } else {
+                console.error('❌ 유효하지 않은 consultationId:', consultationId);
+                showNotification('상담을 찾을 수 없습니다.', 'error');
+            }
+        }
+    });
 }
 
 // 이벤트 리스너 설정
@@ -515,8 +621,23 @@ function filterConsultations() {
 
 // 견적서 상세 보기
 function showQuoteDetail(quoteId) {
+    console.log('🔍 showQuoteDetail 호출됨, quoteId:', quoteId);
+    
+    if (!quoteId || quoteId === 'undefined' || quoteId === '') {
+        console.error('❌ 유효하지 않은 quoteId:', quoteId);
+        showNotification('견적서를 찾을 수 없습니다.', 'error');
+        return;
+    }
+    
     const quote = currentQuotes.find(q => q.id === quoteId);
-    if (!quote) return;
+    console.log('   찾은 quote:', quote);
+    
+    if (!quote) {
+        console.error('❌ 견적서를 찾을 수 없음. quoteId:', quoteId);
+        console.error('   currentQuotes:', currentQuotes);
+        showNotification('견적서를 찾을 수 없습니다.', 'error');
+        return;
+    }
     
     const consultation = currentConsultations.find(c => c.id === quote.consultation_id);
     
@@ -545,7 +666,18 @@ function showQuoteDetail(quoteId) {
             </div>
             <div>
                 <h4 class="font-semibold text-gray-900 mb-2">예약 가능일</h4>
-                <p class="text-gray-700">${quote.available_dates?.join(', ') || '협의'}</p>
+                <p class="text-gray-700">${
+    (() => {
+        try {
+            const dates = typeof quote.available_dates === 'string' 
+                ? JSON.parse(quote.available_dates) 
+                : quote.available_dates;
+            return Array.isArray(dates) ? dates.join(', ') : (quote.available_dates || '협의');
+        } catch (e) {
+            return quote.available_dates || '협의';
+        }
+    })()
+}</p>
             </div>
             ${quote.additional_notes ? `
                 <div>
@@ -566,6 +698,14 @@ function closeQuoteDetailModal() {
 
 // 견적서 수락
 async function acceptQuote(quoteId) {
+    console.log('🔍 acceptQuote 호출됨, quoteId:', quoteId);
+    
+    if (!quoteId || quoteId === 'undefined' || quoteId === '') {
+        console.error('❌ 유효하지 않은 quoteId:', quoteId);
+        showNotification('견적서를 찾을 수 없습니다.', 'error');
+        return;
+    }
+    
     try {
         // 견적서 상태 업데이트
         const response = await fetch(`tables/quotes/${quoteId}`, {
@@ -615,9 +755,15 @@ function viewConsultationQuotes(consultationId) {
 
 // 채팅 열기
 function openChat(consultationId) {
-    if (consultationId) {
-        window.open(`chat.html?consultation_id=${consultationId}&user_type=customer`, '_blank');
+    console.log('🔍 openChat 호출됨, consultationId:', consultationId);
+    
+    if (!consultationId || consultationId === 'undefined' || consultationId === '') {
+        console.error('❌ 유효하지 않은 consultationId:', consultationId);
+        showNotification('상담을 찾을 수 없습니다.', 'error');
+        return;
     }
+    
+    window.open(`chat.html?consultation_id=${consultationId}&user_type=customer`, '_blank');
 }
 
 // 유틸리티 함수들

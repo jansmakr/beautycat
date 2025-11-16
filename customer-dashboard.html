@@ -7,7 +7,7 @@
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js"></script>
+    <script src="api-global-override.js?v=2.4.2"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -704,6 +704,74 @@
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
 <script src="js/auth.js"></script>
-    <script src="js/customer-dashboard.js"></script>
+    <script src="js/customer-dashboard.js?v=2.4.1"></script>
+
+<!-- 🔥 긴급 핫픽스: PATCH → GET + PUT 변환 -->
+<script>
+console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환 (고객 대시보드)');
+
+// 원본 fetch 저장
+const originalFetch = window.fetch;
+
+// fetch 오버라이드
+window.fetch = async function(url, options = {}) {
+    // PATCH 요청을 감지
+    if (options.method === 'PATCH' || options.method === 'patch') {
+        console.log(`🔄 PATCH 감지: ${url} → GET + PUT로 변환`);
+        
+        try {
+            // 1. 먼저 기존 데이터 가져오기 (GET)
+            const getResponse = await originalFetch(url, {
+                method: 'GET',
+                headers: options.headers
+            });
+            
+            if (!getResponse.ok) {
+                console.error('GET 실패:', url);
+                return getResponse;
+            }
+            
+            const existingData = await getResponse.json();
+            
+            // 2. PATCH 데이터 파싱
+            let patchData = {};
+            if (options.body) {
+                try {
+                    patchData = JSON.parse(options.body);
+                } catch (e) {
+                    patchData = options.body;
+                }
+            }
+            
+            // 3. 기존 데이터 + PATCH 데이터 병합
+            const mergedData = {
+                ...existingData,
+                ...patchData,
+                updated_at: Date.now()
+            };
+            
+            console.log('📦 병합된 데이터:', mergedData);
+            
+            // 4. PUT 요청으로 전송
+            return await originalFetch(url, {
+                ...options,
+                method: 'PUT',
+                body: JSON.stringify(mergedData)
+            });
+            
+        } catch (error) {
+            console.error('PATCH → PUT 변환 오류:', error);
+            // 실패 시 원본 요청 그대로 전송
+            return await originalFetch(url, options);
+        }
+    }
+    
+    // PATCH가 아니면 그대로 전송
+    return await originalFetch(url, options);
+};
+
+console.log('✅ PATCH 자동 변환 활성화 완료 (고객 대시보드)');
+</script>
+
 </body>
 </html>

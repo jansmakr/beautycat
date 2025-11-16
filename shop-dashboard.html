@@ -7,7 +7,7 @@
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js"></script>
+    <script src="api-global-override.js?v=2.4.2"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -812,30 +812,66 @@
             <form id="quote-form" class="space-y-4">
                 <input type="hidden" id="quote-consultation-id">
                 
+                <!-- 안내 메시지 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-semibold mb-1">📝 견적서 작성 안내</p>
+                            <ul class="list-disc list-inside space-y-1 text-blue-700">
+                                <li>상세한 관리 내용을 입력하면 고객의 신뢰도가 높아집니다</li>
+                                <li>가격은 숫자만 입력 (예: 150000)</li>
+                                <li>소요시간은 분 단위 숫자로 입력 (예: 60분 → 60)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
                 <div>
-                    <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">관리 내용 상세</label>
-                    <textarea id="treatment-details" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="제공할 관리의 상세 내용을 입력하세요..." required></textarea>
+                    <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">
+                        관리 내용 상세 <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="treatment-details" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예) 트러블 케어 + 진정 관리 + 수분 팩&#10;- 딥 클렌징 및 각질 제거&#10;- 트러블 집중 케어&#10;- 진정 마스크팩&#10;- 수분 크림 마무리" required></textarea>
+                    <p class="mt-1 text-xs text-gray-500">💡 구체적으로 작성할수록 좋습니다 (단계별 관리 과정, 사용 제품 등)</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">견적 가격 (원)</label>
-                        <input type="number" id="quote-price" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="150000" required>
+                        <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">
+                            견적 가격 <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="quote-price" min="0" step="1000" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="150000" required>
+                            <span class="absolute right-3 top-2.5 text-gray-500 text-sm">원</span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">💡 숫자만 입력 (예: 150000)</p>
                     </div>
                     <div>
-                        <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">예상 소요시간</label>
-                        <input type="text" id="duration" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="1시간 30분" required>
+                        <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">
+                            예상 소요시간 <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="duration" min="10" step="10" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="60" required>
+                            <span class="absolute right-3 top-2.5 text-gray-500 text-sm">분</span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">💡 분 단위 숫자로 입력 (예: 60, 90, 120)</p>
                     </div>
                 </div>
 
                 <div>
-                    <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">예약 가능일</label>
-                    <input type="text" id="available-dates" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="월-금 오전, 주말 가능" required>
+                    <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">
+                        예약 가능일 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="available-dates" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예) 월-금 오전 10시-오후 6시, 주말 오전 가능" required>
+                    <p class="mt-1 text-xs text-gray-500">💡 고객이 예약하기 편한 시간대를 상세히 안내해주세요</p>
                 </div>
 
                 <div>
-                    <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">추가 안내사항</label>
-                    <textarea id="additional-notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="할인 정보, 주의사항 등을 입력하세요..."></textarea>
+                    <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">
+                        추가 안내사항 <span class="text-gray-400">(선택)</span>
+                    </label>
+                    <textarea id="additional-notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예) 신규 고객 10% 할인 이벤트&#10;- 당일 예약 가능 (전화 문의)&#10;- 주차 2시간 무료 지원"></textarea>
+                    <p class="mt-1 text-xs text-gray-500">💡 할인 정보, 주의사항, 혜택 등을 입력하세요</p>
                 </div>
 
                 <div class="flex justify-end space-x-3">
@@ -1122,5 +1158,53 @@
     <!-- <script src="js/api-bridge.js"></script> -->
 <script src="js/auth.js"></script>
     <script src="js/shop-dashboard.js"></script>
+
+<!-- 🔥 긴급 핫픽스: PATCH → PUT 변경 (CORS 문제 해결) -->
+<script>
+console.log('🔥 HOTFIX: PATCH → PUT 메서드 변경 적용');
+
+// handleShopInfoUpdate 함수 오버라이드
+if (typeof handleShopInfoUpdate !== 'undefined') {
+    const originalHandler = handleShopInfoUpdate;
+    window.handleShopInfoUpdate = async function(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(event.target);
+        const updateData = {
+            name: formData.get('shop_name'),
+            owner_name: formData.get('owner_name'),
+            phone: formData.get('phone'),
+            address: formData.get('address'),
+            services: formData.get('services'),
+            business_number: formData.get('business_number'),
+            description: formData.get('description')
+        };
+        
+        console.log('업체 정보 업데이트:', updateData);
+        
+        try {
+            if (currentShop && currentShop.id) {
+                // ✅ PUT으로 변경 (PATCH 대신)
+                const response = await fetch(`tables/skincare_shops/${currentShop.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updateData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('업데이트 실패');
+                }
+                
+                alert('업체 정보가 성공적으로 업데이트되었습니다!');
+                location.reload();
+            }
+        } catch (error) {
+            console.error('업데이트 오류:', error);
+            alert('업데이트 중 오류가 발생했습니다.');
+        }
+    };
+    console.log('✅ handleShopInfoUpdate 함수 오버라이드 완료');
+}
+</script>
 </body>
 </html>

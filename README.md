@@ -1,9 +1,9 @@
 # BeautyCat 플랫폼 - 최종 매뉴얼 및 시스템 정보
 
-> **✨ 최신 업데이트: 회원가입 폼 Autofill 버그 수정! (2024-11-14)**
+> **✨ 최신 업데이트: 채팅 메시지 로드 에러 수정! (2024-11-16)**
 > 
-> **최종 업데이트:** 2024-11-14  
-> **버전:** v2.3.5.4 (회원가입 폼 필드 Autofill 오류 해결)  
+> **최종 업데이트:** 2024-11-16  
+> **버전:** v2.4.2 (채팅 메시지 sort=timestamp 에러 완전 해결)  
 > **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
 > 
 > **🌐 프로덕션 URL:**
@@ -23,6 +23,1096 @@
 > - SSL/TLS: ✅ Active
 > - CDN: ✅ Global
 > - GitHub Auto-deploy: ✅ Enabled
+
+---
+
+## 🔥 v2.4.2 긴급 수정 (2024-11-16)
+
+### **문제: 채팅 메시지 로드 500 에러 지속**
+
+**증상:**
+```
+GET .../tables/messages?search=...&sort=timestamp 500 (Internal Server Error)
+메시지 로드 오류: Error: 메시지를 불러올 수 없습니다.
+```
+
+**근본 원인:**
+`api-global-override.js`에서 `sort=timestamp` → `sort=created_at` 변환 로직이 있었지만, **실제 URL 변환 과정에서 적용되지 않음**.
+
+**문제 코드:**
+```javascript
+// Line 86-91: processedUrl에만 변환 적용
+if (typeof url === 'string' && url.includes('sort=timestamp')) {
+    processedUrl = url.replace(/sort=timestamp/g, 'sort=created_at');
+    // ... 로그만 출력하고 실제로는 원본 URL 사용됨
+}
+
+// Line 103: 변환 전 cleanPath 사용
+targetUrl = `${WORKERS_API_BASE}/${cleanPath}`;  // ← sort=timestamp 그대로!
+```
+
+**적용된 수정:**
+
+#### 1. **상대 경로 변환 시 sort 파라미터 변환**
+```javascript
+// 상대 경로 처리 (tables/messages?sort=timestamp)
+if (processedUrl.startsWith('tables/') || processedUrl.startsWith('/tables/')) {
+    const cleanPath = processedUrl.replace(/^\//, '');
+    
+    // 🔥 CRITICAL FIX: sort=timestamp를 sort=created_at로 변환
+    const finalPath = cleanPath.replace(/sort=timestamp/g, 'sort=created_at');
+    
+    targetUrl = `${WORKERS_API_BASE}/${finalPath}`;
+}
+```
+
+#### 2. **절대 경로 변환 시 search 파라미터 변환**
+```javascript
+// 절대 경로 처리 (https://...?sort=timestamp)
+else if (processedUrl.match(/^https?:\/\//)) {
+    const urlObj = new URL(processedUrl);
+    if (urlObj.pathname.startsWith('/tables/')) {
+        const cleanPath = urlObj.pathname.replace(/^\//, '');
+        
+        // 🔥 CRITICAL FIX: search 파라미터에서도 sort=timestamp 변환
+        let finalSearch = urlObj.search.replace(/sort=timestamp/g, 'sort=created_at');
+        
+        targetUrl = `${WORKERS_API_BASE}/${cleanPath}${finalSearch}${urlObj.hash}`;
+    }
+}
+```
+
+**변경 전 → 변경 후:**
+```
+Before: tables/messages?sort=timestamp
+After:  https://beautycat-api.jansmakr.workers.dev/api/tables/messages?sort=created_at
+```
+
+**수정된 파일:**
+- `api-global-override.js` (v2.4.2) - sort=timestamp 변환 로직 완전 수정
+- `chat.html`, `customer-dashboard.html`, `shop-dashboard.html`, `admin-dashboard.html`, `index.html` - 스크립트 버전 업데이트
+
+**예상 결과:**
+- ✅ 채팅 메시지 정상 로드
+- ✅ 500 에러 해결
+- ✅ 실시간 메시지 폴링 정상 작동
+
+---
+
+## 🔥 v2.4.1 긴급 수정 (2024-11-16)
+
+### **문제: 견적서 목록에서 버튼이 작동하지 않음**
+
+**증상:**
+- 고객 대시보드 견적서 목록에서 "상세보기", "수락", "채팅하기" 버튼 클릭 시 아무 반응 없음
+- 브라우저 콘솔에 `GET .../tables/quotes/undefined 404` 에러 발생
+
+**원인 분석:**
+1. `quote.id` 또는 `quote.consultation_id`가 undefined인 경우 onclick 핸들러에 빈 문자열 전달
+2. Template literal 내에서 undefined 값이 문자열 'undefined'로 변환됨
+3. 함수가 전역 스코프에 노출되지 않은 경우 onclick이 작동하지 않음
+
+**적용된 수정사항:**
+
+#### 1. **종합 디버깅 로그 추가**
+```javascript
+// displayQuotesList() 함수
+console.log('📋 displayQuotesList 호출됨');
+console.log('   currentQuotes 개수:', currentQuotes.length);
+console.log('   currentQuotes 데이터:', JSON.stringify(currentQuotes, null, 2));
+
+// 각 견적서 데이터 확인
+console.log(`   [${index}] quote.id:`, quote.id);
+console.log(`   [${index}] quote.consultation_id:`, quote.consultation_id);
+```
+
+#### 2. **견적서 로드 시 상세 로깅**
+```javascript
+// loadQuotes() 함수
+console.log('🔍 consultationIds:', consultationIds);
+console.log('🔍 전체 quotes 데이터:', data.data);
+console.log('✅ 로드된 견적서:', currentQuotes.length);
+console.log('✅ 견적서 상세:', JSON.stringify(currentQuotes, null, 2));
+```
+
+#### 3. **방어적 코딩 - 빈 값 처리**
+```javascript
+// showQuoteDetail, acceptQuote, openChat 함수에 검증 추가
+if (!quoteId || quoteId === 'undefined' || quoteId === '') {
+    console.error('❌ 유효하지 않은 quoteId:', quoteId);
+    showNotification('견적서를 찾을 수 없습니다.', 'error');
+    return;
+}
+```
+
+#### 4. **이벤트 위임 방식 추가 (백업)**
+onclick 핸들러가 실패할 경우를 대비하여 이벤트 위임 방식 추가:
+```javascript
+function setupQuoteButtonHandlers() {
+    const container = document.getElementById('quotes-list');
+    
+    newContainer.addEventListener('click', function(e) {
+        const button = e.target.closest('button');
+        if (!button) return;
+        
+        const quoteId = button.getAttribute('data-quote-id');
+        const consultationId = button.getAttribute('data-consultation-id');
+        
+        // 버튼 텍스트로 기능 구분
+        if (button.textContent.includes('상세보기')) {
+            showQuoteDetail(quoteId);
+        } else if (button.textContent.includes('수락')) {
+            acceptQuote(quoteId);
+        } else if (button.textContent.includes('채팅')) {
+            openChat(consultationId);
+        }
+    });
+}
+```
+
+#### 5. **data 속성 추가**
+```html
+<button onclick="window.showQuoteDetail('${quote.id || ''}')" 
+        data-quote-id="${quote.id || ''}"
+        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+    <i class="fas fa-eye mr-1"></i>상세보기
+</button>
+```
+
+#### 6. **전역 함수 노출 확인**
+이미 `window` 객체에 함수들이 노출되어 있음을 확인:
+```javascript
+window.showQuoteDetail = showQuoteDetail;
+window.acceptQuote = acceptQuote;
+window.openChat = openChat;
+```
+
+**테스트 방법:**
+
+1. **브라우저 콘솔에서 데이터 확인**
+```javascript
+// 현재 로드된 견적서 확인
+console.log('견적서 데이터:', currentQuotes);
+
+// 각 견적서의 ID 확인
+currentQuotes.forEach((q, i) => {
+    console.log(`[${i}] id: ${q.id}, consultation_id: ${q.consultation_id}`);
+});
+```
+
+2. **함수 호출 테스트**
+```javascript
+// 콘솔에서 직접 함수 호출
+window.showQuoteDetail('quote_id_here');
+window.openChat('consultation_id_here');
+```
+
+3. **버튼 클릭 시 로그 확인**
+버튼 클릭 시 다음과 같은 로그가 표시되어야 합니다:
+```
+🔘 버튼 클릭됨: {button: "상세보기", quoteId: "...", consultationId: "..."}
+📌 상세보기 버튼 클릭
+🔍 showQuoteDetail 호출됨, quoteId: ...
+   찾은 quote: {...}
+```
+
+**수정된 파일:**
+- `js/customer-dashboard.js` (v2.4.1) - 디버깅 로그, 방어적 코딩, 이벤트 위임 추가
+- `customer-dashboard.html` - 스크립트 버전 업데이트 (캐시 무효화)
+
+**예상 결과:**
+- ✅ 버튼 클릭 시 상세한 디버깅 로그 출력
+- ✅ 데이터 문제 발견 시 명확한 에러 메시지
+- ✅ onclick 실패 시 이벤트 위임 방식으로 자동 처리
+- ✅ undefined/null 값에 대한 방어적 처리
+
+---
+
+## 🔧 회원가입/로그인 디버깅 가이드
+
+### **문제 발생 시 확인 사항**
+
+#### **1. 브라우저 콘솔 확인**
+회원가입 시 다음과 같은 로그가 표시되어야 합니다:
+```
+🔍 auth.js 로드 상태: {processRegister: "function", processLogin: "function", ...}
+✅ 디버깅 함수 준비 완료
+📝 회원가입 데이터: {email: "...", password: "...", ...}
+🔒 비밀번호 강도 사전 체크: {score: 5, level: "강함", ...}
+✅ processRegister 함수 발견, 회원가입 진행 중...
+📝 회원가입 프로세스 시작
+🔍 이메일 중복 확인 중...
+✅ 이메일 중복 없음
+🔒 비밀번호 강도 검증 중...
+🔐 비밀번호 해시화 중...
+👤 사용자 생성 시도
+📡 API 응답 상태: 201 Created
+✅ 사용자 생성 성공
+```
+
+#### **2. 비밀번호 강도 테스트**
+브라우저 콘솔에서 실행:
+```javascript
+testPasswordStrength("your_password")
+```
+
+**비밀번호 요구사항:**
+- 최소 8자 이상
+- 대문자 포함
+- 소문자 포함
+- 숫자 포함
+- 특수문자 포함 (권장)
+
+예시:
+```javascript
+testPasswordStrength("qkreotn5874!")
+// 결과: {score: 5, level: "강함", feedback: []}
+```
+
+#### **3. 일반적인 오류와 해결책**
+
+| 오류 메시지 | 원인 | 해결책 |
+|------------|------|--------|
+| "비밀번호가 너무 약합니다" | 비밀번호 강도 부족 | 대문자+소문자+숫자+특수문자 조합 사용 |
+| "이미 사용 중인 이메일입니다" | 중복 이메일 | 다른 이메일 사용 |
+| "사용자 생성 실패: 401" | API 인증 오류 | API 설정 확인 |
+| "사용자 생성 실패: 400" | 잘못된 데이터 형식 | 입력 데이터 검증 |
+
+#### **4. API 연결 테스트**
+```javascript
+// 콘솔에서 실행
+fetch('tables/users?limit=1')
+  .then(r => r.json())
+  .then(d => console.log('✅ API 연결 성공:', d))
+  .catch(e => console.error('❌ API 연결 실패:', e));
+```
+
+---
+
+## 🚀 v2.3.6.0 주요 업데이트 (2024-11-16)
+
+### **1. 보안 시스템 전면 강화**
+
+#### **새로 추가된 보안 파일**
+- `js/security-manager.js` - 통합 보안 관리 시스템
+- `js/api-global-override.js` - API 요청 표준화 및 재시도 로직
+- `js/sw-unregister.js` - Service Worker 정리 유틸리티
+
+#### **보안 기능**
+1. **비밀번호 해시화** (SHA-256 + Salt)
+   - 회원가입 시 자동으로 비밀번호 해시 처리
+   - 로그인 시 해시 비교 검증
+   - 관리자 대시보드에서 해시 vs 평문 구분 표시
+
+2. **로그인 시도 제한**
+   - 5회 실패 시 15분간 차단
+   - 차단 시간 표시 및 자동 해제
+
+3. **세션 관리**
+   - 30분 비활동 시 자동 로그아웃
+   - 사용자 활동 추적 및 세션 갱신
+
+4. **입력 검증 및 정제**
+   - XSS 공격 방지 (HTML 이스케이프)
+   - SQL Injection 방지
+   - 이메일, 전화번호, 비밀번호 형식 검증
+
+5. **비밀번호 강도 검사**
+   - 실시간 강도 평가 (약함/보통/강함)
+   - 피드백 메시지 제공
+
+### **2. 공지사항 관리 시스템 구축**
+
+#### **새로 추가된 파일**
+- `js/announcements.js` - 완전한 공지사항 CRUD 시스템
+
+#### **기능**
+- ✅ 공지사항 생성/수정/삭제
+- ✅ 우선순위 설정 (긴급/중요/일반)
+- ✅ 대상 선택 (전체/고객/업체)
+- ✅ 게시 기간 설정 (발행일/만료일)
+- ✅ 상단 고정 기능
+- ✅ 상태별 필터링 (게시됨/임시저장/만료됨)
+- ✅ 조회수 추적
+
+### **3. 회원가입/로그인 개선**
+
+#### **문제 해결**
+- ❌ 스크립트 중복 로드로 인한 변수 충돌 → ✅ 해결
+- ❌ 사용자 조회 limit=100 제한 → ✅ limit=1000으로 증가
+- ❌ Security Manager 함수 누락 → ✅ auth.js 호환 함수 추가
+
+#### **개선사항**
+- 비밀번호 해시화로 보안 강화
+- 로그인 실패 시 명확한 오류 메시지
+- 세션 관리 자동화
+
+---
+
+## 🔐 v2.3.5.9 관리자 대시보드 - 비밀번호 관리 기능 추가 (2024-11-16)
+
+### **기능 추가: 관리자가 사용자 비밀번호 확인 가능**
+
+#### **요구사항**
+- 관리자 대시보드에서 고객 및 업체의 비밀번호를 확인할 수 있어야 함
+- 비밀번호 복사 기능 제공
+
+#### **구현 내역**
+
+**1. 사용자 관리 테이블에 비밀번호 열 추가**
+```html
+<!-- admin-dashboard.html -->
+<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">비밀번호</th>
+```
+
+**2. 비밀번호 표시 로직**
+```javascript
+// 해시된 비밀번호 vs 평문 비밀번호 구분
+if (user.password_salt) {
+    // 해시된 비밀번호 - 일부만 표시 (보안)
+    passwordDisplay = `
+        <span class="text-gray-400 text-xs" title="해시된 비밀번호">
+            ${user.password.substring(0, 12)}...
+        </span>
+    `;
+} else {
+    // 평문 비밀번호 - 전체 표시
+    passwordDisplay = `
+        <span class="font-mono text-sm">${user.password}</span>
+    `;
+}
+```
+
+**3. 복사 버튼 추가**
+```javascript
+<button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900">
+    <i class="fas fa-copy"></i>
+</button>
+```
+
+**4. 클립보드 복사 기능**
+```javascript
+function copyPassword(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    navigator.clipboard.writeText(user.password).then(() => {
+        // 성공 알림 표시
+        showNotification('비밀번호가 클립보드에 복사되었습니다');
+    });
+}
+```
+
+#### **사용 방법**
+
+1. **관리자 대시보드 접속**
+   - https://beautycat.kr/admin-dashboard.html
+   - 관리자 계정으로 로그인
+
+2. **사용자 관리 메뉴 클릭**
+   - 상단 메뉴에서 "사용자 관리" 선택
+
+3. **비밀번호 확인**
+   - 테이블의 "비밀번호" 열에서 각 사용자의 비밀번호 확인
+   - **해시된 비밀번호**: 앞 12자만 표시 (예: `a1b2c3d4e5f6...`)
+   - **평문 비밀번호**: 전체 표시 (예: `MyPassword123!`)
+
+4. **비밀번호 복사**
+   - 복사 아이콘 <i class="fas fa-copy"></i> 클릭
+   - 클립보드에 비밀번호 복사됨
+   - 성공 알림 표시
+
+#### **보안 고려사항**
+
+⚠️ **주의**: 이 기능은 관리자 전용이며, 다음 사항에 유의해야 합니다:
+
+1. **해시된 비밀번호**:
+   - security-manager.js로 회원가입한 사용자는 비밀번호가 해시화됨
+   - 해시는 복호화 불가능하므로 원본 비밀번호를 알 수 없음
+   - 테이블에는 해시값 일부만 표시됨
+
+2. **평문 비밀번호**:
+   - 기존 방식으로 가입한 사용자는 평문으로 저장됨
+   - 전체 비밀번호가 표시되므로 관리자만 접근 가능해야 함
+
+3. **권장사항**:
+   - 관리자 세션 타임아웃 설정 (현재 24시간)
+   - 관리자 로그 기록 (누가 언제 비밀번호를 조회했는지)
+   - 비밀번호 초기화 기능 추가 권장
+
+#### **개선 효과**
+- ✅ 관리자가 사용자 계정 문제 해결 가능
+- ✅ 고객 지원 시 비밀번호 분실 문제 신속 처리
+- ✅ 클립보드 복사로 편리한 비밀번호 공유
+- ✅ 해시 vs 평문 구분으로 보안 상태 확인 가능
+
+---
+
+### **파일 변경 내역**
+- **admin-dashboard.html**
+  - Line 193-200: 사용자 관리 테이블 헤더에 "비밀번호" 열 추가
+
+- **js/admin-dashboard.js**
+  - Line 268-330: displayUsers() 함수에 비밀번호 표시 로직 추가
+  - Line 272: colspan을 5에서 6으로 변경
+  - Line 291-308: 비밀번호 열 HTML 생성 (해시/평문 구분)
+  - Line 345-372: copyPassword() 함수 추가 (클립보드 복사 + 알림)
+
+---
+
+## 🎨 v2.3.5.8 견적신청 & 회원가입 UX 개선 + 로그인 문제 수정 (2024-11-16)
+
+### **개선 1: 회원가입 유형 선택 클릭 피드백 추가**
+
+#### **문제점**
+- 회원가입 시 "고객" 또는 "업체" 선택 시 시각적 피드백 부족
+- 클릭해도 선택된 것처럼 보이지 않음
+
+#### **해결 방법**
+1. **라벨에 onclick 이벤트 추가**
+   ```html
+   <label onclick="selectUserType('customer')">
+   ```
+
+2. **selectUserType() 함수 추가**
+   ```javascript
+   function selectUserType(type) {
+       const radio = document.querySelector(`input[name="userType"][value="${type}"]`);
+       if (radio) {
+           radio.checked = true;
+           updateUserTypeSelection();
+       }
+   }
+   ```
+
+3. **선택 시 핑크 그라데이션 배경 적용**
+   ```javascript
+   selectedLabel.style.background = 'linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%)';
+   ```
+
+#### **개선 효과**
+- ✅ 클릭 시 즉시 시각적 피드백
+- ✅ 핑크색 배경과 체크 아이콘으로 선택 상태 명확히 표시
+- ✅ 사용자 경험 향상
+
+---
+
+### **개선 2: "어떤 관리를 받고 싶으세요?" 체크박스 클릭 가능하게 변경**
+
+#### **문제점**
+- 체크박스 항목들이 선택 가능한지 명확하지 않음
+- 사용자가 클릭 가능 여부를 잘 인지하지 못함
+
+#### **해결 방법**
+1. **각 체크박스 라벨에 `onclick` 이벤트 추가**
+   ```html
+   <label class="checkbox-option" onclick="toggleCheckbox(this)">
+   ```
+
+2. **전역 `toggleCheckbox()` 함수 추가**
+   ```javascript
+   function toggleCheckbox(label) {
+       const checkbox = label.querySelector('input[type="checkbox"]');
+       checkbox.checked = !checkbox.checked;
+       label.classList.toggle('selected', checkbox.checked);
+   }
+   ```
+
+3. **헬퍼 텍스트 명확화**
+   - Before: "여러 개 선택 가능해요"
+   - After: "여러 개 선택 가능해요 (클릭하여 선택)"
+
+#### **개선 효과**
+- ✅ 체크박스 전체 영역 클릭 가능
+- ✅ 클릭 시 시각적 피드백 제공 (selected 클래스)
+- ✅ 사용자가 선택 가능함을 명확히 인지
+
+---
+
+### **개선 2: "무료 견적 받기" 버튼 중앙 배치 및 크기 확대**
+
+#### **문제점**
+- 버튼이 작아서 눈에 잘 띄지 않음
+- 중요한 CTA(Call To Action)임에도 불구하고 강조가 부족함
+
+#### **해결 방법**
+1. **버튼을 중앙 정렬 컨테이너로 감싸기**
+   ```html
+   <div class="flex justify-center mt-8">
+       <button type="submit" class="submit-btn" style="...">
+   ```
+
+2. **버튼 스타일 강화**
+   ```css
+   font-size: 20px !important;        /* 기존보다 크게 */
+   padding: 20px 60px !important;     /* 좌우 여백 증가 */
+   font-weight: 700 !important;       /* 더 굵게 */
+   min-width: 280px !important;       /* 최소 너비 보장 */
+   ```
+
+#### **개선 효과**
+- ✅ 버튼이 페이지 중앙에 배치되어 시선 집중
+- ✅ 큰 크기로 모바일에서도 터치하기 쉬움
+- ✅ 강조된 폰트로 행동 유도 효과 증가
+- ✅ 전환율(Conversion Rate) 향상 기대
+
+---
+
+---
+
+### **수정 3: 업체 회원가입 추가 필드 구현**
+
+#### **문제점**
+- 업체 회원가입 시 업체명, 사업자번호 입력 필드 없음
+- auth.js에서 `shop_name`, `business_number` 필드를 요구하지만 UI에 없음
+
+#### **해결 방법**
+
+**1. 업체 정보 입력 필드 추가**
+```html
+<!-- 업체명 -->
+<div id="shopInfoSection" style="display: none;">
+    <input type="text" id="shopName" name="shopName" placeholder="예: 뷰티캣 피부관리실">
+</div>
+
+<!-- 사업자번호 -->
+<div id="businessNumberSection" style="display: none;">
+    <input type="text" id="businessNumber" name="businessNumber" placeholder="1234567890">
+</div>
+```
+
+**2. 업체 선택 시 필드 표시**
+```javascript
+if (selectedValue === 'shop') {
+    shopInfoSection.style.display = 'block';
+    businessNumberSection.style.display = 'block';
+    cafeIdSection.style.display = 'block';
+}
+```
+
+**3. 폼 제출 시 업체 정보 포함**
+```javascript
+if (userType === 'shop') {
+    formData.shop_name = document.getElementById('shopName').value || formData.name + '의 샵';
+    formData.business_number = document.getElementById('businessNumber').value || '';
+}
+```
+
+#### **개선 효과**
+- ✅ 업체 회원가입 시 필수 정보 수집
+- ✅ skincare_shops 테이블에 업체 정보 자동 생성
+- ✅ 사용자-업체 연결 (shop_id)
+- ✅ 업체 승인 대기 상태로 등록 (is_active: false)
+
+---
+
+### **수정 4: 회원가입 후 로그인 문제 해결**
+
+#### **문제점**
+- 회원가입 후 로그인 시도 시 "사용자를 찾을 수 없음" 오류
+- 콘솔 로그: `auth.js:437 사용자를 찾을 수 없음`
+
+#### **원인 분석**
+1. **필드명 불일치**
+   - `register.html`에서 `state`, `district`, `userType` 전송
+   - `auth.js`에서 `shop_state`, `shop_district`, `user_type` 기대
+   - 결과: 데이터베이스에 올바르게 저장되지 않음
+
+2. **auth.js 미로드**
+   - `register.html`에서 `auth.js`를 로드하지 않음
+   - `processRegister` 함수 사용 불가
+
+#### **해결 방법**
+
+**1. register.html 필드명 수정**
+```javascript
+// Before
+const formData = {
+    userType: userType,
+    state: state,
+    district: district,
+    detailAddress: document.getElementById('detailAddress').value
+};
+
+// After
+const formData = {
+    user_type: userType,        // auth.js와 일치
+    shop_state: state,          // auth.js와 일치
+    shop_district: district,    // auth.js와 일치
+    shop_address: document.getElementById('detailAddress').value
+};
+```
+
+**2. auth.js 스크립트 로드 추가**
+```html
+<script src="js/security-manager.js"></script>
+<script src="js/auth.js"></script>
+```
+
+**3. auth.js의 processRegister 전역 노출**
+```javascript
+// auth.js에 추가
+window.processRegister = processRegister;
+window.processLogin = processLogin;
+window.showNotification = showNotification;
+```
+
+**4. 약관 동의 필드 추가**
+```javascript
+formData.terms_service = document.getElementById('terms').checked;
+formData.terms_privacy = document.getElementById('terms').checked;
+formData.password_confirm = document.getElementById('confirmPassword').value;
+```
+
+#### **개선 효과**
+- ✅ 회원가입 데이터가 올바르게 데이터베이스에 저장됨
+- ✅ 회원가입 후 바로 로그인 가능
+- ✅ 비밀번호 해싱 및 보안 강화 (security-manager.js 사용)
+- ✅ 일관된 필드명으로 데이터 무결성 보장
+
+---
+
+### **파일 변경 내역**
+- **index.html**
+  - Line 1748-1794: 체크박스에 onclick 이벤트 추가, 헬퍼 텍스트 수정
+  - Line 1852-1858: 버튼 중앙 배치 및 스타일 강화
+  - Line 2993-3010: toggleCheckbox() 전역 함수 추가
+
+- **register.html**
+  - Line 198-213: 회원 유형 라벨에 onclick 이벤트 추가
+  - Line 252-270: 업체명, 사업자번호 입력 필드 추가
+  - Line 427-470: updateUserTypeSelection() 개선, selectUserType() 함수 추가
+  - Line 449-462: 업체 선택 시 추가 필드 표시 로직
+  - Line 544-554: 필드명 수정 (user_type, shop_state, shop_district, shop_address)
+  - Line 556-575: 업체 정보 수집 (shop_name, business_number)
+  - Line 577-592: auth.js의 processRegister 사용하도록 변경
+  - Line 364: auth.js 및 관련 스크립트 로드 추가
+
+- **js/auth.js**
+  - Line 1328-1331: 전역 함수 노출 (processRegister, processLogin, showNotification)
+
+---
+
+## ✅ v2.3.5.8 테스트 가이드
+
+### **고객 회원가입 테스트**
+1. **https://beautycat.kr/register.html** 접속
+2. **회원 유형 선택:**
+   - "고객" 클릭 → 핑크색 배경 + 체크 아이콘 표시 확인
+3. **회원가입 정보 입력:**
+   - 이메일: `test-customer@example.com`
+   - 비밀번호: `Test1234!@`
+   - 이름: `테스트고객`
+   - 전화번호: `010-1234-5678`
+   - 주소: 서울특별시 강남구 선택
+   - 상세주소: `테헤란로 123`
+   - 약관 동의 체크
+4. **가입하기 클릭**
+5. **성공 메시지 확인 및 로그인 페이지 이동**
+
+### **업체 회원가입 테스트**
+1. **https://beautycat.kr/register.html** 접속
+2. **회원 유형 선택:**
+   - "업체" 클릭 → 핑크색 배경 + 체크 아이콘 표시 확인
+   - **추가 필드 표시 확인**: 업체명, 사업자번호, 제휴 카페 ID
+3. **회원가입 정보 입력:**
+   - 이메일: `test-shop@example.com`
+   - 비밀번호: `Test1234!@`
+   - 이름: `홍길동`
+   - 전화번호: `010-9876-5432`
+   - **업체명**: `테스트 피부관리실`
+   - **사업자번호**: `1234567890`
+   - **제휴 카페 ID**: `testshop123` (네이버 카페 선택)
+   - 주소: 서울특별시 강남구 선택
+   - 상세주소: `역삼동 456`
+   - 약관 동의 체크
+4. **가입하기 클릭**
+5. **성공 메시지 + 제휴 혜택 안내 확인**
+6. **로그인 페이지 이동**
+
+### **고객 로그인 테스트**
+1. **https://beautycat.kr/login.html** 접속
+2. **고객 계정으로 로그인:**
+   - 이메일: `test-customer@example.com`
+   - 비밀번호: `Test1234!@`
+   - 사용자 유형: **고객** 선택
+3. **로그인 성공 확인**
+4. **고객 대시보드로 리다이렉트 확인**
+5. **사용자 정보 표시 확인** (이름, 지역)
+
+### **업체 로그인 테스트**
+1. **https://beautycat.kr/login.html** 접속
+2. **업체 계정으로 로그인:**
+   - 이메일: `test-shop@example.com`
+   - 비밀번호: `Test1234!@`
+   - 사용자 유형: **업체** 선택
+3. **로그인 성공 확인**
+4. **업체 대시보드로 리다이렉트 확인**
+5. **업체 정보 표시 확인** (업체명, 승인 대기 상태)
+
+### **데이터 검증 (개발자 도구)**
+1. **브라우저 콘솔 확인:**
+   - `auth.js:362` "사용자 데이터 조회 완료: X 명" 확인
+   - `auth.js:371` "사용자 찾음: [이름] [user_type]" 확인
+   - 에러 메시지 없음 확인
+
+2. **네트워크 탭 확인:**
+   - `POST /api/tables/users` → 201 Created
+   - `POST /api/tables/skincare_shops` → 201 Created (업체만)
+   - `PATCH /api/tables/users/[id]` → 200 OK (업체 shop_id 연결)
+
+3. **localStorage 확인:**
+   ```javascript
+   localStorage.getItem('user_data')  // 사용자 정보
+   localStorage.getItem('session_token')  // 세션 토큰
+   ```
+
+### **예상 결과**
+
+**고객 회원가입:**
+- ✅ users 테이블에 `user_type='customer'` 저장
+- ✅ 비밀번호 해시화 (`password_salt` 존재)
+- ✅ 주소 정보 저장 (`state`, `district`, `detail_address`)
+- ✅ 로그인 후 customer-dashboard.html 이동
+
+**업체 회원가입:**
+- ✅ users 테이블에 `user_type='shop'` 저장
+- ✅ skincare_shops 테이블에 업체 정보 생성
+- ✅ users.shop_id에 skincare_shops.id 연결
+- ✅ 제휴 카페 정보 저장 (`cafe_platform='naver'`, `cafe_id='testshop123'`)
+- ✅ 승인 대기 상태 (`skincare_shops.is_active=false`)
+- ✅ 로그인 후 shop-dashboard.html 이동
+
+---
+
+## 🎨 v2.3.5.7 로그인 알림 팝업 가독성 개선 및 회원가입 버그 수정 (2024-11-14)
+
+### **문제 1: 로그인 실패 시 알림 텍스트가 흰색으로 보이지 않음**
+
+#### **증상**
+- 로그인 실패 시 팝업창의 텍스트가 흰색이라 배경과 구분되지 않음
+- "로그인 정보가 올바르지 않습니다" 메시지가 안 보임
+
+#### **원인 분석**
+- `showNotification()` 함수에서 배경색을 `bg-red-500` (빨간색)로 설정
+- 텍스트 색상을 `#000000` (검은색)로 설정했지만, Tailwind CSS의 기본 스타일이 우선 적용됨
+- 결과: 흰색 텍스트가 표시됨
+
+#### **해결 방법**
+
+**Before (v2.3.5.6):**
+```javascript
+// ❌ 문제: 배경색이 진하고 텍스트가 흰색
+const bgColor = type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+notification.style.color = '#000000';  // 적용 안됨
+```
+
+**After (v2.3.5.7):**
+```javascript
+// ✅ 해결: 밝은 배경 + 진한 텍스트 + !important
+const bgColor = type === 'error' ? 'bg-red-100' : 'bg-blue-100';
+const borderColor = type === 'error' ? 'border-red-400' : 'border-blue-400';
+const iconColor = type === 'error' ? '#ef4444' : '#3b82f6';
+
+notification.style.cssText = `
+    color: #1f2937 !important;
+    font-weight: 500;
+    font-size: 14px;
+`;
+```
+
+#### **개선 효과**
+- ✅ 밝은 배경색 (bg-red-100, bg-green-100 등)
+- ✅ 진한 테두리 (border-red-400 등)
+- ✅ 진한 텍스트 (#1f2937, 다크 그레이)
+- ✅ 아이콘 색상 강조 (빨강, 초록, 노랑, 파랑)
+- ✅ `!important`로 강제 적용
+
+---
+
+### **문제 2: 회원가입 시 userData 변수 스코프 오류**
+
+#### **증상**
+- 회원가입 폼 제출 시 데이터 저장 실패 가능성
+- 콘솔에 "userData is not defined" 오류
+
+#### **원인 분석**
+- `userData` 변수가 if-else 블록 안에서만 선언됨
+- 블록 밖에서 `userData`를 사용하려고 하면 오류 발생
+
+**Before (v2.3.5.6):**
+```javascript
+// ❌ 문제: userData가 if 블록 안에서만 선언
+if (window.securityManager) {
+    const userData = { ... };
+} else {
+    const userData = { ... };
+}
+
+// ❌ userData를 여기서 사용하면 오류!
+fetch('tables/users', {
+    body: JSON.stringify(userData)  // ReferenceError!
+});
+```
+
+**After (v2.3.5.7):**
+```javascript
+// ✅ 해결: userData를 블록 밖에서 선언
+let userData;
+
+if (window.securityManager) {
+    userData = { ... };
+} else {
+    userData = { ... };
+}
+
+// ✅ userData를 정상적으로 사용 가능
+fetch('tables/users', {
+    body: JSON.stringify(userData)  // OK!
+});
+```
+
+#### **추가 개선사항**
+- ✅ 회원가입 시 주소 정보 저장 (state, district, detail_address)
+- ✅ 카페 정보 저장 (cafe_platform, cafe_id)
+- ✅ 고객과 업체 모두 주소 저장
+
+---
+
+### **알림 팝업 디자인 변경**
+
+| 상태 | 배경색 | 테두리 | 텍스트 | 아이콘 색상 |
+|------|--------|--------|--------|------------|
+| **성공** | bg-green-100 (연한 초록) | border-green-400 | #1f2937 (다크 그레이) | #22c55e (초록) |
+| **오류** | bg-red-100 (연한 빨강) | border-red-400 | #1f2937 (다크 그레이) | #ef4444 (빨강) |
+| **경고** | bg-yellow-100 (연한 노랑) | border-yellow-400 | #1f2937 (다크 그레이) | #f59e0b (노랑) |
+| **정보** | bg-blue-100 (연한 파랑) | border-blue-400 | #1f2937 (다크 그레이) | #3b82f6 (파랑) |
+
+---
+
+### **변경된 파일**
+- `js/auth.js` (Lines 1151-1195)
+  - `showNotification()` 함수: 배경색, 텍스트 색상, 아이콘 색상 수정
+  
+- `js/auth.js` (Lines 676-719)
+  - `processRegister()` 함수: userData 변수 스코프 수정
+  - 주소 정보 저장 추가 (state, district, detail_address)
+  - 카페 정보 저장 추가 (cafe_platform, cafe_id)
+
+---
+
+## ✅ v2.3.5.6 로그인 회원 상담신청 고객 대시보드 연동 (2024-11-14)
+
+### **추가 문제 해결: 로그인한 회원의 상담신청 내역이 고객 대시보드에 표시되지 않음**
+
+#### **증상**
+- 로그인한 상태에서 상담신청을 해도 "내 상담 내역" 탭에 표시되지 않음
+- 비회원 상담신청도 동일하게 표시되지 않음
+
+#### **원인 분석**
+
+**1. 데이터 저장 문제 (index.html)**
+- 로그인 여부를 확인하지 않고 무조건 `customer_type: 'guest'`로 저장
+- `customer_id`, `customer_email` 등 회원 식별 정보 누락
+
+**2. 데이터 필터링 문제 (customer-dashboard.js)**
+- `customer_email`과 `customer_name`만 확인
+- `customer_id` (로그인 회원 식별자) 확인 안함
+- `customer_phone` (비회원 식별) 확인 안함
+
+**3. 필드명 불일치 (customer-dashboard.js)**
+- 저장된 필드: `treatments`, `budget`, `notes`, `skin_condition`
+- 표시하려는 필드: `treatment_type`, `budget_range`, `consultation_text`
+
+#### **해결 방법**
+
+**1️⃣ 로그인 여부에 따라 다른 데이터 저장 (index.html)**
+
+```javascript
+// 로그인 여부 확인
+const currentUser = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
+const isLoggedIn = currentUser && localStorage.getItem('session_token');
+
+const formData = {
+    // 기본 정보
+    name: '고객 이름',
+    phone: '전화번호',
+    region: '서울특별시 강남구',
+    treatments: '트러블관리, 여드름',
+    budget: '10만원 ~ 20만원',
+    
+    // 로그인 회원인 경우 추가 정보
+    customer_type: isLoggedIn ? 'member' : 'guest',
+    customer_id: isLoggedIn ? currentUser.id : null,
+    customer_email: isLoggedIn ? currentUser.email : null,
+    customer_name: '고객 이름',  // 항상 저장
+    customer_phone: '전화번호'   // 항상 저장
+};
+```
+
+**2️⃣ 다중 조건 필터링 (customer-dashboard.js)**
+
+```javascript
+// 현재 사용자의 상담만 필터링 (우선순위 순서)
+currentConsultations = (data.data || []).filter(consultation => {
+    // 1순위: customer_id로 매칭 (로그인 회원)
+    if (consultation.customer_id && currentUser.id) {
+        return consultation.customer_id === currentUser.id;
+    }
+    // 2순위: customer_email로 매칭
+    if (consultation.customer_email && currentUser.email) {
+        return consultation.customer_email === currentUser.email;
+    }
+    // 3순위: customer_phone로 매칭 (비회원)
+    if (consultation.customer_phone && currentUser.phone) {
+        return consultation.customer_phone === currentUser.phone;
+    }
+    // 4순위: customer_name으로 매칭 (마지막 수단)
+    if (consultation.customer_name && currentUser.name) {
+        return consultation.customer_name === currentUser.name;
+    }
+    return false;
+});
+```
+
+**3️⃣ 유연한 필드명 매칭 (customer-dashboard.js)**
+
+```javascript
+// 여러 필드명 지원 (신규 + 구버전 호환)
+<strong>지역:</strong> ${consultation.region || (consultation.state + ' ' + consultation.district) || '지역 미설정'}
+<strong>관심 관리:</strong> ${consultation.treatments || consultation.treatment_type || '미설정'}
+<strong>예산:</strong> ${consultation.budget || consultation.budget_range || '미설정'}
+<strong>피부 상태:</strong> ${consultation.skin_condition || consultation.skinCondition || '미설정'}
+<strong>추가 요청:</strong> ${consultation.notes || consultation.consultation_text || '없음'}
+```
+
+#### **개선 효과**
+- ✅ 로그인 회원의 상담신청이 즉시 고객 대시보드에 표시됨
+- ✅ 비회원 상담신청도 전화번호로 추적 가능
+- ✅ 구버전 데이터와 신규 데이터 모두 호환
+- ✅ 통계 자동 업데이트 (총 상담, 대기중, 완료)
+
+#### **저장되는 회원 정보**
+
+| 구분 | customer_type | customer_id | customer_email | customer_name | customer_phone |
+|------|---------------|-------------|----------------|---------------|----------------|
+| **로그인 회원** | member | ✅ user_123 | ✅ user@email.com | ✅ 홍길동 | ✅ 010-1234-5678 |
+| **비회원** | guest | ❌ null | ❌ null | ✅ 홍길동 | ✅ 010-1234-5678 |
+
+#### **필터링 우선순위**
+```
+1순위: customer_id (로그인 회원, 가장 정확)
+   ↓
+2순위: customer_email (이메일 매칭)
+   ↓
+3순위: customer_phone (전화번호 매칭, 비회원)
+   ↓
+4순위: customer_name (이름 매칭, 마지막 수단)
+```
+
+#### **변경된 파일**
+- `index.html` (Lines 3083-3100)
+  - 로그인 여부 확인 로직 추가
+  - `customer_id`, `customer_email`, `customer_name`, `customer_phone` 저장
+
+- `js/customer-dashboard.js` (Lines 116-149, 308-340)
+  - 다중 조건 필터링 로직 추가
+  - 필드명 유연하게 매칭
+  - `displayConsultationsList()` 함수 수정
+
+---
+
+## ✅ v2.3.5.5 비회원 상담신청 내역 관리자 대시보드 연동 (2024-11-14)
+
+### **문제 해결: 비회원 상담신청이 관리자 대시보드에 표시되지 않음**
+
+#### **증상**
+- 메인 페이지에서 비회원이 상담신청을 완료해도 관리자 대시보드 "상담 관리" 탭에 표시되지 않음
+- 상담신청 데이터가 데이터베이스에 저장되지 않음
+
+#### **원인 분석**
+- `index.html`의 상담신청 폼이 데이터를 `console.log`로만 출력하고 데이터베이스에 저장하지 않음
+- `// TODO: 실제 API 연동` 주석으로 표시되어 있었으나 미구현 상태
+- 관리자 대시보드에 상담 상세보기 모달이 없음
+
+#### **해결 방법**
+
+**1. 상담신청 데이터 데이터베이스 저장 (index.html)**
+
+```javascript
+// 상담신청 폼 제출 시 consultations 테이블에 저장
+fetch('tables/consultations', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        name: '고객 이름',
+        phone: '전화번호',
+        state: '시/도',
+        district: '구/군',
+        region: '서울특별시 강남구',
+        treatments: '트러블관리, 여드름',
+        budget: '10만원 ~ 20만원',
+        skin_condition: '민감성',
+        notes: '추가 요청사항',
+        status: 'pending',
+        customer_type: 'guest'
+    })
+});
+```
+
+**2. 상담 상세보기 모달 추가 (admin-dashboard.html)**
+
+새로운 모달 추가:
+- 고객 정보 (이름, 전화번호, 지역, 예산)
+- 관심 관리 항목
+- 피부 상태
+- 추가 요청사항
+- 신청일시 및 최종 수정일시
+- 상태 변경 드롭다운 (대기중, 진행중, 완료, 취소)
+- 매칭된 업체 목록 (있는 경우)
+
+**3. JavaScript 필드명 매칭 (admin-dashboard.js)**
+
+```javascript
+// viewConsultation 함수 수정
+document.getElementById('view-consultation-name').textContent = consultation.name;
+document.getElementById('view-consultation-phone').textContent = consultation.phone;
+document.getElementById('view-consultation-region').textContent = consultation.region;
+document.getElementById('view-consultation-budget').textContent = consultation.budget;
+document.getElementById('view-consultation-skin-condition').textContent = consultation.skin_condition;
+document.getElementById('view-consultation-notes').textContent = consultation.notes;
+document.getElementById('view-consultation-treatments').textContent = consultation.treatments;
+```
+
+#### **개선 효과**
+- ✅ 비회원 상담신청이 즉시 데이터베이스에 저장됨
+- ✅ 관리자 대시보드에서 모든 상담신청 내역 조회 가능
+- ✅ 상담 상세보기 모달로 고객 정보 확인 가능
+- ✅ 상담 상태 변경 기능 (대기중 → 진행중 → 완료)
+- ✅ 실시간 상담 관리 시스템 완성
+
+#### **데이터베이스 필드**
+| 필드명 | 타입 | 설명 |
+|--------|------|------|
+| `id` | TEXT | 자동 생성 UUID |
+| `name` | TEXT | 고객 이름 |
+| `phone` | TEXT | 전화번호 |
+| `state` | TEXT | 시/도 |
+| `district` | TEXT | 구/군 |
+| `region` | TEXT | 전체 지역 (시/도 + 구/군) |
+| `treatments` | TEXT | 관심 관리 (쉼표 구분) |
+| `budget` | TEXT | 예산 범위 |
+| `skin_condition` | TEXT | 피부 상태 |
+| `notes` | TEXT | 추가 요청사항 |
+| `status` | TEXT | 상태 (pending, in_progress, completed, cancelled) |
+| `customer_type` | TEXT | 고객 타입 (guest, member) |
+| `created_at` | INTEGER | 신청일시 (timestamp) |
+| `updated_at` | INTEGER | 최종 수정일시 (timestamp) |
+
+#### **변경된 파일**
+- `index.html`: 상담신청 폼 제출 시 데이터베이스 저장 로직 추가 (Lines 3083-3119)
+- `admin-dashboard.html`: 상담 상세보기 모달 HTML 추가 (Lines 1428-1537)
+- `js/admin-dashboard.js`: viewConsultation 함수 필드명 수정, 모달 열기 로직 추가 (Lines 862-951)
 
 ---
 

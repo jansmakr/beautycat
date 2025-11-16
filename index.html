@@ -62,7 +62,7 @@
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 (Service Worker 제거 + API 오버라이드) -->
     <script src="sw-unregister.js" async></script>
-    <script src="api-global-override.js" async></script>
+    <script src="api-global-override.js?v=2.4.2" async></script>
     
     <!-- 🚨 Cloudflare API Helper (비동기 로드) -->
     <script src="js/api-helper.js" defer></script>
@@ -838,9 +838,9 @@
             display: block !important;
         }
         
-        /* 빠른 애니메이션 (0.15s → 0.1s) */
+        /* 빠른 애니메이션 (즉시 표시) */
         .animate-fade-in {
-            animation: fadeIn 0.1s ease-out;
+            animation: fadeIn 0.05s ease-out;
         }
         
         /* 즉시 표시 클래스 */
@@ -1174,7 +1174,7 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
         }
         
         #loadingScreen.hidden {
@@ -1520,16 +1520,6 @@
                 </button>
                 <h2 class="section-title-soft mb-3">피부관리실<br class="sm:hidden"> 상담 및 견적 신청</h2>
                 <p class="text-gray-600 text-base">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
-                
-                <!-- 새 디자인 체험 배너 -->
-                <div class="mt-6 mb-4">
-                    <a href="consultation-form-optimized.html" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105" style="text-decoration: none;">
-                        <i class="fas fa-sparkles"></i>
-                        <span>✨ 새로워진 상담신청 폼 체험하기</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <p class="text-xs text-gray-500 mt-2">컬러풀하고 직관적인 새 디자인 | 전국 17개 시/도 지원</p>
-                </div>
             </div>
             
             <!-- 간단한 초기 폼 (처음 접속 시 표시) -->
@@ -1761,42 +1751,42 @@
                         <i class="fas fa-spa question-icon icon-purple"></i>
                         <span>어떤 관리를 받고 싶으세요?</span>
                     </div>
-                    <p class="helper-text mb-4">여러 개 선택 가능해요</p>
+                    <p class="helper-text mb-4">여러 개 선택 가능해요 (클릭하여 선택)</p>
                     
                     <div class="checkbox-grid">
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="트러블관리">
                             <span>트러블관리</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="베이직관리">
                             <span>베이직관리</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="여드름">
                             <span>여드름</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="미백/톤업">
                             <span>미백/톤업</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="주름개선">
                             <span>주름개선</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="모공관리">
                             <span>모공관리</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="리프팅">
                             <span>리프팅</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="바디관리">
                             <span>바디관리</span>
                         </label>
-                        <label class="checkbox-option">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
                             <input type="checkbox" name="treatment" value="모름/기타">
                             <span>모름/기타</span>
                         </label>
@@ -1859,10 +1849,12 @@
                 </div>
 
                 <!-- 제출 버튼 -->
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane mr-2"></i>
-                    무료 견적 받기
-                </button>
+                <div class="flex justify-center mt-8">
+                    <button type="submit" class="submit-btn" style="font-size: 20px !important; padding: 20px 60px !important; font-weight: 700 !important; min-width: 280px !important;">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        무료 견적 받기
+                    </button>
+                </div>
 
                 <!-- 혜택 안내 -->
                 <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
@@ -2581,19 +2573,19 @@
         // 페이지 로드 시 도메인 상태 체크
         window.addEventListener('load', checkDomainStatus);
         
-        // 로딩 화면 제거
+        // 로딩 화면 제거 (빠른 전환)
         window.addEventListener('load', function() {
             const loadingScreen = document.getElementById('loadingScreen');
             
-            // 최소 로딩 시간 (0.8초) 후 페이드아웃
+            // 최소 로딩 시간 (0.2초) 후 즉시 페이드아웃
             setTimeout(() => {
                 loadingScreen.classList.add('hidden');
                 
-                // 완전히 제거 (1초 후)
+                // 완전히 제거 (0.3초 후)
                 setTimeout(() => {
                     loadingScreen.remove();
-                }, 500);
-            }, 800);
+                }, 300);
+            }, 200);
         });
         
         // 이미지 레이지 로딩
@@ -2998,17 +2990,25 @@
         }
 
 
+        // 체크박스 토글 함수 (전역)
+        function toggleCheckbox(label) {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            label.classList.toggle('selected', checkbox.checked);
+        }
+
         // 페이지 로드 후 실행
         document.addEventListener('DOMContentLoaded', function() {
             
-            // 체크박스 토글
+            // 체크박스 토글 (추가 지원 - DOMContentLoaded 후 동적 추가된 요소용)
             document.querySelectorAll('.checkbox-option').forEach(item => {
                 item.addEventListener('click', function(e) {
-                    if(e.target.tagName !== 'INPUT') {
+                    // onclick 이벤트가 이미 처리하므로 중복 방지
+                    if(e.target.tagName !== 'INPUT' && !this.hasAttribute('onclick')) {
                         const checkbox = this.querySelector('input');
                         checkbox.checked = !checkbox.checked;
+                        this.classList.toggle('selected', this.querySelector('input').checked);
                     }
-                    this.classList.toggle('selected', this.querySelector('input').checked);
                 });
             });
 
@@ -3090,28 +3090,82 @@
                     const treatments = Array.from(document.querySelectorAll('input[name="treatment"]:checked'))
                         .map(cb => cb.value);
                     
-                    const formData = {
-                        name: document.getElementById('customerName').value,
-                        phone: document.getElementById('customerPhone').value,
-                        state: document.getElementById('customerState').value,
-                        district: document.getElementById('customerDistrict').value,
-                        treatments: treatments,
+                    console.log('🔍 선택된 treatments:', treatments);
+                    console.log('🔍 treatments 타입:', typeof treatments, Array.isArray(treatments));
+                    
+                    // 로그인 여부 확인
+                    const currentUser = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
+                    const isLoggedIn = currentUser && localStorage.getItem('session_token');
+                    
+                    // 추가 정보를 JSON으로 저장
+                    const additionalInfo = {
                         budget: document.getElementById('budget').value,
-                        skinCondition: document.getElementById('skinCondition').value,
-                        notes: document.getElementById('importantFactors').value
+                        skin_condition: document.getElementById('skinCondition').value,
+                        notes: document.getElementById('importantFactors').value,
+                        customer_type: isLoggedIn ? 'member' : 'guest',
+                        customer_email: isLoggedIn ? currentUser.email : null,
+                        state: document.getElementById('customerState').value,
+                        district: document.getElementById('customerDistrict').value
                     };
                     
-                    console.log('상담 신청 데이터:', formData);
+                    // consultations 테이블 스키마에 맞춤
+                    const skinConcernsArray = additionalInfo.skin_concerns ? 
+                        additionalInfo.skin_concerns.split(',').map(s => s.trim()).filter(s => s) : [];
                     
-                    // TODO: 실제 API 연동
-                    alert('상담 신청이 완료되었습니다!\n담당자가 곧 연락드리겠습니다.');
+                    // ⚠️ 중요: D1 array 타입은 텍스트로 저장되므로 쉼표로 구분
+                    // JSON 배열이 아닌 "트러블관리,리프팅" 형식으로 저장
+                    const formData = {
+                        customer_name: document.getElementById('customerName').value,
+                        customer_phone: document.getElementById('customerPhone').value,
+                        customer_email: isLoggedIn ? currentUser.email : '',
+                        state: document.getElementById('customerState').value,
+                        district: document.getElementById('customerDistrict').value,
+                        treatment_types: treatments.length > 0 ? treatments.join(',') : '', // "트러블관리,리프팅" 형식
+                        skin_concerns: skinConcernsArray.length > 0 ? skinConcernsArray.join(',') : '', // 쉼표로 구분
+                        age_range: additionalInfo.age_range || '',
+                        budget_range: additionalInfo.budget_range || '',
+                        preferred_schedule: additionalInfo.preferred_time || '',
+                        additional_notes: additionalInfo.notes || '',
+                        status: 'pending',
+                        submission_date: new Date().toISOString()
+                    };
                     
-                    // 폼 초기화
-                    this.reset();
-                    document.querySelectorAll('.checkbox-option').forEach(opt => {
-                        opt.classList.remove('selected');
+                    console.log('📤 상담 신청 데이터:', formData);
+                    console.log('📤 treatment_types:', formData.treatment_types);
+                    console.log('📤 treatment_types JSON:', JSON.stringify(formData.treatment_types));
+                    
+                    // 데이터베이스에 저장
+                    fetch('tables/consultations', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(async response => {
+                        if (!response.ok) {
+                            // 에러 상세 정보 확인
+                            const errorText = await response.text();
+                            console.error('서버 응답:', errorText);
+                            throw new Error(`상담 신청 실패 (${response.status}): ${errorText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('상담 신청 성공:', data);
+                        alert('상담 신청이 완료되었습니다!\n담당자가 곧 연락드리겠습니다.');
+                        
+                        // 폼 초기화
+                        consultForm.reset();
+                        document.querySelectorAll('.checkbox-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        document.getElementById('photo-preview').classList.add('hidden');
+                    })
+                    .catch(error => {
+                        console.error('상담 신청 오류:', error);
+                        alert('상담 신청 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.\n\n오류: ' + error.message);
                     });
-                    document.getElementById('photo-preview').classList.add('hidden');
                 });
             }
             

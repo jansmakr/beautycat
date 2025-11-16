@@ -1,9 +1,14 @@
 /**
- * BeautyCat 글로벌 API Fetch 오버라이드
+ * BeautyCat 글로벌 API Fetch 오버라이드 v2.3.6.2
  * 모든 fetch('tables/...') 호출을 Cloudflare Workers API로 자동 변환
  * 
+ * 🔥 HOTFIX v2.3.6.2: sort=timestamp → sort=created_at 자동 변환
+ * 
  * 이 파일은 모든 HTML 파일에서 가장 먼저 로드되어야 합니다.
+ * 업데이트: 2024-11-16 v2.3.6.2
  */
+
+console.log('🚀 API Global Override v2.3.6.2 - timestamp 핫픽스 활성화');
 
 (function() {
     'use strict';
@@ -76,31 +81,47 @@
             return originalFetch(url, options);
         }
         
+        // 🔥 긴급 핫픽스: sort=timestamp → sort=created_at 자동 변환 (최우선 처리)
+        let processedUrl = url;
+        if (typeof url === 'string' && url.includes('sort=timestamp')) {
+            processedUrl = url.replace(/sort=timestamp/g, 'sort=created_at');
+            console.log('🔥 HOTFIX: sort=timestamp → sort=created_at 자동 변환');
+            console.log(`   Before: ${url}`);
+            console.log(`   After:  ${processedUrl}`);
+        }
+        
         // /tables/ 또는 tables/ 경로가 포함되어 있는지 확인
-        if (url.includes('/tables/') || url.startsWith('tables/')) {
+        if (processedUrl.includes('/tables/') || processedUrl.startsWith('tables/')) {
             try {
-                let targetUrl = url;
+                let targetUrl = processedUrl;
                 
                 // 상대 경로 처리 (tables/users, /tables/users)
-                if (url.startsWith('tables/') || url.startsWith('/tables/')) {
+                if (processedUrl.startsWith('tables/') || processedUrl.startsWith('/tables/')) {
                     // 앞의 슬래시 제거
-                    const cleanPath = url.replace(/^\//, '');
+                    const cleanPath = processedUrl.replace(/^\//, '');
                     
-                    targetUrl = `${WORKERS_API_BASE}/${cleanPath}`;
+                    // 🔥 CRITICAL FIX: sort=timestamp를 sort=created_at로 변환
+                    const finalPath = cleanPath.replace(/sort=timestamp/g, 'sort=created_at');
+                    
+                    targetUrl = `${WORKERS_API_BASE}/${finalPath}`;
                     
                     if (DEBUG) {
-                        console.log(`🔄 [상대경로 변환] ${url} → ${targetUrl}`);
+                        console.log(`🔄 [상대경로 변환] ${processedUrl} → ${targetUrl}`);
                     }
                 }
                 // 절대 경로 처리 (https://beautycat-v2.pages.dev/tables/users)
-                else if (url.match(/^https?:\/\//)) {
-                    const urlObj = new URL(url);
+                else if (processedUrl.match(/^https?:\/\//)) {
+                    const urlObj = new URL(processedUrl);
                     if (urlObj.pathname.startsWith('/tables/')) {
                         const cleanPath = urlObj.pathname.replace(/^\//, '');
-                        targetUrl = `${WORKERS_API_BASE}/${cleanPath}${urlObj.search}${urlObj.hash}`;
+                        
+                        // 🔥 CRITICAL FIX: search 파라미터에서도 sort=timestamp 변환
+                        let finalSearch = urlObj.search.replace(/sort=timestamp/g, 'sort=created_at');
+                        
+                        targetUrl = `${WORKERS_API_BASE}/${cleanPath}${finalSearch}${urlObj.hash}`;
                         
                         if (DEBUG) {
-                            console.log(`🔄 [절대경로 변환] ${url} → ${targetUrl}`);
+                            console.log(`🔄 [절대경로 변환] ${processedUrl} → ${targetUrl}`);
                         }
                     }
                 }
