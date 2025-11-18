@@ -4,9 +4,16 @@
 
 beautycat 사이트를 네이버 검색에 최적화하고 노출하기 위한 가이드입니다.
 
-## 🎉 최신 업데이트 (v2.4.7 - 2024-11-16)
+## 🎉 최신 업데이트 (v2.4.8 - 2024-11-16)
 
-### ✅ 네이버 웹마스터 도구 검사 완료
+### ✅ 회사 정보 업데이트 완료
+
+**변경 사항:**
+- 상호: `k-beautics` → **케이뷰틱스** (K-beautics)
+- 대표: **박대수** 추가
+- Schema.org 법인 정보 구조화 (legalName, founder, address)
+
+### ✅ 네이버 웹마스터 도구 검사 완료 (v2.4.7)
 
 **검사 결과:**
 - ✅ HTTP 규약 통과
@@ -55,20 +62,36 @@ https://beautycat.kr/sitemap.xml
 
 ## 📊 추가된 구조화 데이터 (Schema.org)
 
-### 1. Organization (조직 정보)
+### 1. Organization (조직 정보) ⭐ v2.4.8 업데이트
 ```json
 {
   "@type": "Organization",
-  "name": "beautycat",
-  "alternateName": "뷰티캣",
+  "name": "케이뷰틱스",
+  "alternateName": ["K-beautics", "beautycat", "뷰티캣"],
+  "legalName": "케이뷰틱스",
   "url": "https://beautycat.kr",
-  "logo": "https://beautycat.kr/images/beautycat-logo-v3.png"
+  "logo": "https://beautycat.kr/images/beautycat-logo-v3.png",
+  "founder": {
+    "@type": "Person",
+    "name": "박대수"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "서울 강서구 허준로198, 가양프라자 4층 406-03호 10호"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+82-507-1310-5873",
+    "email": "utuber@kakao.com"
+  }
 }
 ```
 
 **효과:**
 - 네이버 검색 결과에 로고 표시
 - 브랜드 신뢰도 향상
+- 법인 정보 정확성으로 검색 순위 개선
+- 사업자등록증과 정보 일치
 - 지식패널 생성 가능
 
 ### 2. Article (메인 콘텐츠)
