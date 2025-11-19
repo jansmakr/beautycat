@@ -1,9 +1,9 @@
 # BeautyCat 플랫폼 - 최종 매뉴얼 및 시스템 정보
 
-> **✨ 최신 업데이트: 회사 정보 업데이트! (2024-11-16)**
+> **✨ 최신 업데이트: 고객센터 전화번호 변경! (2024-11-17)**
 > 
-> **최종 업데이트:** 2024-11-16  
-> **버전:** v2.4.8 (상호명 및 대표자 정보 업데이트)  
+> **최종 업데이트:** 2024-11-17  
+> **버전:** v2.4.9 (고객센터 전화번호 070-7004-5902로 변경)  
 > **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
 > 
 > **🌐 프로덕션 URL:**
@@ -23,6 +23,29 @@
 > - SSL/TLS: ✅ Active
 > - CDN: ✅ Global
 > - GitHub Auto-deploy: ✅ Enabled
+
+---
+
+## 📞 v2.4.9 고객센터 전화번호 변경 (2024-11-17)
+
+### **고객센터 연락처 업데이트**
+
+**변경 내역:**
+- 전화번호: `0507-1310-5873` → `070-7004-5902`
+- Schema.org Organization 마크업 연락처 업데이트
+- Google Play 가이드 연락처 일괄 수정
+
+**수정된 위치:**
+1. `index.html` - 푸터 전화번호 (2곳)
+2. `GOOGLE_PLAY_REGISTRATION_GUIDE.md` - 개발자 정보, 고객센터, 개발팀 연락처 (3곳)
+3. `NAVER_WEBMASTER_GUIDE.md` - Schema.org contactPoint (1곳)
+
+**새 고객센터 번호:**
+```
+📞 070-7004-5902
+📧 utuber@kakao.com
+⏰ 평일 09:00-18:00
+```
 
 ---
 
@@ -4398,6 +4421,46 @@ Content-Type, Authorization, X-Requested-With
 
 ---
 
+---
+
+## 📱 모바일 앱 배포 가이드
+
+### **Google Play Store 앱 등록**
+
+beautycat을 안드로이드 앱으로 Google Play Store에 등록하는 완벽 가이드가 준비되어 있습니다.
+
+**📘 상세 가이드:** [GOOGLE_PLAY_REGISTRATION_GUIDE.md](GOOGLE_PLAY_REGISTRATION_GUIDE.md)
+
+**주요 내용:**
+- ✅ Google Play Console 계정 생성 ($25)
+- ✅ 필수 디자인 리소스 제작 (앱 아이콘, 피처 그래픽, 스크린샷)
+- ✅ TWA (Trusted Web Activity) 빌드 방법
+- ✅ AAB 파일 생성 및 서명
+- ✅ 앱 정보 작성 및 제출
+- ✅ 심사 통과 체크리스트
+- ✅ 예상 비용: 5-15만원, 기간: 5-7일
+
+**빠른 시작:**
+```bash
+# TWA 빌드 도구 설치
+npm install -g @bubblewrap/cli
+
+# 프로젝트 초기화
+bubblewrap init --manifest=https://beautycat.kr/manifest.json
+
+# APK/AAB 빌드
+bubblewrap build
+```
+
+**필수 준비물:**
+1. Google Play Console 계정 ($25)
+2. 앱 아이콘 512x512 PNG
+3. 피처 그래픽 1024x500 PNG
+4. 스크린샷 최소 2개
+5. 개인정보 처리방침 URL
+
+---
+
 **이 문서는 플랫폼 업데이트 시 함께 업데이트됩니다.**
-**최종 업데이트: 2025-11-05 20:00 KST**
-**버전: v2.2.4**
+**최종 업데이트: 2025-11-17 00:05 KST**
+**버전: v2.4.9**

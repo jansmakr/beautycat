@@ -81,7 +81,7 @@ https://beautycat.kr/sitemap.xml
   },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+82-507-1310-5873",
+    "telephone": "+82-70-7004-5902",
     "email": "utuber@kakao.com"
   }
 }
