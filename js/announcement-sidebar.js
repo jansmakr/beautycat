@@ -9,8 +9,8 @@ async function loadAnnouncementSidebar() {
     try {
         console.log('[공지사항 사이드바] 로딩 시작...');
         
-        // 최신 공지 3개 가져오기
-        const response = await fetch('/tables/announcements?limit=3&sort=-created_at');
+        // 최신 공지 4개 가져오기
+        const response = await fetch('/tables/announcements?limit=4&sort=-created_at');
         
         console.log('[공지사항 사이드바] API 응답 상태:', response.status);
         
@@ -41,6 +41,12 @@ async function loadAnnouncementSidebar() {
         document.body.appendChild(sidebar);
         console.log('[공지사항 사이드바] 사이드바 표시 완료');
         
+        // 모바일에서는 숨기기 (1024px 미만)
+        if (window.innerWidth < 1024) {
+            sidebar.style.display = 'none';
+            console.log('[공지사항 사이드바] 모바일 화면이므로 숨김 처리');
+        }
+        
     } catch (error) {
         console.error('[공지사항 사이드바] 로드 오류:', error);
     }
@@ -49,9 +55,23 @@ async function loadAnnouncementSidebar() {
 function createAnnouncementSidebar(announcements) {
     const sidebar = document.createElement('div');
     sidebar.id = 'announcement-sidebar';
-    sidebar.className = 'fixed top-20 right-4 w-80 bg-white rounded-2xl shadow-2xl z-40 hidden lg:block';
-    sidebar.style.maxHeight = '500px';
-    sidebar.style.overflowY = 'auto';
+    
+    // 인라인 스타일로 강제 적용 (하늘색 배경으로 강조)
+    sidebar.style.cssText = `
+        position: fixed !important;
+        top: 80px !important;
+        right: 16px !important;
+        width: 320px !important;
+        max-width: 90vw !important;
+        max-height: 500px !important;
+        overflow-y: auto !important;
+        z-index: 9999 !important;
+        background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.3), 0 10px 10px -5px rgba(14, 165, 233, 0.2) !important;
+        display: block !important;
+        border: 2px solid #38BDF8 !important;
+    `;
     
     const priorityColors = {
         'urgent': 'bg-red-50 border-red-200 text-red-900',
@@ -66,56 +86,52 @@ function createAnnouncementSidebar(announcements) {
     };
     
     sidebar.innerHTML = `
-        <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-primary-500 to-pink-500 rounded-t-2xl">
+        <div class="p-4 border-b" style="background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%); border-color: #0284C7; border-bottom-width: 2px; border-radius: 14px 14px 0 0;">
             <div class="flex items-center justify-between">
-                <h3 class="text-white font-bold text-lg">
+                <h3 class="text-white font-bold text-lg" style="text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <i class="fas fa-bell mr-2"></i>공지사항
                 </h3>
-                <a href="announcements.html" class="text-white text-sm hover:underline">
+                <a href="announcements.html" class="text-white text-sm hover:underline font-semibold">
                     전체보기 →
                 </a>
             </div>
         </div>
-        <div class="p-4 space-y-3">
+        <div class="p-3 space-y-2">
             ${announcements.map(ann => {
                 const priority = ann.priority || 'normal';
-                const colorClass = priorityColors[priority] || priorityColors['normal'];
                 const icon = priorityIcons[priority] || priorityIcons['normal'];
                 
-                const titlePreview = ann.title.length > 30 ? 
-                    ann.title.substring(0, 30) + '...' : 
+                const titlePreview = ann.title.length > 35 ? 
+                    ann.title.substring(0, 35) + '...' : 
                     ann.title;
-                
-                const contentPreview = ann.content.length > 50 ? 
-                    ann.content.substring(0, 50) + '...' : 
-                    ann.content;
                 
                 const date = formatDate(ann.created_at);
                 
                 return `
-                    <div class="border ${colorClass} rounded-xl p-3 cursor-pointer hover:shadow-md transition-all" 
-                         onclick="showAnnouncementDetail('${ann.id}')">
-                        <div class="flex items-start gap-2 mb-2">
+                    <div class="bg-white border-2 border-blue-200 rounded-lg p-3 cursor-pointer hover:shadow-lg hover:border-blue-400 transition-all" 
+                         onclick="showAnnouncementDetail('${ann.id}')"
+                         style="background: linear-gradient(to right, #FFFFFF 0%, #F0F9FF 100%);">
+                        <div class="flex items-center gap-2 mb-1">
                             ${icon}
-                            <h4 class="font-semibold text-sm flex-1" style="color: #1f2937;">
+                            <h4 class="font-bold text-sm flex-1" style="color: #0C4A6E; line-height: 1.4;">
                                 ${escapeHtml(titlePreview)}
                             </h4>
                         </div>
-                        <p class="text-xs mb-2 line-clamp-2" style="color: #4b5563;">
-                            ${escapeHtml(contentPreview)}
-                        </p>
-                        <div class="flex items-center justify-between text-xs" style="color: #6b7280;">
-                            <span>${date}</span>
-                            <span class="text-primary-600 hover:underline">자세히 →</span>
+                        <div class="flex items-center justify-between text-xs" style="color: #0369A1;">
+                            <span><i class="far fa-clock mr-1"></i>${date}</span>
+                            <span class="font-semibold hover:underline">자세히 →</span>
                         </div>
                     </div>
                 `;
             }).join('')}
         </div>
-        <div class="p-3 border-t border-gray-100 text-center">
+        <div class="p-3 border-t-2 text-center" style="border-color: #0284C7; background: linear-gradient(to bottom, #F0F9FF 0%, #FFFFFF 100%);">
             <a href="announcements.html" 
-               class="text-sm text-primary-600 hover:text-primary-700 font-medium">
-                모든 공지사항 보기 →
+               class="text-sm font-bold inline-block px-4 py-2 rounded-lg transition-all"
+               style="color: #0369A1; background: #E0F2FE; border: 2px solid #38BDF8;"
+               onmouseover="this.style.background='#BAE6FD'; this.style.borderColor='#0EA5E9';"
+               onmouseout="this.style.background='#E0F2FE'; this.style.borderColor='#38BDF8';">
+                <i class="fas fa-list mr-1"></i>모든 공지사항 보기 →
             </a>
         </div>
     `;
