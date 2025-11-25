@@ -77,12 +77,22 @@
 - 모바일 푸터: 사업자 정보 간소화 (상호, 대표, 주소만 표시)
 
 #### F. **텍스트 개선**
-- 회원가입 페이지: "업체" → "뷰티샵"으로 명칭 변경
+- 모든 사용자 노출 페이지: "업체" → "뷰티샵"으로 명칭 통일
+  - index.html: 메타 태그, FAQ, 배지 등
+  - login.html: 회원 유형 선택
+  - register.html: 회원가입 폼
+  - js/announcement-sidebar.js: 공지사항 배너 "샵" 배지
 
 #### G. **버그 수정**
 - 공지사항 모달: CORS 오류 수정 (PATCH 요청 제거)
 - 전화 상담 신청 버튼: 전역 함수 등록 및 안정성 향상
-- **지역별 대표샵 시/군/구 선택 기능 수정**: 이벤트 리스너 추가로 정상 작동
+- **지역별 대표샵 시/군/구 선택 기능 완전 수정**:
+  - `index.html`: DOMContentLoaded에 이벤트 리스너 추가
+  - `js/main.js`: 핵심 함수들을 전역(`window`) 객체에 등록
+    - `updateDistrictOptions()`: 구/군 드롭다운 업데이트
+    - `findAndDisplayRepresentativeShop()`: 대표샵 검색 및 표시
+    - `makePhoneCall()`: 전화 연결 기능
+  - 디버깅 로그 강화로 문제 추적 용이
 
 
 
