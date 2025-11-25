@@ -1003,6 +1003,23 @@
             body {
                 padding-bottom: max(80px, calc(80px + env(safe-area-inset-bottom)));
             }
+            
+            /* 모바일: 순서 변경 (CTA 버튼 먼저, 히어로 섹션 나중에) */
+            .main-content-wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+            .cta-buttons-section {
+                order: 1; /* 견적/전화 상담 버튼을 위로 */
+            }
+            .hero-section {
+                order: 2; /* 노란 테두리 박스를 아래로 */
+            }
+            
+            /* 모바일: 히어로 섹션 내 고양이 아이콘 숨김 */
+            .hero-cat-icon {
+                display: none !important;
+            }
         }
         
         @media (max-width: 375px) {
@@ -1722,12 +1739,12 @@
     </header>
 
     <!-- 메인 콘텐츠 -->
-    <main class="max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto;">
+    <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto;">
         <!-- 히어로 섹션 (야놀자 스타일) -->
-        <section class="gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto;">
             <div class="max-w-4xl mx-auto text-center" style="margin-left: auto; margin-right: auto;">
                 <!-- 뷰냥이 아이콘 -->
-                <div class="inline-block mb-6">
+                <div class="hero-cat-icon inline-block mb-6">
                     <div class="icon-bg-soft" style="padding: 24px;">
                         <span class="text-9xl">🐱</span>
                     </div>
@@ -1759,7 +1776,7 @@
         </section>
 
         <!-- 상담 방법 선택 (야놀자 스타일) -->
-        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+        <section class="cta-buttons-section mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
             <h2 class="section-title-soft text-center">어떤 상담이<br class="sm:hidden"> 필요하신가요?</h2>
             <p class="section-subtitle-soft text-center">원하시는 상담 방법을 선택해주세요</p>
             
@@ -1957,29 +1974,37 @@
                 <!-- 회원/비회원 안내 (로그인 상태에 따라 다르게 표시) -->
                 <div id="loginStatusInfo">
                     <!-- 비로그인 사용자용 안내 -->
-                    <div id="guestInfo" class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-                        <div class="flex items-center justify-center mb-2">
-                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                            <span class="text-blue-800 font-medium">비회원 상담 및 견적 신청</span>
+                    <!-- 회원 전용 안내 (2025.12.31까지) -->
+                    <div id="memberOnlyNotice" class="bg-gradient-to-r from-primary-500 to-pink-500 rounded-lg p-6 text-center text-white">
+                        <div class="flex items-center justify-center mb-3">
+                            <i class="fas fa-crown text-yellow-300 mr-2 text-2xl"></i>
+                            <span class="text-xl font-bold">회원 전용 서비스</span>
                         </div>
-                        <p class="text-blue-700 text-sm mb-3">비회원으로도 상담 및 견적<br class="sm:hidden">신청이 가능합니다.<br>더 정확한 매칭을 원하시면<br class="sm:hidden">회원가입을 추천드립니다.</p>
-                        <div class="flex gap-2">
-                            <button type="button" class="flex-1 touch-feedback" onclick="location.href='login.html'" style="border: 1px solid #000000 !important; background: white; color: #000000; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s;">
-                                로그인
+                        <p class="text-white text-sm mb-4 leading-relaxed">
+                            2025년 12월 31일까지<br>
+                            <strong>회원만 견적 신청이 가능</strong>합니다.<br>
+                            지금 바로 가입하고 맞춤 견적을 받아보세요!
+                        </p>
+                        <div class="flex gap-3">
+                            <button type="button" class="flex-1 bg-white text-primary-600 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 transition-all shadow-lg" onclick="location.href='login.html'">
+                                <i class="fas fa-sign-in-alt mr-2"></i>로그인
                             </button>
-                            <button type="button" class="flex-1 touch-feedback" onclick="location.href='register.html'" style="border: 1px solid #000000 !important; background: white; color: #000000; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s;">
-                                회원가입
+                            <button type="button" class="flex-1 bg-yellow-400 text-gray-900 font-semibold py-3 px-6 rounded-lg hover:bg-yellow-300 transition-all shadow-lg" onclick="location.href='register.html'">
+                                <i class="fas fa-user-plus mr-2"></i>회원가입
                             </button>
                         </div>
+                        <p class="text-white text-xs mt-3 opacity-90">
+                            <i class="fas fa-gift mr-1"></i>회원가입 시 특별 혜택 제공
+                        </p>
                     </div>
                     
-                    <!-- 로그인 사용자용 안내 (JavaScript로 표시) -->
+                    <!-- 로그인 사용자용 안내 -->
                     <div id="memberInfo" class="bg-green-50 border border-green-200 rounded-lg p-4 text-center" style="display: none;">
                         <div class="flex items-center justify-center mb-2">
                             <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span class="text-green-800 font-medium">회원 상담 및 견적 신청</span>
+                            <span class="text-green-800 font-medium">견적 신청 가능</span>
                         </div>
-                        <p class="text-green-700 text-sm">로그인된 상태입니다. 더 정확한 맞춤 상담을 받아보세요!</p>
+                        <p class="text-green-700 text-sm">로그인된 상태입니다. 아래 양식을 작성해주세요!</p>
                     </div>
                 </div>
                 
@@ -2275,6 +2300,7 @@
     <script src="js/main.js?v=2.1.3" defer></script>
     <script src="js/auth.js?v=2.1.3" defer></script>
     <script src="js/regional-matching.js?v=2.1.3" defer></script>
+    <script src="js/representative-shops-data.js?v=2.5.4" defer></script>
     <script src="js/announcement-sidebar.js?v=2.5.4" defer></script>
     
     <script>
@@ -2727,52 +2753,93 @@
             }
         }
 
-        // 대표샵 로드
-        async function loadRepresentativeShops() {
-            const state = document.getElementById('phoneState').value;
-            const district = document.getElementById('phoneDistrict').value;
-            const shopsList = document.getElementById('shopsList');
+        // 대표샵 로드 함수 (신규 데이터 사용)
+        function loadRepresentativeShop() {
+            const stateSelect = document.getElementById('representative-state');
+            const districtSelect = document.getElementById('representative-district');
+            const shopInfo = document.getElementById('representative-shop-info');
+            const noShop = document.getElementById('no-representative-shop');
+            
+            const state = stateSelect.value;
+            const district = districtSelect.value;
+            
+            // 초기화
+            shopInfo.classList.add('hidden');
+            noShop.classList.add('hidden');
             
             if (!state || !district) {
-                shopsList.innerHTML = '';
                 return;
             }
             
-            // 데모 대표샵 데이터
-            const demoShops = {
-                '서울특별시-강남구': { name: '강남 뷰티스킨', phone: '02-123-4567', services: '여드름케어, 미백관리' },
-                '서울특별시-서초구': { name: '서초 글로우샵', phone: '02-234-5678', services: '안티에이징, 수분케어' },
-                '부산광역시-해운대구': { name: '해운대 마리나', phone: '051-345-6789', services: '바디케어, 페이스케어' },
-                '대구광역시-수성구': { name: '수성 클린스킨', phone: '053-456-7890', services: '모공케어, 트러블케어' },
-                '인천광역시-남동구': { name: '남동 퍼펙트', phone: '032-567-8901', services: '미백, 보습케어' },
-                '광주광역시-북구': { name: '북구 아름다운', phone: '062-678-9012', services: '리프팅, 안티에이징' }
-            };
-            
-            const shopKey = `${state}-${district}`;
-            const shop = demoShops[shopKey];
+            // representativeShopsData에서 해당 지역 대표샵 찾기
+            const shop = typeof getRepresentativeShopByRegion !== 'undefined' 
+                ? getRepresentativeShopByRegion(state, district)
+                : null;
             
             if (shop) {
-                shopsList.innerHTML = `
-                    <div class="bg-pink-50 p-4 rounded-lg border border-pink-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-gray-800">${shop.name}</h3>
-                            <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded">대표샵</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2">${shop.services}</p>
-                        <button onclick="makeCall('${shop.phone}')" 
-                                class="w-full bg-pink-500 text-white py-2 rounded-lg font-medium flex items-center justify-center space-x-2 hover:bg-pink-600 transition-colors">
-                            <i class="fas fa-phone"></i>
-                            <span>${shop.phone}</span>
-                        </button>
-                    </div>
-                `;
+                // 대표샵 정보 표시
+                document.getElementById('rep-shop-name').textContent = shop.shopName;
+                document.getElementById('rep-shop-location').textContent = shop.address;
+                document.getElementById('rep-shop-phone').textContent = shop.phone;
+                
+                // 대표 관리 태그 표시
+                const treatmentsContainer = document.getElementById('rep-shop-treatments');
+                treatmentsContainer.innerHTML = '';
+                if (shop.representativeTreatments && Array.isArray(shop.representativeTreatments)) {
+                    shop.representativeTreatments.slice(0, 3).forEach(treatment => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge-soft text-xs';
+                        badge.style.cssText = 'background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; padding: 4px 8px;';
+                        badge.textContent = treatment;
+                        treatmentsContainer.appendChild(badge);
+                    });
+                }
+                
+                // 전화하기 버튼 이벤트
+                const callButton = document.getElementById('call-representative-shop');
+                callButton.onclick = function() {
+                    makeCall(shop.phone);
+                };
+                
+                shopInfo.classList.remove('hidden');
             } else {
-                shopsList.innerHTML = `
-                    <div class="text-center py-4 text-gray-500">
-                        <i class="fas fa-info-circle mb-2"></i>
-                        <p class="text-sm">해당 지역에 등록된 대표샵이 없습니다.</p>
-                    </div>
-                `;
+                // 대표샵 없음 표시
+                noShop.classList.remove('hidden');
+            }
+        }
+        
+        // 구/군 옵션 로드 함수 (지역별 대표샵 데이터 기반)
+        function loadRepresentativeDistricts() {
+            const stateSelect = document.getElementById('representative-state');
+            const districtSelect = document.getElementById('representative-district');
+            const state = stateSelect.value;
+            
+            // 초기화
+            districtSelect.innerHTML = '<option value="">구/군 선택</option>';
+            districtSelect.disabled = true;
+            document.getElementById('representative-shop-info').classList.add('hidden');
+            document.getElementById('no-representative-shop').classList.add('hidden');
+            
+            if (!state) return;
+            
+            // 해당 시/도의 대표샵 목록 가져오기
+            const shops = typeof getRepresentativeShopsByState !== 'undefined'
+                ? getRepresentativeShopsByState(state)
+                : [];
+            
+            if (shops.length > 0) {
+                // 중복 제거하여 구/군 목록 생성
+                const districts = [...new Set(shops.map(shop => shop.district))];
+                districts.sort();
+                
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+                
+                districtSelect.disabled = false;
             }
         }
 
@@ -3363,6 +3430,34 @@
         // 페이지 로드 후 실행
         document.addEventListener('DOMContentLoaded', function() {
             
+            // 로그인 상태 확인 및 안내 메시지 표시
+            const currentUser = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
+            const isLoggedIn = currentUser && localStorage.getItem('session_token');
+            const memberOnlyNotice = document.getElementById('memberOnlyNotice');
+            const memberInfo = document.getElementById('memberInfo');
+            
+            if (isLoggedIn) {
+                // 로그인 상태: 회원 안내 표시
+                if (memberOnlyNotice) memberOnlyNotice.style.display = 'none';
+                if (memberInfo) memberInfo.style.display = 'block';
+            } else {
+                // 비로그인 상태: 회원 전용 안내 표시
+                if (memberOnlyNotice) memberOnlyNotice.style.display = 'block';
+                if (memberInfo) memberInfo.style.display = 'none';
+            }
+            
+            // 대표샵 지역 선택 이벤트 리스너
+            const representativeStateSelect = document.getElementById('representative-state');
+            const representativeDistrictSelect = document.getElementById('representative-district');
+            
+            if (representativeStateSelect) {
+                representativeStateSelect.addEventListener('change', loadRepresentativeDistricts);
+            }
+            
+            if (representativeDistrictSelect) {
+                representativeDistrictSelect.addEventListener('change', loadRepresentativeShop);
+            }
+            
             // 체크박스 토글 (추가 지원 - DOMContentLoaded 후 동적 추가된 요소용)
             document.querySelectorAll('.checkbox-option').forEach(item => {
                 item.addEventListener('click', function(e) {
@@ -3443,11 +3538,24 @@
                 });
             }
 
-            // 폼 제출 처리 (기존 로직 유지)
+            // 폼 제출 처리 (회원 전용 - 2025.12.31까지)
             const consultForm = document.getElementById('consultationForm');
             if(consultForm) {
                 consultForm.addEventListener('submit', function(e) {
                     e.preventDefault();
+                    
+                    // 로그인 여부 확인
+                    const currentUser = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
+                    const isLoggedIn = currentUser && localStorage.getItem('session_token');
+                    
+                    // 2025년 12월 31일까지 회원만 신청 가능
+                    const memberOnlyDeadline = new Date('2025-12-31T23:59:59');
+                    const now = new Date();
+                    
+                    if (now <= memberOnlyDeadline && !isLoggedIn) {
+                        alert('2025년 12월 31일까지는 회원만 견적 신청이 가능합니다.\n\n로그인 또는 회원가입 후 이용해주세요.');
+                        return;
+                    }
                     
                     // 선택된 관리 옵션 수집
                     const treatments = Array.from(document.querySelectorAll('input[name="treatment"]:checked'))
@@ -3455,10 +3563,6 @@
                     
                     console.log('🔍 선택된 treatments:', treatments);
                     console.log('🔍 treatments 타입:', typeof treatments, Array.isArray(treatments));
-                    
-                    // 로그인 여부 확인
-                    const currentUser = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
-                    const isLoggedIn = currentUser && localStorage.getItem('session_token');
                     
                     // 추가 정보를 JSON으로 저장
                     const additionalInfo = {
