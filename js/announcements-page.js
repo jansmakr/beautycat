@@ -85,15 +85,29 @@ async function loadShopAnnouncements() {
         
     } catch (error) {
         console.error('업체 공지사항 로드 오류:', error);
-        document.getElementById('shop-announcements').innerHTML = `
-            <div class="text-center py-8 bg-white rounded-lg shadow">
-                <i class="fas fa-exclamation-circle text-red-400 text-4xl mb-3"></i>
-                <p class="text-gray-600">업체 소식을 불러올 수 없습니다.</p>
-                <button onclick="loadShopAnnouncements()" class="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-                    다시 시도
-                </button>
-            </div>
-        `;
+        
+        // 500 에러인 경우 (테이블 없음)
+        if (error.message.includes('500')) {
+            allShopAnnouncements = [];
+            document.getElementById('shop-announcements').innerHTML = `
+                <div class="text-center py-8 bg-gray-50 rounded-lg">
+                    <i class="fas fa-box-open text-gray-300 text-4xl mb-3"></i>
+                    <p class="text-gray-500">아직 등록된 업체 소식이 없습니다.</p>
+                    <p class="text-sm text-gray-400 mt-2">업체들이 곧 다양한 소식을 전해드릴 예정입니다.</p>
+                </div>
+            `;
+        } else {
+            // 기타 네트워크 에러
+            document.getElementById('shop-announcements').innerHTML = `
+                <div class="text-center py-8 bg-white rounded-lg shadow">
+                    <i class="fas fa-exclamation-circle text-red-400 text-4xl mb-3"></i>
+                    <p class="text-gray-600">업체 소식을 불러올 수 없습니다.</p>
+                    <button onclick="loadShopAnnouncements()" class="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                        다시 시도
+                    </button>
+                </div>
+            `;
+        }
     }
 }
 
