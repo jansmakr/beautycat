@@ -102,10 +102,10 @@ function createAnnouncementSidebar(announcements) {
         right: 0 !important;
         width: 100% !important;
         z-index: 9998 !important;
-        background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%) !important;
-        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
+        background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%) !important;
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2) !important;
         display: block !important;
-        border-bottom: 2px solid #38BDF8 !important;
+        border-bottom: 2px solid #FF6B35 !important;
         animation: slideDown 0.3s ease-out !important;
     `;
     
@@ -146,12 +146,12 @@ function createAnnouncementSidebar(announcements) {
             padding: 6px 12px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid #38BDF8;
+            border: 1px solid #FF6B35;
             flex-shrink: 0;
         }
         .announcement-banner-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
         }
     `;
     document.head.appendChild(style);
@@ -171,14 +171,14 @@ function createAnnouncementSidebar(announcements) {
     sidebar.innerHTML = `
         <div id="announcement-sidebar-content">
             <div style="display: inline-flex; align-items: center; flex-shrink: 0;">
-                <i class="fas fa-bullhorn" style="color: #0EA5E9; font-size: 16px; margin-right: 8px;"></i>
-                <span style="font-weight: 600; color: #0C4A6E; font-size: 13px;">공지</span>
+                <i class="fas fa-bullhorn" style="color: #FF6B35; font-size: 16px; margin-right: 8px;"></i>
+                <span style="font-weight: 600; color: #92400E; font-size: 13px;">샵 공지</span>
             </div>
             ${announcements.map((ann, index) => {
                 const isAdmin = ann.type === 'admin';
                 const badge = isAdmin ? 
                     '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">운영팀</span>' : 
-                    '<span style="font-size: 10px; background: #0EA5E9; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">뷰티샵</span>';
+                    '<span style="font-size: 10px; background: #FF6B35; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">뷰티샵</span>';
                 
                 const titlePreview = ann.title.length > 30 ? 
                     ann.title.substring(0, 30) + '...' : 
@@ -188,16 +188,16 @@ function createAnnouncementSidebar(announcements) {
                     <div class="announcement-banner-item" 
                          onclick="showAnnouncementDetail('${ann.id}', '${ann.type}')">
                         ${badge}
-                        <span style="font-size: 12px; color: #0C4A6E; font-weight: 500; white-space: nowrap;">
+                        <span style="font-size: 12px; color: #92400E; font-weight: 500; white-space: nowrap;">
                             ${escapeHtml(titlePreview)}
                         </span>
                     </div>
                 `;
             }).join('')}
             <a href="announcements.html" 
-               style="display: inline-flex; align-items: center; background: #0EA5E9; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #0284C7; white-space: nowrap;"
-               onmouseover="this.style.background='#0284C7'"
-               onmouseout="this.style.background='#0EA5E9'">
+               style="display: inline-flex; align-items: center; background: #FF6B35; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #EA580C; white-space: nowrap;"
+               onmouseover="this.style.background='#EA580C'"
+               onmouseout="this.style.background='#FF6B35'">
                 전체보기 <i class="fas fa-chevron-right" style="margin-left: 4px; font-size: 10px;"></i>
             </a>
         </div>
