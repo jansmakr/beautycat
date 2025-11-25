@@ -84,20 +84,27 @@
   - register.html: 회원가입 폼
   - js/announcement-sidebar.js: 공지사항 배너 "샵" 배지
 
-#### G. **버그 수정 (v2.5.4 HOTFIX)**
+#### G. **버그 수정 (v2.5.4 HOTFIX-2)**
 - 공지사항 모달: CORS 오류 수정 (PATCH 요청 제거)
 - 전화 상담 신청 버튼: 전역 함수 등록 및 안정성 향상
-- **지역별 대표샵 시/군/구 선택 기능 완전 수정**:
-  - **타입 불일치 해결**: DB 스키마 `approved INTEGER (0/1)` vs 코드 `=== true` 충돌
+- **지역별 대표샵 시/군/구 선택 기능 완전 수정** (CRITICAL FIX):
+  - **근본 원인**: DB 스키마 필드명 불일치
+    - DB 실제 구조: `status TEXT CHECK (status IN ('pending', 'approved', ...))` ✅
+    - 이전 코드: `shop.approved === 1` 만 체크 ❌
+  - **최종 해결**: 
+    - 필터링 조건: `shop.status === 'approved' || shop.approved === 1 || shop.approved === true`
+    - 폴백 데이터 30개: `status: 'approved'` 필드 추가
+    - 디버깅 로그로 각 샵의 필터링 상태 실시간 확인
   - 프로덕션 환경에서도 대표샵 데이터 로드 활성화
-  - 필터링 조건: `shop.approved === 1 || shop.approved === true` (양쪽 모두 지원)
-  - 폴백 데이터 30개: `approved: true` → `approved: 1` (DB 스키마 일치)
   - `index.html`: DOMContentLoaded에 이벤트 리스너 추가
   - `js/main.js`: 핵심 함수들을 전역(`window`) 객체에 등록
     - `updateDistrictOptions()`: 구/군 드롭다운 업데이트
     - `findAndDisplayRepresentativeShop()`: 대표샵 검색 및 표시
     - `makePhoneCall()`: 전화 연결 기능 (현재 준비중 알림)
-  - 디버깅 로그 강화로 문제 추적 용이
+- **대표샵 "준비중" 표시**:
+  - 샵 이름: "(준비중)" 접미사 추가
+  - 전화하기 버튼: "전화하기 (준비중)" + 70% 투명도
+  - 클릭 시 안내 알림 표시
 - **공지사항 배너 디자인 변경**:
   - 색상: 하늘색 → 주황색 (#FF6B35) - CTA 버튼과 차별화
   - 레이블: "공지" → "샵 공지"

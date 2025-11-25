@@ -2367,7 +2367,11 @@ function updateDistrictOptions(state) {
     // representativeShopsData에서 해당 시/도의 구/군 목록 추출
     const availableDistricts = [...new Set(
         representativeShopsData
-            .filter(shop => shop.state === state && (shop.approved === 1 || shop.approved === true))
+            .filter(shop => {
+                const isApproved = shop.status === 'approved' || shop.approved === 1 || shop.approved === true;
+                console.log('🔍 [필터링]', shop.shop_name, '- state:', shop.state === state, '/ approved:', isApproved);
+                return shop.state === state && isApproved;
+            })
             .map(shop => shop.district)
     )].sort();
     
@@ -2407,36 +2411,36 @@ async function loadRepresentativeShops() {
         
         // v2.5.4: 전국 30개 대표샵 데이터 (2024-11-25)
         representativeShopsData = [
-            { id: 'rep_seoul_gangnam_001', shop_name: '강남 프리미엄 스킨케어', state: '서울특별시', district: '강남구', phone: '02-1234-5678', address: '테헤란로 123길 45, 강남타워 3층', representative_treatments: ['보톡스', '필러', '레이저 토닝'], approved: 1 },
-            { id: 'rep_seoul_songpa_001', shop_name: '송파 에스테틱 센터', state: '서울특별시', district: '송파구', phone: '02-2345-6789', address: '올림픽로 456, 롯데월드타워몰 5층', representative_treatments: ['안티에이징', '모공 관리', '여드름 케어'], approved: 1 },
-            { id: 'rep_seoul_mapo_001', shop_name: '홍대 뷰티 클리닉', state: '서울특별시', district: '마포구', phone: '02-3456-7890', address: '양화로 789, 홍대입구역 2번출구 앞', representative_treatments: ['클렌징', '리프팅', '아쿠아필'], approved: 1 },
-            { id: 'rep_seoul_jongno_001', shop_name: '종로 한방 스킨케어', state: '서울특별시', district: '종로구', phone: '02-4567-8901', address: '종로 101, 광화문역 6번출구', representative_treatments: ['한방팩', '경락 마사지', '독소 배출'], approved: 1 },
-            { id: 'rep_seoul_seocho_001', shop_name: '서초 명품 에스테틱', state: '서울특별시', district: '서초구', phone: '02-5678-9012', address: '서초대로 234, 강남역 12번출구', representative_treatments: ['골드 테라피', '콜라겐 관리', '스킨부스터'], approved: 1 },
-            { id: 'rep_gyeonggi_suwon_001', shop_name: '수원 퀸즈 스킨케어', state: '경기도', district: '수원시', phone: '031-1234-5678', address: '권선로 567, 수원역 광장', representative_treatments: ['기미 관리', '주름 개선', '탄력 관리'], approved: 1 },
-            { id: 'rep_gyeonggi_seongnam_001', shop_name: '분당 뷰티 라운지', state: '경기도', district: '성남시', phone: '031-2345-6789', address: '판교역로 890, 판교테크노밸리 A동', representative_treatments: ['스트레스 케어', '눈가 관리', '목 주름 관리'], approved: 1 },
-            { id: 'rep_gyeonggi_goyang_001', shop_name: '일산 프레쉬 스킨', state: '경기도', district: '고양시', phone: '031-3456-7890', address: '중앙로 1111, 일산서구청 맞은편', representative_treatments: ['홈 케어 교육', '계절 관리', '민감 피부 케어'], approved: 1 },
-            { id: 'rep_gyeonggi_yongin_001', shop_name: '용인 뷰티 스파', state: '경기도', district: '용인시', phone: '031-4567-8901', address: '기흥로 1234, 기흥역 앞 메디컬빌딩 2층', representative_treatments: ['바디 케어', '슬리밍', '셀룰라이트 제거'], approved: 1 },
-            { id: 'rep_gyeonggi_bucheon_001', shop_name: '부천 스킨 앤 바디', state: '경기도', district: '부천시', phone: '032-1234-5678', address: '부천로 2222, 부천시청역 7번출구', representative_treatments: ['복합 관리', '전신 케어', '웨딩 관리'], approved: 1 },
-            { id: 'rep_incheon_namdong_001', shop_name: '인천 골든 스킨', state: '인천광역시', district: '남동구', phone: '032-2345-6789', address: '구월로 3333, 구월동 로데오거리', representative_treatments: ['지성 피부 관리', '건성 피부 관리', '복합성 관리'], approved: 1 },
-            { id: 'rep_incheon_yeonsu_001', shop_name: '송도 럭셔리 케어', state: '인천광역시', district: '연수구', phone: '032-3456-7890', address: '송도국제대로 456, 센트럴파크 타워 3층', representative_treatments: ['프리미엄 케어', '해외 명품 관리', 'VIP 전용'], approved: 1 },
-            { id: 'rep_busan_haeundae_001', shop_name: '해운대 씨사이드 스킨', state: '부산광역시', district: '해운대구', phone: '051-1234-5678', address: '해운대해변로 789, 해운대역 3번출구', representative_treatments: ['해양 테라피', '미네랄 관리', '시원한 진정 케어'], approved: 1 },
-            { id: 'rep_busan_busanjin_001', shop_name: '서면 에이스 스킨케어', state: '부산광역시', district: '부산진구', phone: '051-2345-6789', address: '중앙대로 1010, 서면역 5번출구', representative_treatments: ['연령별 케어', '피부 타입별 관리', '계절 맞춤 관리'], approved: 1 },
-            { id: 'rep_daegu_suseong_001', shop_name: '대구 엘레강스 뷰티', state: '대구광역시', district: '수성구', phone: '053-1234-5678', address: '달구벌대로 2020, 수성못 근처', representative_treatments: ['프리미엄 관리', '여성 전용 관리', '럭셔리 패키지'], approved: 1 },
-            { id: 'rep_daegu_jung_001', shop_name: '동성로 스킨 스튜디오', state: '대구광역시', district: '중구', phone: '053-2345-6789', address: '동성로 303, 중앙로역 2번출구', representative_treatments: ['트러블 케어', '모공 축소', '미백 관리'], approved: 1 },
-            { id: 'rep_gwangju_donggu_001', shop_name: '광주 퓨어 스킨', state: '광주광역시', district: '동구', phone: '062-1234-5678', address: '금남로 404, 충장로역 1번출구', representative_treatments: ['청결 관리', '자극 없는 케어', '진정 관리'], approved: 1 },
-            { id: 'rep_gwangju_seogu_001', shop_name: '상무지구 뷰티 센터', state: '광주광역시', district: '서구', phone: '062-2345-6789', address: '상무대로 505, 상무역 3번출구', representative_treatments: ['피로 회복 관리', '스트레스 완화', '눈가 집중 케어'], approved: 1 },
-            { id: 'rep_daejeon_seogu_001', shop_name: '대전 힐링 스파', state: '대전광역시', district: '서구', phone: '042-1234-5678', address: '둔산로 606, 둔산역 4번출구', representative_treatments: ['힐링 관리', '아로마 마사지', '스파 테라피'], approved: 1 },
-            { id: 'rep_daejeon_junggu_001', shop_name: '은행동 클래식 스킨', state: '대전광역시', district: '중구', phone: '042-2345-6789', address: '대종로 707, 대전역 2번출구', representative_treatments: ['클래식 케어', '전통 관리법', '현대 피부 과학'], approved: 1 },
-            { id: 'rep_ulsan_namgu_001', shop_name: '울산 프레쉬 케어', state: '울산광역시', district: '남구', phone: '052-1234-5678', address: '삼산로 808, 삼산역 1번출구', representative_treatments: ['최신 기술 관리', 'LED 테라피', '고주파 관리'], approved: 1 },
-            { id: 'rep_sejong_001', shop_name: '세종 로얄 스킨케어', state: '세종특별자치시', district: '세종시', phone: '044-1234-5678', address: '한누리대로 909, 시청역 5번출구', representative_treatments: ['공직자 전용 관리', '스트레스 완화', '피로 해소'], approved: 1 },
-            { id: 'rep_gangwon_chuncheon_001', shop_name: '춘천 네이처 스킨', state: '강원도', district: '춘천시', phone: '033-1234-5678', address: '중앙로 1000, 춘천역 앞', representative_treatments: ['자연주의 관리', '천연 팩', '유기농 제품'], approved: 1 },
-            { id: 'rep_chungbuk_cheongju_001', shop_name: '청주 엘리트 뷰티', state: '충청북도', district: '청주시', phone: '043-1234-5678', address: '상당로 1111, 청주시청 근처', representative_treatments: ['개인 맞춤 관리', '피부 진단', '정밀 케어'], approved: 1 },
-            { id: 'rep_chungnam_cheonan_001', shop_name: '천안 스타 스킨케어', state: '충청남도', district: '천안시', phone: '041-1234-5678', address: '불당대로 1212, 천안역 3번출구', representative_treatments: ['합리적 가격 관리', '기본 케어', '주기적 관리'], approved: 1 },
-            { id: 'rep_jeonbuk_jeonju_001', shop_name: '전주 한옥 스킨케어', state: '전라북도', district: '전주시', phone: '063-1234-5678', address: '태조로 1313, 전주한옥마을 입구', representative_treatments: ['한방 전통 관리', '한옥 힐링', '전통 재료 사용'], approved: 1 },
-            { id: 'rep_jeonnam_mokpo_001', shop_name: '목포 오션 뷰티', state: '전라남도', district: '목포시', phone: '061-1234-5678', address: '평화로 1414, 목포역 광장', representative_treatments: ['해양 성분 관리', '미네랄 케어', '시원한 관리'], approved: 1 },
-            { id: 'rep_gyeongbuk_pohang_001', shop_name: '포항 실버 스킨', state: '경상북도', district: '포항시', phone: '054-1234-5678', address: '포스코대로 1515, 포항역 1번출구', representative_treatments: ['전 연령 케어', '시니어 관리', '청소년 관리'], approved: 1 },
-            { id: 'rep_gyeongnam_changwon_001', shop_name: '창원 퓨어 뷰티', state: '경상남도', district: '창원시', phone: '055-1234-5678', address: '용지로 1616, 창원중앙역 4번출구', representative_treatments: ['위생 관리', '청결 케어', '안전한 관리'], approved: 1 },
-            { id: 'rep_jeju_jejusi_001', shop_name: '제주 아일랜드 스파', state: '제주특별자치도', district: '제주시', phone: '064-1234-5678', address: '연동 1717, 제주공항 근처', representative_treatments: ['제주 천연 재료', '화산송이 팩', '감귤 비타민 케어'], approved: 1 }
+            { id: 'rep_seoul_gangnam_001', shop_name: '강남 프리미엄 스킨케어', state: '서울특별시', district: '강남구', phone: '02-1234-5678', address: '테헤란로 123길 45, 강남타워 3층', representative_treatments: ['보톡스', '필러', '레이저 토닝'], approved: 1, status: 'approved' },
+            { id: 'rep_seoul_songpa_001', shop_name: '송파 에스테틱 센터', state: '서울특별시', district: '송파구', phone: '02-2345-6789', address: '올림픽로 456, 롯데월드타워몰 5층', representative_treatments: ['안티에이징', '모공 관리', '여드름 케어'], approved: 1, status: 'approved' },
+            { id: 'rep_seoul_mapo_001', shop_name: '홍대 뷰티 클리닉', state: '서울특별시', district: '마포구', phone: '02-3456-7890', address: '양화로 789, 홍대입구역 2번출구 앞', representative_treatments: ['클렌징', '리프팅', '아쿠아필'], approved: 1, status: 'approved' },
+            { id: 'rep_seoul_jongno_001', shop_name: '종로 한방 스킨케어', state: '서울특별시', district: '종로구', phone: '02-4567-8901', address: '종로 101, 광화문역 6번출구', representative_treatments: ['한방팩', '경락 마사지', '독소 배출'], approved: 1, status: 'approved' },
+            { id: 'rep_seoul_seocho_001', shop_name: '서초 명품 에스테틱', state: '서울특별시', district: '서초구', phone: '02-5678-9012', address: '서초대로 234, 강남역 12번출구', representative_treatments: ['골드 테라피', '콜라겐 관리', '스킨부스터'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeonggi_suwon_001', shop_name: '수원 퀸즈 스킨케어', state: '경기도', district: '수원시', phone: '031-1234-5678', address: '권선로 567, 수원역 광장', representative_treatments: ['기미 관리', '주름 개선', '탄력 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeonggi_seongnam_001', shop_name: '분당 뷰티 라운지', state: '경기도', district: '성남시', phone: '031-2345-6789', address: '판교역로 890, 판교테크노밸리 A동', representative_treatments: ['스트레스 케어', '눈가 관리', '목 주름 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeonggi_goyang_001', shop_name: '일산 프레쉬 스킨', state: '경기도', district: '고양시', phone: '031-3456-7890', address: '중앙로 1111, 일산서구청 맞은편', representative_treatments: ['홈 케어 교육', '계절 관리', '민감 피부 케어'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeonggi_yongin_001', shop_name: '용인 뷰티 스파', state: '경기도', district: '용인시', phone: '031-4567-8901', address: '기흥로 1234, 기흥역 앞 메디컬빌딩 2층', representative_treatments: ['바디 케어', '슬리밍', '셀룰라이트 제거'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeonggi_bucheon_001', shop_name: '부천 스킨 앤 바디', state: '경기도', district: '부천시', phone: '032-1234-5678', address: '부천로 2222, 부천시청역 7번출구', representative_treatments: ['복합 관리', '전신 케어', '웨딩 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_incheon_namdong_001', shop_name: '인천 골든 스킨', state: '인천광역시', district: '남동구', phone: '032-2345-6789', address: '구월로 3333, 구월동 로데오거리', representative_treatments: ['지성 피부 관리', '건성 피부 관리', '복합성 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_incheon_yeonsu_001', shop_name: '송도 럭셔리 케어', state: '인천광역시', district: '연수구', phone: '032-3456-7890', address: '송도국제대로 456, 센트럴파크 타워 3층', representative_treatments: ['프리미엄 케어', '해외 명품 관리', 'VIP 전용'], approved: 1, status: 'approved' },
+            { id: 'rep_busan_haeundae_001', shop_name: '해운대 씨사이드 스킨', state: '부산광역시', district: '해운대구', phone: '051-1234-5678', address: '해운대해변로 789, 해운대역 3번출구', representative_treatments: ['해양 테라피', '미네랄 관리', '시원한 진정 케어'], approved: 1, status: 'approved' },
+            { id: 'rep_busan_busanjin_001', shop_name: '서면 에이스 스킨케어', state: '부산광역시', district: '부산진구', phone: '051-2345-6789', address: '중앙대로 1010, 서면역 5번출구', representative_treatments: ['연령별 케어', '피부 타입별 관리', '계절 맞춤 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_daegu_suseong_001', shop_name: '대구 엘레강스 뷰티', state: '대구광역시', district: '수성구', phone: '053-1234-5678', address: '달구벌대로 2020, 수성못 근처', representative_treatments: ['프리미엄 관리', '여성 전용 관리', '럭셔리 패키지'], approved: 1, status: 'approved' },
+            { id: 'rep_daegu_jung_001', shop_name: '동성로 스킨 스튜디오', state: '대구광역시', district: '중구', phone: '053-2345-6789', address: '동성로 303, 중앙로역 2번출구', representative_treatments: ['트러블 케어', '모공 축소', '미백 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_gwangju_donggu_001', shop_name: '광주 퓨어 스킨', state: '광주광역시', district: '동구', phone: '062-1234-5678', address: '금남로 404, 충장로역 1번출구', representative_treatments: ['청결 관리', '자극 없는 케어', '진정 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_gwangju_seogu_001', shop_name: '상무지구 뷰티 센터', state: '광주광역시', district: '서구', phone: '062-2345-6789', address: '상무대로 505, 상무역 3번출구', representative_treatments: ['피로 회복 관리', '스트레스 완화', '눈가 집중 케어'], approved: 1, status: 'approved' },
+            { id: 'rep_daejeon_seogu_001', shop_name: '대전 힐링 스파', state: '대전광역시', district: '서구', phone: '042-1234-5678', address: '둔산로 606, 둔산역 4번출구', representative_treatments: ['힐링 관리', '아로마 마사지', '스파 테라피'], approved: 1, status: 'approved' },
+            { id: 'rep_daejeon_junggu_001', shop_name: '은행동 클래식 스킨', state: '대전광역시', district: '중구', phone: '042-2345-6789', address: '대종로 707, 대전역 2번출구', representative_treatments: ['클래식 케어', '전통 관리법', '현대 피부 과학'], approved: 1, status: 'approved' },
+            { id: 'rep_ulsan_namgu_001', shop_name: '울산 프레쉬 케어', state: '울산광역시', district: '남구', phone: '052-1234-5678', address: '삼산로 808, 삼산역 1번출구', representative_treatments: ['최신 기술 관리', 'LED 테라피', '고주파 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_sejong_001', shop_name: '세종 로얄 스킨케어', state: '세종특별자치시', district: '세종시', phone: '044-1234-5678', address: '한누리대로 909, 시청역 5번출구', representative_treatments: ['공직자 전용 관리', '스트레스 완화', '피로 해소'], approved: 1, status: 'approved' },
+            { id: 'rep_gangwon_chuncheon_001', shop_name: '춘천 네이처 스킨', state: '강원도', district: '춘천시', phone: '033-1234-5678', address: '중앙로 1000, 춘천역 앞', representative_treatments: ['자연주의 관리', '천연 팩', '유기농 제품'], approved: 1, status: 'approved' },
+            { id: 'rep_chungbuk_cheongju_001', shop_name: '청주 엘리트 뷰티', state: '충청북도', district: '청주시', phone: '043-1234-5678', address: '상당로 1111, 청주시청 근처', representative_treatments: ['개인 맞춤 관리', '피부 진단', '정밀 케어'], approved: 1, status: 'approved' },
+            { id: 'rep_chungnam_cheonan_001', shop_name: '천안 스타 스킨케어', state: '충청남도', district: '천안시', phone: '041-1234-5678', address: '불당대로 1212, 천안역 3번출구', representative_treatments: ['합리적 가격 관리', '기본 케어', '주기적 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_jeonbuk_jeonju_001', shop_name: '전주 한옥 스킨케어', state: '전라북도', district: '전주시', phone: '063-1234-5678', address: '태조로 1313, 전주한옥마을 입구', representative_treatments: ['한방 전통 관리', '한옥 힐링', '전통 재료 사용'], approved: 1, status: 'approved' },
+            { id: 'rep_jeonnam_mokpo_001', shop_name: '목포 오션 뷰티', state: '전라남도', district: '목포시', phone: '061-1234-5678', address: '평화로 1414, 목포역 광장', representative_treatments: ['해양 성분 관리', '미네랄 케어', '시원한 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeongbuk_pohang_001', shop_name: '포항 실버 스킨', state: '경상북도', district: '포항시', phone: '054-1234-5678', address: '포스코대로 1515, 포항역 1번출구', representative_treatments: ['전 연령 케어', '시니어 관리', '청소년 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_gyeongnam_changwon_001', shop_name: '창원 퓨어 뷰티', state: '경상남도', district: '창원시', phone: '055-1234-5678', address: '용지로 1616, 창원중앙역 4번출구', representative_treatments: ['위생 관리', '청결 케어', '안전한 관리'], approved: 1, status: 'approved' },
+            { id: 'rep_jeju_jejusi_001', shop_name: '제주 아일랜드 스파', state: '제주특별자치도', district: '제주시', phone: '064-1234-5678', address: '연동 1717, 제주공항 근처', representative_treatments: ['제주 천연 재료', '화산송이 팩', '감귤 비타민 케어'], approved: 1, status: 'approved' }
         ];
         
         console.log('🏪 데모 대표샵 데이터 로드 완료');
@@ -2447,11 +2451,12 @@ async function loadRepresentativeShops() {
 function findAndDisplayRepresentativeShop(state, district) {
     console.log('🔍 [대표샵] 검색 시작:', { state, district });
     
-    const representativeShop = representativeShopsData.find(shop => 
-        shop.state === state && 
-        shop.district === district && 
-        (shop.approved === 1 || shop.approved === true)
-    );
+    const representativeShop = representativeShopsData.find(shop => {
+        const isApproved = shop.status === 'approved' || shop.approved === 1 || shop.approved === true;
+        return shop.state === state && 
+               shop.district === district && 
+               isApproved;
+    });
     
     if (representativeShop) {
         console.log('✅ [대표샵] 검색 성공:', representativeShop.shop_name);
