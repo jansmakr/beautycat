@@ -1,22 +1,22 @@
-// 공지사항 관리 시스템
-let allAnnouncements = [];
-let currentAnnouncement = null;
+// 공지사항 관리 시스템 (Admin Dashboard 전용)
+let adminAnnouncements = [];
+let currentAdminAnnouncement = null;
 
 // 공지사항 로드
 async function loadAnnouncements(updateTable = true) {
     try {
         const response = await fetch('tables/announcements?limit=100&sort=created_at');
         const data = await response.json();
-        allAnnouncements = data.data || [];
+        adminAnnouncements = data.data || [];
         
         if (updateTable) {
-            displayAnnouncements(allAnnouncements);
+            displayAnnouncements(adminAnnouncements);
         }
     } catch (error) {
         console.error('공지사항 로드 오류:', error);
         
         // 데모 데이터
-        allAnnouncements = [
+        adminAnnouncements = [
             {
                 id: 'ann_001',
                 title: '서비스 오픈 안내',
@@ -44,7 +44,7 @@ async function loadAnnouncements(updateTable = true) {
         ];
         
         if (updateTable) {
-            displayAnnouncements(allAnnouncements);
+            displayAnnouncements(adminAnnouncements);
         }
     }
 }
@@ -156,28 +156,28 @@ function showAnnouncementModal(announcementId = null) {
     
     if (announcementId) {
         // 수정 모드
-        currentAnnouncement = allAnnouncements.find(a => a.id === announcementId);
-        if (!currentAnnouncement) {
+        currentAdminAnnouncement = adminAnnouncements.find(a => a.id === announcementId);
+        if (!currentAdminAnnouncement) {
             alert('공지사항을 찾을 수 없습니다.');
             return;
         }
         
         title.textContent = '공지사항 수정';
-        document.getElementById('announcement-id').value = currentAnnouncement.id;
-        document.getElementById('announcement-title').value = currentAnnouncement.title || '';
-        document.getElementById('announcement-priority').value = currentAnnouncement.priority || 'normal';
-        document.getElementById('announcement-target').value = currentAnnouncement.target_audience || 'all';
-        document.getElementById('announcement-pinned').checked = currentAnnouncement.is_pinned || false;
-        document.getElementById('announcement-published').checked = currentAnnouncement.is_published || false;
-        document.getElementById('announcement-content').value = currentAnnouncement.content || '';
+        document.getElementById('announcement-id').value = currentAdminAnnouncement.id;
+        document.getElementById('announcement-title').value = currentAdminAnnouncement.title || '';
+        document.getElementById('announcement-priority').value = currentAdminAnnouncement.priority || 'normal';
+        document.getElementById('announcement-target').value = currentAdminAnnouncement.target_audience || 'all';
+        document.getElementById('announcement-pinned').checked = currentAdminAnnouncement.is_pinned || false;
+        document.getElementById('announcement-published').checked = currentAdminAnnouncement.is_published || false;
+        document.getElementById('announcement-content').value = currentAdminAnnouncement.content || '';
         
-        if (currentAnnouncement.publish_date) {
-            const publishDate = new Date(currentAnnouncement.publish_date);
+        if (currentAdminAnnouncement.publish_date) {
+            const publishDate = new Date(currentAdminAnnouncement.publish_date);
             document.getElementById('announcement-publish-date').value = publishDate.toISOString().slice(0, 16);
         }
         
-        if (currentAnnouncement.expire_date) {
-            const expireDate = new Date(currentAnnouncement.expire_date);
+        if (currentAdminAnnouncement.expire_date) {
+            const expireDate = new Date(currentAdminAnnouncement.expire_date);
             document.getElementById('announcement-expire-date').value = expireDate.toISOString().slice(0, 16);
         }
         
@@ -194,7 +194,7 @@ function showAnnouncementModal(announcementId = null) {
         document.getElementById('announcement-publish-date').value = now.toISOString().slice(0, 16);
         
         document.getElementById('announcement-submit-text').textContent = '저장';
-        currentAnnouncement = null;
+        currentAdminAnnouncement = null;
     }
     
     modal.classList.remove('hidden');
@@ -204,7 +204,7 @@ function showAnnouncementModal(announcementId = null) {
 function closeAnnouncementModal() {
     const modal = document.getElementById('announcement-modal');
     modal.classList.add('hidden');
-    currentAnnouncement = null;
+    currentAdminAnnouncement = null;
 }
 
 // 공지사항 저장
@@ -228,7 +228,7 @@ async function saveAnnouncement() {
         is_published: published,
         publish_date: publishDate ? new Date(publishDate).toISOString() : new Date().toISOString(),
         expire_date: expireDate ? new Date(expireDate).toISOString() : null,
-        views: id ? currentAnnouncement?.views || 0 : 0
+        views: id ? currentAdminAnnouncement?.views || 0 : 0
     };
     
     try {
@@ -266,7 +266,7 @@ async function saveAnnouncement() {
 
 // 공지사항 보기
 function viewAnnouncement(announcementId) {
-    const announcement = allAnnouncements.find(a => a.id === announcementId);
+    const announcement = adminAnnouncements.find(a => a.id === announcementId);
     if (!announcement) {
         alert('공지사항을 찾을 수 없습니다.');
         return;
@@ -306,10 +306,10 @@ async function deleteAnnouncement(announcementId) {
 // 공지사항 필터링
 function filterAnnouncements() {
     const filter = document.getElementById('announcement-filter').value;
-    let filtered = allAnnouncements;
+    let filtered = adminAnnouncements;
     
     if (filter) {
-        filtered = allAnnouncements.filter(ann => {
+        filtered = adminAnnouncements.filter(ann => {
             if (filter === 'published') {
                 return ann.is_published === true;
             } else if (filter === 'draft') {
