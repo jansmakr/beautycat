@@ -177,8 +177,8 @@ function createAnnouncementSidebar(announcements) {
             ${announcements.map((ann, index) => {
                 const isAdmin = ann.type === 'admin';
                 const badge = isAdmin ? 
-                    '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">운영팀</span>' : 
-                    '<span style="font-size: 10px; background: #0EA5E9; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">샵</span>';
+                    '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">운영팀</span>' : 
+                    '<span style="font-size: 10px; background: #0EA5E9; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">뷰티샵</span>';
                 
                 const titlePreview = ann.title.length > 30 ? 
                     ann.title.substring(0, 30) + '...' : 
@@ -188,14 +188,14 @@ function createAnnouncementSidebar(announcements) {
                     <div class="announcement-banner-item" 
                          onclick="showAnnouncementDetail('${ann.id}', '${ann.type}')">
                         ${badge}
-                        <span style="font-size: 12px; color: #0C4A6E; font-weight: 500;">
+                        <span style="font-size: 12px; color: #0C4A6E; font-weight: 500; white-space: nowrap;">
                             ${escapeHtml(titlePreview)}
                         </span>
                     </div>
                 `;
             }).join('')}
             <a href="announcements.html" 
-               style="display: inline-flex; align-items: center; background: #0EA5E9; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #0284C7;"
+               style="display: inline-flex; align-items: center; background: #0EA5E9; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #0284C7; white-space: nowrap;"
                onmouseover="this.style.background='#0284C7'"
                onmouseout="this.style.background='#0EA5E9'">
                 전체보기 <i class="fas fa-chevron-right" style="margin-left: 4px; font-size: 10px;"></i>

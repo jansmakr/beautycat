@@ -2353,6 +2353,9 @@ function initializeRepresentativeShops() {
 function updateDistrictOptions(state) {
     const districtSelect = document.getElementById('representative-district');
     
+    console.log('🏪 [대표샵] 시/도 선택:', state);
+    console.log('🏪 [대표샵] 전체 대표샵 데이터:', representativeShopsData.length, '개');
+    
     if (!state) {
         districtSelect.disabled = true;
         districtSelect.innerHTML = '<option value="">먼저 시/도를 선택하세요</option>';
@@ -2366,16 +2369,23 @@ function updateDistrictOptions(state) {
             .map(shop => shop.district)
     )].sort();
     
+    console.log('🏪 [대표샵] 선택 가능한 구/군:', availableDistricts);
+    
     if (availableDistricts.length > 0) {
         districtSelect.disabled = false;
         districtSelect.innerHTML = '<option value="">시/군/구 선택</option>' + 
             availableDistricts.map(district => `<option value="${district}">${district}</option>`).join('');
+        console.log('✅ [대표샵] 구/군 옵션', availableDistricts.length, '개 로드 완료');
     } else {
         // 해당 시/도에 대표샵이 없는 경우
         districtSelect.disabled = true;
         districtSelect.innerHTML = '<option value="">해당 지역에 대표샵이 없습니다</option>';
+        console.warn('⚠️ [대표샵] 해당 지역에 대표샵 없음:', state);
     }
 }
+
+// 전역 함수로 등록
+window.updateDistrictOptions = updateDistrictOptions;
 
 // 대표샵 데이터 로드
 async function loadRepresentativeShops() {
@@ -2433,6 +2443,8 @@ async function loadRepresentativeShops() {
 
 // 대표샵 검색 및 표시
 function findAndDisplayRepresentativeShop(state, district) {
+    console.log('🔍 [대표샵] 검색 시작:', { state, district });
+    
     const representativeShop = representativeShopsData.find(shop => 
         shop.state === state && 
         shop.district === district && 
@@ -2440,11 +2452,16 @@ function findAndDisplayRepresentativeShop(state, district) {
     );
     
     if (representativeShop) {
+        console.log('✅ [대표샵] 검색 성공:', representativeShop.shop_name);
         displayRepresentativeShop(representativeShop);
     } else {
+        console.warn('⚠️ [대표샵] 검색 실패: 해당 지역에 대표샵 없음');
         showNoRepresentativeShop();
     }
 }
+
+// 전역 함수로 등록
+window.findAndDisplayRepresentativeShop = findAndDisplayRepresentativeShop;
 
 // 대표샵 정보 표시
 function displayRepresentativeShop(shop) {
@@ -2491,14 +2508,18 @@ function hideRepresentativeShopInfo() {
 
 // 전화하기 기능
 function makePhoneCall(phoneNumber, shopName) {
+    console.log('📞 [전화하기] 시작:', { shopName, phoneNumber });
+    
     // 모바일에서는 전화앱 실행
     if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        console.log('📱 [전화하기] 모바일 전화앱 실행');
         window.location.href = `tel:${phoneNumber}`;
     } else {
         // 데스크톱에서는 확인 메시지와 함께 번호 표시
         const message = `${shopName}에 전화하시겠습니까?\n\n전화번호: ${phoneNumber}\n\n모바일에서는 자동으로 전화앱이 실행됩니다.`;
         
         if (confirm(message)) {
+            console.log('💻 [전화하기] 데스크톱 - 전화번호 복사');
             // 전화번호를 클립보드에 복사 (가능한 경우)
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(phoneNumber).then(() => {
@@ -2515,6 +2536,9 @@ function makePhoneCall(phoneNumber, shopName) {
     // 통계 기록 (선택적)
     recordPhoneCallStat(shopName, phoneNumber);
 }
+
+// 전역 함수로 등록
+window.makePhoneCall = makePhoneCall;
 
 // 전화 통계 기록
 function recordPhoneCallStat(shopName, phoneNumber) {
