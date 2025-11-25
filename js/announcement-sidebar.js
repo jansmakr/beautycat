@@ -9,11 +9,11 @@ async function loadAnnouncementSidebar() {
     try {
         console.log('[샵 이벤트 사이드바] 로딩 시작...');
         
-        // 관리자 공지 1개 가져오기
-        const adminResponse = await fetch('/tables/announcements?limit=1&sort=-created_at');
-        
-        // 샵 공지 3개 가져오기
-        const shopResponse = await fetch('/tables/shop_announcements?limit=3&sort=-created_at');
+        // 관리자 공지와 샵 공지를 병렬로 가져오기 (각각 최대 10개씩)
+        const [adminResponse, shopResponse] = await Promise.all([
+            fetch('/tables/announcements?limit=10&sort=-created_at'),
+            fetch('/tables/shop_announcements?limit=10&sort=-created_at')
+        ]);
         
         console.log('[샵 이벤트 사이드바] 관리자 공지 응답:', adminResponse.status);
         console.log('[샵 이벤트 사이드바] 샵 공지 응답:', shopResponse.status);
@@ -23,39 +23,58 @@ async function loadAnnouncementSidebar() {
         // 관리자 공지 처리
         if (adminResponse.ok) {
             const adminData = await adminResponse.json();
+            console.log('[샵 이벤트 사이드바] 관리자 공지 원본 데이터:', adminData.data?.length || 0, '개');
             const adminAnnouncements = (adminData.data || []).filter(ann => 
                 ann.is_published && 
                 (ann.target_audience === 'customers' || ann.target_audience === 'all')
-            ).slice(0, 1);
+            );
             
             allAnnouncements = allAnnouncements.concat(adminAnnouncements.map(ann => ({
                 ...ann,
                 type: 'admin'
             })));
+            console.log('[샵 이벤트 사이드바] 필터링 후 관리자 공지:', adminAnnouncements.length, '개');
         }
         
         // 샵 공지 처리
         if (shopResponse.ok) {
             const shopData = await shopResponse.json();
+            console.log('[샵 이벤트 사이드바] 샵 공지 원본 데이터:', shopData.data?.length || 0, '개');
             const shopAnnouncements = (shopData.data || []).filter(ann => 
                 ann.is_published
-            ).slice(0, 3);
+            );
             
             allAnnouncements = allAnnouncements.concat(shopAnnouncements.map(ann => ({
                 ...ann,
                 type: 'shop'
             })));
+            console.log('[샵 이벤트 사이드바] 필터링 후 샵 공지:', shopAnnouncements.length, '개');
         }
         
-        console.log('[샵 이벤트 사이드바] 총 공지:', allAnnouncements.length + '개 (관리자: 1개, 샵: 3개)');
+        // 최신순 정렬 (created_at 기준)
+        allAnnouncements.sort((a, b) => {
+            const dateA = new Date(a.created_at || 0).getTime();
+            const dateB = new Date(b.created_at || 0).getTime();
+            return dateB - dateA; // 최신순
+        });
         
-        if (allAnnouncements.length === 0) {
+        // 상위 4개만 선택
+        const topAnnouncements = allAnnouncements.slice(0, 4);
+        
+        console.log('[샵 이벤트 사이드바] 총 공지:', allAnnouncements.length, '개 → 표시:', topAnnouncements.length, '개');
+        console.log('[샵 이벤트 사이드바] 표시할 공지 상세:', topAnnouncements.map(ann => ({
+            type: ann.type,
+            title: ann.title,
+            id: ann.id
+        })));
+        
+        if (topAnnouncements.length === 0) {
             console.warn('[샵 이벤트 사이드바] 표시할 공지사항 없음');
             return;
         }
         
         // 사이드바 생성
-        const sidebar = createAnnouncementSidebar(allAnnouncements);
+        const sidebar = createAnnouncementSidebar(topAnnouncements);
         
         // body에 추가
         document.body.appendChild(sidebar);
@@ -75,30 +94,67 @@ function createAnnouncementSidebar(announcements) {
     const sidebar = document.createElement('div');
     sidebar.id = 'announcement-sidebar';
     
-    // 인라인 스타일로 강제 적용 (하늘색 배경으로 강조)
-    // 모바일에서도 보이도록 수정
+    // 상단 배너 스타일로 변경
     sidebar.style.cssText = `
         position: fixed !important;
-        top: 80px !important;
-        right: 8px !important;
-        width: 280px !important;
-        max-width: calc(100vw - 16px) !important;
-        max-height: 70vh !important;
-        overflow-y: auto !important;
-        z-index: 9999 !important;
+        top: 60px !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        z-index: 9998 !important;
         background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%) !important;
-        border-radius: 16px !important;
-        box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.3), 0 10px 10px -5px rgba(14, 165, 233, 0.2) !important;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2) !important;
         display: block !important;
-        border: 2px solid #38BDF8 !important;
+        border-bottom: 2px solid #38BDF8 !important;
+        animation: slideDown 0.3s ease-out !important;
     `;
     
-    // 모바일에서는 작게 표시
-    if (window.innerWidth < 768) {
-        sidebar.style.width = '260px';
-        sidebar.style.top = '70px';
-        sidebar.style.right = '4px';
-    }
+    // 애니메이션 추가
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        #announcement-sidebar-content {
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding: 8px 16px;
+            gap: 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        #announcement-sidebar-content::-webkit-scrollbar {
+            display: none;
+        }
+        .announcement-banner-item {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #38BDF8;
+            flex-shrink: 0;
+        }
+        .announcement-banner-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3);
+        }
+    `;
+    document.head.appendChild(style);
     
     const priorityColors = {
         'urgent': 'bg-red-50 border-red-200 text-red-900',
@@ -113,48 +169,36 @@ function createAnnouncementSidebar(announcements) {
     };
     
     sidebar.innerHTML = `
-        <div class="p-3 border-b" style="background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%); border-color: #0284C7; border-bottom-width: 2px; border-radius: 14px 14px 0 0;">
-            <div class="flex items-center justify-between">
-                <h3 class="text-white font-bold" style="font-size: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    <i class="fas fa-gift mr-1"></i>샵 이벤트 및 공지
-                </h3>
-                <a href="announcements.html" class="text-white hover:underline font-semibold" style="font-size: 11px;">
-                    전체보기 →
-                </a>
+        <div id="announcement-sidebar-content">
+            <div style="display: inline-flex; align-items: center; flex-shrink: 0;">
+                <i class="fas fa-bullhorn" style="color: #0EA5E9; font-size: 16px; margin-right: 8px;"></i>
+                <span style="font-weight: 600; color: #0C4A6E; font-size: 13px;">공지</span>
             </div>
-        </div>
-        <div class="p-2.5 space-y-1.5">
             ${announcements.map((ann, index) => {
                 const isAdmin = ann.type === 'admin';
                 const badge = isAdmin ? 
-                    '<span class="px-1.5 py-0.5 rounded" style="font-size: 10px; background: #DC2626; color: white; font-weight: 600;">운영팀</span>' : 
-                    '<span class="px-1.5 py-0.5 rounded" style="font-size: 10px; background: #0EA5E9; color: white; font-weight: 600;">샵</span>';
+                    '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">운영팀</span>' : 
+                    '<span style="font-size: 10px; background: #0EA5E9; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px;">샵</span>';
                 
-                const titlePreview = ann.title.length > 24 ? 
-                    ann.title.substring(0, 24) + '...' : 
+                const titlePreview = ann.title.length > 30 ? 
+                    ann.title.substring(0, 30) + '...' : 
                     ann.title;
                 
                 return `
-                    <div class="bg-white border border-blue-200 rounded-lg px-2 py-1.5 cursor-pointer hover:shadow-md hover:border-blue-400 transition-all" 
-                         onclick="showAnnouncementDetail('${ann.id}', '${ann.type}')"
-                         style="background: linear-gradient(to right, #FFFFFF 0%, #F0F9FF 100%);">
-                        <div class="flex items-center gap-1.5">
-                            ${badge}
-                            <h4 class="font-semibold flex-1 truncate" style="font-size: 11px; color: #0C4A6E; line-height: 1.3;">
-                                ${escapeHtml(titlePreview)}
-                            </h4>
-                        </div>
+                    <div class="announcement-banner-item" 
+                         onclick="showAnnouncementDetail('${ann.id}', '${ann.type}')">
+                        ${badge}
+                        <span style="font-size: 12px; color: #0C4A6E; font-weight: 500;">
+                            ${escapeHtml(titlePreview)}
+                        </span>
                     </div>
                 `;
             }).join('')}
-        </div>
-        <div class="p-2.5 border-t-2 text-center" style="border-color: #0284C7; background: linear-gradient(to bottom, #F0F9FF 0%, #FFFFFF 100%);">
             <a href="announcements.html" 
-               class="font-bold inline-block px-3 py-1.5 rounded-lg transition-all"
-               style="font-size: 11px; color: #0369A1; background: #E0F2FE; border: 2px solid #38BDF8;"
-               onmouseover="this.style.background='#BAE6FD'; this.style.borderColor='#0EA5E9';"
-               onmouseout="this.style.background='#E0F2FE'; this.style.borderColor='#38BDF8';">
-                <i class="fas fa-list" style="font-size: 10px;"></i> 모든 공지사항 보기 →
+               style="display: inline-flex; align-items: center; background: #0EA5E9; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #0284C7;"
+               onmouseover="this.style.background='#0284C7'"
+               onmouseout="this.style.background='#0EA5E9'">
+                전체보기 <i class="fas fa-chevron-right" style="margin-left: 4px; font-size: 10px;"></i>
             </a>
         </div>
     `;
