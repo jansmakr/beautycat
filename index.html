@@ -2537,6 +2537,39 @@
             formElements.forEach(el => {
                 el.classList.add('hardware-accelerated');
             });
+            
+            // 대표샵 시/도 선택 이벤트 리스너 추가
+            const repStateSelect = document.getElementById('representative-state');
+            const repDistrictSelect = document.getElementById('representative-district');
+            
+            if (repStateSelect && repDistrictSelect) {
+                console.log('✅ [대표샵] 시/도 드롭다운 이벤트 리스너 등록');
+                
+                repStateSelect.addEventListener('change', function() {
+                    const selectedState = this.value;
+                    console.log('📍 [대표샵] 시/도 선택됨:', selectedState);
+                    
+                    if (selectedState && typeof window.updateDistrictOptions === 'function') {
+                        window.updateDistrictOptions(selectedState);
+                    } else if (!selectedState) {
+                        repDistrictSelect.disabled = true;
+                        repDistrictSelect.innerHTML = '<option value="">먼저 시/도를 선택하세요</option>';
+                        document.getElementById('representative-shop-info').classList.add('hidden');
+                    }
+                });
+                
+                repDistrictSelect.addEventListener('change', function() {
+                    const selectedState = repStateSelect.value;
+                    const selectedDistrict = this.value;
+                    console.log('📍 [대표샵] 구/군 선택됨:', selectedDistrict);
+                    
+                    if (selectedState && selectedDistrict && typeof window.findAndDisplayRepresentativeShop === 'function') {
+                        window.findAndDisplayRepresentativeShop(selectedState, selectedDistrict);
+                    }
+                });
+            } else {
+                console.error('❌ [대표샵] 시/도 또는 구/군 드롭다운을 찾을 수 없습니다');
+            }
         });
         
         // PWA 매니페스트 및 서비스워커 등록
