@@ -1,0 +1,337 @@
+/* ========================================
+   BeautyCat 고속 전환 최적화
+   버전: v2.4.4
+   모든 애니메이션 속도 대폭 개선
+   ======================================== */
+
+/* 전역 애니메이션 속도 최적화 */
+* {
+    animation-duration: 0.15s !important;
+    transition-duration: 0.15s !important;
+}
+
+/* 페이지 전환 속도 향상 */
+body, html {
+    transition: opacity 0.1s ease !important;
+}
+
+/* 모달 전환 속도 */
+.modal,
+[class*="modal"],
+.fixed.inset-0 {
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+/* 버튼 hover 효과 속도 */
+button,
+.btn,
+a.btn,
+input[type="submit"],
+input[type="button"] {
+    transition: all 0.1s ease !important;
+}
+
+/* 카드/컨테이너 전환 */
+.card,
+.unni-card,
+[class*="card"] {
+    transition: all 0.15s ease !important;
+}
+
+/* 폼 입력 필드 */
+input,
+textarea,
+select {
+    transition: border-color 0.1s ease, box-shadow 0.1s ease !important;
+}
+
+/* 드롭다운 메뉴 */
+.dropdown,
+.menu,
+[class*="dropdown"],
+[class*="menu"] {
+    transition: opacity 0.1s ease, transform 0.1s ease !important;
+}
+
+/* 탭 전환 */
+.tab,
+[class*="tab"],
+.sidebar-item {
+    transition: all 0.1s ease !important;
+}
+
+/* 알림/토스트 */
+.notification,
+.toast,
+.alert,
+[class*="notification"],
+[class*="toast"],
+[class*="alert"] {
+    transition: all 0.15s ease !important;
+}
+
+/* 로딩 스피너 - 빠른 표시 */
+.spinner,
+.loading,
+[class*="spinner"],
+[class*="loading"] {
+    animation-duration: 0.6s !important; /* 회전은 약간 느리게 */
+}
+
+/* 페이드 효과 */
+.fade,
+.fade-in,
+.fade-out {
+    transition: opacity 0.15s ease !important;
+}
+
+/* 슬라이드 효과 */
+.slide,
+.slide-in,
+.slide-out {
+    transition: transform 0.15s ease !important;
+}
+
+/* 확대/축소 효과 */
+.zoom,
+.scale {
+    transition: transform 0.1s ease !important;
+}
+
+/* hidden 클래스 전환 속도 */
+.hidden {
+    transition: opacity 0.1s ease, visibility 0s linear 0.1s !important;
+}
+
+/* 섹션 전환 */
+.section,
+[class*="section"],
+.content-section {
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+/* 네비게이션 전환 */
+nav,
+.nav,
+.navigation {
+    transition: all 0.15s ease !important;
+}
+
+/* 오버레이 */
+.overlay,
+.backdrop,
+[class*="overlay"],
+[class*="backdrop"] {
+    transition: opacity 0.15s ease !important;
+}
+
+/* 모바일 메뉴 */
+@media (max-width: 768px) {
+    .mobile-menu,
+    .mobile-nav {
+        transition: transform 0.15s ease !important;
+    }
+}
+
+/* 스크롤 성능 최적화 */
+* {
+    scroll-behavior: auto !important; /* smooth scroll 비활성화로 속도 향상 */
+}
+
+/* GPU 가속 활성화 */
+.modal,
+.dropdown,
+.menu,
+button:hover,
+.card:hover {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* 성능 최적화 - 애니메이션 최소화 */
+@media (prefers-reduced-motion: no-preference) {
+    /* 애니메이션 허용 사용자도 빠른 전환 적용 */
+    * {
+        animation-duration: 0.15s !important;
+        transition-duration: 0.15s !important;
+    }
+}
+
+/* 성능 우선 모드 - 모든 애니메이션 최소화 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* 특정 페이지 전환 최적화 */
+/* 로그인/회원가입 폼 */
+#login-form,
+#register-form,
+.auth-form {
+    transition: opacity 0.1s ease !important;
+}
+
+/* 대시보드 섹션 전환 */
+.dashboard-section,
+#dashboard-content > div {
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+/* 견적서 목록 */
+#quotes-list,
+#consultations-list {
+    transition: opacity 0.15s ease !important;
+}
+
+/* 견적서 상세 모달 */
+#quote-detail-modal {
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+/* 채팅 메시지 */
+#messages-list,
+.message-item {
+    transition: opacity 0.1s ease !important;
+}
+
+/* 프로필 메뉴 */
+#profile-menu {
+    transition: opacity 0.1s ease, transform 0.1s ease !important;
+}
+
+/* 검색/필터 */
+.search-box,
+.filter-dropdown {
+    transition: all 0.1s ease !important;
+}
+
+/* 상태 뱃지 */
+.badge,
+.status-badge,
+[class*="badge"] {
+    transition: all 0.1s ease !important;
+}
+
+/* 아이콘 애니메이션 */
+i,
+.icon,
+[class*="fa-"],
+svg {
+    transition: transform 0.1s ease, color 0.1s ease !important;
+}
+
+/* 테이블 행 hover */
+tr:hover,
+.table-row:hover {
+    transition: background-color 0.1s ease !important;
+}
+
+/* 이미지 로딩 */
+img {
+    transition: opacity 0.15s ease !important;
+}
+
+/* 링크 */
+a {
+    transition: color 0.1s ease !important;
+}
+
+/* 체크박스/라디오 */
+input[type="checkbox"],
+input[type="radio"] {
+    transition: all 0.1s ease !important;
+}
+
+/* 진행률 바 */
+.progress,
+.progress-bar {
+    transition: width 0.2s ease !important;
+}
+
+/* 툴팁 */
+.tooltip,
+[data-tooltip] {
+    transition: opacity 0.1s ease, transform 0.1s ease !important;
+}
+
+/* 아코디언 */
+.accordion,
+.collapse {
+    transition: height 0.15s ease, opacity 0.15s ease !important;
+}
+
+/* 캐러셀/슬라이더 */
+.carousel,
+.slider {
+    transition: transform 0.2s ease !important;
+}
+
+/* 성능 최적화: 불필요한 속성 제거 */
+* {
+    /* box-shadow 전환 제거 (성능 저하 원인) */
+    transition-property: background-color, border-color, color, opacity, transform !important;
+}
+
+/* 즉시 표시 (애니메이션 없음) */
+.instant,
+.no-transition {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* 페이지 로드 최적화 */
+html.loading * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* 로드 완료 후 전환 활성화 */
+html.loaded * {
+    transition-duration: 0.15s !important;
+}
+
+/* ========================================
+   성능 모니터링 힌트
+   ======================================== */
+
+/* GPU 레이어 생성 최소화 */
+.no-layer {
+    will-change: auto !important;
+    transform: none !important;
+}
+
+/* 중요한 요소만 GPU 가속 */
+.gpu-accelerate {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* ========================================
+   브라우저별 최적화
+   ======================================== */
+
+/* Safari 최적화 */
+@supports (-webkit-touch-callout: none) {
+    * {
+        -webkit-transition-duration: 0.15s !important;
+    }
+}
+
+/* Firefox 최적화 */
+@-moz-document url-prefix() {
+    * {
+        transition-duration: 0.15s !important;
+    }
+}
+
+/* Edge 최적화 */
+@supports (-ms-ime-align: auto) {
+    * {
+        transition-duration: 0.15s !important;
+    }
+}
