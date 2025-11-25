@@ -2439,16 +2439,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 const district = currentShop?.district || '';
                 
                 // 공지사항 데이터 준비
+                const now = Date.now();
                 const announcementData = {
-                    shop_id: shopId,
+                    shop_id: shopId || 'demo_shop',
                     shop_name: shopName,
                     title: title,
                     content: content,
-                    is_published: isPublished,
-                    views: 0,
-                    state: state,
-                    district: district
+                    priority: 'normal',
+                    is_published: isPublished ? 1 : 0,
+                    publish_date: isPublished ? new Date().toISOString() : null,
+                    expire_date: null,
+                    view_count: 0,
+                    created_at: now,
+                    updated_at: now,
+                    deleted: 0
                 };
+                
+                console.log('Sending announcement data:', announcementData);
                 
                 // API 호출
                 const response = await fetch('/tables/shop_announcements', {
@@ -2486,9 +2493,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('공지사항 작성 중 오류가 발생했습니다: ' + error.message);
                 
                 // 버튼 복원
-                const submitBtn = form.querySelector('button[type="submit"]');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = originalText;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>등록';
             }
         });
     }
