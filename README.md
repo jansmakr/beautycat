@@ -1,9 +1,9 @@
 # BeautyCat 플랫폼 - 최종 매뉴얼 및 시스템 정보
 
-> **✨ 최신 업데이트: 고객센터 전화번호 변경! (2024-11-17)**
+> **✨ 최신 업데이트: 공지사항 시스템 전면 개편! (2024-11-25)**
 > 
-> **최종 업데이트:** 2024-11-17  
-> **버전:** v2.4.9 (고객센터 전화번호 070-7004-5902로 변경)  
+> **최종 업데이트:** 2024-11-25  
+> **버전:** v2.5.4 (고객용 공지 + 업체 공지 작성 기능)  
 > **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
 > 
 > **🌐 프로덕션 URL:**
@@ -23,6 +23,526 @@
 > - SSL/TLS: ✅ Active
 > - CDN: ✅ Global
 > - GitHub Auto-deploy: ✅ Enabled
+
+---
+
+## 🎯 v2.5.4 공지사항 시스템 전면 개편 (2024-11-25)
+
+### **고객용 공지 + 업체 공지 작성 기능 추가**
+
+**기존 문제점:**
+- 관리자만 공지를 작성할 수 있었음
+- 업체가 고객에게 프로모션/이벤트를 알릴 방법이 없었음
+- 고객이 공지사항을 확인하기 어려웠음
+
+**개선 사항:**
+
+#### 1. **📣 메인 페이지 한줄 공지 배너**
+- 긴급/중요 공지를 메인 페이지 최상단에 표시
+- 클릭 시 → 공지사항 게시판으로 이동
+- 닫기 버튼으로 24시간 숨김 처리
+
+**구현:**
+- `js/announcement-banner.js` 생성
+- API에서 최신 긴급/중요 공지 1개 로드
+- 동적으로 배너 생성 및 삽입
+
+#### 2. **📰 통합 공지사항 게시판 (`announcements.html`)**
+- URL: `https://beautycat.kr/announcements.html`
+- 2개 섹션으로 구성
+
+**운영진 공지 섹션:**
+- 관리자가 작성한 공지 (항상 최상단 고정)
+- 우선순위별 색상 구분
+- 상단 고정 공지 강조
+
+**업체 소식 섹션:**
+- 업체가 작성한 프로모션/이벤트 정보
+- 지역별 필터링
+- 검색 기능
+- 앞 80자 미리보기
+
+#### 3. **✍️ 업체 공지사항 작성 기능**
+shop-dashboard.html 공지사항 섹션 3개 탭 추가:
+
+**a) 공지 확인 탭:**
+- 관리자가 작성한 운영진 공지 조회
+- 업체 대상 공지 필터링
+
+**b) 소식 작성 탭:**
+- 제목 (최대 100자)
+- 내용 (최대 1,000자)
+- 즉시 게시 / 임시저장 선택
+- 작성 완료 시 고객에게 노출
+
+**c) 내가 작성한 소식 탭:**
+- 작성한 공지 목록
+- 수정/삭제 기능
+- 조회수 통계
+
+#### 4. **🗄️ 새 데이터베이스 테이블**
+`shop_announcements` 테이블 생성:
+
+```javascript
+{
+    id: "고유 ID",
+    shop_id: "업체 ID",
+    shop_name: "업체명",
+    title: "제목",
+    content: "내용",
+    is_published: true/false,
+    views: 0,
+    state: "시/도",
+    district: "시/군/구",
+    created_at: "작성일시"
+}
+```
+
+**수정된 파일:**
+
+1. **announcements.html** (신규)
+   - 통합 공지사항 게시판 페이지
+   - 운영진 공지 + 업체 소식 섹션
+   - 상세보기 모달
+
+2. **js/announcements-page.js** (신규)
+   - 관리자/업체 공지 로드
+   - 필터링 및 검색
+   - 조회수 증가 API
+
+3. **js/announcement-banner.js** (신규)
+   - 메인 페이지 배너 동적 생성
+   - 최신 긴급/중요 공지 로드
+
+4. **shop-dashboard.html**
+   - 공지사항 섹션을 3개 탭으로 분리
+   - 소식 작성 폼 추가
+   - 내가 작성한 소식 관리 UI
+
+5. **js/shop-dashboard.js**
+   - `switchAnnouncementTab()`: 탭 전환
+   - `loadMyAnnouncements()`: 내 공지 로드
+   - `displayMyAnnouncements()`: 목록 표시
+   - `editMyAnnouncement()`: 수정
+   - `deleteMyAnnouncement()`: 삭제
+   - 폼 제출 핸들러
+
+**API 엔드포인트:**
+```javascript
+// 관리자 공지
+GET /tables/announcements
+
+// 업체 공지 목록
+GET /tables/shop_announcements
+
+// 업체 공지 작성
+POST /tables/shop_announcements
+Body: { shop_id, shop_name, title, content, is_published, state, district }
+
+// 업체 공지 수정
+PATCH /tables/shop_announcements/{id}
+
+// 업체 공지 삭제
+DELETE /tables/shop_announcements/{id}
+```
+
+**사용 시나리오:**
+
+**시나리오 1: 업체가 프로모션 공지 작성**
+```
+1. 업체 대시보드 → 공지사항 → 소식 작성 탭
+2. 제목: "신규 고객 30% 할인 이벤트"
+3. 내용: 이벤트 상세 정보 입력
+4. 즉시 게시 체크 → 작성 완료
+5. 메인 페이지 & 공지사항 게시판에 즉시 노출
+6. 고객들이 조회 → 조회수 증가
+```
+
+**시나리오 2: 고객이 공지사항 확인**
+```
+1. 메인 페이지 접속 → 상단 배너에서 긴급 공지 확인
+2. 배너 클릭 → announcements.html로 이동
+3. 운영진 공지 확인 (시스템 점검 안내 등)
+4. 아래로 스크롤 → 업체 소식 확인
+5. 지역 필터: "서울" 선택
+6. 관심 있는 업체의 이벤트 클릭 → 상세 내용 확인
+```
+
+**기대 효과:**
+- ✅ 업체가 직접 마케팅 가능 (프로모션, 이벤트)
+- ✅ 고객이 최신 소식을 쉽게 확인
+- ✅ 플랫폼 활성화 (업체-고객 간 소통 증가)
+- ✅ 메인 페이지 공지 배너로 중요 공지 노출
+
+**테스트 체크리스트:**
+- [x] 메인 페이지 공지 배너 표시
+- [x] 공지사항 게시판 (announcements.html) 접속
+- [x] 운영진 공지 목록 표시
+- [x] 업체 소식 목록 표시
+- [x] 상세보기 모달 동작
+- [x] 업체 대시보드 → 소식 작성
+- [x] 작성한 소식이 게시판에 노출
+- [x] 내가 작성한 소식 수정/삭제
+
+---
+
+## 📢 v2.5.3 업체 공지사항 조회 기능 추가 (2024-11-25)
+
+### **업체 대시보드에 공지사항 조회 기능 구현**
+
+**배경:**
+- 기존에는 관리자만 공지사항을 작성/관리할 수 있었음
+- 업체는 플랫폼 운영 관련 중요 공지를 확인할 방법이 없었음
+- 정책 변경, 시스템 점검, 프로모션 정보 등을 전달할 수단이 필요
+
+**구현 내용:**
+
+#### 1. **📋 네비게이션 메뉴 추가**
+- 데스크톱 네비게이션에 "공지사항" 메뉴 추가
+- 모바일 메뉴에도 공지사항 항목 추가
+- 사이드바에 공지사항 메뉴 추가 (배지 포함)
+
+**메뉴 위치:**
+```
+마이 페이지 → 공지사항 → 상담 요청 → 견적 관리 → 샵 정보 → 리뷰 관리
+```
+
+#### 2. **📰 공지사항 목록 섹션**
+- 업체 대상 또는 전체 대상 공지만 필터링하여 표시
+- 검색 기능 (제목, 내용 검색)
+- 우선순위 필터 (긴급/중요/일반)
+- 카드 형태의 깔끔한 UI
+
+**표시 정보:**
+- 제목 + 우선순위 배지
+- 내용 미리보기 (150자)
+- 게시일 + 조회수
+- 상단 고정 공지 (노란색 테두리)
+
+#### 3. **🔍 공지사항 상세보기 모달**
+- 클릭 시 전체 내용 표시
+- 우선순위, 게시일, 조회수 정보
+- 조회수 자동 증가 (API 호출)
+- ESC 키 / 외부 클릭으로 닫기
+
+#### 4. **🔔 신규 공지 배지**
+- 최근 7일 이내 공지 개수 표시
+- 사이드바 메뉴에 파란색 배지
+- 자동으로 업데이트
+
+**수정된 파일:**
+
+1. **shop-dashboard.html**
+   - Line 76: 데스크톱 네비게이션에 공지사항 메뉴
+   - Line 138: 모바일 메뉴에 공지사항 항목
+   - Line 213: 사이드바에 공지사항 메뉴 + 배지
+   - Line 441: 공지사항 섹션 HTML (검색, 필터, 목록)
+   - Line 1217: 공지사항 상세보기 모달
+
+2. **js/shop-dashboard.js**
+   - `loadShopAnnouncements()`: API에서 공지사항 로드 (Line 2110)
+   - `displayShopAnnouncements()`: 목록 표시 (Line 2151)
+   - `viewShopAnnouncement()`: 상세보기 모달 (Line 2189)
+   - `closeAnnouncementDetailModal()`: 모달 닫기 (Line 2222)
+   - `incrementAnnouncementViews()`: 조회수 증가 (Line 2229)
+   - `filterShopAnnouncements()`: 검색/필터 (Line 2258)
+   - `updateAnnouncementBadge()`: 신규 공지 배지 업데이트 (Line 2276)
+   - `escapeHtml()`: XSS 방지 (Line 2295)
+
+**API 엔드포인트:**
+```javascript
+// 공지사항 목록
+GET /tables/announcements?limit=100&sort=-created_at
+
+// 조회수 증가
+PATCH /tables/announcements/{id}
+Body: { views: newViews }
+```
+
+**필터링 로직:**
+```javascript
+// 업체 대상 또는 전체 대상 공지만 표시
+allShopAnnouncements = announcements.filter(ann => {
+    return ann.is_published && 
+           (ann.target_audience === 'shops' || ann.target_audience === 'all');
+});
+```
+
+**기대 효과:**
+- ✅ 업체가 플랫폼 공지를 실시간으로 확인 가능
+- ✅ 정책 변경사항 즉시 전달
+- ✅ 시스템 점검 안내 사전 공지
+- ✅ 프로모션 정보 효과적 전달
+- ✅ 신규 공지 배지로 확인 유도
+
+**사용 흐름:**
+```
+1. 업체 로그인 → 대시보드 접속
+2. "공지사항" 메뉴 클릭 (신규 배지 확인)
+3. 공지사항 목록 확인 (검색/필터 가능)
+4. 원하는 공지 클릭 → 상세 내용 확인
+5. 조회수 자동 증가 → 모달 닫기
+```
+
+**테스트 체크리스트:**
+- [x] 공지사항 메뉴 표시 (데스크톱/모바일/사이드바)
+- [x] 업체/전체 대상 공지만 필터링
+- [x] 검색 기능 동작
+- [x] 우선순위 필터 동작
+- [x] 상세보기 모달 표시
+- [x] 조회수 증가 API 호출
+- [x] 신규 공지 배지 표시
+- [x] ESC 키로 모달 닫기
+
+---
+
+## 🎯 v2.5.2 관리자 대시보드 개선 (2024-11-25)
+
+### **관리자 대시보드 업체 등록 및 최근 가입자 표시 기능 추가**
+
+**개선 사항:**
+
+#### 1. **📋 대시보드 레이아웃 개선**
+- 기존 "Recent Activity" → 2열 그리드 레이아웃으로 변경
+- 왼쪽: 최근 가입자 목록 카드
+- 오른쪽: 빠른 작업 패널
+
+#### 2. **👥 최근 가입자 표시**
+- 최근 5명의 가입자를 대시보드에 실시간 표시
+- 사용자 유형별 색상 구분 (고객/업체/관리자)
+- 가입일자 표시
+- "전체보기" 버튼으로 전체 사용자 목록 이동
+- 클릭 시 전체 사용자 관리 페이지로 이동
+
+**UI 구성:**
+```html
+<div class="unni-card p-6">
+    <h3>최근 가입자</h3>
+    <button onclick="showSection('users')">전체보기</button>
+    <div id="recent-members">
+        <!-- 최근 5명 자동 표시 -->
+        - 사용자명 + 유형 배지
+        - 이메일
+        - 가입일자
+    </div>
+</div>
+```
+
+**API 활용:**
+```javascript
+GET /tables/users?limit=5&sort=-created_at
+```
+
+#### 3. **🏪 업체 신규 등록 모달**
+- 관리자가 직접 업체 회원을 등록할 수 있는 모달 추가
+- "빠른 작업" 패널에 "업체 신규 등록" 버튼 추가
+- 전체 업체 정보를 한 번에 입력 가능
+
+**모달 폼 필드:**
+- 업체 정보:
+  - 업체명 (필수)
+  - 시/도, 시/군/구, 상세주소 (필수)
+- 대표자 정보:
+  - 대표자명 (필수)
+  - 전화번호 (필수)
+  - 이메일 (필수)
+  - 비밀번호 (필수, 최소 8자)
+- 사업자 정보:
+  - 사업자등록번호 (필수)
+  - 영업신고번호 (선택)
+  - 네이버 카페 아이디 (선택)
+
+**등록 프로세스:**
+```javascript
+1. openNewShopModal() → 모달 열기
+2. 폼 입력 및 유효성 검사
+3. submitNewShop() → 
+   a. POST /tables/users (shop 계정 생성)
+   b. POST /tables/skincare_shops (업체 정보 생성)
+   c. PATCH /tables/users/{id} (user-shop 연결)
+4. 성공 → 모달 닫기 + 대시보드 새로고침
+5. 최근 가입자 목록 자동 업데이트
+```
+
+#### 4. **⚡ 빠른 작업 패널**
+4개의 주요 관리 작업 바로가기 버튼:
+- 🏪 업체 신규 등록 (openNewShopModal)
+- ✅ 업체 승인 관리 (shops section)
+- 💬 상담 요청 관리 (consultations section)
+- ⭐ 대표샵 지정 (representative-shops section)
+
+**수정된 파일:**
+1. `admin-dashboard.html`
+   - Dashboard 섹션 HTML 구조 변경 (Line 171-210)
+   - 업체 신규 등록 모달 추가 (Line 1737-1920)
+
+2. `js/admin-dashboard.js`
+   - `openNewShopModal()` 추가 (Line 2408)
+   - `closeNewShopModal()` 추가 (Line 2423)
+   - `loadRecentMembers()` 추가 (Line 2601)
+   - `displayRecentMembers()` 추가 (Line 2632)
+   - `loadDashboardData()`에 `loadRecentMembers()` 호출 추가 (Line 140)
+   - 폼 제출 이벤트 핸들러 추가 (Line 2436-2582)
+
+**기대 효과:**
+- ✅ 관리자가 전화 문의 업체를 즉시 등록 가능
+- ✅ 대시보드에서 신규 가입자를 빠르게 확인
+- ✅ 주요 관리 작업에 빠른 접근
+- ✅ 사용자 관리 효율성 대폭 향상
+
+**테스트 체크리스트:**
+- [ ] 대시보드 접속 시 최근 가입자 5명 자동 로드
+- [ ] "업체 신규 등록" 버튼 클릭 → 모달 표시
+- [ ] 모달 폼 제출 → user + shop 생성 성공
+- [ ] 등록 후 최근 가입자 목록 자동 새로고침
+- [ ] "전체보기" 버튼 → 사용자 목록 페이지 이동
+- [ ] ESC 키 / 외부 클릭으로 모달 닫기
+
+---
+
+## 🐛 v2.5.1 회원가입 API 경로 수정 (2024-11-17)
+
+### **회원가입 500 에러 수정**
+
+**문제:**
+```
+Failed to load resource: the server responded with a status of 500
+Database save error: Error: 사용자 정보 저장 실패
+at saveUserToDatabase (register:496:27)
+```
+
+**원인:**
+- `js/auth.js`의 `processRegister` 함수가 상대 경로 사용
+- API 호출 시 절대 경로 필요: `/tables/users`, `/tables/skincare_shops`
+
+**수정 내역 (3곳):**
+
+1. **사용자 생성 API** (Line 763)
+```javascript
+// Before
+fetch('tables/users', { method: 'POST', ... })
+
+// After  
+fetch('/tables/users', { method: 'POST', ... })
+```
+
+2. **피부관리실 생성 API** (Line 799)
+```javascript
+// Before
+fetch('tables/skincare_shops', { method: 'POST', ... })
+
+// After
+fetch('/tables/skincare_shops', { method: 'POST', ... })
+```
+
+3. **사용자-샵 연결 API** (Line 815)
+```javascript
+// Before
+fetch(`tables/users/${newUser.id}`, { method: 'PATCH', ... })
+
+// After
+fetch(`/tables/users/${newUser.id}`, { method: 'PATCH', ... })
+```
+
+**추가 수정:**
+- `register.html`의 `saveUserToDatabase` 백업 함수도 동일하게 수정
+
+**API 엔드포인트:**
+- Production: `https://beautycat-api.jansmakr.workers.dev/api/tables/*`
+- 절대 경로 `/tables/*`는 자동으로 올바른 API 엔드포인트로 라우팅됨
+
+**관련 파일:**
+- `js/auth.js` - 3개 API 경로 수정
+- `register.html` - 1개 API 경로 수정
+
+**예상 결과:**
+- ✅ 회원가입 500 에러 해결
+- ✅ 고객 회원가입 정상 작동
+- ✅ 업체 회원가입 정상 작동 (shop + skincare_shops 생성)
+
+---
+
+## 🔍 v2.5.0 네이버 검색 최적화 완료 (2024-11-17)
+
+### **네이버 검색 노출 극대화를 위한 종합 SEO 최적화**
+
+**문제 인식:**
+> "네이버 사이트 검색에서 노출이 잘 안되고 있어 네이버 검색 최적화와 seo최적화 해줘"
+
+**최적화 작업 완료:**
+
+#### 1. 📝 **네이버 메타태그 강화**
+- 키워드: 10개 → 17개 (+70%)
+- 네이버 전용 태그 추가: `NaverBot`, `Yeti`, `HandheldFriendly`, `MobileOptimized`
+- 추가 SEO 태그: `subject`, `classification`, `distribution`
+
+```html
+<meta name="NaverBot" content="All">
+<meta name="NaverBot" content="index,follow">
+<meta name="Yeti" content="All">
+<meta name="Yeti" content="index,follow">
+```
+
+#### 2. 🗺️ **sitemap.xml 업데이트**
+- 페이지 수: 9개 → 17개 (+89%)
+- 모든 페이지에 `<mobile:mobile/>` 태그 추가
+- 최신 수정일 업데이트 (2024-11-17)
+- 실제 HTML 파일 전체 등록 (login.html, register.html, dashboard 등)
+
+#### 3. 🤖 **robots.txt 네이버 크롤러 최적화**
+- 크롤링 속도: `Crawl-delay: 1` → `Crawl-delay: 0` (즉시 크롤링)
+- 네이버 봇 우선순위 최상위 배치
+- 주요 페이지 명시적 Allow 설정
+- Canonical Domain 설정: `beautycat.kr`
+
+#### 4. 📰 **H1 태그 SEO 강화**
+```html
+<!-- Before -->
+<h1>전국 피부관리실 견적비교 예약 플랫폼</h1>
+
+<!-- After -->
+<h1>전국 피부관리실 견적 비교 예약 플랫폼 - beautycat</h1>
+```
+
+#### 5. 📚 **종합 SEO 가이드 문서 작성**
+- **NAVER_SEO_OPTIMIZATION.md** 생성
+- 네이버 웹마스터 도구 등록 가이드
+- 검색 성과 모니터링 체크리스트
+- 타겟 키워드 전략 수립
+- 향후 콘텐츠 확장 방향
+
+**타겟 키워드:**
+```
+1차: 피부관리실, 피부관리실 추천, 강남 피부관리, 홍대 피부관리
+2차: 피부관리 견적 비교, 피부관리 가격, 근처 피부관리실
+지역: 강남/홍대/잠실/신촌/강북/강동 피부관리실
+```
+
+**최적화 효과:**
+| 항목 | Before | After | 개선율 |
+|------|--------|-------|--------|
+| 메타 키워드 | 10개 | 17개 | +70% |
+| 네이버 태그 | 1개 | 5개 | +400% |
+| sitemap 페이지 | 9개 | 17개 | +89% |
+| 크롤링 속도 | 1초 | 즉시 | +100% |
+
+**즉시 실행 필요:**
+1. ✅ Git 푸시 (변경사항 배포)
+2. 🔄 네이버 웹마스터 사이트맵 재제출: https://beautycat.kr/sitemap.xml
+3. 🔄 네이버 페이지 수집 요청 (최소 3개 URL)
+4. 📊 1-2주 후 검색 노출 모니터링
+
+**예상 검색 노출:**
+- 1주차: "beautycat" → 1-3위
+- 2주차: "뷰티캣 피부관리" → 1-5위
+- 4주차: "피부관리실 견적 비교" → 10-30위
+- 8주차: "강남 피부관리실" → 5-15위 (지역 페이지 생성 시)
+
+**관련 파일:**
+- `index.html` - 메타태그 및 H1 최적화
+- `sitemap.xml` - 17개 페이지 등록
+- `robots.txt` - 네이버 크롤러 우선 처리
+- `NAVER_SEO_OPTIMIZATION.md` - 종합 가이드 (신규)
 
 ---
 
@@ -4462,5 +4982,5 @@ bubblewrap build
 ---
 
 **이 문서는 플랫폼 업데이트 시 함께 업데이트됩니다.**
-**최종 업데이트: 2025-11-17 00:05 KST**
-**버전: v2.4.9**
+**최종 업데이트: 2025-11-17 01:10 KST**
+**버전: v2.5.1 (회원가입 API 수정 + 네이버 SEO)**

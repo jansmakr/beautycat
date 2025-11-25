@@ -712,14 +712,19 @@ async function handleQuoteSubmit(e) {
         const quoteData = {
             consultation_id: consultationId,
             shop_id: currentShop?.id || currentUser.id,
+            shop_name: currentShop?.name || currentUser.name || '피부관리실', // 필수 필드
             treatment_details: treatmentDetails,
-            price: price,
-            duration: duration,
-            available_dates: [availableDates],
-            additional_notes: additionalNotes,
+            price: parseInt(price), // INTEGER 타입
+            duration: parseInt(duration) || 60, // INTEGER, 기본값 60분
+            available_dates: JSON.stringify([availableDates]), // TEXT (JSON 문자열)
+            additional_notes: additionalNotes || '',
             status: 'sent',
-            valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: Date.now(), // INTEGER 필수
+            updated_at: Date.now()  // INTEGER 필수
         };
+        
+        console.log('📤 견적서 전송 데이터:', quoteData);
         
         // 견적서 저장
         const response = await fetch('tables/quotes', {
@@ -731,17 +736,23 @@ async function handleQuoteSubmit(e) {
         });
         
         if (!response.ok) {
-            throw new Error('견적서 저장 실패');
+            const errorText = await response.text();
+            console.error('❌ 견적서 저장 실패 응답:', errorText);
+            throw new Error(`견적서 저장 실패: ${errorText}`);
         }
+        
+        console.log('✅ 견적서 저장 성공');
         
         // 채팅 메시지로도 전송
         const messageData = {
             consultation_id: consultationId,
             sender_type: 'shop',
             sender_id: currentShop?.id || currentUser.id,
+            receiver_id: 'customer', // TODO: 실제 고객 ID
             message: `[견적서가 전송되었습니다]\n\n관리 내용: ${treatmentDetails}\n가격: ${price.toLocaleString()}원\n소요시간: ${duration}\n예약 가능일: ${availableDates}${additionalNotes ? `\n\n추가사항: ${additionalNotes}` : ''}`,
-            is_read: false,
-            timestamp: new Date().toISOString()
+            is_read: 0, // INTEGER
+            created_at: Date.now(), // INTEGER 필수
+            updated_at: Date.now()  // INTEGER 필수
         };
         
         await fetch('tables/messages', {
@@ -949,9 +960,9 @@ async function handleShopInfoUpdate(e) {
         let response;
         
         if (currentShop && currentShop.id) {
-            // 기존 업체 정보 업데이트
+            // 기존 업체 정보 업데이트 (PUT 사용 - PATCH는 Workers에서 지원 필요)
             response = await fetch(`tables/skincare_shops/${currentShop.id}`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -2088,3 +2099,543 @@ function formatDate(dateString) {
         day: 'numeric'
     });
 }
+
+// ======= 공지사항 관리 시스템 (Shop) =======
+
+let allShopAnnouncements = [];
+let currentAnnouncementForModal = null;
+
+// 공지사항 로드 (업체/전체 대상만)
+async function loadShopAnnouncements() {
+    try {
+        console.log('Loading shop announcements...');
+        
+        const response = await fetch('/tables/announcements?limit=100&sort=-created_at');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const announcements = data.data || [];
+        
+        // 업체 대상 또는 전체 대상 공지만 필터링
+        allShopAnnouncements = announcements.filter(ann => {
+            return ann.is_published && 
+                   (ann.target_audience === 'shops' || ann.target_audience === 'all');
+        });
+        
+        console.log(`Loaded ${allShopAnnouncements.length} announcements for shops`);
+        
+        // 공지사항 표시
+        displayShopAnnouncements(allShopAnnouncements);
+        
+        // 배지 업데이트 (최근 7일 이내 공지)
+        updateAnnouncementBadge();
+        
+    } catch (error) {
+        console.error('공지사항 로드 오류:', error);
+        
+        // 에러 메시지 표시
+        const container = document.getElementById('shop-announcements-list');
+        if (container) {
+            container.innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-exclamation-circle text-6xl text-red-300 mb-4"></i>
+                    <p class="text-gray-500 text-lg">공지사항을 불러올 수 없습니다.</p>
+                    <button onclick="loadShopAnnouncements()" class="mt-4 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                        다시 시도
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
+
+// 공지사항 표시
+function displayShopAnnouncements(announcements) {
+    const container = document.getElementById('shop-announcements-list');
+    const emptyState = document.getElementById('announcements-empty-state');
+    
+    if (!container) return;
+    
+    if (announcements.length === 0) {
+        container.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+    }
+    
+    if (emptyState) emptyState.classList.add('hidden');
+    
+    const priorityLabels = {
+        'urgent': { text: '긴급', color: 'bg-red-100 text-red-800' },
+        'important': { text: '중요', color: 'bg-orange-100 text-orange-800' },
+        'normal': { text: '일반', color: 'bg-blue-100 text-blue-800' },
+        'low': { text: '낮음', color: 'bg-gray-100 text-gray-800' }
+    };
+    
+    container.innerHTML = announcements.map(ann => {
+        const priority = priorityLabels[ann.priority] || priorityLabels['normal'];
+        const isPinned = ann.is_pinned;
+        const createdDate = formatDate(ann.created_at || ann.publish_date);
+        
+        return `
+            <div class="unni-card p-6 cursor-pointer hover:shadow-lg transition-shadow ${isPinned ? 'border-2 border-yellow-400 bg-yellow-50' : ''}" 
+                 onclick="viewShopAnnouncement('${ann.id}')">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            ${isPinned ? '<i class="fas fa-thumbtack text-yellow-600"></i>' : ''}
+                            <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(ann.title)}</h3>
+                        </div>
+                        <p class="text-gray-600 mb-3 line-clamp-2">${escapeHtml(ann.content).substring(0, 150)}${ann.content.length > 150 ? '...' : ''}</p>
+                        <div class="flex items-center text-sm text-gray-500 gap-4">
+                            <span>
+                                <i class="far fa-calendar mr-1"></i>${createdDate}
+                            </span>
+                            <span>
+                                <i class="far fa-eye mr-1"></i>조회 ${ann.views || 0}회
+                            </span>
+                        </div>
+                    </div>
+                    <span class="ml-4 px-3 py-1 text-xs font-semibold rounded-full ${priority.color} whitespace-nowrap">
+                        ${priority.text}
+                    </span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 공지사항 상세보기
+async function viewShopAnnouncement(announcementId) {
+    const announcement = allShopAnnouncements.find(a => a.id === announcementId);
+    
+    if (!announcement) {
+        alert('공지사항을 찾을 수 없습니다.');
+        return;
+    }
+    
+    currentAnnouncementForModal = announcement;
+    
+    // 모달 내용 업데이트
+    document.getElementById('modal-announcement-title').textContent = announcement.title;
+    document.getElementById('modal-announcement-content').textContent = announcement.content;
+    document.getElementById('modal-announcement-date').textContent = formatDate(announcement.created_at || announcement.publish_date);
+    document.getElementById('modal-announcement-views').textContent = announcement.views || 0;
+    
+    // 우선순위 배지
+    const priorityLabels = {
+        'urgent': { text: '긴급', color: 'bg-red-100 text-red-800' },
+        'important': { text: '중요', color: 'bg-orange-100 text-orange-800' },
+        'normal': { text: '일반', color: 'bg-blue-100 text-blue-800' },
+        'low': { text: '낮음', color: 'bg-gray-100 text-gray-800' }
+    };
+    const priority = priorityLabels[announcement.priority] || priorityLabels['normal'];
+    const priorityBadge = document.getElementById('modal-announcement-priority');
+    priorityBadge.textContent = priority.text;
+    priorityBadge.className = `px-3 py-1 text-sm font-semibold rounded-full ${priority.color}`;
+    
+    // 모달 표시
+    const modal = document.getElementById('announcement-detail-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+    
+    // 조회수 증가 (비동기)
+    incrementAnnouncementViews(announcementId);
+}
+
+// 공지사항 상세보기 모달 닫기
+function closeAnnouncementDetailModal() {
+    const modal = document.getElementById('announcement-detail-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    currentAnnouncementForModal = null;
+}
+
+// 조회수 증가
+async function incrementAnnouncementViews(announcementId) {
+    try {
+        const announcement = allShopAnnouncements.find(a => a.id === announcementId);
+        if (!announcement) return;
+        
+        const newViews = (announcement.views || 0) + 1;
+        
+        // API 호출 (에러가 나도 무시)
+        await fetch(`/tables/announcements/${announcementId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ views: newViews })
+        });
+        
+        // 로컬 데이터 업데이트
+        announcement.views = newViews;
+        
+        // 모달이 열려있으면 조회수 업데이트
+        if (currentAnnouncementForModal && currentAnnouncementForModal.id === announcementId) {
+            document.getElementById('modal-announcement-views').textContent = newViews;
+        }
+        
+        console.log(`Announcement ${announcementId} views updated to ${newViews}`);
+    } catch (error) {
+        console.error('조회수 증가 오류:', error);
+        // 에러 무시 (중요하지 않음)
+    }
+}
+
+// 공지사항 필터링
+function filterShopAnnouncements() {
+    const searchTerm = document.getElementById('announcement-search')?.value.toLowerCase() || '';
+    const priorityFilter = document.getElementById('announcement-priority-filter')?.value || '';
+    
+    let filtered = allShopAnnouncements;
+    
+    // 검색어 필터
+    if (searchTerm) {
+        filtered = filtered.filter(ann => 
+            ann.title.toLowerCase().includes(searchTerm) || 
+            ann.content.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // 우선순위 필터
+    if (priorityFilter) {
+        filtered = filtered.filter(ann => ann.priority === priorityFilter);
+    }
+    
+    displayShopAnnouncements(filtered);
+}
+
+// 새 공지사항 배지 업데이트
+function updateAnnouncementBadge() {
+    const badge = document.getElementById('new-announcements-badge');
+    if (!badge) return;
+    
+    // 최근 7일 이내 공지 개수
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const recentCount = allShopAnnouncements.filter(ann => {
+        const createdDate = new Date(ann.created_at || ann.publish_date);
+        return createdDate >= sevenDaysAgo;
+    }).length;
+    
+    if (recentCount > 0) {
+        badge.textContent = recentCount;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+// HTML 이스케이프
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// showSection 함수에 공지사항 로드 추가
+const originalShowSection = typeof showSection !== 'undefined' ? showSection : null;
+if (originalShowSection) {
+    window.showSection = function(sectionName) {
+        originalShowSection(sectionName);
+        
+        // 공지사항 섹션 표시 시 로드
+        if (sectionName === 'announcements') {
+            loadShopAnnouncements();
+        }
+    };
+}
+
+// 전역 함수 등록
+window.loadShopAnnouncements = loadShopAnnouncements;
+window.viewShopAnnouncement = viewShopAnnouncement;
+window.closeAnnouncementDetailModal = closeAnnouncementDetailModal;
+window.filterShopAnnouncements = filterShopAnnouncements;
+
+// 초기 로드 시 공지사항 배지 업데이트 (대시보드 진입 시)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            loadShopAnnouncements();
+        }, 1000);
+    });
+} else {
+    setTimeout(() => {
+        loadShopAnnouncements();
+    }, 1000);
+}
+
+// ======= 업체 공지사항 작성 시스템 =======
+
+let myShopAnnouncements = [];
+
+// 공지사항 탭 전환
+function switchAnnouncementTab(tab) {
+    // 탭 버튼 스타일 변경
+    document.querySelectorAll('.announcement-tab').forEach(btn => {
+        btn.classList.remove('border-primary-500', 'text-primary-600');
+        btn.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    const activeTab = document.getElementById(`announcement-tab-${tab}`);
+    if (activeTab) {
+        activeTab.classList.remove('border-transparent', 'text-gray-500');
+        activeTab.classList.add('border-primary-500', 'text-primary-600');
+    }
+    
+    // 탭 컨텐츠 전환
+    document.querySelectorAll('.announcement-tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    const activeContent = document.getElementById(`announcement-${tab}-tab`);
+    if (activeContent) {
+        activeContent.classList.remove('hidden');
+    }
+    
+    // 탭별 데이터 로드
+    if (tab === 'my') {
+        loadMyAnnouncements();
+    }
+}
+
+// 업체 공지사항 작성 폼 제출
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('shop-announcement-form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const title = document.getElementById('new-announcement-title').value.trim();
+                const content = document.getElementById('new-announcement-content').value.trim();
+                const isPublished = document.getElementById('new-announcement-published').checked;
+                
+                if (!title || !content) {
+                    alert('제목과 내용을 모두 입력해주세요.');
+                    return;
+                }
+                
+                if (content.length > 1000) {
+                    alert('내용은 최대 1,000자까지 입력 가능합니다.');
+                    return;
+                }
+                
+                // 버튼 비활성화
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>등록 중...';
+                
+                // 업체 정보 가져오기
+                const shopId = currentShop?.id || currentUser?.shop_id;
+                const shopName = currentShop?.name || currentShop?.shop_name || '우리 업체';
+                const state = currentShop?.state || '';
+                const district = currentShop?.district || '';
+                
+                // 공지사항 데이터 준비
+                const announcementData = {
+                    shop_id: shopId,
+                    shop_name: shopName,
+                    title: title,
+                    content: content,
+                    is_published: isPublished,
+                    views: 0,
+                    state: state,
+                    district: district
+                };
+                
+                // API 호출
+                const response = await fetch('/tables/shop_announcements', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(announcementData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('공지사항 등록 실패');
+                }
+                
+                const result = await response.json();
+                console.log('Shop announcement created:', result);
+                
+                // 성공 메시지
+                alert(isPublished ? 
+                    '고객 소식이 등록되었습니다!\n메인 페이지와 공지사항 게시판에서 확인하실 수 있습니다.' : 
+                    '임시저장되었습니다. 나중에 게시할 수 있습니다.'
+                );
+                
+                // 폼 초기화
+                form.reset();
+                document.getElementById('new-announcement-published').checked = true;
+                
+                // 내가 작성한 소식 탭으로 이동
+                switchAnnouncementTab('my');
+                
+                // 버튼 복원
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                
+            } catch (error) {
+                console.error('공지사항 작성 오류:', error);
+                alert('공지사항 작성 중 오류가 발생했습니다: ' + error.message);
+                
+                // 버튼 복원
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+    }
+});
+
+// 내가 작성한 공지사항 로드
+async function loadMyAnnouncements() {
+    try {
+        console.log('Loading my announcements...');
+        
+        const shopId = currentShop?.id || currentUser?.shop_id;
+        
+        if (!shopId) {
+            throw new Error('업체 정보를 찾을 수 없습니다.');
+        }
+        
+        const response = await fetch(`/tables/shop_announcements?limit=100&sort=-created_at`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to load announcements');
+        }
+        
+        const data = await response.json();
+        const all = data.data || [];
+        
+        // 내가 작성한 공지만 필터링
+        myShopAnnouncements = all.filter(ann => ann.shop_id === shopId);
+        
+        console.log(`Loaded ${myShopAnnouncements.length} my announcements`);
+        
+        displayMyAnnouncements();
+        
+    } catch (error) {
+        console.error('내 공지사항 로드 오류:', error);
+        document.getElementById('my-announcements-list').innerHTML = `
+            <div class="text-center py-12">
+                <i class="fas fa-exclamation-circle text-red-400 text-5xl mb-3"></i>
+                <p class="text-gray-600">공지사항을 불러올 수 없습니다.</p>
+                <button onclick="loadMyAnnouncements()" class="mt-4 px-4 py-2 bg-primary-500 text-white rounded-lg">
+                    다시 시도
+                </button>
+            </div>
+        `;
+    }
+}
+
+// 내가 작성한 공지사항 표시
+function displayMyAnnouncements() {
+    const container = document.getElementById('my-announcements-list');
+    
+    if (myShopAnnouncements.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-12 bg-white rounded-lg shadow">
+                <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+                <p class="text-gray-500 text-lg mb-4">작성한 소식이 없습니다.</p>
+                <button onclick="switchAnnouncementTab('write')" 
+                        class="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                    <i class="fas fa-pencil-alt mr-2"></i>첫 소식 작성하기
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = myShopAnnouncements.map(ann => {
+        const createdDate = formatDate(ann.created_at);
+        const statusBadge = ann.is_published ? 
+            '<span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">게시중</span>' :
+            '<span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">임시저장</span>';
+        
+        return `
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(ann.title)}</h3>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-gray-600 mb-3">${escapeHtml(ann.content).substring(0, 100)}${ann.content.length > 100 ? '...' : ''}</p>
+                        <div class="flex items-center text-sm text-gray-500 gap-4">
+                            <span>
+                                <i class="far fa-calendar mr-1"></i>${createdDate}
+                            </span>
+                            <span>
+                                <i class="far fa-eye mr-1"></i>조회 ${ann.views || 0}회
+                            </span>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex flex-col gap-2">
+                        <button onclick="editMyAnnouncement('${ann.id}')" 
+                                class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+                            <i class="fas fa-edit mr-1"></i>수정
+                        </button>
+                        <button onclick="deleteMyAnnouncement('${ann.id}')" 
+                                class="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600">
+                            <i class="fas fa-trash mr-1"></i>삭제
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 공지사항 수정
+function editMyAnnouncement(announcementId) {
+    const ann = myShopAnnouncements.find(a => a.id === announcementId);
+    if (!ann) {
+        alert('공지사항을 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 작성 탭으로 전환하고 데이터 채우기
+    switchAnnouncementTab('write');
+    document.getElementById('new-announcement-title').value = ann.title;
+    document.getElementById('new-announcement-content').value = ann.content;
+    document.getElementById('new-announcement-published').checked = ann.is_published;
+    
+    // 폼에 ID 저장 (수정 모드)
+    document.getElementById('shop-announcement-form').dataset.editId = announcementId;
+}
+
+// 공지사항 삭제
+async function deleteMyAnnouncement(announcementId) {
+    if (!confirm('정말로 이 소식을 삭제하시겠습니까?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/tables/shop_announcements/${announcementId}`, {
+            method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+            throw new Error('삭제 실패');
+        }
+        
+        alert('소식이 삭제되었습니다.');
+        loadMyAnnouncements();
+        
+    } catch (error) {
+        console.error('삭제 오류:', error);
+        alert('삭제 중 오류가 발생했습니다: ' + error.message);
+    }
+}
+
+// 전역 함수 등록
+window.switchAnnouncementTab = switchAnnouncementTab;
+window.editMyAnnouncement = editMyAnnouncement;
+window.deleteMyAnnouncement = deleteMyAnnouncement;
