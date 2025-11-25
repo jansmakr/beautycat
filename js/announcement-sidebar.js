@@ -7,27 +7,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadAnnouncementSidebar() {
     try {
+        console.log('[공지사항 사이드바] 로딩 시작...');
+        
         // 최신 공지 3개 가져오기
         const response = await fetch('/tables/announcements?limit=3&sort=-created_at');
         
-        if (!response.ok) return;
+        console.log('[공지사항 사이드바] API 응답 상태:', response.status);
+        
+        if (!response.ok) {
+            console.warn('[공지사항 사이드바] API 응답 실패:', response.status);
+            return;
+        }
         
         const data = await response.json();
+        console.log('[공지사항 사이드바] 받은 데이터:', data);
+        
         const announcements = (data.data || []).filter(ann => 
             ann.is_published && 
             (ann.target_audience === 'customers' || ann.target_audience === 'all')
         );
         
-        if (announcements.length === 0) return;
+        console.log('[공지사항 사이드바] 필터링된 공지:', announcements.length + '개');
+        
+        if (announcements.length === 0) {
+            console.warn('[공지사항 사이드바] 표시할 공지사항 없음');
+            return;
+        }
         
         // 사이드바 생성
         const sidebar = createAnnouncementSidebar(announcements);
         
         // body에 추가
         document.body.appendChild(sidebar);
+        console.log('[공지사항 사이드바] 사이드바 표시 완료');
         
     } catch (error) {
-        console.error('공지 사이드바 로드 오류:', error);
+        console.error('[공지사항 사이드바] 로드 오류:', error);
     }
 }
 
