@@ -2300,7 +2300,6 @@
     <script src="js/main.js?v=2.1.3" defer></script>
     <script src="js/auth.js?v=2.1.3" defer></script>
     <script src="js/regional-matching.js?v=2.1.3" defer></script>
-    <script src="js/representative-shops-data.js?v=2.5.4" defer></script>
     <script src="js/announcement-sidebar.js?v=2.5.4" defer></script>
     
     <script>
@@ -2753,95 +2752,7 @@
             }
         }
 
-        // 대표샵 로드 함수 (신규 데이터 사용)
-        function loadRepresentativeShop() {
-            const stateSelect = document.getElementById('representative-state');
-            const districtSelect = document.getElementById('representative-district');
-            const shopInfo = document.getElementById('representative-shop-info');
-            const noShop = document.getElementById('no-representative-shop');
-            
-            const state = stateSelect.value;
-            const district = districtSelect.value;
-            
-            // 초기화
-            shopInfo.classList.add('hidden');
-            noShop.classList.add('hidden');
-            
-            if (!state || !district) {
-                return;
-            }
-            
-            // representativeShopsData에서 해당 지역 대표샵 찾기
-            const shop = typeof getRepresentativeShopByRegion !== 'undefined' 
-                ? getRepresentativeShopByRegion(state, district)
-                : null;
-            
-            if (shop) {
-                // 대표샵 정보 표시
-                document.getElementById('rep-shop-name').textContent = shop.shopName;
-                document.getElementById('rep-shop-location').textContent = shop.address;
-                document.getElementById('rep-shop-phone').textContent = shop.phone;
-                
-                // 대표 관리 태그 표시
-                const treatmentsContainer = document.getElementById('rep-shop-treatments');
-                treatmentsContainer.innerHTML = '';
-                if (shop.representativeTreatments && Array.isArray(shop.representativeTreatments)) {
-                    shop.representativeTreatments.slice(0, 3).forEach(treatment => {
-                        const badge = document.createElement('span');
-                        badge.className = 'badge-soft text-xs';
-                        badge.style.cssText = 'background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; padding: 4px 8px;';
-                        badge.textContent = treatment;
-                        treatmentsContainer.appendChild(badge);
-                    });
-                }
-                
-                // 전화하기 버튼 이벤트
-                const callButton = document.getElementById('call-representative-shop');
-                callButton.onclick = function() {
-                    makeCall(shop.phone);
-                };
-                
-                shopInfo.classList.remove('hidden');
-            } else {
-                // 대표샵 없음 표시
-                noShop.classList.remove('hidden');
-            }
-        }
-        
-        // 구/군 옵션 로드 함수 (지역별 대표샵 데이터 기반)
-        function loadRepresentativeDistricts() {
-            const stateSelect = document.getElementById('representative-state');
-            const districtSelect = document.getElementById('representative-district');
-            const state = stateSelect.value;
-            
-            // 초기화
-            districtSelect.innerHTML = '<option value="">구/군 선택</option>';
-            districtSelect.disabled = true;
-            document.getElementById('representative-shop-info').classList.add('hidden');
-            document.getElementById('no-representative-shop').classList.add('hidden');
-            
-            if (!state) return;
-            
-            // 해당 시/도의 대표샵 목록 가져오기
-            const shops = typeof getRepresentativeShopsByState !== 'undefined'
-                ? getRepresentativeShopsByState(state)
-                : [];
-            
-            if (shops.length > 0) {
-                // 중복 제거하여 구/군 목록 생성
-                const districts = [...new Set(shops.map(shop => shop.district))];
-                districts.sort();
-                
-                districts.forEach(district => {
-                    const option = document.createElement('option');
-                    option.value = district;
-                    option.textContent = district;
-                    districtSelect.appendChild(option);
-                });
-                
-                districtSelect.disabled = false;
-            }
-        }
+
 
         // 전화 걸기 함수
         function makeCall(phoneNumber) {
@@ -3446,17 +3357,7 @@
                 if (memberInfo) memberInfo.style.display = 'none';
             }
             
-            // 대표샵 지역 선택 이벤트 리스너
-            const representativeStateSelect = document.getElementById('representative-state');
-            const representativeDistrictSelect = document.getElementById('representative-district');
-            
-            if (representativeStateSelect) {
-                representativeStateSelect.addEventListener('change', loadRepresentativeDistricts);
-            }
-            
-            if (representativeDistrictSelect) {
-                representativeDistrictSelect.addEventListener('change', loadRepresentativeShop);
-            }
+            // 대표샵 지역 선택 이벤트 리스너는 main.js의 initializeRepresentativeShops()에서 처리됨
             
             // 체크박스 토글 (추가 지원 - DOMContentLoaded 후 동적 추가된 요소용)
             document.querySelectorAll('.checkbox-option').forEach(item => {
