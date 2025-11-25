@@ -73,6 +73,7 @@
                 <!-- 데스크톱 네비게이션 -->
                 <nav class="hidden lg:flex items-center space-x-6">
                     <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">마이 페이지</a>
+                    <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공지사항</a>
                     <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 요청</a>
                     <a href="#" onclick="showSection('quotes')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 관리</a>
                     <a href="#" onclick="showSection('shop-info')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 정보</a>
@@ -132,6 +133,10 @@
                 <button onclick="showSection('dashboard'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl bg-primary-50 text-primary-500 font-medium flex items-center">
                     <i class="fas fa-user mr-3"></i>마이 페이지
+                </button>
+                <button onclick="showSection('announcements'); closeMobileMenu()" 
+                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
+                    <i class="fas fa-bullhorn mr-3"></i>공지사항
                 </button>
                 <button onclick="showSection('consultations'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
@@ -202,6 +207,15 @@
                            data-section="dashboard">
                             <i class="fas fa-home mr-3 text-primary-500"></i>
                             마이 페이지
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="showSection('announcements')" 
+                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
+                           data-section="announcements">
+                            <i class="fas fa-bullhorn mr-3 text-primary-500"></i>
+                            공지사항
+                            <span id="new-announcements-badge" class="ml-auto bg-blue-500 text-white text-xs rounded-full px-2 py-1 hidden">0</span>
                         </a>
                     </li>
                     <li>
@@ -420,6 +434,152 @@
                         </div>
                         <div id="quotes-list" class="divide-y divide-gray-100">
                             <!-- 동적으로 로드됩니다 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 공지사항 섹션 -->
+                <div id="announcements-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                            <i class="fas fa-bullhorn text-primary-500 mr-3"></i>공지사항 관리
+                        </h1>
+                        <p class="text-gray-600">운영진 공지를 확인하고 우리 업체의 소식을 고객에게 알리세요</p>
+                    </div>
+
+                    <!-- 탭 메뉴 -->
+                    <div class="mb-6 border-b border-gray-200">
+                        <nav class="flex space-x-8">
+                            <button onclick="switchAnnouncementTab('view')" 
+                                    id="announcement-tab-view"
+                                    class="announcement-tab pb-4 px-1 border-b-2 border-primary-500 font-medium text-primary-600">
+                                <i class="fas fa-eye mr-2"></i>공지 확인
+                            </button>
+                            <button onclick="switchAnnouncementTab('write')" 
+                                    id="announcement-tab-write"
+                                    class="announcement-tab pb-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                <i class="fas fa-pencil-alt mr-2"></i>소식 작성
+                            </button>
+                            <button onclick="switchAnnouncementTab('my')" 
+                                    id="announcement-tab-my"
+                                    class="announcement-tab pb-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                                <i class="fas fa-list mr-2"></i>내가 작성한 소식
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- 공지 확인 탭 -->
+                    <div id="announcement-view-tab" class="announcement-tab-content">
+                        <!-- 공지사항 필터 -->
+                        <div class="mb-6 flex flex-wrap items-center gap-4">
+                            <div class="flex-1 min-w-[200px]">
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" id="announcement-search" 
+                                           placeholder="공지사항 검색..." 
+                                           onkeyup="filterShopAnnouncements()"
+                                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                </div>
+                            </div>
+                            <select id="announcement-priority-filter" onchange="filterShopAnnouncements()" 
+                                    class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                <option value="">전체 우선순위</option>
+                                <option value="urgent">긴급</option>
+                                <option value="important">중요</option>
+                                <option value="normal">일반</option>
+                            </select>
+                        </div>
+
+                        <!-- 공지사항 목록 -->
+                        <div id="shop-announcements-list" class="space-y-4">
+                            <!-- 로딩 상태 -->
+                            <div class="flex items-center justify-center py-12">
+                                <i class="fas fa-spinner fa-spin text-4xl text-primary-500 mr-3"></i>
+                                <span class="text-gray-600">공지사항을 불러오는 중...</span>
+                            </div>
+                        </div>
+
+                        <!-- 빈 상태 메시지 (JavaScript로 제어됨) -->
+                        <div id="announcements-empty-state" class="hidden text-center py-12">
+                            <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500 text-lg">등록된 공지사항이 없습니다.</p>
+                        </div>
+                    </div>
+
+                    <!-- 소식 작성 탭 -->
+                    <div id="announcement-write-tab" class="announcement-tab-content hidden">
+                        <div class="max-w-3xl mx-auto">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <div class="flex items-start">
+                                    <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-semibold text-blue-900 mb-1">업체 소식 작성 안내</h4>
+                                        <p class="text-sm text-blue-700">
+                                            작성하신 소식은 BeautyCat 메인 페이지와 공지사항 게시판에 노출되어<br>
+                                            고객들에게 우리 업체의 이벤트, 프로모션, 신규 서비스 등을 알릴 수 있습니다.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form id="shop-announcement-form" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        제목 <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="new-announcement-title" required maxlength="100"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                           placeholder="예: 신규 고객 50% 할인 이벤트">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        내용 <span class="text-red-500">*</span>
+                                    </label>
+                                    <textarea id="new-announcement-content" required rows="10"
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                              placeholder="고객들에게 전하고 싶은 소식을 작성해주세요.&#10;&#10;예:&#10;- 이벤트/프로모션 정보&#10;- 신규 서비스 안내&#10;- 특별 할인 혜택&#10;- 영업시간 변경 등"></textarea>
+                                    <p class="text-sm text-gray-500 mt-1">최대 1,000자까지 입력 가능합니다.</p>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="new-announcement-published" checked
+                                           class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                    <label for="new-announcement-published" class="ml-2 text-sm text-gray-700">
+                                        즉시 게시 (체크 해제 시 임시저장)
+                                    </label>
+                                </div>
+
+                                <div class="flex gap-3">
+                                    <button type="button" onclick="switchAnnouncementTab('view')"
+                                            class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                        취소
+                                    </button>
+                                    <button type="submit"
+                                            class="flex-1 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                                        <i class="fas fa-paper-plane mr-2"></i>작성 완료
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 내가 작성한 소식 탭 -->
+                    <div id="announcement-my-tab" class="announcement-tab-content hidden">
+                        <div class="mb-4 flex justify-between items-center">
+                            <p class="text-gray-600">고객에게 전달한 우리 업체의 소식 목록입니다.</p>
+                            <button onclick="switchAnnouncementTab('write')" 
+                                    class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
+                                <i class="fas fa-plus mr-2"></i>새 소식 작성
+                            </button>
+                        </div>
+
+                        <div id="my-announcements-list" class="space-y-4">
+                            <!-- 로딩 상태 -->
+                            <div class="flex items-center justify-center py-12">
+                                <i class="fas fa-spinner fa-spin text-4xl text-green-500 mr-3"></i>
+                                <span class="text-gray-600">내가 작성한 소식을 불러오는 중...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1152,6 +1312,51 @@
             <i class="fas fa-star text-gray-300 text-6xl mb-4"></i>
             <h3 class="text-xl font-semibold text-gray-600 mb-2">아직 리뷰가 없습니다</h3>
             <p class="text-gray-500">고객 상담을 완료하면 리뷰를 받을 수 있습니다.</p>
+        </div>
+    </div>
+
+    <!-- 공지사항 상세보기 모달 -->
+    <div id="announcement-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+            <!-- 모달 헤더 -->
+            <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-900" id="modal-announcement-title">
+                    공지사항 제목
+                </h2>
+                <button onclick="closeAnnouncementDetailModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- 모달 내용 -->
+            <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 140px);">
+                <!-- 공지사항 정보 -->
+                <div class="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b">
+                    <span id="modal-announcement-priority" class="px-3 py-1 text-sm font-semibold rounded-full">
+                        중요
+                    </span>
+                    <span class="text-sm text-gray-500">
+                        <i class="far fa-calendar mr-1"></i>
+                        <span id="modal-announcement-date">2024-11-25</span>
+                    </span>
+                    <span class="text-sm text-gray-500">
+                        <i class="far fa-eye mr-1"></i>
+                        조회 <span id="modal-announcement-views">0</span>회
+                    </span>
+                </div>
+                
+                <!-- 공지사항 본문 -->
+                <div id="modal-announcement-content" class="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
+                    공지사항 내용이 여기에 표시됩니다.
+                </div>
+            </div>
+            
+            <!-- 모달 푸터 -->
+            <div class="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end border-t">
+                <button onclick="closeAnnouncementDetailModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                    닫기
+                </button>
+            </div>
         </div>
     </div>
 
