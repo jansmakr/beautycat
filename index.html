@@ -1686,6 +1686,23 @@
             font-size: 14px;
             color: #6B7280;
         }
+
+        /* 모바일 레이아웃 순서 조정 */
+        /* 데스크탑 (768px 이상)에서는 원래 순서로 복원 */
+        @media (min-width: 768px) {
+            .hero-section {
+                order: 1 !important; /* 데스크탑: 히어로 섹션 1순위 */
+            }
+            .cta-buttons-section {
+                order: 2 !important; /* 데스크탑: 상담 방법 선택 2순위 */
+            }
+            .main-content-wrapper section:nth-of-type(3) {
+                order: 3 !important; /* 데스크탑: 왜 BeautyCat? 3순위 */
+            }
+            .main-content-wrapper section:nth-of-type(4) {
+                order: 4 !important; /* 데스크탑: 후기 4순위 */
+            }
+        }
     </style>
 </head>
 <body style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
@@ -1739,9 +1756,9 @@
     </header>
 
     <!-- 메인 콘텐츠 -->
-    <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto;">
+    <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
         <!-- 히어로 섹션 (야놀자 스타일) -->
-        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 2; /* 모바일: 2순위 */">
             <div class="max-w-4xl mx-auto text-center" style="margin-left: auto; margin-right: auto;">
                 <!-- 뷰냥이 아이콘 -->
                 <div class="hero-cat-icon inline-block mb-6">
@@ -1776,7 +1793,7 @@
         </section>
 
         <!-- 상담 방법 선택 (야놀자 스타일) -->
-        <section class="cta-buttons-section mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+        <section class="cta-buttons-section mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 1; /* 모바일: 1순위 */">
             <h2 class="section-title-soft text-center">어떤 상담이<br class="sm:hidden"> 필요하신가요?</h2>
             <p class="section-subtitle-soft text-center">원하시는 상담 방법을 선택해주세요</p>
             
@@ -1822,7 +1839,7 @@
         </section>
 
         <!-- 상담 및 견적 신청 폼 (슬라이드 방식) -->
-        <section id="consultation" class="card-soft section-consultation mb-12 animate-fade-in" style="display: none; max-width: 900px; margin-left: auto; margin-right: auto; padding: 40px;">
+        <section id="consultation" class="card-soft section-consultation mb-12 animate-fade-in" style="display: none; max-width: 900px; margin-left: auto; margin-right: auto; padding: 40px; order: 10; /* 폼은 항상 아래 */">
             <div class="text-center mb-8">
                 <button onclick="hideConsultationForm()" class="text-gray-500 hover:text-pink-500 mb-6 transition-colors" style="font-size: 14px;">
                     <i class="fas fa-arrow-left mr-2"></i>다시 선택하기
@@ -2185,7 +2202,7 @@
         </section>
 
         <!-- 왜 BeautyCat? (야놀자 스타일) -->
-        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 3; /* 모바일: 3순위 */">
             <h2 class="section-title-soft text-center">왜 BeautyCat을<br class="sm:hidden"> 선택해야 할까요?</h2>
             <p class="section-subtitle-soft text-center">피부관리를 쉽고 안전하게 시작하세요</p>
             
@@ -2229,7 +2246,7 @@
         </section>
 
         <!-- 피부관리 고객 후기 및 리뷰 -->
-        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto;">
+        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 4; /* 모바일: 4순위 */">
             <h2 class="section-title-soft text-center">피부관리<br class="sm:hidden"> 고객 후기 및 리뷰</h2>
             <p class="text-center text-gray-600 mb-8">BeautyCat과 함께한 고객님들의 생생한 이야기</p>
             
@@ -3029,16 +3046,24 @@
                     <span class="text-2xl font-bold" style="background: linear-gradient(135deg, #FF6B9D 0%, #FFA8C5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">beautycat</span>
                 </div>
                 
-                <!-- 회사 정보 -->
+                <!-- 회사 정보 (모바일: 간소화, 데스크탑: 전체) -->
                 <div class="text-sm text-gray-600 space-y-2">
-                    <p><strong>상호:</strong> 케이뷰틱스 | <strong>대표:</strong> 박대수</p>
-                    <p><strong>사업자등록번호:</strong> 693-47-00786</p>
-                    <p><strong>통신판매업등록번호:</strong> 제 2025-서울강서-2423호</p>
-                    <p><strong>주소:</strong> 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
-                    <p><strong>상담센터:</strong> 서울 금천구 디지털로10길 78, 가산테라타워 10층</p>
-                    <p><strong>개인정보처리담당자:</strong> 박지원</p>
-                    <p><strong>TEL:</strong> 070-7004-5902</p>
-                    <p><strong>E-MAIL:</strong> utuber@kakao.com</p>
+                    <!-- 모바일에서만 표시 (간소화) -->
+                    <div class="block md:hidden space-y-1">
+                        <p><strong>상호:</strong> 케이뷰틱스 | <strong>대표:</strong> 박대수</p>
+                        <p><strong>주소:</strong> 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
+                    </div>
+                    <!-- 데스크탑에서만 표시 (전체 정보) -->
+                    <div class="hidden md:block">
+                        <p><strong>상호:</strong> 케이뷰틱스 | <strong>대표:</strong> 박대수</p>
+                        <p><strong>사업자등록번호:</strong> 693-47-00786</p>
+                        <p><strong>통신판매업등록번호:</strong> 제 2025-서울강서-2423호</p>
+                        <p><strong>주소:</strong> 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
+                        <p><strong>상담센터:</strong> 서울 금천구 디지털로10길 78, 가산테라타워 10층</p>
+                        <p><strong>개인정보처리담당자:</strong> 박지원</p>
+                        <p><strong>TEL:</strong> 070-7004-5902</p>
+                        <p><strong>E-MAIL:</strong> utuber@kakao.com</p>
+                    </div>
                 </div>
                 
                 <!-- 링크 -->
@@ -3143,12 +3168,37 @@
         }
         
         function showPhoneForm() {
-            // 대표샵 섹션으로 스크롤
-            const repSection = document.querySelector('.section-representative');
-            if (repSection) {
-                repSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            console.log('📞 [전화상담] 버튼 클릭됨');
+            
+            try {
+                // 1. 먼저 상담 폼을 표시
+                const consultationSection = document.getElementById('consultation');
+                if (consultationSection) {
+                    consultationSection.style.display = 'block';
+                    console.log('✅ [전화상담] 상담 폼 표시 완료');
+                } else {
+                    console.error('❌ [전화상담] consultation 섹션을 찾을 수 없습니다');
+                    return;
+                }
+                
+                // 2. 대표샵 섹션으로 스크롤 (약간의 지연 후)
+                setTimeout(() => {
+                    const repSection = document.querySelector('.section-representative');
+                    if (repSection) {
+                        repSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        console.log('✅ [전화상담] 대표샵 섹션으로 스크롤 완료');
+                    } else {
+                        console.warn('⚠️ [전화상담] 대표샵 섹션을 찾을 수 없음 → 상담 섹션으로 스크롤');
+                        consultationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 150);
+            } catch (error) {
+                console.error('❌ [전화상담] showPhoneForm 오류:', error);
             }
         }
+        
+        // 전역 함수로 등록 (window 객체에 명시적으로 추가)
+        window.showPhoneForm = showPhoneForm;
         
         // 공유 모달 열기
         function openShareModal() {
