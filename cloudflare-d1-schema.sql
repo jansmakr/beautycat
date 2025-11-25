@@ -145,7 +145,7 @@ CREATE TABLE call_statistics (
     FOREIGN KEY (shop_id) REFERENCES representative_shops(id)
 );
 
--- 8. 공지사항 테이블
+-- 8. 공지사항 테이블 (운영팀)
 CREATE TABLE announcements (
     id TEXT PRIMARY KEY,
     title TEXT NOT NULL,
@@ -163,6 +163,24 @@ CREATE TABLE announcements (
     updated_at INTEGER NOT NULL,
     deleted INTEGER DEFAULT 0,
     FOREIGN KEY (author_id) REFERENCES users(id)
+);
+
+-- 8-1. 업체 공지사항 테이블
+CREATE TABLE shop_announcements (
+    id TEXT PRIMARY KEY,
+    shop_id TEXT NOT NULL,
+    shop_name TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    priority TEXT DEFAULT 'normal' CHECK (priority IN ('urgent', 'important', 'normal')),
+    is_published INTEGER DEFAULT 1,
+    publish_date TEXT,
+    expire_date TEXT,
+    view_count INTEGER DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    deleted INTEGER DEFAULT 0,
+    FOREIGN KEY (shop_id) REFERENCES skincare_shops(id)
 );
 
 -- 9. 리뷰 테이블
@@ -218,6 +236,8 @@ CREATE INDEX idx_messages_timestamp ON messages(created_at);
 CREATE INDEX idx_rep_shops_location ON representative_shops(state, district);
 CREATE INDEX idx_rep_shops_status ON representative_shops(status);
 CREATE INDEX idx_announcements_published ON announcements(is_published, created_at);
+CREATE INDEX idx_shop_announcements_shop ON shop_announcements(shop_id);
+CREATE INDEX idx_shop_announcements_published ON shop_announcements(is_published, created_at);
 CREATE INDEX idx_reviews_shop ON reviews(shop_id);
 CREATE INDEX idx_sessions_token ON user_sessions(session_token);
 CREATE INDEX idx_sessions_user ON user_sessions(user_id);

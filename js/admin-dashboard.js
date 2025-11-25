@@ -81,8 +81,12 @@ function showSection(sectionName) {
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => section.classList.add('hidden'));
     
-    // Show selected section
-    const targetSection = document.getElementById(sectionName + '-section');
+    // Show selected section - try both with and without '-section' suffix
+    let targetSection = document.getElementById(sectionName + '-section');
+    if (!targetSection) {
+        targetSection = document.getElementById(sectionName);
+    }
+    
     if (targetSection) {
         targetSection.classList.remove('hidden');
         currentSection = sectionName;
@@ -104,6 +108,12 @@ function showSection(sectionName) {
             break;
         case 'profile':
             loadProfile();
+            break;
+        case 'announcements':
+            loadAnnouncements();
+            break;
+        case 'test':
+            // Test section doesn't need data loading
             break;
     }
 }
@@ -138,6 +148,9 @@ async function loadDashboardData() {
         // Update statistics
         updateDashboardStats();
         loadRecentActivities();
+        
+        // Load recent members for dashboard
+        loadRecentMembers();
         
     } catch (error) {
         console.error('Dashboard data loading error:', error);
@@ -214,15 +227,23 @@ function loadRecentActivities() {
 // Load users
 async function loadUsers(updateTable = true) {
     try {
+        console.log('👥 사용자 데이터 로딩 중...');
         const response = await fetch('tables/users?limit=1000&sort=created_at');
+        console.log('📡 응답 상태:', response.status, response.statusText);
+        
         const data = await response.json();
+        console.log('📊 전체 데이터:', data);
+        console.log('👥 사용자 수:', data.total, '명');
+        
         allUsers = data.data || [];
+        console.log('✅ allUsers 배열:', allUsers.length, '명');
         
         if (updateTable) {
+            console.log('🔄 테이블 업데이트 시작');
             displayUsers(allUsers);
         }
     } catch (error) {
-        console.error('Users loading error:', error);
+        console.error('❌ Users loading error:', error);
         
         // API 실패시 데모 데이터 사용
         allUsers = [
@@ -266,13 +287,24 @@ async function loadUsers(updateTable = true) {
 
 // Display users in table
 function displayUsers(users) {
+    console.log('🖼️ displayUsers 호출됨, 사용자 수:', users.length);
+    
     const tableBody = document.getElementById('users-table');
     
-    if (users.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">등록된 사용자가 없습니다.</td></tr>';
+    if (!tableBody) {
+        console.error('❌ users-table 요소를 찾을 수 없습니다!');
         return;
     }
     
+    console.log('✅ users-table 요소 찾음');
+    
+    if (users.length === 0) {
+        console.log('⚠️ 표시할 사용자가 없습니다');
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">등록된 사용자가 없습니다.</td></tr>';
+        return;
+    }
+    
+    console.log('🔨 테이블 HTML 생성 중...');
     tableBody.innerHTML = users.map(user => {
         const userTypeLabels = {
             'customer': '고객',
@@ -287,6 +319,30 @@ function displayUsers(users) {
         };
         
         const status = user.status || 'active';
+        
+        // 비밀번호 표시 (해시된 경우 일부만, 평문인 경우 전체)
+        let passwordDisplay = '';
+        // password에 :가 포함되어 있으면 해시된 비밀번호 (hash:salt 형식)
+        if (user.password && user.password.includes(':')) {
+            // 해시된 비밀번호 - 일부만 표시
+            const [hash] = user.password.split(':');
+            passwordDisplay = `
+                <span class="text-gray-400 text-xs" title="해시된 비밀번호 (hash:salt)">
+                    ${hash.substring(0, 12)}...
+                </span>
+                <button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900 text-xs" title="전체 해시 복사">
+                    <i class="fas fa-copy"></i>
+                </button>
+            `;
+        } else {
+            // 평문 비밀번호 - 전체 표시
+            passwordDisplay = `
+                <span class="font-mono text-sm" id="password-${user.id}">${user.password || '-'}</span>
+                <button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900" title="비밀번호 복사">
+                    <i class="fas fa-copy"></i>
+                </button>
+            `;
+        }
         
         return `
             <tr>
@@ -307,6 +363,9 @@ function displayUsers(users) {
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                         ${userTypeLabels[user.user_type] || user.user_type}
                     </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    ${passwordDisplay}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${formatDate(user.created_at)}
@@ -344,6 +403,36 @@ function filterUsers() {
 // Refresh users
 function refreshUsers() {
     loadUsers();
+}
+
+// Copy password to clipboard
+function copyPassword(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user || !user.password) {
+        alert('비밀번호를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 클립보드에 복사
+    navigator.clipboard.writeText(user.password).then(() => {
+        // 성공 알림
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>비밀번호가 클립보드에 복사되었습니다</span>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 2000);
+    }).catch(err => {
+        console.error('복사 실패:', err);
+        alert('복사에 실패했습니다.');
+    });
 }
 
 // Load shops
@@ -866,31 +955,36 @@ function viewConsultation(consultationId) {
         return;
     }
     
+    // message 필드에서 추가 정보 파싱
+    let additionalInfo = {};
+    try {
+        if (consultation.message) {
+            additionalInfo = JSON.parse(consultation.message);
+        }
+    } catch (e) {
+        console.log('메시지 파싱 실패:', consultation.message);
+        additionalInfo = { notes: consultation.message };
+    }
+    
     // Fill view modal with consultation data
-    document.getElementById('view-consultation-name').textContent = consultation.name || '-';
-    document.getElementById('view-consultation-age').textContent = consultation.age || '-';
+    document.getElementById('view-consultation-name').textContent = consultation.customer_name || '-';
     document.getElementById('view-consultation-phone').textContent = consultation.phone || '-';
-    document.getElementById('view-consultation-gender').textContent = consultation.gender === 'male' ? '남성' : consultation.gender === 'female' ? '여성' : consultation.gender || '-';
-    document.getElementById('view-consultation-region').textContent = consultation.region || consultation.location || '-';
-    document.getElementById('view-consultation-detailed-region').textContent = consultation.detailed_region || consultation.detailed_location || '-';
-    document.getElementById('view-consultation-skin-type').textContent = consultation.skin_type || '-';
-    document.getElementById('view-consultation-budget').textContent = consultation.budget || '-';
-    document.getElementById('view-consultation-frequency').textContent = consultation.frequency || '-';
-    document.getElementById('view-consultation-additional').textContent = consultation.additional_requests || consultation.message || '-';
+    document.getElementById('view-consultation-region').textContent = consultation.region || '-';
+    document.getElementById('view-consultation-budget').textContent = additionalInfo.budget || '-';
+    
+    // 피부 상태
+    document.getElementById('view-consultation-skin-condition').textContent = additionalInfo.skin_condition || '-';
+    
+    // 추가 요청사항
+    document.getElementById('view-consultation-notes').textContent = additionalInfo.notes || '-';
+    
+    // 신청일시 및 수정일시
     document.getElementById('view-consultation-created-at').textContent = formatDate(consultation.created_at) || '-';
     document.getElementById('view-consultation-updated-at').textContent = formatDate(consultation.updated_at) || '-';
     
     // Handle treatment types
-    const treatments = consultation.treatment_types || consultation.interested_treatments;
-    let treatmentText = '-';
-    if (treatments) {
-        if (Array.isArray(treatments)) {
-            treatmentText = treatments.join(', ');
-        } else if (typeof treatments === 'string') {
-            treatmentText = treatments;
-        }
-    }
-    document.getElementById('view-consultation-treatments').textContent = treatmentText;
+    const treatments = consultation.treatment_type;
+    document.getElementById('view-consultation-treatments').textContent = treatments || '-';
     
     // Handle status with colored badge
     const status = consultation.status || 'pending';
@@ -910,7 +1004,7 @@ function viewConsultation(consultationId) {
     
     const statusBadge = document.getElementById('view-consultation-status-badge');
     statusBadge.textContent = statusText;
-    statusBadge.className = `px-2 py-1 text-xs font-semibold rounded-full ${statusColors[status]}`;
+    statusBadge.className = `px-3 py-1 text-sm font-semibold rounded-full ${statusColors[status]}`;
     
     // Set current status in dropdown
     document.getElementById('consultation-status-change').value = status;
@@ -939,10 +1033,12 @@ function viewConsultation(consultationId) {
     }
     
     // Store current consultation ID for status update
-    document.getElementById('consultation-view-modal').setAttribute('data-consultation-id', consultationId);
+    window.currentConsultationId = consultationId;
     
-    // Show modal
-    document.getElementById('consultation-view-modal').classList.remove('hidden');
+    // 모달 열기
+    const modal = document.getElementById('consultation-view-modal');
+    modal.setAttribute('data-consultation-id', consultationId);
+    modal.classList.remove('hidden');
 }
 
 function closeConsultationViewModal() {
@@ -2314,4 +2410,281 @@ async function updateShopRepresentativeStatus(shopId, isRepresentative) {
             throw error;
         }
     }
+}
+
+// ======= NEW SHOP REGISTRATION MODAL =======
+
+// Open new shop registration modal
+function openNewShopModal() {
+    const modal = document.getElementById('new-shop-modal');
+    const form = document.getElementById('new-shop-form');
+    
+    // Reset form
+    form.reset();
+    
+    // Show modal
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    
+    console.log('New shop modal opened');
+}
+
+// Close new shop registration modal
+function closeNewShopModal() {
+    const modal = document.getElementById('new-shop-modal');
+    const form = document.getElementById('new-shop-form');
+    
+    // Reset form
+    form.reset();
+    
+    // Hide modal
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+    
+    console.log('New shop modal closed');
+}
+
+// Handle new shop form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('new-shop-form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                // Get form data
+                const shopName = document.getElementById('new-shop-name').value.trim();
+                const ownerName = document.getElementById('new-shop-owner').value.trim();
+                const phone = document.getElementById('new-shop-phone').value.trim();
+                const email = document.getElementById('new-shop-email').value.trim();
+                const password = document.getElementById('new-shop-password').value;
+                const state = document.getElementById('new-shop-state').value;
+                const district = document.getElementById('new-shop-district').value.trim();
+                const address = document.getElementById('new-shop-address').value.trim();
+                const businessNumber = document.getElementById('new-shop-business-number').value.trim();
+                const licenseNumber = document.getElementById('new-shop-license-number').value.trim();
+                const naverCafeId = document.getElementById('new-shop-naver-id').value.trim();
+                
+                // Validation
+                if (!shopName || !ownerName || !phone || !email || !password || !state || !district || !address || !businessNumber) {
+                    alert('필수 항목을 모두 입력해주세요.');
+                    return;
+                }
+                
+                if (password.length < 8) {
+                    alert('비밀번호는 최소 8자 이상이어야 합니다.');
+                    return;
+                }
+                
+                // Show loading
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>등록 중...';
+                
+                console.log('Creating new shop account...');
+                
+                // Step 1: Create user account
+                const userData = {
+                    email: email,
+                    password: password,
+                    name: ownerName,
+                    phone: phone,
+                    user_type: 'shop'
+                };
+                
+                const userResponse = await fetch('/tables/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                
+                if (!userResponse.ok) {
+                    const errorText = await userResponse.text();
+                    throw new Error(`사용자 계정 생성 실패: ${errorText}`);
+                }
+                
+                const newUser = await userResponse.json();
+                console.log('User created:', newUser);
+                
+                // Step 2: Create shop
+                const shopData = {
+                    name: shopName,
+                    owner_name: ownerName,
+                    phone: phone,
+                    email: email,
+                    state: state,
+                    district: district,
+                    address: address,
+                    business_number: businessNumber,
+                    business_license_number: licenseNumber || null,
+                    naver_cafe_id: naverCafeId || null,
+                    status: 'pending',
+                    approved: false,
+                    user_id: newUser.id
+                };
+                
+                const shopResponse = await fetch('/tables/skincare_shops', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(shopData)
+                });
+                
+                if (!shopResponse.ok) {
+                    const errorText = await shopResponse.text();
+                    throw new Error(`업체 등록 실패: ${errorText}`);
+                }
+                
+                const newShop = await shopResponse.json();
+                console.log('Shop created:', newShop);
+                
+                // Step 3: Link user to shop
+                const linkResponse = await fetch(`/tables/users/${newUser.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shop_id: newShop.id })
+                });
+                
+                if (!linkResponse.ok) {
+                    console.warn('User-shop linking failed, but registration completed');
+                }
+                
+                console.log('Shop registration completed successfully');
+                
+                // Success!
+                alert(`업체 등록이 완료되었습니다!\n\n업체명: ${shopName}\n이메일: ${email}\n승인 상태: 대기중`);
+                
+                // Close modal
+                closeNewShopModal();
+                
+                // Reload dashboard data
+                await loadDashboardData();
+                await loadShops();
+                
+                // Show notification
+                showNotification('새 업체가 등록되었습니다.', 'success');
+                
+            } catch (error) {
+                console.error('Shop registration error:', error);
+                alert('업체 등록 중 오류가 발생했습니다:\n' + error.message);
+                
+                // Restore button
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    }
+});
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('new-shop-modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeNewShopModal();
+            }
+        });
+    }
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('new-shop-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            closeNewShopModal();
+        }
+    }
+});
+
+// ======= RECENT MEMBERS DISPLAY =======
+
+// Load recent members for dashboard
+async function loadRecentMembers() {
+    try {
+        console.log('Loading recent members...');
+        
+        // Fetch recent 5 users sorted by creation date
+        const response = await fetch('/tables/users?limit=5&sort=-created_at');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch recent members');
+        }
+        
+        const result = await response.json();
+        const recentUsers = result.data || [];
+        
+        console.log('Recent members loaded:', recentUsers.length);
+        
+        // Display recent members
+        displayRecentMembers(recentUsers);
+        
+    } catch (error) {
+        console.error('Recent members loading error:', error);
+        
+        // Fallback: Use local data if API fails
+        if (allUsers && allUsers.length > 0) {
+            const sortedUsers = [...allUsers].sort((a, b) => {
+                const dateA = new Date(a.created_at || 0).getTime();
+                const dateB = new Date(b.created_at || 0).getTime();
+                return dateB - dateA;
+            });
+            const recentUsers = sortedUsers.slice(0, 5);
+            displayRecentMembers(recentUsers);
+            console.log('Using local data for recent members');
+        } else {
+            // Show empty state
+            const container = document.getElementById('recent-members');
+            if (container) {
+                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가입자가 없습니다.</p>';
+            }
+        }
+    }
+}
+
+// Display recent members in the dashboard
+function displayRecentMembers(users) {
+    const container = document.getElementById('recent-members');
+    if (!container) return;
+    
+    if (users.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가입자가 없습니다.</p>';
+        return;
+    }
+    
+    container.innerHTML = users.map(user => {
+        const userTypeLabels = {
+            'customer': '고객',
+            'shop': '업체',
+            'admin': '관리자'
+        };
+        
+        const userTypeColors = {
+            'customer': 'bg-blue-100 text-blue-800',
+            'shop': 'bg-green-100 text-green-800',
+            'admin': 'bg-purple-100 text-purple-800'
+        };
+        
+        const userType = user.user_type || 'customer';
+        const userName = user.name || user.email || 'Unknown';
+        const userEmail = user.email || '';
+        const createdDate = user.created_at ? new Date(user.created_at).toLocaleDateString('ko-KR') : '날짜 미상';
+        
+        return `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="showSection('users')">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-medium text-gray-900">${userName}</span>
+                        <span class="text-xs px-2 py-1 rounded-full ${userTypeColors[userType]}">${userTypeLabels[userType]}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">${userEmail}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-gray-500">${createdDate}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
