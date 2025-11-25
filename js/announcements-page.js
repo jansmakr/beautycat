@@ -276,30 +276,9 @@ function closeDetailModal() {
 // 조회수 증가
 async function incrementViews(type, announcementId) {
     try {
-        const table = type === 'admin' ? 'announcements' : 'shop_announcements';
-        const announcements = type === 'admin' ? allAdminAnnouncements : allShopAnnouncements;
-        const announcement = announcements.find(a => a.id === announcementId);
-        
-        if (!announcement) return;
-        
-        const newViews = (announcement.views || 0) + 1;
-        
-        // API 호출
-        await fetch(`/tables/${table}/${announcementId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ views: newViews })
-        });
-        
-        // 로컬 데이터 업데이트
-        announcement.views = newViews;
-        
-        // 모달이 열려있으면 조회수 업데이트
-        if (currentAnnouncementForModal && currentAnnouncementForModal.id === announcementId) {
-            document.getElementById('modal-views').textContent = newViews;
-        }
-        
-        console.log(`${type} announcement ${announcementId} views: ${newViews}`);
+        // 조회수 증가 기능은 서버 측에서 구현 예정
+        // (현재 CORS 제약으로 PATCH 요청 비활성화)
+        console.log(`💡 [공지사항] ${type} 공지 조회: ${announcementId}`);
     } catch (error) {
         console.error('조회수 증가 오류:', error);
     }
