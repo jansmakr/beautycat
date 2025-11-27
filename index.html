@@ -1792,50 +1792,217 @@
             </div>
         </section>
 
-        <!-- 상담 방법 선택 (야놀자 스타일) -->
+        <!-- 상담 방법 선택 (울트라 프리미엄 디자인) -->
         <section class="cta-buttons-section mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 1; /* 모바일: 1순위 */">
-            <h2 class="section-title-soft text-center">어떤 상담이<br class="sm:hidden"> 필요하신가요?</h2>
-            <p class="section-subtitle-soft text-center">원하시는 상담 방법을 선택해주세요</p>
+            <div class="text-center mb-10">
+                <!-- 상단 배지 -->
+                <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border: 1px solid rgba(102, 126, 234, 0.3);">
+                    <span class="text-2xl">✨</span>
+                    <span class="text-sm font-semibold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        프리미엄 상담 서비스
+                    </span>
+                </div>
+                
+                <h2 class="text-4xl font-black text-gray-900 mb-4" style="letter-spacing: -0.02em;">
+                    어떤 상담이 
+                    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; display: inline-block;">
+                        필요하신가요?
+                        <svg style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 8px;" viewBox="0 0 200 8" preserveAspectRatio="none">
+                            <path d="M0,4 Q50,0 100,4 T200,4" fill="none" stroke="url(#gradient)" stroke-width="3" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3" />
+                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.3" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                </h2>
+                <p class="text-gray-600 text-lg font-medium">원하시는 상담 방법을 선택해주세요</p>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto" style="margin-left: auto; margin-right: auto;">
-                <!-- 견적 상담 버튼 -->
-                <div class="card-soft p-8 text-center cursor-pointer choice-button" 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto" style="margin-left: auto; margin-right: auto;">
+                <!-- 견적 상담 버튼 (울트라 프리미엄) -->
+                <div class="premium-card cursor-pointer" 
                      onclick="showConsultationForm()"
-                     style="border: 3px solid #3B82F6; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3); transition: all 0.3s ease;">
-                    <div class="icon-bg-soft mb-6 mx-auto w-fit">
-                        <i class="fas fa-clipboard-list text-5xl" style="color: #3B82F6;"></i>
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 28px; padding: 3px; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);">
+                    
+                    <!-- 반짝이는 파티클 효과 -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;">
+                        <div style="position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; top: 20%; left: 15%; opacity: 0.6; animation: sparkle 3s infinite;"></div>
+                        <div style="position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; top: 60%; left: 80%; opacity: 0.4; animation: sparkle 4s infinite 1s;"></div>
+                        <div style="position: absolute; width: 5px; height: 5px; background: white; border-radius: 50%; top: 40%; left: 50%; opacity: 0.5; animation: sparkle 5s infinite 2s;"></div>
                     </div>
-                    <h3 class="font-bold text-2xl mb-3" style="color: #3B82F6;">견적 상담 신청</h3>
-                    <p class="text-gray-600 leading-relaxed mb-4">
-                        여러 피부관리실의<br>
-                        견적을 한번에 비교하세요
-                    </p>
-                    <div class="flex items-center justify-center gap-2 mt-4 flex-wrap">
-                        <span class="badge-soft text-xs" style="background: #EFF6FF; color: #3B82F6; border: 1px solid #3B82F6;">무료</span>
-                        <span class="badge-soft text-xs" style="background: #EFF6FF; color: #3B82F6; border: 1px solid #3B82F6;">24시간 이내</span>
-                        <span class="badge-soft text-xs" style="background: #EFF6FF; color: #3B82F6; border: 1px solid #3B82F6;">비교 가능</span>
+                    
+                    <!-- 회전하는 빛 효과 -->
+                    <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); pointer-events: none; animation: rotate 20s linear infinite;"></div>
+                    
+                    <div style="background: white; border-radius: 26px; padding: 3rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
+                        <!-- 상단 라벨 -->
+                        <div class="flex justify-center mb-4">
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #667eea20;">
+                                POPULAR CHOICE
+                            </span>
+                        </div>
+                        
+                        <div class="mb-6 flex justify-center">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5); transform: rotate(45deg); position: relative;">
+                                <!-- 아이콘 주변 링 효과 -->
+                                <div style="position: absolute; inset: -8px; border: 2px solid #667eea30; border-radius: 24px; animation: pulse 2s infinite;"></div>
+                                <i class="fas fa-clipboard-list text-5xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-black text-3xl mb-4 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
+                            견적 상담 신청
+                        </h3>
+                        
+                        <p class="text-gray-700 leading-relaxed mb-8 text-center text-base font-medium">
+                            여러 피부관리실의<br>
+                            <strong style="color: #667eea;">견적을 한번에</strong> 비교하세요
+                        </p>
+                        
+                        <div class="flex items-center justify-center gap-2 flex-wrap mb-4">
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);">
+                                ✨ 무료
+                            </span>
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);">
+                                ⚡ 24시간 이내
+                            </span>
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);">
+                                📊 비교 가능
+                            </span>
+                        </div>
+                        
+                        <!-- 하단 CTA -->
+                        <div class="text-center">
+                            <div class="inline-flex items-center gap-2 text-sm font-semibold" style="color: #667eea;">
+                                <span>지금 시작하기</span>
+                                <i class="fas fa-arrow-right" style="animation: slideRight 1.5s infinite;"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- 전화 상담 버튼 -->
-                <div class="card-soft p-8 text-center cursor-pointer choice-button" 
+                <!-- 전화 상담 버튼 (울트라 프리미엄) -->
+                <div class="premium-card cursor-pointer" 
                      onclick="showPhoneForm()"
-                     style="border: 3px solid #EF4444; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); transition: all 0.3s ease;">
-                    <div class="icon-bg-soft mb-6 mx-auto w-fit">
-                        <i class="fas fa-phone-alt text-5xl" style="color: #EF4444;"></i>
+                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 28px; padding: 3px; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 40px rgba(245, 87, 108, 0.3);">
+                    
+                    <!-- 반짝이는 파티클 효과 -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;">
+                        <div style="position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; top: 25%; left: 20%; opacity: 0.6; animation: sparkle 3s infinite 0.5s;"></div>
+                        <div style="position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; top: 65%; left: 75%; opacity: 0.4; animation: sparkle 4s infinite 1.5s;"></div>
+                        <div style="position: absolute; width: 5px; height: 5px; background: white; border-radius: 50%; top: 45%; left: 55%; opacity: 0.5; animation: sparkle 5s infinite 2.5s;"></div>
                     </div>
-                    <h3 class="font-bold text-2xl mb-3" style="color: #EF4444;">전화 상담 신청</h3>
-                    <p class="text-gray-600 leading-relaxed mb-4">
-                        지역 대표샵과<br>
-                        바로 전화 상담하세요
-                    </p>
-                    <div class="flex items-center justify-center gap-2 mt-4 flex-wrap">
-                        <span class="badge-soft text-xs" style="background: #FEF2F2; color: #EF4444; border: 1px solid #EF4444;">즉시 연결</span>
-                        <span class="badge-soft text-xs" style="background: #FEF2F2; color: #EF4444; border: 1px solid #EF4444;">대표샵</span>
-                        <span class="badge-soft text-xs" style="background: #FEF2F2; color: #EF4444; border: 1px solid #EF4444;">검증됨</span>
+                    
+                    <!-- 회전하는 빛 효과 -->
+                    <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); pointer-events: none; animation: rotate 20s linear infinite;"></div>
+                    
+                    <div style="background: white; border-radius: 26px; padding: 3rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
+                        <!-- 상단 라벨 -->
+                        <div class="flex justify-center mb-4">
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #f5576c20;">
+                                INSTANT CONNECT
+                            </span>
+                        </div>
+                        
+                        <div class="mb-6 flex justify-center">
+                            <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(245, 87, 108, 0.5); transform: rotate(45deg); position: relative;">
+                                <!-- 아이콘 주변 링 효과 -->
+                                <div style="position: absolute; inset: -8px; border: 2px solid #f5576c30; border-radius: 24px; animation: pulse 2s infinite;"></div>
+                                <i class="fas fa-phone-alt text-5xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-black text-3xl mb-4 text-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
+                            전화 상담 신청
+                        </h3>
+                        
+                        <p class="text-gray-700 leading-relaxed mb-8 text-center text-base font-medium">
+                            지역 대표샵과<br>
+                            <strong style="color: #f5576c;">바로 전화</strong> 상담하세요
+                        </p>
+                        
+                        <div class="flex items-center justify-center gap-2 flex-wrap mb-4">
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.15);">
+                                📞 즉시 연결
+                            </span>
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.15);">
+                                🏆 대표샵
+                            </span>
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.15);">
+                                ✅ 검증됨
+                            </span>
+                        </div>
+                        
+                        <!-- 하단 CTA -->
+                        <div class="text-center">
+                            <div class="inline-flex items-center gap-2 text-sm font-semibold" style="color: #f5576c;">
+                                <span>지금 연결하기</span>
+                                <i class="fas fa-arrow-right" style="animation: slideRight 1.5s infinite;"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            
+            <style>
+                @keyframes rotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                
+                @keyframes sparkle {
+                    0%, 100% { 
+                        opacity: 0;
+                        transform: scale(0);
+                    }
+                    50% { 
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+                
+                @keyframes pulse {
+                    0%, 100% {
+                        opacity: 0.3;
+                        transform: scale(1);
+                    }
+                    50% {
+                        opacity: 0.6;
+                        transform: scale(1.05);
+                    }
+                }
+                
+                @keyframes slideRight {
+                    0%, 100% {
+                        transform: translateX(0);
+                    }
+                    50% {
+                        transform: translateX(5px);
+                    }
+                }
+                
+                .premium-card {
+                    will-change: transform, box-shadow;
+                }
+                
+                .premium-card:hover {
+                    transform: translateY(-12px) scale(1.02) !important;
+                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2) !important;
+                }
+                
+                .premium-card:active {
+                    transform: translateY(-6px) scale(0.98) !important;
+                    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                }
+                
+                .premium-card:hover div[style*="rotate(45deg)"] {
+                    transform: rotate(45deg) scale(1.1);
+                    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+            </style>
         </section>
 
         <!-- 상담 및 견적 신청 폼 (슬라이드 방식) -->
