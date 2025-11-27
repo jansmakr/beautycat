@@ -800,7 +800,9 @@ function openChat(consultationId) {
         return;
     }
     
-    window.open(`chat.html?consultation_id=${consultationId}&user_type=customer`, '_blank');
+    // 🔥 HOTFIX: 캐시 버스팅 타임스탬프 추가
+    const timestamp = Date.now();
+    window.open(`chat.html?consultation_id=${consultationId}&user_type=customer&_t=${timestamp}`, '_blank');
 }
 
 // 유틸리티 함수들
