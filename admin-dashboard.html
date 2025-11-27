@@ -7,7 +7,7 @@
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js?v=2.4.2"></script>
+    <script src="api-global-override.js?v=2.5.5"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -164,6 +164,45 @@
                             <p class="text-sm font-medium text-gray-500">견적서</p>
                             <p class="text-2xl font-bold text-gray-900" id="total-quotes">-</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Members & Quick Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Recent Members -->
+                <div class="unni-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">최근 가입자</h3>
+                        <button onclick="showSection('users')" class="text-sm text-primary-500 hover:text-primary-600 font-medium">
+                            전체보기 <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                    <div id="recent-members" class="space-y-3">
+                        <!-- Recent members will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="unni-card p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">빠른 작업</h3>
+                    <div class="space-y-3">
+                        <button onclick="openNewShopModal()" class="w-full px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors flex items-center justify-center">
+                            <i class="fas fa-store mr-2"></i>
+                            업체 신규 등록
+                        </button>
+                        <button onclick="showSection('shops')" class="w-full px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            업체 승인 관리
+                        </button>
+                        <button onclick="showSection('consultations')" class="w-full px-4 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center">
+                            <i class="fas fa-comments mr-2"></i>
+                            상담 요청 관리
+                        </button>
+                        <button onclick="showSection('representative-shops')" class="w-full px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center">
+                            <i class="fas fa-star mr-2"></i>
+                            대표샵 지정
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1694,6 +1733,180 @@ window.fetch = async function(url, options = {}) {
 
 console.log('✅ PATCH 자동 변환 활성화 완료');
 </script>
+
+<!-- 업체 신규 등록 모달 -->
+<div id="new-shop-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-900">
+                <i class="fas fa-store text-primary-500 mr-2"></i>업체 신규 등록
+            </h2>
+            <button onclick="closeNewShopModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="new-shop-form" class="p-6 space-y-4">
+            <!-- 업체 정보 -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-gray-900 mb-3">
+                    <i class="fas fa-building mr-2"></i>업체 정보
+                </h3>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            업체명 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="new-shop-name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="예: 강남 피부관리샵">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                시/도 <span class="text-red-500">*</span>
+                            </label>
+                            <select id="new-shop-state" required onchange="updateDistricts()"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <option value="">선택하세요</option>
+                                <option value="서울">서울</option>
+                                <option value="부산">부산</option>
+                                <option value="대구">대구</option>
+                                <option value="인천">인천</option>
+                                <option value="광주">광주</option>
+                                <option value="대전">대전</option>
+                                <option value="울산">울산</option>
+                                <option value="세종">세종</option>
+                                <option value="경기">경기</option>
+                                <option value="강원">강원</option>
+                                <option value="충북">충북</option>
+                                <option value="충남">충남</option>
+                                <option value="전북">전북</option>
+                                <option value="전남">전남</option>
+                                <option value="경북">경북</option>
+                                <option value="경남">경남</option>
+                                <option value="제주">제주</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                시/군/구 <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="new-shop-district" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                placeholder="예: 강남구">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            상세 주소 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="new-shop-address" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="예: 테헤란로 123, 2층">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 대표자 정보 -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-gray-900 mb-3">
+                    <i class="fas fa-user mr-2"></i>대표자 정보
+                </h3>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            대표자명 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="new-shop-owner" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="예: 홍길동">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            전화번호 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="tel" id="new-shop-phone" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="010-0000-0000">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            이메일 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="email" id="new-shop-email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="example@email.com">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            비밀번호 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="password" id="new-shop-password" required minlength="8"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="최소 8자 이상">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 사업자 정보 -->
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-gray-900 mb-3">
+                    <i class="fas fa-file-alt mr-2"></i>사업자 정보
+                </h3>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            사업자등록번호 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="new-shop-business-number" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="000-00-00000">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            영업신고번호
+                        </label>
+                        <input type="text" id="new-shop-license-number"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="제0000-0000000호 (선택사항)">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            네이버 카페 아이디
+                        </label>
+                        <input type="text" id="new-shop-naver-id"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="naver_cafe_id (선택사항)">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 제출 버튼 -->
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="closeNewShopModal()" 
+                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-times mr-2"></i>취소
+                </button>
+                <button type="submit"
+                    class="flex-1 px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                    <i class="fas fa-check mr-2"></i>등록하기
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>

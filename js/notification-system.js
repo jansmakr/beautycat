@@ -34,8 +34,38 @@ class NotificationSystem {
         return this.permission === 'granted';
     }
 
+    // 🔊 알림 소리 재생
+    playNotificationSound() {
+        try {
+            // 간단한 비프음 생성 (Web Audio API)
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // 부드러운 알림음 (600Hz, 0.2초)
+            oscillator.frequency.value = 600;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+            
+            console.log('🔊 알림 소리 재생');
+        } catch (error) {
+            console.warn('⚠️ 알림 소리 재생 실패:', error);
+        }
+    }
+
     // 푸시 알림 보내기
     async sendNotification(title, options = {}) {
+        // 🔊 알림 소리 재생
+        this.playNotificationSound();
+        
         if (!await this.requestPermission()) {
             console.warn('⚠️ 알림 권한이 없습니다. 토스트 메시지로 대체합니다.');
             this.showToast(title, options.body);

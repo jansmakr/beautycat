@@ -76,7 +76,7 @@
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 (Service Worker 제거 + API 오버라이드) -->
     <script src="sw-unregister.js" async></script>
-    <script src="api-global-override.js?v=2.4.2" async></script>
+    <script src="api-global-override.js?v=2.5.5" async></script>
     
     <!-- 🚨 Cloudflare API Helper (비동기 로드) -->
     <script src="js/api-helper.js" defer></script>
@@ -3084,7 +3084,7 @@
                     <!-- 모바일에서만 표시 (간소화) -->
                     <div class="block md:hidden space-y-1">
                         <p><strong>상호:</strong> 케이뷰틱스 | <strong>대표:</strong> 박대수</p>
-                        <p><strong>주소:</strong> 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
+                        <p><strong>주소:</strong> 서울 강서구 허준로198,<br>가양프라자 4층 406-03호 10호</p>
                     </div>
                     <!-- 데스크탑에서만 표시 (전체 정보) -->
                     <div class="hidden md:block">
@@ -3099,8 +3099,8 @@
                     </div>
                 </div>
                 
-                <!-- 링크 -->
-                <div class="flex items-center justify-center gap-4 text-sm pt-4 flex-wrap">
+                <!-- 링크 (데스크탑에서만 표시) -->
+                <div class="hidden md:flex items-center justify-center gap-4 text-sm pt-4 flex-wrap">
                     <a href="#" onclick="openModal('terms'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">이용약관</a>
                     <span class="text-gray-300">|</span>
                     <a href="#" onclick="openModal('privacy'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">개인정보처리방침</a>
@@ -3108,6 +3108,11 @@
                     <a href="#" onclick="openModal('youth'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">청소년보호정책</a>
                     <span class="text-gray-300">|</span>
                     <a href="#" onclick="openModal('business'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">사업자정보확인</a>
+                </div>
+                
+                <!-- 모바일 약관 링크 -->
+                <div class="block md:hidden text-center pt-4">
+                    <button onclick="openModal('terms')" class="text-xs text-gray-500 underline">약관 및 정책 보기</button>
                 </div>
                 
                 <!-- 저작권 -->
