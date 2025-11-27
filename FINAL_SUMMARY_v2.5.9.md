@@ -55,7 +55,7 @@
 ### 1. HTML
 ```html
 <!-- index.html line 2008-2029 -->
-<section class="hidden-spot-banner-section" id="hiddenSpotBanner">
+<section class="hidden-spot-banner-section max-w-3xl mx-auto my-12" id="hiddenSpotBanner">
     <div class="relative group cursor-pointer" onclick="scrollToConsultationOptions()">
         <img src="https://www.genspark.ai/api/files/s/iWCPJIbe" 
              alt="숨겨진 뷰티 샵 발굴" 
@@ -113,7 +113,12 @@ window.scrollToConsultationOptions = scrollToConsultationOptions;
 
 ---
 
-## 💡 왜 이 위치가 최적인가?
+## 💡 왜 이 크기가 최적인가?
+
+### **크기 조정 내역**
+- **변경 전**: `max-w-5xl` (1024px) - 너무 큼
+- **변경 후**: `max-w-3xl` (768px) - 상담 카드와 동일 ✅
+- **여백**: `my-12` (상하 3rem) - 적절한 간격 유지
 
 ### 1. **자연스러운 플로우** 🌊
 - 상담 선택 카드를 본 후

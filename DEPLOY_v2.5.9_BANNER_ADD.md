@@ -13,10 +13,14 @@
 - 상담 선택 섹션(울트라 프리미엄 카드) **바로 아래**
 - 상담 신청 폼 **바로 위**
 
+**크기:**
+- 최대 너비: `max-w-3xl` (768px) - 상담 카드와 동일
+- 여백: `my-12` (상하 3rem) - 적절한 간격 유지
+
 **기능:**
 ```html
 <!-- index.html line 2008-2029 -->
-<section class="hidden-spot-banner-section" id="hiddenSpotBanner">
+<section class="hidden-spot-banner-section max-w-3xl mx-auto" id="hiddenSpotBanner">
     <img src="https://www.genspark.ai/api/files/s/iWCPJIbe" 
          alt="숨겨진 뷰티 샵 발굴" 
          onclick="scrollToConsultationOptions()">
