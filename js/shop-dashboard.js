@@ -1089,7 +1089,9 @@ function filterConsultations() {
 // 채팅 열기
 function openChat(consultationId) {
     if (consultationId) {
-        window.open(`chat.html?consultation_id=${consultationId}&user_type=shop`, '_blank');
+        // 🔥 HOTFIX: 캐시 버스팅 타임스탬프 추가
+        const timestamp = Date.now();
+        window.open(`chat.html?consultation_id=${consultationId}&user_type=shop&_t=${timestamp}`, '_blank');
     }
 }
 

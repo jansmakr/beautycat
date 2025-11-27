@@ -3,7 +3,7 @@
 > **✨ 최신 업데이트: 공지사항 시스템 + 지역별 대표샵 전화상담! (2024-11-25)**
 > 
 > **최종 업데이트:** 2024-11-25  
-> **버전:** v2.5.4.2 (채팅 버튼 consultationId 버그 수정)  
+> **버전:** v2.5.4.4 (HTML 캐시 버스팅 강화)  
 > **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
 > 
 > **🌐 프로덕션 URL:**
@@ -23,6 +23,41 @@
 > - SSL/TLS: ✅ Active
 > - CDN: ✅ Global
 > - GitHub Auto-deploy: ✅ Enabled
+
+---
+
+## 🎯 v2.5.4.4 HTML 캐시 버스팅 강화 (2024-11-27)
+
+### **🚨 긴급 수정 사항 (v2.5.4.4)**
+
+#### **F. HTML 캐시 버스팅 강화** 💪
+- **문제**: `chat.html` 페이지가 캐시되어 최신 JS 파일(`v=2.5.4.3`)이 로드되지 않음
+- **원인**: Cloudflare Pages CDN이 HTML 파일을 캐시
+- **해결**:
+  - `chat.html` 메타 태그 추가: `Cache-Control: no-cache`, `version: 2.5.4.3`
+  - URL 타임스탬프 추가: `chat.html?...&_t=${timestamp}`
+  - `customer-dashboard.js`, `shop-dashboard.js`: 채팅 열기 시 타임스탬프 자동 추가
+- **파일**: 
+  - `chat.html` (Line 1-11: 캐시 제어 메타 태그)
+  - `js/customer-dashboard.js` (Line 796: URL 타임스탬프)
+  - `js/shop-dashboard.js` (Line 1092: URL 타임스탬프)
+
+---
+
+## 🎯 v2.5.4.3 메시지 전송 500 에러 수정 (2024-11-27)
+
+### **🚨 긴급 수정 사항 (v2.5.4.3)**
+
+#### **E. 메시지 전송 500 에러 수정** 🔥
+- **문제**: 채팅 메시지 전송 시 `500 Internal Server Error` 발생
+- **원인**: `messageData`에 `id` 필드 누락 (DB PRIMARY KEY 필수)
+- **해결**:
+  - `id` 필드 자동 생성: `msg_${timestamp}_${random}`
+  - `message_type` 필드 추가: `'text'` (기본값)
+  - 캐시 버스팅: `chat.js?v=2.5.4.3`
+- **파일**: 
+  - `js/chat.js` (Line 278-293)
+  - `chat.html` (Line 397: 버전 v2.5.4.3)
 
 ---
 
