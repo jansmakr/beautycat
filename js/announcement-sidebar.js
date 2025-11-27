@@ -68,12 +68,12 @@ async function loadAnnouncementSidebar() {
             id: ann.id
         })));
         
+        // 공지가 없어도 "전체보기" 버튼을 위해 사이드바 생성
         if (topAnnouncements.length === 0) {
-            console.warn('[샵 이벤트 사이드바] 표시할 공지사항 없음');
-            return;
+            console.warn('[샵 이벤트 사이드바] 표시할 공지사항 없음 → 전체보기 버튼만 표시');
         }
         
-        // 사이드바 생성
+        // 사이드바 생성 (공지가 없어도 전체보기 버튼은 표시)
         const sidebar = createAnnouncementSidebar(topAnnouncements);
         
         // body에 추가
@@ -174,7 +174,7 @@ function createAnnouncementSidebar(announcements) {
                 <i class="fas fa-bullhorn" style="color: #FF6B35; font-size: 16px; margin-right: 8px;"></i>
                 <span style="font-weight: 600; color: #92400E; font-size: 13px;">샵 공지</span>
             </div>
-            ${announcements.map((ann, index) => {
+            ${announcements.length > 0 ? announcements.map((ann, index) => {
                 const isAdmin = ann.type === 'admin';
                 const badge = isAdmin ? 
                     '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">운영팀</span>' : 
@@ -193,7 +193,7 @@ function createAnnouncementSidebar(announcements) {
                         </span>
                     </div>
                 `;
-            }).join('')}
+            }).join('') : '<span style="font-size: 12px; color: #92400E; margin-left: 12px;">등록된 공지사항이 없습니다</span>'}
             <a href="announcements.html" 
                style="display: inline-flex; align-items: center; background: #FF6B35; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #EA580C; white-space: nowrap;"
                onmouseover="this.style.background='#EA580C'"
@@ -238,37 +238,37 @@ async function showAnnouncementDetail(announcementId, type = 'admin') {
         };
         
         modal.innerHTML = `
-            <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
-                <div class="p-6 border-b border-gray-100">
+            <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-2 sm:mx-4" onclick="event.stopPropagation()">
+                <div class="p-4 sm:p-6 border-b border-gray-100">
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex-1">
                             ${priorityLabels[announcement.priority] || priorityLabels['normal']}
                         </div>
                         <button onclick="this.closest('.fixed').remove()" 
-                                class="text-gray-400 hover:text-gray-600">
+                                class="text-gray-400 hover:text-gray-600 ml-2">
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2 break-words">
                         ${escapeHtml(announcement.title)}
                     </h2>
-                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                         <span><i class="far fa-calendar mr-1"></i>${formatDate(announcement.created_at)}</span>
                         <span><i class="far fa-eye mr-1"></i>${announcement.views || 0}회</span>
                     </div>
                 </div>
-                <div class="p-6">
-                    <div class="prose max-w-none text-gray-700 whitespace-pre-wrap">
+                <div class="p-4 sm:p-6">
+                    <div class="prose prose-sm sm:prose max-w-none text-gray-700 whitespace-pre-wrap break-words">
                         ${escapeHtml(announcement.content)}
                     </div>
                 </div>
-                <div class="p-6 border-t border-gray-100 flex gap-3">
+                <div class="p-4 sm:p-6 border-t border-gray-100 flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                            class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
                         닫기
                     </button>
                     <a href="announcements.html" 
-                       class="flex-1 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-center">
+                       class="w-full px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors text-center text-sm sm:text-base">
                         전체 공지사항 보기
                     </a>
                 </div>
