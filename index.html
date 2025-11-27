@@ -1740,9 +1740,9 @@
                             <i class="fas fa-home mr-1"></i>홈
                         </button>
                         
-                        <!-- 대시보드 버튼 -->
-                        <button id="dashboardBtn" onclick="goToDashboard()" class="px-3 py-2 text-sm font-medium text-white bg-pink-500 hover:bg-pink-600 rounded-lg transition-all" title="대시보드">
-                            <i class="fas fa-tachometer-alt mr-1"></i>대시보드
+                        <!-- 마이페이지 버튼 -->
+                        <button id="dashboardBtn" onclick="goToDashboard()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-all" title="마이페이지">
+                            <i class="fas fa-user mr-1"></i>마이페이지
                         </button>
                         
                         <!-- 로그아웃 버튼 -->
@@ -1821,7 +1821,7 @@
                 <p class="text-gray-600 text-lg font-medium">원하시는 상담 방법을 선택해주세요</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto" style="margin-left: auto; margin-right: auto;">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto" style="margin-left: auto; margin-right: auto;">
                 <!-- 견적 상담 버튼 (울트라 프리미엄) -->
                 <div class="premium-card cursor-pointer" 
                      onclick="showConsultationForm()"
@@ -1837,48 +1837,48 @@
                     <!-- 회전하는 빛 효과 -->
                     <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); pointer-events: none; animation: rotate 20s linear infinite;"></div>
                     
-                    <div style="background: white; border-radius: 26px; padding: 3rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
+                    <div style="background: white; border-radius: 26px; padding: 2rem 1.5rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
                         <!-- 상단 라벨 -->
-                        <div class="flex justify-center mb-4">
-                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #667eea20;">
+                        <div class="flex justify-center mb-3">
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #667eea20;">
                                 POPULAR CHOICE
                             </span>
                         </div>
                         
-                        <div class="mb-6 flex justify-center">
-                            <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5); transform: rotate(45deg); position: relative;">
+                        <div class="mb-4 flex justify-center">
+                            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4); transform: rotate(45deg); position: relative;">
                                 <!-- 아이콘 주변 링 효과 -->
-                                <div style="position: absolute; inset: -8px; border: 2px solid #667eea30; border-radius: 24px; animation: pulse 2s infinite;"></div>
-                                <i class="fas fa-clipboard-list text-5xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
+                                <div style="position: absolute; inset: -6px; border: 2px solid #667eea30; border-radius: 20px; animation: pulse 2s infinite;"></div>
+                                <i class="fas fa-clipboard-list text-4xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
                             </div>
                         </div>
                         
-                        <h3 class="font-black text-3xl mb-4 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
+                        <h3 class="font-black text-2xl mb-3 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
                             견적 상담 신청
                         </h3>
                         
-                        <p class="text-gray-700 leading-relaxed mb-8 text-center text-base font-medium">
+                        <p class="text-gray-700 leading-relaxed mb-5 text-center text-sm font-medium">
                             여러 피부관리실의<br>
                             <strong style="color: #667eea;">견적을 한번에</strong> 비교하세요
                         </p>
                         
-                        <div class="flex items-center justify-center gap-2 flex-wrap mb-4">
-                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);">
+                        <div class="flex items-center justify-center gap-2 flex-wrap mb-3">
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 6px rgba(102, 126, 234, 0.12);">
                                 ✨ 무료
                             </span>
-                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);">
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 6px rgba(102, 126, 234, 0.12);">
                                 ⚡ 24시간 이내
                             </span>
-                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);">
+                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1.5px solid #667eea40; box-shadow: 0 2px 6px rgba(102, 126, 234, 0.12);">
                                 📊 비교 가능
                             </span>
                         </div>
                         
                         <!-- 하단 CTA -->
                         <div class="text-center">
-                            <div class="inline-flex items-center gap-2 text-sm font-semibold" style="color: #667eea;">
+                            <div class="inline-flex items-center gap-2 text-xs font-semibold" style="color: #667eea;">
                                 <span>지금 시작하기</span>
-                                <i class="fas fa-arrow-right" style="animation: slideRight 1.5s infinite;"></i>
+                                <i class="fas fa-arrow-right text-xs" style="animation: slideRight 1.5s infinite;"></i>
                             </div>
                         </div>
                     </div>
@@ -1899,48 +1899,48 @@
                     <!-- 회전하는 빛 효과 -->
                     <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); pointer-events: none; animation: rotate 20s linear infinite;"></div>
                     
-                    <div style="background: white; border-radius: 26px; padding: 3rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
+                    <div style="background: white; border-radius: 26px; padding: 2rem 1.5rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
                         <!-- 상단 라벨 -->
-                        <div class="flex justify-center mb-4">
-                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #f5576c20;">
+                        <div class="flex justify-center mb-3">
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #f5576c20;">
                                 INSTANT CONNECT
                             </span>
                         </div>
                         
-                        <div class="mb-6 flex justify-center">
-                            <div style="width: 90px; height: 90px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(245, 87, 108, 0.5); transform: rotate(45deg); position: relative;">
+                        <div class="mb-4 flex justify-center">
+                            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4); transform: rotate(45deg); position: relative;">
                                 <!-- 아이콘 주변 링 효과 -->
-                                <div style="position: absolute; inset: -8px; border: 2px solid #f5576c30; border-radius: 24px; animation: pulse 2s infinite;"></div>
-                                <i class="fas fa-phone-alt text-5xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
+                                <div style="position: absolute; inset: -6px; border: 2px solid #f5576c30; border-radius: 20px; animation: pulse 2s infinite;"></div>
+                                <i class="fas fa-phone-alt text-4xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
                             </div>
                         </div>
                         
-                        <h3 class="font-black text-3xl mb-4 text-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
+                        <h3 class="font-black text-2xl mb-3 text-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
                             전화 상담 신청
                         </h3>
                         
-                        <p class="text-gray-700 leading-relaxed mb-8 text-center text-base font-medium">
+                        <p class="text-gray-700 leading-relaxed mb-5 text-center text-sm font-medium">
                             지역 대표샵과<br>
                             <strong style="color: #f5576c;">바로 전화</strong> 상담하세요
                         </p>
                         
-                        <div class="flex items-center justify-center gap-2 flex-wrap mb-4">
-                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.15);">
+                        <div class="flex items-center justify-center gap-2 flex-wrap mb-3">
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 6px rgba(245, 87, 108, 0.12);">
                                 📞 즉시 연결
                             </span>
-                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.15);">
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 6px rgba(245, 87, 108, 0.12);">
                                 🏆 대표샵
                             </span>
-                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 8px rgba(245, 87, 108, 0.15);">
+                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; border: 1.5px solid #f5576c40; box-shadow: 0 2px 6px rgba(245, 87, 108, 0.12);">
                                 ✅ 검증됨
                             </span>
                         </div>
                         
                         <!-- 하단 CTA -->
                         <div class="text-center">
-                            <div class="inline-flex items-center gap-2 text-sm font-semibold" style="color: #f5576c;">
+                            <div class="inline-flex items-center gap-2 text-xs font-semibold" style="color: #f5576c;">
                                 <span>지금 연결하기</span>
-                                <i class="fas fa-arrow-right" style="animation: slideRight 1.5s infinite;"></i>
+                                <i class="fas fa-arrow-right text-xs" style="animation: slideRight 1.5s infinite;"></i>
                             </div>
                         </div>
                     </div>
@@ -2011,8 +2011,8 @@
                 <button onclick="hideConsultationForm()" class="text-gray-500 hover:text-pink-500 mb-6 transition-colors" style="font-size: 14px;">
                     <i class="fas fa-arrow-left mr-2"></i>다시 선택하기
                 </button>
-                <h2 class="section-title-soft mb-3">피부관리실<br class="sm:hidden"> 상담 및 견적 신청</h2>
-                <p class="text-gray-600 text-base">강남/홍대/잠실 지역별 맞춤 피부케어 견적을 무료로 받아보세요</p>
+                <h2 class="section-title-soft mb-3">피부관리실 상담 및<br> 견적 신청</h2>
+                <p class="text-gray-600 text-base">강남/홍대/잠실 지역별<br class="sm:hidden"> 맞춤 피부케어 견적을<br class="sm:hidden"> 무료로 받아보세요</p>
             </div>
             
             <!-- 간단한 초기 폼 (처음 접속 시 표시) -->
@@ -2484,7 +2484,7 @@
     <script src="js/main.js?v=2.5.4" defer></script>
     <script src="js/auth.js?v=2.5.4" defer></script>
     <script src="js/regional-matching.js?v=2.5.4" defer></script>
-    <script src="js/announcement-sidebar.js?v=2.5.4" defer></script>
+    <script src="js/announcement-sidebar.js?v=2.5.8" defer></script>
     
     <script>
         // 🚀 모바일 성능 최적화 스크립트
