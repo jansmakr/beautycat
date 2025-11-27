@@ -2368,25 +2368,21 @@ function updateDistrictOptions(state) {
         return;
     }
     
-    // representativeShopsData에서 해당 시/도의 구/군 목록 추출
-    const availableDistricts = [...new Set(
-        representativeShopsData
-            .filter(shop => shop.state === state && (shop.status === 'approved' || shop.approved === 1))
-            .map(shop => shop.district)
-    )].sort();
+    // regionData에서 해당 시/도의 구/군 목록 가져오기
+    const allDistricts = regionData[state] || [];
     
-    console.log('🏪 [대표샵] 선택 가능한 구/군:', availableDistricts);
+    console.log('🏪 [대표샵] regionData에서 가져온 구/군:', allDistricts.length, '개');
     
-    if (availableDistricts.length > 0) {
+    if (allDistricts.length > 0) {
         districtSelect.disabled = false;
         districtSelect.innerHTML = '<option value="">시/군/구 선택</option>' + 
-            availableDistricts.map(district => `<option value="${district}">${district}</option>`).join('');
-        console.log('✅ [대표샵] 구/군 옵션', availableDistricts.length, '개 로드 완료');
+            allDistricts.map(district => `<option value="${district}">${district}</option>`).join('');
+        console.log('✅ [대표샵] 구/군 옵션', allDistricts.length, '개 로드 완료');
     } else {
-        // 해당 시/도에 대표샵이 없는 경우
+        // regionData에도 없는 경우 (거의 발생하지 않음)
         districtSelect.disabled = true;
-        districtSelect.innerHTML = '<option value="">해당 지역에 대표샵이 없습니다</option>';
-        console.warn('⚠️ [대표샵] 해당 지역에 대표샵 없음:', state);
+        districtSelect.innerHTML = '<option value="">해당 지역 정보가 없습니다</option>';
+        console.warn('⚠️ [대표샵] regionData에 해당 지역 없음:', state);
     }
 }
 
