@@ -27,7 +27,7 @@
     <meta name="MobileOptimized" content="320">
     
     <!-- 네이버 사이트 소유 확인 -->
-    <meta name="naver-site-verification" content="57aaca1134648f9bcf364ec16351beaaa8df0b17" />
+    <meta name="naver-site-verification" content="ecbb75ac901ff3f51ff1b93e62380b27fb2089c" />
     
     <!-- 네이버 검색 최적화 추가 메타태그 -->
     <meta name="NaverBot" content="All">
@@ -322,7 +322,7 @@
                 "name": "beautycat 할인 혜택이 있나요?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "네, 신규 회원 가입 시 첫 관리 10% 할인 쿠폰을 드리며, 리뷰 작성 시 5,000원 적립금을 제공합니다. 또한 제휴 샵에서 제공하는 시즌 프로모션과 패키지 할인을 받으실 수 있습니다."
+                    "text": "네, 신규 회원 가입 시 첫 관리 10% 할인 쿠폰을 드리며, 리뷰 작성 시 5,000원 할인 쿠폰(10,000원 이상 결제 시 사용 가능)을 제공합니다. 또한 제휴 샵에서 제공하는 시즌 프로모션과 패키지 할인을 받으실 수 있습니다."
                 }
             }
         ]
@@ -1875,6 +1875,13 @@
         <!-- 히어로 섹션 (야놀자 스타일) -->
         <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 2; /* 모바일: 2순위 */">
             <div class="max-w-4xl mx-auto text-center" style="margin-left: auto; margin-right: auto;">
+                <!-- 베타 서비스 배지 -->
+                <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 animate-pulse">
+                    <span class="text-lg">🚀</span>
+                    <span class="text-sm font-bold text-orange-600">베타 서비스 운영 중</span>
+                    <span class="text-xs text-orange-500 font-medium">(~2024.12.31 무료)</span>
+                </div>
+                
                 <!-- 뷰냥이 아이콘 -->
                 <div class="hero-cat-icon inline-block mb-6">
                     <div class="icon-bg-soft" style="padding: 24px;">
@@ -3947,6 +3954,103 @@
             
         }); // DOMContentLoaded 종료
         
+    </script>
+
+    <!-- 최근 활동 알림 (하단 슬라이드) -->
+    <div id="activity-notification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 pointer-events-none">
+        <div class="bg-white rounded-full shadow-lg px-4 py-3 flex items-center gap-3 border border-gray-200 animate-slide-up" style="min-width: 280px; max-width: 90vw;">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-100 to-purple-100">
+                <i id="activity-icon" class="fas fa-bell text-pink-500 text-sm"></i>
+            </div>
+            <div class="flex-1">
+                <p id="activity-text" class="text-sm font-medium text-gray-800"></p>
+                <p id="activity-time" class="text-xs text-gray-500"></p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes slide-up {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            10%, 90% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+        
+        .animate-slide-up {
+            animation: slide-up 5s ease-in-out;
+        }
+        
+        #activity-notification {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+
+    <script>
+        // 최근 활동 알림 데이터
+        const activities = [
+            { icon: 'fa-clipboard-list', text: '강남 피부관리 견적 문의 도착', minTime: 3, maxTime: 15 },
+            { icon: 'fa-store', text: '홍대 ㅇ샵님 답변 등록', minTime: 8, maxTime: 25 },
+            { icon: 'fa-star', text: '잠실 김*영님 리뷰 작성', minTime: 15, maxTime: 45 },
+            { icon: 'fa-user-check', text: '신촌 이*수님 예약 확정', minTime: 5, maxTime: 30 },
+            { icon: 'fa-comments', text: '강북 피부관리 상담 진행 중', minTime: 10, maxTime: 35 },
+            { icon: 'fa-heart', text: '압구정 박*희님 만족 후기', minTime: 20, maxTime: 50 }
+        ];
+
+        let currentActivityIndex = 0;
+        let isAnimating = false;
+
+        function getRandomTime(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function showActivityNotification() {
+            if (isAnimating) return;
+            
+            const notification = document.getElementById('activity-notification');
+            const iconElement = document.getElementById('activity-icon');
+            const textElement = document.getElementById('activity-text');
+            const timeElement = document.getElementById('activity-time');
+            
+            const activity = activities[currentActivityIndex];
+            const randomMinutes = getRandomTime(activity.minTime, activity.maxTime);
+            
+            // 아이콘 변경
+            iconElement.className = `fas ${activity.icon} text-pink-500 text-sm`;
+            
+            // 텍스트 설정
+            textElement.textContent = activity.text;
+            timeElement.textContent = `${randomMinutes}분 전`;
+            
+            // 애니메이션 시작
+            isAnimating = true;
+            notification.style.display = 'block';
+            
+            const messageDiv = notification.querySelector('div > div');
+            messageDiv.classList.remove('animate-slide-up');
+            void messageDiv.offsetWidth; // 리플로우 강제
+            messageDiv.classList.add('animate-slide-up');
+            
+            // 5초 후 숨기기 및 다음 활동으로 이동
+            setTimeout(() => {
+                isAnimating = false;
+                currentActivityIndex = (currentActivityIndex + 1) % activities.length;
+            }, 5000);
+        }
+
+        // 페이지 로드 후 15초 뒤에 첫 알림, 이후 20초마다 반복
+        setTimeout(() => {
+            showActivityNotification();
+            setInterval(showActivityNotification, 20000);
+        }, 15000);
     </script>
 </body>
 </html>
