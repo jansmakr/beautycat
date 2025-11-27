@@ -1793,7 +1793,7 @@
         </section>
 
         <!-- 상담 방법 선택 (울트라 프리미엄 디자인) -->
-        <section class="cta-buttons-section mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 1; /* 모바일: 1순위 */">
+        <section class="cta-buttons-section consultation-options-section mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 1; /* 모바일: 1순위 */">
             <div class="text-center mb-10">
                 <!-- 상단 배지 -->
                 <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border: 1px solid rgba(102, 126, 234, 0.3);">
@@ -2003,6 +2003,26 @@
                     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
                 }
             </style>
+        </section>
+
+        <!-- 🎨 숨겨진 뷰티 샵 발굴 배너 (v2.5.8) -->
+        <section class="hidden-spot-banner-section max-w-5xl mx-auto my-16 px-4 animate-fade-in" id="hiddenSpotBanner">
+            <div class="relative group cursor-pointer" onclick="scrollToConsultationOptions()">
+                <img 
+                    src="https://www.genspark.ai/api/files/s/iWCPJIbe" 
+                    alt="숨겨진 뷰티 샵 발굴 - 나만 알고 �은 동네 뷰티 맛집, 부티캣에서!" 
+                    class="w-full rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]"
+                    loading="lazy"
+                    style="max-width: 100%; height: auto;"
+                >
+                <!-- 클릭 유도 효과 -->
+                <div class="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <!-- 클릭 유도 아이콘 -->
+                <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm rounded-full p-4 shadow-xl group-hover:bg-pink-500 group-hover:text-white transition-all duration-300 transform group-hover:scale-110">
+                    <i class="fas fa-arrow-down text-xl"></i>
+                </div>
+            </div>
         </section>
 
         <!-- 상담 및 견적 신청 폼 (슬라이드 방식) -->
@@ -3404,6 +3424,24 @@
         
         // 전역 함수로 등록 (window 객체에 명시적으로 추가)
         window.showPhoneForm = showPhoneForm;
+        
+        // 🎨 숨겨진 뷰티 샵 배너 클릭 시 상담 선택 섹션으로 스크롤 (v2.5.8)
+        function scrollToConsultationOptions() {
+            console.log('🎨 [배너] 숨겨진 뷰티 샵 배너 클릭됨');
+            const consultationOptionsSection = document.querySelector('.consultation-options-section');
+            if (consultationOptionsSection) {
+                consultationOptionsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                console.log('✅ [배너] 상담 선택 섹션으로 스크롤 완료');
+            } else {
+                console.warn('⚠️ [배너] 상담 선택 섹션을 찾을 수 없음');
+                // 폴백: consultation 섹션으로 스크롤
+                const consultationSection = document.getElementById('consultation');
+                if (consultationSection) {
+                    showConsultationForm();
+                }
+            }
+        }
+        window.scrollToConsultationOptions = scrollToConsultationOptions;
         
         // 공유 모달 열기
         function openShareModal() {

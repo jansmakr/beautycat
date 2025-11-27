@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat v2.5.9 배너 미리보기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .preview-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .preview-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .preview-title h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .preview-title p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        /* 배너 스타일 */
+        .hidden-spot-banner-section {
+            margin: 40px auto;
+        }
+        
+        .hidden-spot-banner-section img {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hidden-spot-banner-section .group:hover img {
+            transform: scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .hidden-spot-banner-section .group:hover .click-icon {
+            background-color: #ec4899;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .click-icon {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            padding: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .info-card {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .info-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-card li {
+            padding: 8px 0;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-card li i {
+            color: #667eea;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container animate-fade-in">
+        <!-- 제목 -->
+        <div class="preview-title">
+            <h1>🎨 BeautyCat v2.5.9 배너 미리보기</h1>
+            <p>숨겨진 뷰티 샵 발굴 배너가 메인 페이지에 어떻게 보일지 확인하세요!</p>
+        </div>
+        
+        <!-- 배너 -->
+        <section class="hidden-spot-banner-section max-w-5xl mx-auto my-16 px-4" id="hiddenSpotBanner">
+            <div class="relative group cursor-pointer" onclick="handleBannerClick()">
+                <img 
+                    src="https://www.genspark.ai/api/files/s/iWCPJIbe" 
+                    alt="숨겨진 뷰티 샵 발굴 - 나만 알고 싶은 동네 뷰티 맛집, 부티캣에서!" 
+                    class="w-full rounded-3xl shadow-2xl"
+                    style="max-width: 100%; height: auto;"
+                >
+                <!-- 클릭 유도 효과 -->
+                <div class="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
+                <!-- 클릭 유도 아이콘 -->
+                <div class="absolute bottom-6 right-6 click-icon">
+                    <i class="fas fa-arrow-down text-xl"></i>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 정보 카드 -->
+        <div class="info-card">
+            <h3>
+                <i class="fas fa-info-circle"></i>
+                배너 특징
+            </h3>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> <strong>호버 효과:</strong> 마우스를 올리면 확대(1.02) + 그림자 강화</li>
+                <li><i class="fas fa-check-circle"></i> <strong>클릭 효과:</strong> 상담 선택 섹션으로 부드러운 스크롤</li>
+                <li><i class="fas fa-check-circle"></i> <strong>클릭 유도:</strong> 우측 하단 화살표 (호버 시 핑크색)</li>
+                <li><i class="fas fa-check-circle"></i> <strong>반응형:</strong> 모바일/데스크톱 자동 대응</li>
+                <li><i class="fas fa-check-circle"></i> <strong>배치 위치:</strong> 상담 선택 카드 바로 아래</li>
+            </ul>
+        </div>
+        
+        <!-- 테스트 버튼 -->
+        <div class="text-center mt-6">
+            <button 
+                onclick="testHover()" 
+                class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                <i class="fas fa-mouse-pointer mr-2"></i>
+                호버 효과 테스트 (모바일)
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        function handleBannerClick() {
+            alert('✅ 배너 클릭!\n\n실제 사이트에서는 상담 선택 카드로 부드럽게 스크롤됩니다.');
+            console.log('🎨 [배너] 숨겨진 뷰티 샵 배너 클릭됨');
+        }
+        
+        function testHover() {
+            const banner = document.querySelector('.hidden-spot-banner-section .group');
+            const img = banner.querySelector('img');
+            const icon = banner.querySelector('.click-icon');
+            
+            // 호버 효과 시뮬레이션
+            img.style.transform = 'scale(1.02)';
+            img.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+            icon.style.backgroundColor = '#ec4899';
+            icon.style.color = 'white';
+            icon.style.transform = 'scale(1.1)';
+            
+            // 2초 후 원래대로
+            setTimeout(() => {
+                img.style.transform = '';
+                img.style.boxShadow = '';
+                icon.style.backgroundColor = '';
+                icon.style.color = '';
+                icon.style.transform = '';
+            }, 2000);
+            
+            alert('✨ 호버 효과가 2초간 적용됩니다!\n\n확대, 그림자, 아이콘 색상 변경을 확인하세요.');
+        }
+        
+        // 페이지 로드 시 안내 메시지
+        window.addEventListener('load', () => {
+            console.log('🎨 BeautyCat v2.5.9 배너 미리보기 로드 완료!');
+            console.log('💡 Tip: 배너에 마우스를 올려보세요!');
+        });
+    </script>
+</body>
+</html>
