@@ -1,3 +1,6 @@
+// 캐시 무효화 버전: v2.5.6
+console.log('💬 Chat.js v2.5.6 로드됨 - 네비게이션 개선 (홈/마이페이지)');
+
 // 전역 변수
 let currentConsultationId = null;
 let currentUser = null;
@@ -160,7 +163,7 @@ async function loadParticipatingShops() {
 // 메시지 로드
 async function loadMessages() {
     try {
-        const response = await fetch(`tables/messages?search=${currentConsultationId}&sort=timestamp`);
+        const response = await fetch(`tables/messages?search=${currentConsultationId}&sort=created_at`);
         
         if (!response.ok) {
             throw new Error('메시지를 불러올 수 없습니다.');
@@ -197,7 +200,7 @@ function createMessageElement(message) {
     
     messageDiv.className = `flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`;
     
-    const messageTime = new Date(message.timestamp).toLocaleTimeString('ko-KR', {
+    const messageTime = new Date(message.created_at || message.timestamp).toLocaleTimeString('ko-KR', {
         hour: '2-digit',
         minute: '2-digit'
     });
@@ -265,17 +268,31 @@ async function handleMessageSubmit(e) {
     const messageInput = document.getElementById('message-input');
     const message = messageInput.value.trim();
     
-    if (!message) return;
+    if (!message) {
+        console.warn('⚠️ 빈 메시지 전송 시도');
+        return;
+    }
+    
+    console.log('📤 메시지 전송 시작:', message);
     
     try {
+        // 🔥 HOTFIX: id 필드 추가 (DB PRIMARY KEY)
+        const messageId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+        
         const messageData = {
+            id: messageId,
             consultation_id: currentConsultationId,
             sender_type: userType,
             sender_id: currentUser || `${userType}_${Date.now()}`,
+            receiver_id: 'system', // TODO: 실제 수신자 ID 설정
             message: message,
-            is_read: false,
-            timestamp: new Date().toISOString()
+            message_type: 'text',
+            is_read: 0,
+            created_at: Date.now(),
+            updated_at: Date.now()
         };
+        
+        console.log('📦 전송 데이터:', messageData);
         
         const response = await fetch('tables/messages', {
             method: 'POST',
@@ -285,16 +302,23 @@ async function handleMessageSubmit(e) {
             body: JSON.stringify(messageData)
         });
         
+        console.log('📡 응답 상태:', response.status, response.statusText);
+        
         if (!response.ok) {
-            throw new Error('메시지 전송에 실패했습니다.');
+            const errorText = await response.text();
+            console.error('❌ 서버 응답 에러:', errorText);
+            throw new Error(`메시지 전송 실패: ${response.status}`);
         }
+        
+        const result = await response.json();
+        console.log('✅ 메시지 전송 성공:', result);
         
         messageInput.value = '';
         loadMessages(); // 메시지 새로고침
         
     } catch (error) {
-        console.error('메시지 전송 오류:', error);
-        showNotification('메시지 전송 중 오류가 발생했습니다.', 'error');
+        console.error('❌ 메시지 전송 오류:', error);
+        alert('메시지 전송 중 오류가 발생했습니다: ' + error.message);
     }
 }
 
@@ -348,9 +372,11 @@ async function handleQuoteSubmit(e) {
             consultation_id: currentConsultationId,
             sender_type: 'shop',
             sender_id: currentUser || `shop_${Date.now()}`,
+            receiver_id: 'customer', // TODO: 실제 수신자 ID 설정
             message: `[견적서]\n관리 내용: ${quoteData.treatment_details}\n가격: ${quoteData.price.toLocaleString()}원\n소요시간: ${quoteData.duration}\n예약 가능일: ${quoteData.available_dates.join(', ')}\n추가사항: ${quoteData.additional_notes}`,
-            is_read: false,
-            timestamp: new Date().toISOString()
+            is_read: 0,
+            created_at: Date.now(),
+            updated_at: Date.now()
         };
         
         const messageResponse = await fetch('tables/messages', {
@@ -393,10 +419,12 @@ async function handleFileUpload(e) {
             consultation_id: currentConsultationId,
             sender_type: userType,
             sender_id: currentUser || `${userType}_${Date.now()}`,
+            receiver_id: 'system', // TODO: 실제 수신자 ID 설정
             message: `파일을 첨부했습니다: ${file.name}`,
             attachment_url: `#file_${file.name}`, // 실제로는 업로드된 파일 URL
-            is_read: false,
-            timestamp: new Date().toISOString()
+            is_read: 0,
+            created_at: Date.now(),
+            updated_at: Date.now()
         };
         
         const response = await fetch('tables/messages', {
@@ -553,6 +581,19 @@ function showNotification(message, type = 'info') {
             }
         }, 300);
     }, 5000);
+}
+
+// 마이페이지로 이동
+function goToDashboard() {
+    // userType에 따라 적절한 대시보드로 이동
+    if (userType === 'shop') {
+        window.location.href = 'shop-dashboard.html';
+    } else if (userType === 'customer') {
+        window.location.href = 'customer-dashboard.html';
+    } else {
+        // 기본값: 홈으로
+        window.location.href = 'index.html';
+    }
 }
 
 // 페이지 언로드 시 정리
