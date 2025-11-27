@@ -153,8 +153,21 @@
                     </a>
                 </div>
                 
-                <!-- 상담 상태 -->
+                <!-- 우측 네비게이션 -->
                 <div class="flex items-center space-x-3">
+                    <!-- 홈 버튼 -->
+                    <a href="index.html" class="hidden sm:flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors" title="홈으로">
+                        <i class="fas fa-home mr-2"></i>
+                        <span class="hidden md:inline">홈</span>
+                    </a>
+                    
+                    <!-- 마이페이지 버튼 -->
+                    <button id="dashboard-btn" onclick="goToDashboard()" class="hidden sm:flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors" title="마이페이지">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        <span class="hidden md:inline">마이페이지</span>
+                    </button>
+                    
+                    <!-- 상담 상태 -->
                     <span id="consultation-status" class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800 font-medium">
                         <i class="fas fa-circle text-green-500 text-xs mr-1"></i>상담 진행 중
                     </span>
@@ -400,7 +413,7 @@
     <!-- Firebase API 백엔드 - Cloudflare Workers 사용으로 비활성화 -->
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
-<script src="js/chat.js?v=2.5.4.7&t=20241127030000"></script>
+<script src="js/chat.js?v=2.5.6"></script>
 
 <!-- 🔥 핫픽스는 api-global-override.js에서 자동 처리됨 (sort=timestamp → sort=created_at) -->
 </body>
