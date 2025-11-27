@@ -128,15 +128,17 @@ function createAnnouncementSidebar(announcements) {
             overflow-x: auto;
             overflow-y: hidden;
             white-space: nowrap;
-            padding: 8px 16px;
             gap: 12px;
-            max-width: 1200px;
-            margin: 0 auto;
+            flex: 1;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
+            position: relative;
         }
         #announcement-sidebar-content::-webkit-scrollbar {
             display: none;
+        }
+        .announcement-view-all-btn {
+            flex-shrink: 0 !important;
         }
         .announcement-banner-item {
             display: inline-flex;
@@ -169,33 +171,36 @@ function createAnnouncementSidebar(announcements) {
     };
     
     sidebar.innerHTML = `
-        <div id="announcement-sidebar-content">
-            <div style="display: inline-flex; align-items: center; flex-shrink: 0;">
-                <i class="fas fa-bullhorn" style="color: #FF6B35; font-size: 16px; margin-right: 8px;"></i>
-                <span style="font-weight: 600; color: #92400E; font-size: 13px;">샵 공지</span>
+        <div style="display: flex; align-items: center; max-width: 1200px; margin: 0 auto; padding: 8px 16px; gap: 12px;">
+            <div id="announcement-sidebar-content">
+                <div style="display: inline-flex; align-items: center; flex-shrink: 0;">
+                    <i class="fas fa-bullhorn" style="color: #FF6B35; font-size: 16px; margin-right: 8px;"></i>
+                    <span style="font-weight: 600; color: #92400E; font-size: 13px;">샵 공지</span>
+                </div>
+                ${announcements.length > 0 ? announcements.map((ann, index) => {
+                    const isAdmin = ann.type === 'admin';
+                    const badge = isAdmin ? 
+                        '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">운영팀</span>' : 
+                        '<span style="font-size: 10px; background: #FF6B35; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">뷰티샵</span>';
+                    
+                    const titlePreview = ann.title.length > 30 ? 
+                        ann.title.substring(0, 30) + '...' : 
+                        ann.title;
+                    
+                    return `
+                        <div class="announcement-banner-item" 
+                             onclick="showAnnouncementDetail('${ann.id}', '${ann.type}')">
+                            ${badge}
+                            <span style="font-size: 12px; color: #92400E; font-weight: 500; white-space: nowrap;">
+                                ${escapeHtml(titlePreview)}
+                            </span>
+                        </div>
+                    `;
+                }).join('') : '<span style="font-size: 12px; color: #92400E; margin-left: 12px;">등록된 공지사항이 없습니다</span>'}
             </div>
-            ${announcements.length > 0 ? announcements.map((ann, index) => {
-                const isAdmin = ann.type === 'admin';
-                const badge = isAdmin ? 
-                    '<span style="font-size: 10px; background: #DC2626; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">운영팀</span>' : 
-                    '<span style="font-size: 10px; background: #FF6B35; color: white; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap;">뷰티샵</span>';
-                
-                const titlePreview = ann.title.length > 30 ? 
-                    ann.title.substring(0, 30) + '...' : 
-                    ann.title;
-                
-                return `
-                    <div class="announcement-banner-item" 
-                         onclick="showAnnouncementDetail('${ann.id}', '${ann.type}')">
-                        ${badge}
-                        <span style="font-size: 12px; color: #92400E; font-weight: 500; white-space: nowrap;">
-                            ${escapeHtml(titlePreview)}
-                        </span>
-                    </div>
-                `;
-            }).join('') : '<span style="font-size: 12px; color: #92400E; margin-left: 12px;">등록된 공지사항이 없습니다</span>'}
             <a href="announcements.html" 
-               style="display: inline-flex; align-items: center; background: #FF6B35; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #EA580C; white-space: nowrap;"
+               class="announcement-view-all-btn"
+               style="display: inline-flex; align-items: center; background: #FF6B35; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; flex-shrink: 0; border: 1px solid #EA580C; white-space: nowrap; margin-left: auto;"
                onmouseover="this.style.background='#EA580C'"
                onmouseout="this.style.background='#FF6B35'">
                 전체보기 <i class="fas fa-chevron-right" style="margin-left: 4px; font-size: 10px;"></i>
