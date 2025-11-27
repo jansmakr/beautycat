@@ -244,11 +244,13 @@ function createMessageElement(message) {
                             : 'bg-gray-100 text-gray-800'
                 }">
                     <div class="text-sm">${messageContent}</div>
-                    ${message.attachment_url ? `
+                    ${message.attachment_url && message.attachment_type === 'image' ? `
                         <div class="mt-2">
-                            <a href="${message.attachment_url}" target="_blank" class="text-xs underline">
-                                <i class="fas fa-paperclip mr-1"></i>첨부파일
-                            </a>
+                            <img src="${message.attachment_url}" alt="첨부 이미지" 
+                                 class="max-w-xs rounded border border-gray-300 cursor-pointer"
+                                 onclick="window.open(this.src, '_blank')"
+                                 style="max-height: 200px; object-fit: contain;">
+                            <p class="text-xs mt-1 opacity-75">클릭하여 크게 보기</p>
                         </div>
                     ` : ''}
                     <div class="text-xs mt-2 ${isOwnMessage ? 'opacity-75' : 'opacity-60'}">${messageTime}</div>
@@ -340,18 +342,32 @@ async function handleQuoteSubmit(e) {
     const formData = new FormData(e.target);
     
     try {
+        // 견적서 필수 필드 검증
+        const treatmentDetails = formData.get('treatment-details') || document.getElementById('treatment-details').value;
+        const priceValue = formData.get('quote-price') || document.getElementById('quote-price').value;
+        const durationValue = formData.get('duration') || document.getElementById('duration').value;
+        const availableDates = formData.get('available-dates') || document.getElementById('available-dates').value;
+        
+        // 필수 필드 확인
+        if (!treatmentDetails || !priceValue || !durationValue) {
+            alert('관리 내용, 가격, 소요시간은 필수 입력 항목입니다.');
+            return;
+        }
+        
         // 견적서 데이터 저장
         const quoteData = {
-            consultation_id: currentConsultationId,
+            consultation_id: currentConsultationId || `consult_${Date.now()}`,
             shop_id: currentUser || `shop_${Date.now()}`,
-            treatment_details: formData.get('treatment-details') || document.getElementById('treatment-details').value,
-            price: parseInt(formData.get('quote-price') || document.getElementById('quote-price').value),
-            duration: formData.get('duration') || document.getElementById('duration').value,
-            available_dates: [formData.get('available-dates') || document.getElementById('available-dates').value],
-            additional_notes: formData.get('additional-notes') || document.getElementById('additional-notes').value,
+            treatment_details: treatmentDetails.trim(),
+            price: parseInt(priceValue) || 0,
+            duration: durationValue.trim(),
+            available_dates: availableDates ? [availableDates.trim()] : ['협의 가능'],
+            additional_notes: (formData.get('additional-notes') || document.getElementById('additional-notes').value || '없음').trim(),
             status: 'sent',
             valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7일 후
         };
+        
+        console.log('📤 [견적서] 전송 데이터:', quoteData);
         
         const quoteResponse = await fetch('tables/quotes', {
             method: 'POST',
@@ -406,22 +422,34 @@ async function handleFileUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
     
-    // 파일 크기 체크 (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-        showNotification('파일 크기는 10MB 이하로 업로드해주세요.', 'error');
+    // 이미지 파일만 허용
+    if (!file.type.startsWith('image/')) {
+        showNotification('이미지 파일만 업로드 가능합니다.', 'error');
+        e.target.value = ''; // 파일 선택 초기화
+        return;
+    }
+    
+    // 파일 크기 체크 (500KB)
+    if (file.size > 500 * 1024) {
+        showNotification('이미지 크기는 500KB 이하로 업로드해주세요.', 'error');
+        e.target.value = ''; // 파일 선택 초기화
         return;
     }
     
     try {
-        // 실제 서비스에서는 파일을 서버에 업로드해야 함
-        // 여기서는 파일명만 메시지로 전송
+        // 이미지를 Base64로 변환
+        const base64Image = await convertFileToBase64(file);
+        
+        console.log('📸 [이미지 업로드] 파일명:', file.name, '크기:', (file.size / 1024).toFixed(2) + 'KB');
+        
         const messageData = {
             consultation_id: currentConsultationId,
             sender_type: userType,
             sender_id: currentUser || `${userType}_${Date.now()}`,
             receiver_id: 'system', // TODO: 실제 수신자 ID 설정
-            message: `파일을 첨부했습니다: ${file.name}`,
-            attachment_url: `#file_${file.name}`, // 실제로는 업로드된 파일 URL
+            message: `[이미지] ${file.name}`,
+            attachment_url: base64Image, // Base64 인코딩된 이미지
+            attachment_type: 'image',
             is_read: 0,
             created_at: Date.now(),
             updated_at: Date.now()
@@ -439,13 +467,25 @@ async function handleFileUpload(e) {
             throw new Error('파일 전송에 실패했습니다.');
         }
         
+        e.target.value = ''; // 파일 선택 초기화
         loadMessages();
-        showNotification('파일이 성공적으로 전송되었습니다.', 'success');
+        showNotification('이미지가 성공적으로 전송되었습니다.', 'success');
         
     } catch (error) {
-        console.error('파일 업로드 오류:', error);
-        showNotification('파일 업로드 중 오류가 발생했습니다.', 'error');
+        console.error('이미지 업로드 오류:', error);
+        showNotification('이미지 업로드 중 오류가 발생했습니다.', 'error');
+        e.target.value = ''; // 파일 선택 초기화
     }
+}
+
+// 파일을 Base64로 변환하는 함수
+function convertFileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
 }
 
 // 견적서 상세 보기
