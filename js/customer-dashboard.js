@@ -422,7 +422,7 @@ function displayQuotesList() {
                                 <i class="fas fa-check mr-1"></i>수락
                             </button>
                         ` : ''}
-                        <button onclick="window.openChat('${quote.consultation_id || ''}')" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm" data-consultation-id="${quote.consultation_id || ''}">
+                        <button onclick="if('${quote.consultation_id}') window.openChat('${quote.consultation_id}'); else alert('상담 ID를 찾을 수 없습니다.');" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm" data-consultation-id="${quote.consultation_id || ''}">
                             <i class="fas fa-comments mr-1"></i>채팅
                         </button>
                     </div>
@@ -687,6 +687,43 @@ function showQuoteDetail(quoteId) {
             ` : ''}
         </div>
     `;
+    
+    // 🔥 모달 버튼에 이벤트 리스너 추가
+    const acceptBtn = document.getElementById('modal-accept-quote-btn');
+    const chatBtn = document.getElementById('modal-open-chat-btn');
+    
+    if (acceptBtn) {
+        // 기존 리스너 제거 (중복 방지)
+        const newAcceptBtn = acceptBtn.cloneNode(true);
+        acceptBtn.parentNode.replaceChild(newAcceptBtn, acceptBtn);
+        
+        // 새 리스너 추가
+        newAcceptBtn.addEventListener('click', function() {
+            console.log('📌 모달 견적 수락 버튼 클릭, quoteId:', quote.id);
+            acceptQuote(quote.id);
+        });
+    }
+    
+    if (chatBtn) {
+        // 기존 리스너 제거 (중복 방지)
+        const newChatBtn = chatBtn.cloneNode(true);
+        chatBtn.parentNode.replaceChild(newChatBtn, chatBtn);
+        
+        // 새 리스너 추가
+        newChatBtn.addEventListener('click', function() {
+            const cid = quote.consultation_id;
+            console.log('📌 모달 채팅 버튼 클릭, consultationId:', cid);
+            
+            // 🔥 HOTFIX: consultationId 유효성 검사
+            if (!cid || cid === 'undefined' || cid === '') {
+                console.error('❌ 유효하지 않은 consultationId:', cid);
+                showNotification('상담 ID를 찾을 수 없습니다.', 'error');
+                return;
+            }
+            
+            openChat(cid);
+        });
+    }
     
     modal.classList.remove('hidden');
 }
