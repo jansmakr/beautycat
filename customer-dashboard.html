@@ -14,6 +14,9 @@
     <!-- 모바일 최적화 CSS -->
     <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
     
+    <!-- 🚀 고속 전환 최적화 CSS -->
+    <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -688,10 +691,10 @@
                 <button onclick="closeQuoteDetailModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
                     닫기
                 </button>
-                <button onclick="acceptQuote()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                <button id="modal-accept-quote-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
                     견적 수락
                 </button>
-                <button onclick="openChat()" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600">
+                <button id="modal-open-chat-btn" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600">
                     채팅하기
                 </button>
             </div>
@@ -704,7 +707,7 @@
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
 <script src="js/auth.js"></script>
-    <script src="js/customer-dashboard.js?v=2.4.1"></script>
+    <script src="js/customer-dashboard.js?v=2.5.4.2"></script>
 
 <!-- 🔥 긴급 핫픽스: PATCH → GET + PUT 변환 -->
 <script>

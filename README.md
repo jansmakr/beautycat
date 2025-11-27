@@ -3,7 +3,7 @@
 > **✨ 최신 업데이트: 공지사항 시스템 + 지역별 대표샵 전화상담! (2024-11-25)**
 > 
 > **최종 업데이트:** 2024-11-25  
-> **버전:** v2.5.4.1 (Service Worker 완전 제거 + 파일 정리)  
+> **버전:** v2.5.4.2 (채팅 버튼 consultationId 버그 수정)  
 > **프로젝트 상태:** 🎉 **프로덕션 완료 및 전체 시스템 가동 중**  
 > 
 > **🌐 프로덕션 URL:**
@@ -23,6 +23,24 @@
 > - SSL/TLS: ✅ Active
 > - CDN: ✅ Global
 > - GitHub Auto-deploy: ✅ Enabled
+
+---
+
+## 🎯 v2.5.4.2 채팅 버튼 consultationId 버그 수정 (2024-11-25)
+
+### **🚨 긴급 수정 사항 (v2.5.4.2)**
+
+#### **D. 채팅 버튼 consultationId 버그 수정** ⚠️
+- **문제**: 견적서 상세 모달에서 "채팅하기" 버튼 클릭 시 `consultationId: undefined` 에러
+- **원인**: 버튼 복제 과정에서 `consultation_id` 데이터 유실
+- **해결**:
+  - 모달 채팅 버튼: `consultation_id` 유효성 검사 추가
+  - 견적서 목록 채팅 버튼: inline 유효성 검사 추가
+  - 콘솔 로그 개선 (디버깅 용이)
+  - **캐시 버스팅**: `customer-dashboard.js?v=2.5.4.2` 버전 업데이트
+- **파일**: 
+  - `js/customer-dashboard.js` (Line 707-723, Line 425)
+  - `customer-dashboard.html` (Line 710: 버전 v2.5.4.2)
 
 ---
 
