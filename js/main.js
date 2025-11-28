@@ -2568,10 +2568,10 @@ function recordPhoneCallStat(shopName, phoneNumber) {
             action: 'phone_call',
             shop_name: String(shopName).trim(),
             phone_number: String(phoneNumber).trim(),
-            region: 'unknown', // 기본값
-            device_type: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
-            timestamp: Date.now(), // 밀리초 타임스탬프
-            user_agent: navigator.userAgent || 'unknown'
+            call_time: new Date().toISOString(), // ISO 8601 형식 (datetime 타입)
+            user_agent: navigator.userAgent || 'unknown',
+            user_id: '', // 로그인 사용자 ID (미구현)
+            session_id: '' // 세션 ID (미구현)
         };
         
         console.log('📊 [통계] 전송 데이터:', statData);
@@ -2581,9 +2581,11 @@ function recordPhoneCallStat(shopName, phoneNumber) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(statData)
-        }).then(response => {
+        }).then(async response => {
             if (!response.ok) {
+                const errorText = await response.text();
                 console.log('📊 [통계] 기록 실패:', response.status);
+                console.log('📊 [통계] 에러 상세:', errorText);
             } else {
                 console.log('✅ [통계] 기록 성공');
             }
