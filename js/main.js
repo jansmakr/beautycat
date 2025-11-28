@@ -2558,23 +2558,39 @@ window.makePhoneCall = makePhoneCall;
 // 전화 통계 기록
 function recordPhoneCallStat(shopName, phoneNumber) {
     try {
+        // 필수 필드 검증
+        if (!shopName || !phoneNumber) {
+            console.log('📊 [통계] 필수 데이터 부족:', { shopName, phoneNumber });
+            return;
+        }
+        
         const statData = {
             action: 'phone_call',
-            shop_name: shopName,
-            phone_number: phoneNumber,
-            timestamp: new Date().toISOString(),
-            user_agent: navigator.userAgent
+            shop_name: String(shopName).trim(),
+            phone_number: String(phoneNumber).trim(),
+            region: 'unknown', // 기본값
+            device_type: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+            timestamp: Date.now(), // 밀리초 타임스탬프
+            user_agent: navigator.userAgent || 'unknown'
         };
+        
+        console.log('📊 [통계] 전송 데이터:', statData);
         
         // 통계 API 호출 (비동기, 실패해도 무시)
         fetch('tables/call_statistics', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(statData)
-        }).catch(() => {
-            // 통계 기록 실패는 무시
+        }).then(response => {
+            if (!response.ok) {
+                console.log('📊 [통계] 기록 실패:', response.status);
+            } else {
+                console.log('✅ [통계] 기록 성공');
+            }
+        }).catch((error) => {
+            console.log('📊 [통계] 네트워크 오류:', error.message);
         });
     } catch (error) {
-        // 통계 기록 실패는 무시
+        console.log('📊 [통계] 예외 발생:', error.message);
     }
 }
