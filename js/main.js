@@ -2392,11 +2392,21 @@ window.updateDistrictOptions = updateDistrictOptions;
 // 대표샵 데이터 로드
 async function loadRepresentativeShops() {
     try {
-        // 새로운 안전한 API 요청 방식 사용
-        const data = await window.BeautyCatApi?.ApiRequest.safeGet(
-            'tables/representative_shops?limit=1000&sort=created_at', 
-            { name: '대표샵 데이터' }
-        );
+        console.log('🏪 [대표샵] API 요청 시작...');
+        
+        // BeautyCatApi가 있으면 사용, 없으면 직접 fetch
+        let data;
+        if (window.BeautyCatApi?.ApiRequest?.safeGet) {
+            data = await window.BeautyCatApi.ApiRequest.safeGet(
+                'tables/representative_shops?limit=1000&sort=created_at', 
+                { name: '대표샵 데이터' }
+            );
+        } else {
+            console.log('🏪 [대표샵] BeautyCatApi 없음 → 직접 fetch 사용');
+            const response = await fetch('tables/representative_shops?limit=1000&sort=created_at');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            data = await response.json();
+        }
         
         representativeShopsData = data?.data || [];
         
@@ -2411,14 +2421,42 @@ async function loadRepresentativeShops() {
         console.warn('⚠️ 대표샵 데이터 로드 실패:', error.message);
         representativeShopsData = [];
     }
+    
+    // 전역 변수로 업데이트
+    window.representativeShopsData = representativeShopsData;
+    console.log('🏪 [대표샵] 전역 변수 등록 완료:', window.representativeShopsData?.length || 0, '개');
 }
 
 // 대표샵 검색 및 표시
 function findAndDisplayRepresentativeShop(state, district) {
     console.log('🔍 [대표샵] 검색 시작:', { state, district });
+    console.log('🔍 [대표샵] 현재 데이터:', representativeShopsData?.length || 0, '개');
     
-    const representativeShop = representativeShopsData.find(shop => 
-        shop.state === state && 
+    // 시/도 이름 정규화 (API 데이터와 매칭)
+    const normalizeStateName = (stateName) => {
+        const stateMap = {
+            '서울특별시': '서울',
+            '부산광역시': '부산',
+            '대구광역시': '대구',
+            '인천광역시': '인천',
+            '광주광역시': '광주',
+            '대전광역시': '대전',
+            '울산광역시': '울산',
+            '세종특별자치시': '세종',
+            '제주특별자치도': '제주'
+        };
+        return stateMap[stateName] || stateName;
+    };
+    
+    const normalizedState = normalizeStateName(state);
+    console.log('🔄 [대표샵] 시/도 정규화:', state, '→', normalizedState);
+    
+    // 전역 변수 사용 (로컬 변수가 비어있을 경우 대비)
+    const shopsData = window.representativeShopsData || representativeShopsData || [];
+    console.log('🔍 [대표샵] 검색 대상 데이터:', shopsData.length, '개');
+    
+    const representativeShop = shopsData.find(shop => 
+        shop.state === normalizedState && 
         shop.district === district && 
         (shop.status === 'approved' || shop.approved === 1)
     );
@@ -2428,12 +2466,17 @@ function findAndDisplayRepresentativeShop(state, district) {
         displayRepresentativeShop(representativeShop);
     } else {
         console.warn('⚠️ [대표샵] 검색 실패: 해당 지역에 대표샵 없음');
+        console.log('🔍 [대표샵] 검색 조건:', { normalizedState, district, dataCount: shopsData.length });
+        if (shopsData.length > 0) {
+            console.log('🔍 [대표샵] 등록된 지역:', [...new Set(shopsData.map(s => `${s.state} ${s.district}`))]);
+        }
         showNoRepresentativeShop();
     }
 }
 
-// 전역 함수로 등록
+// 전역 함수 및 변수로 등록
 window.findAndDisplayRepresentativeShop = findAndDisplayRepresentativeShop;
+window.representativeShopsData = representativeShopsData;
 
 // 대표샵 정보 표시
 function displayRepresentativeShop(shop) {
