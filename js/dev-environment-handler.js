@@ -26,41 +26,16 @@
                     return Promise.reject(new Error('Development environment: manifest fetch blocked'));
                 }
                 
-                // 🔄 /tables/ API를 Cloudflare API로 리다이렉트  
-                if (typeof url === 'string' && url.includes('/tables/')) {
-                    console.log('🔄 Dev Handler: API 요청 감지:', url);
-                    
-                    // Cloudflare API가 이미 로드되어 있으면 위임
-                    if (window.cloudflareAPI) {
-                        console.log('📡 Cloudflare API 위임:', url);
-                        
-                        // URL에서 테이블명과 파라미터 추출
-                        const urlObj = new URL(url, window.location.origin);
-                        const pathParts = urlObj.pathname.split('/');
-                        const tableName = pathParts[pathParts.indexOf('tables') + 1];
-                        
-                        // Query parameters 추출
-                        const params = {};
-                        urlObj.searchParams.forEach((value, key) => {
-                            params[key] = value;
-                        });
-                        
-                        // Cloudflare API 직접 호출
-                        return window.cloudflareAPI.getTables(tableName, params)
-                            .then(data => new Response(JSON.stringify(data), {
-                                status: 200,
-                                headers: { 'Content-Type': 'application/json' }
-                            }));
-                    }
-                    
-                    // Fallback: 직접 Cloudflare Workers URL 호출
-                    let cloudflareUrl = url.replace(
-                        /.*\/tables\//, 
-                        'https://beautycat-api.jansmakr.workers.dev/api/tables/'
-                    );
-                    
-                    console.log('📡 Fallback: 직접 Cloudflare API 호출:', cloudflareUrl);
-                    return originalFetch(cloudflareUrl, args[1]);
+                // 🔄 /tables/ API는 api-global-override.js에서 이미 처리됨 - 여기서는 패스
+                if (typeof url === 'string' && url.includes('/tables/') && !url.includes('beautycat-api.jansmakr.workers.dev')) {
+                    // 상대 경로만 감지, 이미 변환된 절대 경로는 무시
+                    console.log('🔄 Dev Handler: 상대 경로 감지:', url, '→ api-global-override.js로 위임');
+                    return originalFetch.apply(this, args);
+                }
+                
+                // 이미 변환된 Cloudflare URL은 그대로 통과
+                if (typeof url === 'string' && url.includes('beautycat-api.jansmakr.workers.dev')) {
+                    return originalFetch.apply(this, args);
                 }
                 
                 return originalFetch.apply(this, args);
