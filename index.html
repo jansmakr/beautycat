@@ -2155,8 +2155,8 @@
                 <button onclick="hideConsultationForm()" class="text-gray-500 hover:text-pink-500 mb-6 transition-colors" style="font-size: 14px;">
                     <i class="fas fa-arrow-left mr-2"></i>다시 선택하기
                 </button>
-                <h2 class="section-title-soft mb-3">피부관리실 상담 및<br> 견적 신청</h2>
-                <p class="text-gray-600 text-base">강남/홍대/잠실 지역별<br class="sm:hidden"> 맞춤 피부케어 견적을<br class="sm:hidden"> 무료로 받아보세요</p>
+                <h2 class="section-title-soft mb-3 hidden sm:block">피부관리실 상담 및<br> 견적 신청</h2>
+                <p class="text-gray-600 text-base hidden sm:block">강남/홍대/잠실 지역별<br class="sm:hidden"> 맞춤 피부케어 견적을<br class="sm:hidden"> 무료로 받아보세요</p>
             </div>
             
             <!-- 간단한 초기 폼 (처음 접속 시 표시) -->
@@ -2299,7 +2299,9 @@
                     </div>
                 </div>
                 
-                <!-- 회원/비회원 안내 (로그인 상태에 따라 다르게 표시) -->
+            <form id="consultationForm" class="space-y-5 max-w-4xl mx-auto">
+                
+                <!-- 로그인/회원가입 버튼 (제일 위로!) -->
                 <div id="loginStatusInfo">
                     <!-- 비로그인 사용자용 안내 -->
                     <!-- 회원 전용 안내 (2025.12.31까지) -->
@@ -2336,8 +2338,6 @@
                     </div>
                 </div>
                 
-            <form id="consultationForm" class="space-y-5 max-w-4xl mx-auto">
-                
                 <!-- 1. 기본 정보 -->
                 <div class="section-card pink">
                     <div class="question">
@@ -2353,6 +2353,23 @@
                             <input type="tel" id="customerPhone" name="customerPhone" class="input-field-new" placeholder="전화번호 (010-1234-5678)">
                         </div>
                     </div>
+                </div>
+
+                <!-- 📸 피부 사진 (제일 위로 이동) -->
+                <div class="section-card pink">
+                    <div class="question">
+                        <i class="fas fa-camera question-icon icon-pink"></i>
+                        <span>피부 사진 (선택)</span>
+                    </div>
+                    <p class="helper-text mb-4">트러블 부위 사진이 있으면 더 정확한 상담이 가능해요</p>
+                    
+                    <div class="upload-area-new" onclick="document.getElementById('skinPhotos').click()">
+                        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-600 font-semibold">클릭하여 사진 선택</p>
+                        <p class="text-sm text-gray-500 mt-1">또는 드래그 앤 드롭</p>
+                    </div>
+                    <input type="file" id="skinPhotos" name="skinPhotos" accept="image/*" multiple style="display:none" onchange="handleSkinPhotoUpload(this)">
+                    <div id="photo-preview" class="mt-3 grid grid-cols-2 gap-2 hidden"></div>
                 </div>
 
                 <!-- 2. 지역 -->
@@ -2465,25 +2482,7 @@
                     <textarea id="skinCondition" name="skinCondition" rows="4" class="input-field-new resize-none" placeholder="현재 피부 고민이나 상태를 자세히 적어주세요&#10;예) 이마와 볼에 여드름이 자주 생기고, T존이 기름져요."></textarea>
                 </div>
 
-                <!-- 6. 사진 업로드 -->
-                <div class="section-card pink">
-                    <div class="question">
-                        <i class="fas fa-camera question-icon icon-pink"></i>
-                        <span>피부 사진 (선택)</span>
-                    </div>
-                    <p class="helper-text mb-4">트러블 부위 사진이 있으면 더 정확한 상담이 가능해요</p>
-                    
-                    <div class="upload-area-new" onclick="document.getElementById('skinPhotos').click()">
-                        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
-                        <p class="text-gray-600 font-semibold">클릭하여 사진 선택</p>
-                        <p class="text-sm text-gray-500 mt-1">또는 드래그 앤 드롭</p>
-                    </div>
-                    <input type="file" id="skinPhotos" name="skinPhotos" accept="image/*" multiple style="display:none" onchange="handleSkinPhotoUpload(this)">
-                    <div id="photo-preview" class="mt-3 grid grid-cols-2 gap-2 hidden"></div>
-                </div>
-
-
-                <!-- 7. 추가 요청사항 -->
+                <!-- 6. 추가 요청사항 -->
                 <div class="section-card blue">
                     <div class="question">
                         <i class="fas fa-comment-dots question-icon icon-blue"></i>
@@ -2493,20 +2492,20 @@
                     <textarea id="importantFactors" name="importantFactors" rows="4" class="input-field-new resize-none" placeholder="특별히 원하는 사항을 자유롭게 적어주세요&#10;예) 금액, 위생, 직원 전문성, 시설, 위치, 후기 등"></textarea>
                 </div>
 
+                <!-- 💝 회원 혜택 안내 (제일 아래로 이동) -->
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
+                    <p class="text-blue-900 font-bold">
+                        <i class="fas fa-gift mr-1"></i>
+                        회원가입 시 <span class="text-xl">5,000원</span> 할인 쿠폰 즉시 지급!
+                    </p>
+                </div>
+
                 <!-- 제출 버튼 -->
                 <div class="flex justify-center mt-8">
                     <button type="submit" class="submit-btn" style="font-size: 20px !important; padding: 20px 60px !important; font-weight: 700 !important; min-width: 280px !important;">
                         <i class="fas fa-paper-plane mr-2"></i>
                         무료 견적 받기
                     </button>
-                </div>
-
-                <!-- 혜택 안내 -->
-                <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
-                    <p class="text-blue-900 font-bold">
-                        <i class="fas fa-gift mr-1"></i>
-                        회원가입 시 <span class="text-xl">5,000원</span> 할인 쿠폰 즉시 지급!
-                    </p>
                 </div>
             </form>
             </div>
