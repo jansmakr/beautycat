@@ -229,15 +229,19 @@ async function loginUser(user, kakaoInfo) {
 
         // 로그인 정보 업데이트 (마지막 로그인 시간, 프로필 이미지 등)
         if (user.id) {
+            // PATCH 대신 PUT 사용 (CORS 이슈 해결)
+            const updateData = {
+                ...user, // 기존 사용자 정보 포함
+                profile_image: kakaoInfo.profile_image,
+                last_login_at: new Date().toISOString()
+            };
+            
             await fetch(`/tables/users/${user.id}`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    profile_image: kakaoInfo.profile_image,
-                    last_login_at: new Date().toISOString()
-                })
+                body: JSON.stringify(updateData)
             });
         }
 
