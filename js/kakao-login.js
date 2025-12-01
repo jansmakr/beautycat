@@ -150,8 +150,8 @@ async function checkExistingUser(email) {
     try {
         console.log('🔍 [Kakao] 기존 회원 확인:', email);
 
-        // API 호출 - 이메일로 사용자 검색
-        const response = await fetch(`/tables/users?search=${encodeURIComponent(email)}&limit=1`);
+        // API 호출 - 이메일로 사용자 검색 (정확한 검색)
+        const response = await fetch(`/tables/users?search=${encodeURIComponent(email)}&limit=10`);
         
         if (!response.ok) {
             console.log('ℹ️ [Kakao] 기존 회원 없음 (API 오류 또는 신규 회원)');
@@ -159,13 +159,18 @@ async function checkExistingUser(email) {
         }
 
         const result = await response.json();
+        console.log('📊 [Kakao] 검색 결과:', result);
         
         if (result.data && result.data.length > 0) {
-            // 이메일 정확히 일치하는지 확인
-            const user = result.data.find(u => u.email === email);
-            return user || null;
+            // 이메일 정확히 일치하는지 확인 (대소문자 무시)
+            const user = result.data.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+            if (user) {
+                console.log('✅ [Kakao] 기존 회원 발견:', user.email);
+                return user;
+            }
         }
 
+        console.log('ℹ️ [Kakao] 기존 회원 없음 (신규 회원)');
         return null;
     } catch (error) {
         console.error('❌ [Kakao] 기존 회원 확인 실패:', error);
@@ -205,6 +210,18 @@ async function registerUser(userInfo) {
         if (!response.ok) {
             const errorText = await response.text();
             console.error('❌ [Kakao] 회원가입 실패:', errorText);
+            
+            // UNIQUE 제약 위반 시 기존 사용자로 로그인 시도
+            if (errorText.includes('UNIQUE constraint failed') || errorText.includes('users.email')) {
+                console.log('ℹ️ [Kakao] 이미 가입된 이메일입니다. 기존 사용자로 로그인 시도...');
+                const existingUser = await checkExistingUser(userInfo.email);
+                if (existingUser) {
+                    console.log('✅ [Kakao] 기존 사용자 발견, 로그인 진행:', existingUser);
+                    await loginUser(existingUser, userInfo);
+                    return;
+                }
+            }
+            
             throw new Error('회원가입 실패');
         }
 
@@ -227,14 +244,18 @@ async function loginUser(user, kakaoInfo) {
     try {
         console.log('🔐 [Kakao] 로그인 처리:', user.email);
 
-        // 로그인 정보 업데이트 (마지막 로그인 시간, 프로필 이미지 등)
+        // 로그인 정보 업데이트 (카카오 ID, 마지막 로그인 시간, 프로필 이미지 등)
         if (user.id) {
             // PATCH 대신 PUT 사용 (CORS 이슈 해결)
             const updateData = {
                 ...user, // 기존 사용자 정보 포함
-                profile_image: kakaoInfo.profile_image,
+                login_type: 'kakao', // 카카오 로그인으로 전환
+                kakao_id: String(kakaoInfo.kakao_id), // 카카오 ID 저장
+                profile_image: kakaoInfo.profile_image || user.profile_image,
                 last_login_at: new Date().toISOString()
             };
+            
+            console.log('🔄 [Kakao] 사용자 정보 업데이트:', { email: user.email, kakao_id: updateData.kakao_id });
             
             await fetch(`/tables/users/${user.id}`, {
                 method: 'PUT',
