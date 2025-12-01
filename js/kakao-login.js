@@ -9,7 +9,7 @@
 // ⚙️ 카카오 설정
 // ================================
 const KAKAO_CONFIG = {
-    JAVASCRIPT_KEY: 'eea3e60bafe7ebb16dde366f33c5f279', // 카카오 Developers에서 발급받은 JavaScript 키
+    JAVASCRIPT_KEY: '99ef9d9c5749328463929a91d7c4fb8a', // 카카오 Developers에서 발급받은 JavaScript 키
     REDIRECT_URI: 'https://beautycat.kr/login.html',
     LOGIN_TYPE: 'kakao'
 };
@@ -180,6 +180,9 @@ async function registerUser(userInfo) {
     try {
         console.log('📝 [Kakao] 신규 회원 가입 중...', userInfo);
 
+        // 소셜 로그인용 임시 비밀번호 생성 (사용되지 않음)
+        const tempPassword = 'KAKAO_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        
         // users 테이블에 저장
         const response = await fetch('/tables/users', {
             method: 'POST',
@@ -188,6 +191,7 @@ async function registerUser(userInfo) {
             },
             body: JSON.stringify({
                 email: userInfo.email,
+                password: tempPassword, // 소셜 로그인용 임시 비밀번호
                 name: userInfo.name,
                 login_type: userInfo.login_type,
                 kakao_id: String(userInfo.kakao_id),
