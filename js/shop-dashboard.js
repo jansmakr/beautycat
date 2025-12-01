@@ -143,6 +143,19 @@ async function loadShopInfo() {
             updateSidebarShopInfo();
             updateShopStatus();
             updateShopInfoForm();
+            
+            // 샵 정보 등록 안내 숨기기
+            const registerNotice = document.getElementById('shop-register-notice');
+            if (registerNotice) {
+                registerNotice.classList.add('hidden');
+            }
+        } else {
+            // 샵 정보가 없으면 등록 안내 표시
+            const registerNotice = document.getElementById('shop-register-notice');
+            if (registerNotice) {
+                registerNotice.classList.remove('hidden');
+            }
+            console.log('⚠️ 피부관리실 정보가 등록되지 않았습니다. 등록 안내를 표시합니다.');
         }
         
     } catch (error) {
@@ -1864,8 +1877,20 @@ async function checkRepresentativeShopStatus() {
     if (!currentShop) return;
     
     try {
+        // shop_name 또는 name 필드 사용 (둘 다 체크)
+        const shopName = currentShop.shop_name || currentShop.name || '';
+        const state = currentShop.state || '';
+        const district = currentShop.district || '';
+        
+        // 필수 정보가 없으면 조회하지 않음
+        if (!shopName || !state || !district) {
+            console.warn('대표샵 조회 실패: 필수 정보 누락', { shopName, state, district });
+            updateRepresentativeStatusUI(null);
+            return;
+        }
+        
         // 현재 샵의 대표샵 신청 상태 확인
-        const response = await fetch(`tables/representative_shops?shop_name=${encodeURIComponent(currentShop.shop_name)}&state=${encodeURIComponent(currentShop.state)}&district=${encodeURIComponent(currentShop.district)}`);
+        const response = await fetch(`tables/representative_shops?shop_name=${encodeURIComponent(shopName)}&state=${encodeURIComponent(state)}&district=${encodeURIComponent(district)}`);
         const data = await response.json();
         
         const application = data.data && data.data[0];

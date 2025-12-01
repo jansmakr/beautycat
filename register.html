@@ -137,6 +137,20 @@
                 font-size: 1.375rem !important;
             }
             
+            /* 모바일 버튼 크기 통일 */
+            button[type="submit"] {
+                font-size: 16px !important;
+                padding: 14px 24px !important;
+                min-height: 52px !important;
+            }
+            
+            /* 모바일 입력 필드 크기 통일 */
+            input, select {
+                font-size: 16px !important;
+                padding: 14px !important;
+                min-height: 52px !important;
+            }
+            
             .user-type-btn {
                 padding: 1rem !important;
                 min-height: 80px;
@@ -250,107 +264,16 @@
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
-                <!-- 업체 정보 (업체 회원만 표시) -->
-                <div id="shopInfoSection" style="display: none;">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">업체명</label>
-                    <input type="text" id="shopName" name="shopName"
-                           placeholder="예: 뷰티캣 피부관리실"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
-                
-                <div id="businessNumberSection" style="display: none;">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        사업자번호 (선택사항)
-                        <span class="text-xs text-gray-500 ml-1">- 숫자만 입력 (예: 1234567890)</span>
-                    </label>
-                    <input type="text" id="businessNumber" name="businessNumber"
-                           placeholder="1234567890"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
-                </div>
-                
-                <!-- 제휴 카페 아이디 (업체 회원만 표시) -->
-                <div id="cafeIdSection" style="display: none;">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        제휴 카페 아이디 (선택사항)
-                        <span class="text-xs text-gray-500 ml-1">- 제휴 혜택을 받으시려면 입력해주세요</span>
-                    </label>
-                    <div class="space-y-3">
-                        <!-- 카페 플랫폼 선택 -->
-                        <div class="flex gap-4">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="cafePlatform" value="naver" class="mr-2" checked>
-                                <span class="text-sm font-medium text-gray-700">네이버 카페</span>
-                            </label>
-                            <label class="flex items-center cursor-pointer">
-                                <input type="radio" name="cafePlatform" value="daum" class="mr-2">
-                                <span class="text-sm font-medium text-gray-700">다음 카페</span>
-                            </label>
+                <!-- 뷰티샵 회원 안내 메시지 -->
+                <div id="shopNotice" style="display: none;" class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-blue-400"></i>
                         </div>
-                        
-                        <!-- 카페 아이디 입력 -->
-                        <input type="text" id="cafeId" name="cafeId" autocomplete="off"
-                               placeholder="카페 아이디를 입력하세요 (예: beautycat123)"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
-                        
-                        <!-- 제휴 카페 주소 안내 -->
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <p class="text-xs text-blue-800 font-semibold mb-2">
-                                <i class="fas fa-link mr-1"></i>
-                                제휴 카페 주소
-                            </p>
-                            <div class="space-y-1 text-xs text-blue-700">
-                                <p>
-                                    <strong>네이버 카페:</strong> 
-                                    <a href="https://cafe.naver.com/cosmetickr" target="_blank" class="underline hover:text-blue-900">
-                                        https://cafe.naver.com/cosmetickr
-                                    </a>
-                                </p>
-                                <p>
-                                    <strong>다음 카페:</strong> 
-                                    <a href="https://cafe.daum.net/jiyoungskin" target="_blank" class="underline hover:text-blue-900">
-                                        https://cafe.daum.net/jiyoungskin
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                            <p class="text-xs text-green-700">
-                                <i class="fas fa-gift mr-1"></i>
-                                💝 제휴 카페 회원은 <strong class="font-semibold">2026년 3월 31일까지 이용료 무료</strong> 혜택을 받으실 수 있습니다!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 주소 입력 -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">주소</label>
-                    <div class="space-y-3">
-                        <!-- 시/도, 구/군 선택 -->
-                        <div class="grid grid-cols-2 gap-3">
-                            <select id="state" name="state" required 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
-                                <option value="">시/도 선택</option>
-                            </select>
-                            <select id="district" name="district" required 
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
-                                <option value="">구/군 선택</option>
-                            </select>
-                        </div>
-                        
-                        <!-- 상세주소 입력 -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">상세주소</label>
-                            <input type="text" id="detailAddress" name="detailAddress" autocomplete="address-line1" 
-                                   placeholder="예: 역삼동 123-45, 테헤란빌딩 3층"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
-                        </div>
-                        
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                            <p class="text-xs text-blue-700">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                💡 견적 신청 시 선택하신 <strong class="font-semibold">시/도, 구/군</strong> 지역의 업체에 견적이 전달됩니다
+                        <div class="ml-3">
+                            <p class="text-sm text-blue-700">
+                                <strong>뷰티샵 회원님께</strong><br>
+                                가입 완료 후 대시보드에서 <strong>샵 정보를 등록</strong>하시면 견적 신청을 받으실 수 있습니다.
                             </p>
                         </div>
                     </div>
@@ -365,8 +288,8 @@
                 </div>
                 
                 <button type="submit" 
-                        class="w-full bg-pink-500 text-white py-2 px-4 rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200" 
-                        style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important;">
+                        class="w-full bg-pink-500 text-white py-3 px-4 rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200 text-base font-semibold" 
+                        style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important; min-height: 52px;">
                     가입하기
                 </button>
             </form>
@@ -551,6 +474,50 @@
             }
         }
         
+        // 사용자 유형 선택 함수
+        function selectUserType(type) {
+            // 모든 라벨 초기화
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('bg-primary-50', 'shadow-md');
+                const checkIcon = btn.querySelector('.fa-check');
+                if (checkIcon) {
+                    const checkCircle = checkIcon.parentElement;
+                    checkCircle.classList.remove('bg-black');
+                    checkIcon.classList.add('hidden');
+                }
+            });
+            
+            // 선택된 라벨 강조
+            const selectedLabel = type === 'customer' ? 
+                document.getElementById('customer-label-register') : 
+                document.getElementById('shop-label-register');
+            
+            selectedLabel.classList.add('bg-primary-50', 'shadow-md');
+            const checkIcon = selectedLabel.querySelector('.fa-check');
+            if (checkIcon) {
+                const checkCircle = checkIcon.parentElement;
+                checkCircle.classList.add('bg-black');
+                checkIcon.classList.remove('hidden');
+            }
+            
+            // 라디오 버튼 체크
+            const radioButton = selectedLabel.querySelector('input[type="radio"]');
+            if (radioButton) {
+                radioButton.checked = true;
+            }
+            
+            // 뷰티샵 선택 시 안내 메시지 표시
+            const shopNotice = document.getElementById('shopNotice');
+            if (shopNotice) {
+                shopNotice.style.display = type === 'shop' ? 'block' : 'none';
+            }
+        }
+        
+        // 페이지 로드 시 초기 상태 설정
+        document.addEventListener('DOMContentLoaded', function() {
+            selectUserType('customer');
+        });
+        
         // 폼 제출
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -563,15 +530,6 @@
                 return;
             }
             
-            // 주소 입력 확인
-            const state = document.getElementById('state').value;
-            const district = document.getElementById('district').value;
-            
-            if (!state || !district) {
-                alert('주소(시/도, 구/군)를 선택해주세요.');
-                return;
-            }
-            
             // 회원가입 데이터 수집
             const userType = document.querySelector('input[name="userType"]:checked').value;
             const formData = {
@@ -579,28 +537,8 @@
                 password: password,
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
-                user_type: userType,  // auth.js와 일치
-                shop_state: state,    // auth.js와 일치
-                shop_district: district,  // auth.js와 일치
-                shop_address: document.getElementById('detailAddress').value  // auth.js와 일치
+                user_type: userType  // 'customer' or 'shop'
             };
-            
-            // 업체 회원인 경우 추가 정보 입력
-            if (userType === 'shop') {
-                // 업체명 (필수는 아니지만 권장)
-                formData.shop_name = document.getElementById('shopName').value || formData.name + '의 샵';
-                
-                // 사업자번호 (선택)
-                formData.business_number = document.getElementById('businessNumber').value || '';
-                
-                // 제휴 카페 정보 (선택)
-                const cafeId = document.getElementById('cafeId').value;
-                if (cafeId) {
-                    const cafePlatform = document.querySelector('input[name="cafePlatform"]:checked').value;
-                    formData.naver_cafe_id = cafePlatform === 'naver' ? cafeId : '';
-                    // daum cafe는 나중에 추가 가능
-                }
-            }
             
             // 약관 동의 추가 (auth.js가 필요로 함)
             formData.terms_service = document.getElementById('terms').checked;
