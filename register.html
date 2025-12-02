@@ -16,6 +16,9 @@
 <!-- <script src="js/api-bridge.js"></script> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     
+    <!-- 카카오 로그인 SDK -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+    
     <style>
         body { 
             font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -289,10 +292,30 @@
                 
                 <button type="submit" 
                         class="w-full bg-pink-500 text-white py-3 px-4 rounded-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 transition duration-200 text-base font-semibold" 
-                        style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important; min-height: 52px;">
+                        style="border: 3px solid #000000 !important; box-shadow: 0 0 0 1px #000000 !important; min-height: 56px;">
                     가입하기
                 </button>
             </form>
+            
+            <!-- 또는 구분선 -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">또는</span>
+                </div>
+            </div>
+            
+            <!-- 카카오 회원가입 버튼 -->
+            <button id="kakao-register-btn" type="button" 
+                    class="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg text-gray-900 font-semibold transition-all hover:shadow-lg"
+                    style="background-color: #FEE500;">
+                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.8 6.7L6 22l4.5-3c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/>
+                </svg>
+                카카오로 3초만에 시작하기
+            </button>
             
             <div class="text-center mt-6">
                 <p class="text-gray-600">
@@ -310,6 +333,7 @@
     <script src="js/security-manager.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/regional-matching.js"></script>
+    <script src="js/kakao-login.js"></script>
     <script>
         // 지역 데이터 초기화
         document.addEventListener('DOMContentLoaded', function() {
@@ -606,6 +630,28 @@
         
         console.log('✅ 디버깅 함수 준비 완료');
         console.log('💡 사용법: testPasswordStrength("your_password")');
+    </script>
+    
+    <!-- 카카오 회원가입 버튼 이벤트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const kakaoRegisterBtn = document.getElementById('kakao-register-btn');
+            
+            if (kakaoRegisterBtn) {
+                kakaoRegisterBtn.addEventListener('click', function() {
+                    console.log('[Kakao Register] 카카오 회원가입 버튼 클릭');
+                    // kakao-login.js의 loginWithKakao 함수 호출 (회원가입도 동일하게 처리)
+                    if (typeof loginWithKakao === 'function') {
+                        loginWithKakao();
+                    } else {
+                        console.error('[Kakao Register] loginWithKakao 함수를 찾을 수 없습니다.');
+                        alert('카카오 로그인 기능을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
+                    }
+                });
+                
+                console.log('[Kakao Register] 카카오 회원가입 버튼 이벤트 등록 완료');
+            }
+        });
     </script>
 </body>
 </html>
