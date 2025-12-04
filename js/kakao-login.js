@@ -10,8 +10,18 @@
 // ================================
 const KAKAO_CONFIG = {
     JAVASCRIPT_KEY: '99ef9d9c5749328463929a91d7c4fb8a', // 카카오 Developers에서 발급받은 JavaScript 키
-    REDIRECT_URI: 'https://beautycat.kr/login.html',
-    LOGIN_TYPE: 'kakao'
+    LOGIN_TYPE: 'kakao',
+    // Redirect URI는 현재 페이지를 기본으로 사용 (로그인/회원가입 모두 지원)
+    getRedirectUri: function() {
+        const currentPage = window.location.pathname.split('/').pop() || 'login.html';
+        const baseUrl = window.location.origin;
+        
+        // register.html에서 호출시 register.html로, 그 외는 login.html로
+        if (currentPage === 'register.html') {
+            return `${baseUrl}/register.html`;
+        }
+        return `${baseUrl}/login.html`;
+    }
 };
 
 // ================================
@@ -41,7 +51,7 @@ function initKakaoSDK() {
 }
 
 // ================================
-// 🎯 카카오 로그인 시작
+// 🎯 카카오 로그인 시작 (Redirect 방식)
 // ================================
 function startKakaoLogin() {
     console.log('🚀 [Kakao] 로그인 시작');
@@ -54,26 +64,14 @@ function startKakaoLogin() {
         }
     }
 
-    // 카카오 로그인 팝업 열기
-    Kakao.Auth.login({
-        success: function(authObj) {
-            console.log('✅ [Kakao] 인증 성공:', authObj);
-            
-            // 액세스 토큰 저장
-            const accessToken = authObj.access_token;
-            
-            // 사용자 정보 요청
-            requestKakaoUserInfo(accessToken);
-        },
-        fail: function(err) {
-            console.error('❌ [Kakao] 인증 실패:', err);
-            
-            if (err.error === 'access_denied') {
-                console.log('ℹ️ [Kakao] 사용자가 로그인을 취소했습니다');
-            } else {
-                alert('카카오 로그인에 실패했습니다.\n잠시 후 다시 시도해주세요.');
-            }
-        }
+    // 현재 페이지에 맞는 Redirect URI 설정
+    const redirectUri = KAKAO_CONFIG.getRedirectUri();
+    console.log('🔗 [Kakao] Redirect URI:', redirectUri);
+    
+    // 페이지 리다이렉트 방식으로 로그인 (쓰드파티 쿠키 문제 해결)
+    Kakao.Auth.authorize({
+        redirectUri: redirectUri,
+        state: 'kakao_login_' + Date.now() // CSRF 방지
     });
 }
 
@@ -297,6 +295,71 @@ async function loginUser(user, kakaoInfo) {
 }
 
 // ================================
+// 🔄 카카오 로그인 콜백 처리
+// ================================
+function handleKakaoCallback() {
+    console.log('🔄 [Kakao] 콜백 처리 시작');
+    
+    // URL에서 인증 코드 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const error = urlParams.get('error');
+    
+    if (error) {
+        console.error('❌ [Kakao] 인증 오류:', error);
+        alert('카카오 로그인에 실패했습니다.\n다시 시도해주세요.');
+        // URL 정리
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    }
+    
+    if (code) {
+        console.log('✅ [Kakao] 인증 코드 수신:', code.substring(0, 10) + '...');
+        
+        // 토큰 요청
+        Kakao.Auth.setAccessToken(null); // 기존 토큰 제거
+        
+        // 현재 페이지의 Redirect URI 사용
+        const redirectUri = KAKAO_CONFIG.getRedirectUri();
+        console.log('🔗 [Kakao] 토큰 요청 Redirect URI:', redirectUri);
+        
+        // 인증 코드로 액세스 토큰 요청
+        fetch(`https://kauth.kakao.com/oauth/token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                client_id: KAKAO_CONFIG.JAVASCRIPT_KEY,
+                redirect_uri: redirectUri,
+                code: code
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access_token) {
+                console.log('✅ [Kakao] 액세스 토큰 획득');
+                Kakao.Auth.setAccessToken(data.access_token);
+                
+                // 사용자 정보 요청
+                requestKakaoUserInfo(data.access_token);
+                
+                // URL 정리
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                throw new Error('토큰 획득 실패');
+            }
+        })
+        .catch(error => {
+            console.error('❌ [Kakao] 토큰 요청 실패:', error);
+            alert('카카오 로그인 처리 중 오류가 발생했습니다.');
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+}
+
+// ================================
 // 🚀 페이지 로드 시 자동 실행
 // ================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -304,6 +367,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // SDK 초기화
     initKakaoSDK();
+    
+    // 카카오 콜백 처리 (URL에 code 파라미터가 있는 경우)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('code')) {
+        handleKakaoCallback();
+        return; // 콜백 처리 중에는 버튼 이벤트 연결 안 함
+    }
 
     // 카카오 로그인 버튼 이벤트 연결
     const kakaoLoginBtn = document.getElementById('kakao-login-btn');
@@ -313,6 +383,16 @@ document.addEventListener('DOMContentLoaded', function() {
             startKakaoLogin();
         });
         console.log('✅ [Kakao] 로그인 버튼 이벤트 연결됨');
+    }
+    
+    // 회원가입 페이지의 카카오 버튼
+    const kakaoRegisterBtn = document.getElementById('kakao-register-btn');
+    if (kakaoRegisterBtn) {
+        kakaoRegisterBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            startKakaoLogin();
+        });
+        console.log('✅ [Kakao] 회원가입 버튼 이벤트 연결됨');
     }
 });
 
