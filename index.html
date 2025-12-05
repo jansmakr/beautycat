@@ -3576,6 +3576,8 @@
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             if (!user) {
                 // 미로그인 시 로그인/회원가입 선택 모달 표시
+                // 사용자 의도 저장
+                localStorage.setItem('redirectIntent', 'consultation');
                 openAuthModal();
                 return;
             }
@@ -3597,6 +3599,8 @@
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             if (!user) {
                 // 미로그인 시 로그인/회원가입 선택 모달 표시
+                // 사용자 의도 저장
+                localStorage.setItem('redirectIntent', 'phone');
                 openAuthModal();
                 return;
             }
@@ -3839,6 +3843,24 @@
 
         // 페이지 로드 후 실행
         document.addEventListener('DOMContentLoaded', function() {
+            
+            // URL 파라미터 확인 (로그인/회원가입 후 리다이렉트)
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            
+            if (action) {
+                // URL 파라미터 제거 (히스토리에 남지 않도록)
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                // 약간의 딜레이 후 해당 액션 실행
+                setTimeout(() => {
+                    if (action === 'consultation') {
+                        showConsultationForm();
+                    } else if (action === 'phone') {
+                        showPhoneForm();
+                    }
+                }, 500);
+            }
             
             // 로그인 상태 확인 및 안내 메시지 표시
             const currentUser = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null;
