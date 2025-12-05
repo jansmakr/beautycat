@@ -280,8 +280,27 @@ async function loginUser(user, kakaoInfo) {
         // 성공 메시지
         alert(`환영합니다, ${kakaoInfo.name}님! 🎉\n카카오 로그인이 완료되었습니다.`);
 
-        // 대시보드로 이동 (사용자 타입에 따라 분기)
+        // 사용자 의도 확인 (견적상담/전화상담 버튼 클릭)
+        const redirectIntent = localStorage.getItem('redirectIntent');
         const userType = user.user_type || 'customer';
+        
+        if (redirectIntent && userType === 'customer') {
+            // 의도 정보 삭제
+            localStorage.removeItem('redirectIntent');
+            
+            // index.html로 리다이렉트하고 해당 섹션 표시
+            if (redirectIntent === 'consultation') {
+                console.log('🎯 [Kakao] 견적상담으로 리다이렉트');
+                window.location.href = '/index.html?action=consultation';
+                return;
+            } else if (redirectIntent === 'phone') {
+                console.log('🎯 [Kakao] 전화상담으로 리다이렉트');
+                window.location.href = '/index.html?action=phone';
+                return;
+            }
+        }
+        
+        // 기본 대시보드 이동 (사용자 타입에 따라 분기)
         if (userType === 'shop_owner') {
             window.location.href = '/shop-dashboard.html';
         } else {
