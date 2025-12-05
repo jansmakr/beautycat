@@ -3584,7 +3584,21 @@
         
         // 야놀자 스타일: 상담 폼 표시/숨김
         function showConsultationForm() {
-            // 상담 폼 표시 (로그인 여부와 관계없이)
+            // 로그인 확인
+            const user = JSON.parse(localStorage.getItem('user_data') || 'null');
+            const isLoggedIn = user && localStorage.getItem('session_token');
+            
+            if (!isLoggedIn) {
+                // 미로그인 시 authModal 표시
+                const authModal = document.getElementById('authModal');
+                if (authModal) {
+                    authModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+                return;
+            }
+            
+            // 로그인된 경우 상담 폼 표시
             document.getElementById('consultation').style.display = 'block';
             document.getElementById('consultation').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -3596,6 +3610,20 @@
         
         function showPhoneForm() {
             console.log('📞 [전화상담] 버튼 클릭됨');
+            
+            // 로그인 확인
+            const user = JSON.parse(localStorage.getItem('user_data') || 'null');
+            const isLoggedIn = user && localStorage.getItem('session_token');
+            
+            if (!isLoggedIn) {
+                // 미로그인 시 authModal 표시
+                const authModal = document.getElementById('authModal');
+                if (authModal) {
+                    authModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+                return;
+            }
             
             try {
                 // 1. 먼저 상담 폼을 표시

@@ -2174,9 +2174,19 @@ async function handleMainConsultationSubmit(e) {
     
     const currentUser = getCurrentUser();
     
-    // 비회원인 경우 로그인 안내
+    // 비회원인 경우 로그인 모달 표시
     if (!currentUser) {
-        showNotification('로그인 후 상담 신청이 가능합니다.', 'warning');
+        // authModal이 있으면 표시
+        const authModal = document.getElementById('authModal');
+        if (authModal) {
+            authModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        } else {
+            // authModal이 없으면 직접 로그인 페이지로 이동
+            if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+                window.location.href = 'login.html';
+            }
+        }
         return;
     }
     
