@@ -94,14 +94,25 @@ function createAnnouncementSidebar(announcements) {
     const sidebar = document.createElement('div');
     sidebar.id = 'announcement-sidebar';
     
-    // 상단 배너 스타일로 변경
+    // 상단 배너 스타일로 변경 (헤더 정확히 아래에 위치)
+    // 헤더의 실제 높이를 계산하여 배치
+    const header = document.querySelector('header');
+    let headerHeight = 60; // 기본값
+    
+    if (header) {
+        headerHeight = header.offsetHeight;
+    }
+    
+    // 안전 여유분 추가 (4px)
+    const topPosition = (headerHeight + 4) + 'px';
+    
     sidebar.style.cssText = `
         position: fixed !important;
-        top: 60px !important;
+        top: ${topPosition} !important;
         left: 0 !important;
         right: 0 !important;
         width: 100% !important;
-        z-index: 9998 !important;
+        z-index: 900 !important;
         background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%) !important;
         box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2) !important;
         display: block !important;
