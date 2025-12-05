@@ -534,13 +534,21 @@ async function handleRegister(e) {
                     10000  // 10초간 표시
                 );
             } else {
-                showNotification('회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.', 'success');
+                showNotification('회원가입이 완료되었습니다! 자동 로그인 중...', 'success');
             }
             
-            // 로그인 페이지로 리다이렉트
+            // 회원가입 후 자동 로그인 처리
             setTimeout(() => {
-                window.location.href = 'login.html';
-            }, registerData.user_type === 'shop' ? 8000 : 2000);  // 업체는 8초, 고객은 2초 후 이동
+                // 세션 저장 (saveSession 함수 사용)
+                const sessionToken = generateSessionToken();
+                saveSession(result.user, sessionToken, false); // 기본 24시간 세션
+                
+                // 추가 호환성 저장 (기존 코드와 호환)
+                localStorage.setItem('user', JSON.stringify(result.user));
+                
+                // 대시보드로 리다이렉트 (redirectIntent 확인)
+                redirectToDashboard(result.user.user_type);
+            }, registerData.user_type === 'shop' ? 8000 : 1500);  // 업체는 8초, 고객은 1.5초 후 이동
         } else {
             showNotification(result.message || '회원가입에 실패했습니다.', 'error');
         }

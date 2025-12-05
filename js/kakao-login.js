@@ -265,7 +265,7 @@ async function loginUser(user, kakaoInfo) {
         }
 
         // 세션 저장 (localStorage)
-        localStorage.setItem('user', JSON.stringify({
+        const userData = {
             id: user.id,
             email: user.email,
             name: user.name || kakaoInfo.name,
@@ -273,7 +273,20 @@ async function loginUser(user, kakaoInfo) {
             profile_image: kakaoInfo.profile_image,
             is_verified: user.is_verified || kakaoInfo.is_verified,
             user_type: user.user_type || 'customer'
-        }));
+        };
+        
+        // 세션 토큰 생성
+        const sessionToken = 'session_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+        
+        // 세션 정보 저장 (24시간 유효)
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        localStorage.setItem('session_token', sessionToken);
+        localStorage.setItem('user_type', userData.user_type);
+        
+        // 세션 만료 시간 설정 (24시간)
+        const expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        localStorage.setItem('session_expires', expirationTime.toISOString());
 
         console.log('✅ [Kakao] 로그인 완료');
 
