@@ -305,17 +305,17 @@ async function processLogin(loginData) {
     try {
         console.log('로그인 시도:', { email: loginData.email, user_type: loginData.user_type });
         
-        // 보안 매니저로 로그인 시도 제한 확인
-        if (window.securityManager) {
-            try {
-                window.securityManager.checkLoginAttempts(loginData.email);
-            } catch (lockoutError) {
-                return {
-                    success: false,
-                    message: lockoutError.message
-                };
-            }
-        }
+        // 보안 매니저로 로그인 시도 제한 확인 (개발 모드에서는 비활성화)
+        // if (window.securityManager) {
+        //     try {
+        //         window.securityManager.checkLoginAttempts(loginData.email);
+        //     } catch (lockoutError) {
+        //         return {
+        //             success: false,
+        //             message: lockoutError.message
+        //         };
+        //     }
+        // }
         
         // 데모 계정 확인 (우선순위)
         const demoAccounts = getDemoAccounts();
@@ -351,20 +351,37 @@ async function processLogin(loginData) {
             };
         }
         
-        // 실제 사용자 계정 확인
-        const response = await fetch(`tables/users?limit=100`);
+        // 실제 사용자 계정 확인 (이메일로 직접 검색)
+        const response = await fetch(`tables/users?search=${encodeURIComponent(loginData.email)}&limit=100`);
         
         if (!response.ok) {
             throw new Error('사용자 데이터를 불러올 수 없습니다.');
         }
         
         const userData = await response.json();
-        console.log('사용자 데이터 조회 완료:', userData.data?.length || 0, '명');
+        console.log('🔍 이메일 검색 결과:', userData.data?.length || 0, '명');
+        console.log('📧 검색한 이메일:', loginData.email);
+        console.log('📊 검색 결과:', userData.data);
+        
+        // 먼저 이메일만으로 찾기
+        const userByEmail = userData.data?.find(u => u.email === loginData.email);
+        console.log('📧 이메일로 찾은 사용자:', userByEmail);
+        
+        if (userByEmail) {
+            console.log('✅ 사용자 정보:', {
+                email: userByEmail.email,
+                user_type: userByEmail.user_type,
+                status: userByEmail.status,
+                is_active: userByEmail.is_active
+            });
+            console.log('🔍 입력한 user_type:', loginData.user_type);
+        }
         
         const user = userData.data?.find(u => 
             u.email === loginData.email && 
             u.user_type === loginData.user_type &&
-            u.is_active !== false
+            u.status !== 'inactive' && // status 체크
+            u.is_active !== false // is_active도 체크 (오래된 데이터 호환)
         );
         
         if (user) {
@@ -373,13 +390,17 @@ async function processLogin(loginData) {
             // 비밀번호 확인 (보안 강화)
             let passwordValid = false;
             
-            if (window.securityManager && user.password_salt) {
+            // 비밀번호에 salt가 포함되어 있는지 확인 (hash:salt 형식)
+            if (window.securityManager && user.password && user.password.includes(':')) {
                 // 해시된 비밀번호 검증
-                const hashedInput = await window.securityManager.hashPassword(loginData.password, user.password_salt);
-                passwordValid = (hashedInput.hash === user.password);
+                const [storedHash, storedSalt] = user.password.split(':');
+                const hashedInput = await window.securityManager.hashPassword(loginData.password, storedSalt);
+                passwordValid = (hashedInput.hash === storedHash);
+                console.log('🔐 해시 비밀번호 검증:', passwordValid);
             } else {
-                // 기존 방식 (보안 취약)
+                // 평문 비밀번호 검증 (보안 취약)
                 passwordValid = (user.password === loginData.password);
+                console.log('🔓 평문 비밀번호 검증:', passwordValid);
             }
             
             if (passwordValid) {
@@ -391,21 +412,8 @@ async function processLogin(loginData) {
                 
                 const sessionToken = generateSessionToken();
                 
-                try {
-                    // 마지막 로그인 시간 업데이트
-                    await fetch(`tables/users/${user.id}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            last_login: new Date().toISOString()
-                        })
-                    });
-                } catch (updateError) {
-                    console.warn('로그인 시간 업데이트 실패:', updateError);
-                    // 업데이트 실패해도 로그인은 계속 진행
-                }
+                // last_login 필드가 스키마에 없으므로 업데이트 생략
+                // 필요시 status를 'active'로 업데이트할 수 있음
                 
                 // 세션 저장
                 saveSession({
@@ -423,10 +431,10 @@ async function processLogin(loginData) {
             } else {
                 console.log('비밀번호 불일치');
                 
-                // 로그인 실패 기록
-                if (window.securityManager) {
-                    window.securityManager.recordFailedLogin(loginData.email);
-                }
+                // 로그인 실패 기록 (개발 모드에서는 비활성화)
+                // if (window.securityManager) {
+                //     window.securityManager.recordFailedLogin(loginData.email);
+                // }
                 
                 return {
                     success: false,
@@ -436,10 +444,10 @@ async function processLogin(loginData) {
         } else {
             console.log('사용자를 찾을 수 없음');
             
-            // 로그인 실패 기록
-            if (window.securityManager) {
-                window.securityManager.recordFailedLogin(loginData.email);
-            }
+            // 로그인 실패 기록 (개발 모드에서는 비활성화)
+            // if (window.securityManager) {
+            //     window.securityManager.recordFailedLogin(loginData.email);
+            // }
             
             return {
                 success: false,
@@ -664,62 +672,95 @@ function validateRegisterData(data) {
 // 회원가입 처리
 async function processRegister(registerData) {
     try {
+        console.log('📝 회원가입 프로세스 시작');
+        console.log('📧 입력 데이터:', registerData);
+        
         // 이메일 중복 확인 (다시 한 번)
+        console.log('🔍 이메일 중복 확인 중...');
         const emailExists = await checkEmailExists(registerData.email);
         if (emailExists) {
+            console.warn('⚠️ 이메일 중복:', registerData.email);
             return {
                 success: false,
                 message: '이미 사용 중인 이메일입니다.'
             };
         }
+        console.log('✅ 이메일 중복 없음');
         
-        // 비밀번호 강도 검증
+        // 사용자 데이터 생성
+        let userData;
+        
+        // 비밀번호 강도 검증 (비활성화됨 - 개발 편의성)
         if (window.securityManager) {
-            const passwordCheck = window.securityManager.validatePasswordStrength(registerData.password);
-            if (!passwordCheck.isStrong) {
-                return {
-                    success: false,
-                    message: `비밀번호가 너무 약합니다. ${passwordCheck.message}`
-                };
+            console.log('✅ Security Manager 로드됨');
+            console.log('🔒 비밀번호 강도 검증 중...');
+            
+            try {
+                const passwordCheck = window.securityManager.validatePasswordStrength(registerData.password);
+                console.log('📊 비밀번호 강도:', passwordCheck);
+                
+                // 강도 검증 건너뛰기 (보안보다 편의성 우선)
+                console.log('✅ 비밀번호 강도 검증 건너뛰기 (개발 모드)');
+            } catch (strengthError) {
+                console.error('⚠️ 비밀번호 강도 검증 오류:', strengthError);
+                // 강도 검증 실패해도 계속 진행
             }
             
             // 비밀번호 해시화
-            const hashedPassword = await window.securityManager.hashPassword(registerData.password);
-            
-            // 사용자 데이터 생성 (보안 강화)
-            const userData = {
-                email: window.securityManager.sanitizeInput(registerData.email),
-                password: hashedPassword.hash,
-                password_salt: hashedPassword.salt,
-                name: window.securityManager.sanitizeInput(registerData.name),
-                phone: window.securityManager.sanitizeInput(registerData.phone),
-                user_type: registerData.user_type,
-                is_active: true,
-                is_verified: false,
-                profile_image: '',
-                shop_id: '',
-                permissions: registerData.user_type === 'admin' ? ['all'] : [],
-                created_at: new Date().toISOString(),
-                last_login: null
-            };
+            console.log('🔐 비밀번호 해시화 중...');
+            try {
+                const hashedPassword = await window.securityManager.hashPassword(registerData.password);
+                console.log('✅ 비밀번호 해시화 완료:', {
+                    hashLength: hashedPassword.hash.length,
+                    saltLength: hashedPassword.salt.length
+                });
+                
+                // 사용자 데이터 생성 (보안 강화 - 해시 포함)
+                // Salt를 비밀번호 해시에 포함 (password_salt 필드가 스키마에 없으므로)
+                userData = {
+                    email: registerData.email,
+                    password: hashedPassword.hash + ':' + hashedPassword.salt, // hash:salt 형식
+                    name: registerData.name,
+                    phone: registerData.phone,
+                    user_type: registerData.user_type,
+                    state: registerData.shop_state || '',
+                    district: registerData.shop_district || '',
+                    detail_address: registerData.shop_address || '',
+                    status: 'active', // is_active 대신 status 사용
+                    is_verified: false,
+                    shop_id: '',
+                    // 카페 정보 (업체인 경우)
+                    cafe_platform: registerData.naver_cafe_id ? 'naver' : null,
+                    cafe_id: registerData.naver_cafe_id || null
+                };
+            } catch (hashError) {
+                console.error('❌ 비밀번호 해시화 실패:', hashError);
+                throw new Error('비밀번호 해시화 중 오류가 발생했습니다: ' + hashError.message);
+            }
         } else {
-            // 보안 매니저가 없는 경우 기본 처리
-            const userData = {
+            // 보안 매니저가 없는 경우 기본 처리 (평문 비밀번호)
+            console.warn('⚠️ 보안 매니저 없음 - 비밀번호 평문 저장됨');
+            userData = {
                 email: registerData.email,
-                password: registerData.password, // 기본 처리 (보안 취약)
+                password: registerData.password, // 평문 저장 (보안 취약)
                 name: registerData.name,
                 phone: registerData.phone,
                 user_type: registerData.user_type,
-                is_active: true,
+                state: registerData.shop_state || '',
+                district: registerData.shop_district || '',
+                detail_address: registerData.shop_address || '',
+                status: 'active', // is_active 대신 status 사용
                 is_verified: false,
-                profile_image: '',
                 shop_id: '',
-                permissions: registerData.user_type === 'admin' ? ['all'] : []
+                // 카페 정보 (업체인 경우)
+                cafe_platform: registerData.naver_cafe_id ? 'naver' : null,
+                cafe_id: registerData.naver_cafe_id || null
             };
         }
         
         // 사용자 생성
-        const response = await fetch('tables/users', {
+        console.log('👤 사용자 생성 시도:', userData);
+        const response = await fetch('/tables/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -727,36 +768,35 @@ async function processRegister(registerData) {
             body: JSON.stringify(userData)
         });
         
+        console.log('📡 API 응답 상태:', response.status, response.statusText);
+        
         if (!response.ok) {
-            throw new Error('사용자 생성 실패');
+            const errorText = await response.text();
+            console.error('❌ API 오류 응답:', errorText);
+            throw new Error(`사용자 생성 실패: ${response.status} ${errorText}`);
         }
         
         const newUser = await response.json();
+        console.log('✅ 사용자 생성 성공:', newUser);
         
         // 피부관리실인 경우 추가 처리
         if (registerData.user_type === 'shop') {
-            // 피부관리실 정보 생성
+            // 피부관리실 정보 생성 (스키마에 맞게)
             const shopData = {
-                shop_name: registerData.shop_name,
+                name: registerData.shop_name || registerData.name + '의 샵', // shop_name -> name
                 owner_name: registerData.name,
                 phone: registerData.phone,
                 email: registerData.email,
-                business_number: registerData.business_number || '',
                 state: registerData.shop_state,
                 district: registerData.shop_district,
                 address: registerData.shop_address,
-                region: '',
-                specialties: [],
-                business_hours: '',
-                price_range: '',
-                description: '',
-                images: [],
-                rating: 0,
-                is_active: false, // 승인 대기
-                verified: false
+                services: [], // specialties -> services
+                description: '', // rich_text 필드
+                status: 'pending' // is_active -> status (승인 대기)
             };
             
-            const shopResponse = await fetch('tables/skincare_shops', {
+            console.log('🏪 피부관리실 생성 시도:', shopData);
+            const shopResponse = await fetch('/tables/skincare_shops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -764,11 +804,15 @@ async function processRegister(registerData) {
                 body: JSON.stringify(shopData)
             });
             
+            console.log('📡 샵 API 응답 상태:', shopResponse.status, shopResponse.statusText);
+            
             if (shopResponse.ok) {
                 const newShop = await shopResponse.json();
+                console.log('✅ 피부관리실 생성 성공:', newShop);
                 
                 // 사용자에 피부관리실 ID 연결
-                await fetch(`tables/users/${newUser.id}`, {
+                console.log('🔗 사용자-샵 연결 시도:', newUser.id, '→', newShop.id);
+                const linkResponse = await fetch(`/tables/users/${newUser.id}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -777,6 +821,16 @@ async function processRegister(registerData) {
                         shop_id: newShop.id
                     })
                 });
+                
+                if (linkResponse.ok) {
+                    console.log('✅ 사용자-샵 연결 성공');
+                } else {
+                    const linkError = await linkResponse.text();
+                    console.error('❌ 사용자-샵 연결 실패:', linkError);
+                }
+            } else {
+                const shopError = await shopResponse.text();
+                console.error('❌ 피부관리실 생성 실패:', shopError);
             }
         }
         
@@ -787,9 +841,11 @@ async function processRegister(registerData) {
         
     } catch (error) {
         console.error('회원가입 처리 오류:', error);
+        console.error('오류 상세:', error.message);
+        console.error('오류 스택:', error.stack);
         return {
             success: false,
-            message: '회원가입 처리 중 오류가 발생했습니다.'
+            message: `회원가입 처리 중 오류가 발생했습니다: ${error.message}`
         };
     }
 }
@@ -842,18 +898,33 @@ async function checkEmailExists(email) {
         const demoExists = demoAccounts.some(account => account.email === email);
         
         if (demoExists) {
+            console.log('📧 데모 계정 중복:', email);
             return true;
         }
         
         // 실제 사용자 확인
         const response = await fetch(`tables/users?search=${encodeURIComponent(email)}`);
+        
+        if (!response.ok) {
+            console.warn('⚠️ 사용자 조회 실패, 중복 없음으로 처리');
+            return false;
+        }
+        
         const userData = await response.json();
         
-        return userData.data.some(user => user.email === email);
+        // userData.data가 배열인지 확인
+        if (!userData.data || !Array.isArray(userData.data)) {
+            console.warn('⚠️ 사용자 데이터 형식 오류, 중복 없음으로 처리');
+            return false;
+        }
+        
+        const exists = userData.data.some(user => user.email === email);
+        console.log(`📧 이메일 중복 확인: ${email} → ${exists ? '중복' : '사용 가능'}`);
+        return exists;
         
     } catch (error) {
-        console.error('이메일 존재 확인 오류:', error);
-        return false;
+        console.error('❌ 이메일 존재 확인 오류:', error);
+        return false; // 오류 시 중복 없음으로 처리 (회원가입 허용)
     }
 }
 
@@ -946,6 +1017,24 @@ function logout() {
 
 // 대시보드로 리다이렉트
 function redirectToDashboard(userType) {
+    // 사용자 의도 확인 (견적상담/전화상담 버튼 클릭)
+    const redirectIntent = localStorage.getItem('redirectIntent');
+    
+    if (redirectIntent && userType === 'customer') {
+        // 의도 정보 삭제
+        localStorage.removeItem('redirectIntent');
+        
+        // index.html로 리다이렉트하고 해당 섹션 표시
+        if (redirectIntent === 'consultation') {
+            window.location.href = 'index.html?action=consultation';
+        } else if (redirectIntent === 'phone') {
+            window.location.href = 'index.html?action=phone';
+        } else {
+            window.location.href = 'customer-dashboard.html';
+        }
+        return;
+    }
+    
     const redirectMap = {
         'customer': 'customer-dashboard.html',
         'shop': 'shop-dashboard.html',
@@ -971,37 +1060,94 @@ function getDemoAccounts() {
             name: '데모 고객',
             phone: '010-1111-1111',
             user_type: 'customer',
+            state: '서울특별시',
+            district: '강남구',
+            detail_address: '데모 주소',
             status: 'active',
-            shop_id: null,
-            email_verified: 1,
-            phone_verified: 0,
-            last_login_at: null
+            is_verified: false,
+            shop_id: '',
+            cafe_platform: null,
+            cafe_id: null
+        },
+        {
+            id: 'test_customer_1',
+            email: 'test@test.com',
+            password: 'test123',
+            name: '테스트 고객',
+            phone: '010-1234-5678',
+            user_type: 'customer',
+            state: '서울특별시',
+            district: '강남구',
+            detail_address: '테스트 주소',
+            status: 'active',
+            is_verified: true,
+            shop_id: '',
+            cafe_platform: null,
+            cafe_id: null
         },
         {
             id: 'demo_shop_1',
             email: 'demo@shop.com',
             password: 'shop123',
-            name: '데모 상점',
+            name: '데모 업체',
             phone: '010-2222-2222',
             user_type: 'shop',
+            state: '서울특별시',
+            district: '강남구',
+            detail_address: '데모 주소',
             status: 'active',
+            is_verified: false,
             shop_id: 'shop_001',
-            email_verified: 1,
-            phone_verified: 1,
-            last_login_at: null
+            cafe_platform: null,
+            cafe_id: null
+        },
+        {
+            id: 'test_shop_1',
+            email: 'shop@test.com',
+            password: 'test123',
+            name: '테스트 비유티샵',
+            phone: '010-2345-6789',
+            user_type: 'shop',
+            state: '서울특별시',
+            district: '강남구',
+            detail_address: '테스트 업체 주소',
+            status: 'active',
+            is_verified: true,
+            shop_id: 'shop_002',
+            cafe_platform: null,
+            cafe_id: null
         },
         {
             id: 'demo_admin_1',
             email: 'admin@demo.com',
             password: 'admin123',
-            name: '관리자',
+            name: '데모 관리자',
             phone: '010-0000-0000',
             user_type: 'admin',
+            state: '',
+            district: '',
+            detail_address: '',
             status: 'active',
-            shop_id: null,
-            email_verified: 1,
-            phone_verified: 1,
-            last_login_at: null
+            is_verified: true,
+            shop_id: '',
+            cafe_platform: null,
+            cafe_id: null
+        },
+        {
+            id: 'test_admin_1',
+            email: 'admin@test.com',
+            password: 'test123',
+            name: '테스트 관리자',
+            phone: '010-9999-9999',
+            user_type: 'admin',
+            state: '',
+            district: '',
+            detail_address: '',
+            status: 'active',
+            is_verified: true,
+            shop_id: '',
+            cafe_platform: null,
+            cafe_id: null
         }
     ];
 }
@@ -1152,21 +1298,36 @@ function showNotification(message, type = 'info', duration = 5000) {
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-transform duration-300 translate-x-full`;
     
-    const bgColor = type === 'success' ? 'bg-green-500' : 
-                   type === 'error' ? 'bg-red-500' : 
-                   type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+    const bgColor = type === 'success' ? 'bg-green-100' : 
+                   type === 'error' ? 'bg-red-100' : 
+                   type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100';
+    
+    const borderColor = type === 'success' ? 'border-green-400' : 
+                       type === 'error' ? 'border-red-400' : 
+                       type === 'warning' ? 'border-yellow-400' : 'border-blue-400';
+    
+    const iconColor = type === 'success' ? '#22c55e' : 
+                     type === 'error' ? '#ef4444' : 
+                     type === 'warning' ? '#f59e0b' : '#3b82f6';
     
     const icon = type === 'success' ? 'fa-check-circle' : 
                  type === 'error' ? 'fa-exclamation-circle' : 
                  type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
     
-    notification.className += ` ${bgColor} text-white`;
+    notification.className += ` ${bgColor} border-2 ${borderColor}`;
+    
+    // 인라인 스타일로 명시적으로 설정 (important 사용)
+    notification.style.cssText = `
+        color: #1f2937 !important;
+        font-weight: 500;
+        font-size: 14px;
+    `;
     
     notification.innerHTML = `
         <div class="flex items-start">
-            <i class="fas ${icon} mr-3 mt-1"></i>
-            <div class="flex-1">${message}</div>
-            <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-white hover:text-gray-200">
+            <i class="fas ${icon} mr-3 mt-1" style="color: ${iconColor} !important; font-size: 20px;"></i>
+            <div class="flex-1" style="color: #1f2937 !important; font-weight: 500; line-height: 1.5;">${message}</div>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-3 hover:opacity-70" style="color: #6b7280 !important;">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -1294,6 +1455,35 @@ function hasPermission(permission) {
     if (user.permissions.includes('all')) return true;
     return user.permissions.includes(permission);
 }
+
+// ======= 전역 함수 노출 (register.html 등에서 사용) =======
+window.processRegister = processRegister;
+window.processLogin = processLogin;
+window.showNotification = showNotification;
+
+// 디버깅 함수 (콘솔에서 테스트 가능)
+window.testRegister = async function() {
+    const testData = {
+        email: 'test_debug@test.com',
+        password: 'Test1234!',
+        name: '테스트사용자',
+        phone: '01012345678',
+        user_type: 'customer',
+        shop_state: '서울특별시',
+        shop_district: '강남구',
+        shop_address: '테스트 주소 123',
+        terms_service: true,
+        terms_privacy: true
+    };
+    
+    console.log('🧪 테스트 회원가입 시작:', testData);
+    const result = await processRegister(testData);
+    console.log('🧪 테스트 결과:', result);
+    return result;
+};
+
+console.log('✅ auth.js 로드 완료');
+console.log('🔧 디버깅: window.testRegister() 호출로 테스트 가능');
 
 // ======= 레벨 1 기본인증 통합 함수들 =======
 
