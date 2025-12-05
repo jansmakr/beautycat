@@ -7,6 +7,17 @@ let currentAnnouncementForModal = null;
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
     loadAllAnnouncements();
+    
+    // 모바일에서 업체소식 섹션으로 자동 스크롤
+    setTimeout(() => {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            const shopSection = document.querySelector('.text-2xl.font-bold.text-gray-900 .fa-store')?.closest('section');
+            if (shopSection) {
+                shopSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }, 500); // 데이터 로드 후 스크롤
 });
 
 // 모든 공지사항 로드
