@@ -38,6 +38,8 @@ function createAnnouncementBanner(announcement) {
     const banner = document.createElement('div');
     banner.id = 'announcement-banner';
     banner.className = 'bg-gradient-to-r from-primary-500 to-pink-500 text-white py-3 px-4 cursor-pointer hover:opacity-90 transition-opacity';
+    banner.style.position = 'relative';
+    banner.style.zIndex = '10'; // 헤더보다 낮은 z-index
     banner.onclick = () => window.location.href = 'announcements.html';
     
     const priorityIcon = announcement.priority === 'urgent' ? 

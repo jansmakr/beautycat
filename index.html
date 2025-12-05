@@ -1023,16 +1023,18 @@
         
         .mobile-nav button {
             flex: 1;
-            max-width: 64px !important;
-            width: 64px !important;
+            max-width: 80px !important;
+            width: 80px !important;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.125rem;
-            padding: 0.25rem;
-            min-height: 28px !important;
-            border-radius: 8px;
+            gap: 0;
+            padding: 6px 8px !important; /* 0.375rem → 6px, 0.5rem → 8px */
+            min-height: 0 !important;
+            max-height: 36px !important; /* 최대 높이 제한 */
+            height: 36px !important;
+            border-radius: 6px;
             transition: all 0.15s ease;
             transform: translateZ(0);
             will-change: transform, background;
@@ -1044,16 +1046,13 @@
         }
         
         .mobile-nav button i {
-            font-size: 18px !important;
-            color: #6B7280;
-            transition: color 0.15s ease;
-            transform: translateZ(0);
+            display: none !important; /* 아이콘 완전 숨김 */
         }
         
         .mobile-nav button span {
-            font-size: 9px !important;
-            font-weight: 500;
-            color: #6B7280;
+            font-size: 13px !important; /* 크기 증가 */
+            font-weight: 600 !important; /* 굵기 증가 */
+            color: #374151 !important; /* 진한 회색 */
             transition: color 0.15s ease;
             transform: translateZ(0);
         }
@@ -1066,9 +1065,10 @@
         @media (max-width: 768px) {
             .mobile-nav {
                 display: block;
+                padding: 8px 0 !important; /* 상하 패딩 축소 */
             }
             body {
-                padding-bottom: max(48px, calc(48px + env(safe-area-inset-bottom)));
+                padding-bottom: max(52px, calc(52px + env(safe-area-inset-bottom))) !important; /* 네비 높이 줄어든 만큼 조정 */
             }
             
             /* 모바일: 순서 변경 (CTA 버튼 먼저, 히어로 섹션 나중에) */
@@ -1091,15 +1091,18 @@
         
         @media (max-width: 375px) {
             .mobile-nav button {
-                min-height: 26px !important;
-                max-width: 60px !important;
-                width: 60px !important;
+                min-height: 0 !important;
+                max-height: 32px !important;
+                height: 32px !important;
+                max-width: 70px !important;
+                width: 70px !important;
+                padding: 5px 6px !important; /* 더 작게 */
             }
             .mobile-nav button i {
-                font-size: 16px !important;
+                display: none !important;
             }
             .mobile-nav button span {
-                font-size: 10px !important;
+                font-size: 11px !important; /* 12px → 11px */
             }
         }
         
@@ -1786,7 +1789,7 @@
     </div>
 
     <!-- 심플 헤더 -->
-    <header class="simple-header border-b border-gray-200">
+    <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 100; background: white;">
         <div class="max-w-5xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- 로고 -->
