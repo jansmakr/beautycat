@@ -26,8 +26,13 @@ async function loadAnnouncementBanner() {
         // 배너 생성
         const banner = createAnnouncementBanner(announcement);
         
-        // body의 첫 번째 자식으로 삽입
-        document.body.insertBefore(banner, document.body.firstChild);
+        // 헤더 다음에 삽입 (헤더를 가리지 않도록)
+        const header = document.querySelector('header');
+        if (header && header.nextSibling) {
+            document.body.insertBefore(banner, header.nextSibling);
+        } else {
+            document.body.appendChild(banner);
+        }
         
     } catch (error) {
         console.error('공지 배너 로드 오류:', error);
