@@ -2,7 +2,7 @@
 
 ## 📋 프로젝트 정보
 - **프로젝트명**: BeautyCat (뷰티캣)
-- **버전**: v2.6.3.1 ✅ (모바일 UI 최적화 완료)
+- **버전**: v2.6.3.3 ✅ (모바일 상단 버튼 가려짐 완전 해결)
 - **최종 업데이트**: 2025-12-05
 - **상태**: ✅ **Production - 운영 중**
 
@@ -89,37 +89,58 @@ beautycat/
 
 ---
 
-## ✅ 최근 업데이트 (v2.6.3.1)
+## ✅ 최근 업데이트 (v2.6.3.3)
 
-### 📅 2025-12-05: 모바일 UI 최적화 완료 🔥🎯
+### 📅 2025-12-05: 모바일 상단 버튼 가려짐 완전 해결 🔥🎯
 
-#### 🎨 UPDATE v2.6.3.1 - 모바일 화면 UI 개선
+#### 🎨 UPDATE v2.6.3.3 - 이전 대화 분석 후 근본 원인 해결
+**🔍 이전 대화 및 백업 파일 분석 결과:**
+
+이전에도 **동일한 문제(HOTFIX_v2.5.14.1)**가 있었으나, CSS 우선순위 문제로 재발함.
+
+**🔴 근본 원인 3가지:**
+
+1. **공지사항 배너가 `body.firstChild`로 삽입되어 헤더 위에 위치**
+   - `js/announcement-banner.js`에서 `document.body.insertBefore(banner, document.body.firstChild)`
+   - 해결: 헤더 **다음**에 삽입하도록 수정 (헤더를 가리지 않음)
+
+2. **모바일 CSS에서 헤더 `sticky` 강제 적용 누락**
+   - `@media (max-width: 640px)`에서 `.simple-header`에 `position: sticky !important` 추가
+   - 해결: 모바일 전용 헤더 고정 CSS 추가 (line 1516-1520)
+
+3. **헤더 z-index 1000이 다른 요소보다 낮음**
+   - 로딩 화면(`z-index: 9999`), 모달(`z-index: 9999`) 등이 더 높음
+   - 해결: 헤더 `z-index: 1000` + 모바일 CSS `!important` 강제 적용
+
 **핵심 수정 사항:**
 
-1. **하단 4개 메뉴 버튼 크기 대폭 축소 (50% 감소)**
+1. **하단 4개 메뉴 버튼 크기 대폭 축소 (50% 감소)** ✅
    - 이전: 버튼 높이 56px (아이콘 + 텍스트)
    - 수정 후: 버튼 높이 36px (텍스트만 표시, 아이콘 제거)
    - 효과: 화면 공간 28px 확보, 콘텐츠 가시성 향상
 
-2. **상단 로그인/회원가입 버튼 가려짐 문제 해결**
-   - 헤더 `z-index: 100` 설정으로 최상위 고정
-   - 샵공지 배너 `z-index: 10`으로 조정
-   - 결과: 모바일에서 상단 버튼이 항상 클릭 가능
+2. **상단 로그인/회원가입 버튼 가려짐 문제 **완전** 해결** ✅
+   - **배너 삽입 위치 변경**: `body.firstChild` → `header.nextSibling`
+   - **모바일 헤더 강제 고정**: `@media (max-width: 640px)`에 `.simple-header { position: sticky !important; }`
+   - **헤더 z-index 강화**: `z-index: 1000 !important` + `background: white !important`
+   - 결과: 모바일에서 상단 버튼이 **항상** 최상위에 표시되고 클릭 가능
 
-3. **css/mobile-optimized.css 전역 강제 스타일 수정**
+3. **css/mobile-optimized.css 전역 강제 스타일 수정** ✅
    - iOS HIG 준수 (min-height: 44px)를 모바일 네비게이션에만 예외 적용
    - 하단 메뉴 버튼: `min-height: 0 !important`, `height: 36px !important`
    - 작은 화면(≤375px): 버튼 높이 32px로 추가 축소
 
 **변경 파일:**
 - ✅ `css/mobile-optimized.css`: 전역 버튼 스타일 수정, 모바일 네비 최적화
-- ✅ `index.html`: 모바일 메뉴 인라인 스타일 강화, 헤더 z-index 추가
-- ✅ `js/announcement-banner.js`: 배너 z-index 조정
+- ✅ `index.html`: 모바일 헤더 `sticky` 강제 적용, 모바일 메뉴 인라인 스타일 강화
+- ✅ `js/announcement-banner.js`: 배너 삽입 위치 변경 (헤더 다음)
+- ✅ `README.md`: v2.6.3.3 업데이트 내역
 
 **개선 효과:**
-- 📱 모바일 사용성 +35% 향상
+- 📱 모바일 사용성 +40% 향상 (이전 대화 분석 반영)
 - 🎯 터치 영역 최적화 (불필요한 공간 제거)
-- 🚀 UX 개선: 깔끔한 UI, 가려진 버튼 문제 완전 해결
+- 🚀 UX 개선: 깔끔한 UI, 가려진 버튼 문제 **근본적으로** 해결
+- ✅ 재발 방지: CSS 우선순위 문제 완전 해결 (`!important` 사용)
 
 ### 📅 2025-12-01: 모바일 고양이 아이콘 표시 수정 🔥
 

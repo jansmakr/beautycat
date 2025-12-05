@@ -1267,6 +1267,17 @@
             /* 헤더 최적화 */
             header {
                 padding: 0.75rem 1rem;
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 1000 !important;
+                background: white !important;
+            }
+            
+            /* 헤더 내부 버튼 */
+            header #userMenu,
+            header #userMenu button {
+                z-index: 1002 !important;
+                position: relative;
             }
             
             /* 히어로 섹션 간격 조정 */
@@ -1502,6 +1513,13 @@
         }
         
         @media (max-width: 640px) {
+            .simple-header {
+                position: sticky !important;
+                top: 0 !important;
+                z-index: 1000 !important;
+                background: white !important;
+            }
+            
             .simple-header .logo-container {
                 gap: 0.625rem;
             }
@@ -1789,7 +1807,7 @@
     </div>
 
     <!-- 심플 헤더 -->
-    <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 100; background: white;">
+    <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-5xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- 로고 -->
@@ -1799,12 +1817,12 @@
                 </div>
                 
                 <!-- 사용자 메뉴 -->
-                <div id="userMenu" class="flex items-center gap-2">
+                <div id="userMenu" class="flex items-center gap-2" style="position: relative; z-index: 1001 !important;">
                     <!-- 로그인 전 -->
-                    <button id="registerBtn" class="btn-primary touch-feedback" onclick="location.href='register.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem; border: none;">
+                    <button id="registerBtn" class="btn-primary touch-feedback" onclick="location.href='register.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem; border: none; position: relative; z-index: 1002 !important;">
                         회원가입
                     </button>
-                    <button id="loginBtn" class="btn-secondary touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important; padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem;">
+                    <button id="loginBtn" class="btn-secondary touch-feedback" onclick="location.href='login.html'" style="border: 2px solid #000000 !important; padding: 0.5rem 1.25rem; font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem; position: relative; z-index: 1002 !important;">
                         로그인
                     </button>
                     
