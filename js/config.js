@@ -1,9 +1,9 @@
 // beautycat 시스템 설정 파일
-// 현재 날짜: 2025년 9월 29일
+// 현재 날짜: 2025년 12월 11일
 
 window.PPOSHOP_CONFIG = {
     // 현재 날짜 설정
-    CURRENT_DATE: new Date('2025-09-29'),
+    CURRENT_DATE: new Date('2025-12-11'),
     
     // 무료 서비스 기간
     FREE_PERIOD: {
