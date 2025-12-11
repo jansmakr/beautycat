@@ -2442,6 +2442,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const title = document.getElementById('new-announcement-title').value.trim();
                 const content = document.getElementById('new-announcement-content').value.trim();
                 const isPublished = document.getElementById('new-announcement-published').checked;
+                const category = document.getElementById('new-announcement-category').value;
                 
                 if (!title || !content) {
                     alert('제목과 내용을 모두 입력해주세요.');
@@ -2451,6 +2452,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (content.length > 1000) {
                     alert('내용은 최대 1,000자까지 입력 가능합니다.');
                     return;
+                }
+
+                // 빈자리 알림인 경우 추가 정보 수집 및 검증
+                let slotsInfo = null;
+                let eventType = 'normal';
+                
+                if (category === '빈자리알림') {
+                    const slotDate = document.getElementById('slot-date').value;
+                    const slotTime = document.getElementById('slot-time').value.trim();
+                    eventType = document.getElementById('event-type').value;
+                    const slotDiscount = document.getElementById('slot-discount').value.trim();
+                    
+                    if (!slotDate || !slotTime) {
+                        alert('빈자리 알림은 날짜와 시간대를 입력해주세요.');
+                        return;
+                    }
+                    
+                    slotsInfo = JSON.stringify({
+                        date: slotDate,
+                        time: slotTime,
+                        discount: slotDiscount || ''
+                    });
                 }
                 
                 // 버튼 비활성화
@@ -2472,7 +2495,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     shop_name: shopName,
                     title: title,
                     content: content,
+                    category: category,
+                    event_type: eventType,
+                    slots_info: slotsInfo,
                     priority: 'normal',
+                    state: state,
+                    district: district,
                     is_published: isPublished ? 1 : 0,
                     publish_date: isPublished ? new Date().toISOString() : null,
                     expire_date: null,

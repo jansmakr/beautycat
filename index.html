@@ -2613,6 +2613,28 @@
                     </p>
                 </div>
 
+                <!-- 긴급 예약 옵션 (Phase 1) -->
+                <div class="section-card" style="background: linear-gradient(135deg, #FFF5F7 0%, #FFE5EC 100%); border: 2px solid #FF6B9D;">
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="urgentReservation" name="urgentReservation" 
+                               class="mt-1 w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                               style="accent-color: #FF2D92;">
+                        <div class="flex-1">
+                            <label for="urgentReservation" class="cursor-pointer">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <i class="fas fa-bolt text-orange-500 text-lg"></i>
+                                    <span class="font-bold text-gray-900 text-base">오늘/내일 긴급 예약 희망</span>
+                                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">빠른 매칭</span>
+                                </div>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    빈 시간이 있는 샵을 우선으로 매칭해드립니다.<br>
+                                    긴급 예약 요청은 <strong class="text-pink-600">샵에서 먼저 확인</strong>하게 됩니다!
+                                </p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 제출 버튼 -->
                 <div class="flex justify-center mt-8">
                     <button type="submit" class="submit-btn" style="font-size: 20px !important; padding: 20px 60px !important; font-weight: 700 !important; min-width: 280px !important;">
