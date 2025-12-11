@@ -30,7 +30,7 @@ class CouponSystem {
                 maxDiscount: 50000,
                 minAmount: 10000,
                 usageLimit: 1,
-                validUntil: '2025-12-31',
+                validUntil: '2026-03-30',
                 isActive: true,
                 category: 'beta'
             },
@@ -43,7 +43,7 @@ class CouponSystem {
                 maxDiscount: 30000,
                 minAmount: 20000,
                 usageLimit: 10,
-                validUntil: '2025-12-31',
+                validUntil: '2026-03-30',
                 isActive: true,
                 category: 'beta'
             },
@@ -79,7 +79,7 @@ class CouponSystem {
                 discountValue: 3000,
                 minAmount: 15000,
                 usageLimit: 1,
-                validUntil: '2025-12-31',
+                validUntil: '2026-03-30',
                 isActive: true,
                 category: 'review'
             }

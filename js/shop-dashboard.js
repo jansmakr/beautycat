@@ -1316,7 +1316,7 @@ function loadSubscriptionInfo() {
             name: "무료 체험",
             type: "free_trial",
             price: 0,
-            expires_at: "2025-12-31",
+            expires_at: "2026-03-30",
             features: [
                 "무제한 상담 요청 수신",
                 "견적서 작성 및 전송", 
