@@ -9,7 +9,7 @@ class SubscriptionManager {
                 setupFee: 0,        // 입점료 무료
                 monthlyFee: 0,      // 월 이용료 무료
                 yearlyFee: 0,       // 연 이용료 무료
-                validUntil: '2025-12-31',
+                validUntil: '2026-03-30',
                 features: [
                     '전국 고객 상담 요청 수신',
                     '무제한 견적서 작성', 
@@ -82,7 +82,7 @@ class SubscriptionManager {
             plan_name: '2024년 런칭 에디션',
             status: 'active',
             start_date: new Date().toISOString().split('T')[0],
-            end_date: '2025-12-31',
+            end_date: '2026-03-30',
             setup_fee: 0,
             monthly_fee: 0,
             yearly_fee: 0,

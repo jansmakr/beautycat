@@ -150,17 +150,18 @@ beautycat/
 **주요 변경사항:**
 - ✅ **현재 날짜**: `2025-09-29` → `2025-12-11`
 - ✅ **무료 기간 남은 일수**: 243일 → **170일** (2026년 5월 30일까지)
-- ✅ **베타 테스트 종료일**: `2024-12-31` → `2025-12-31`
-- ✅ **쿠폰 유효기간**: `2024-12-31` → `2025-12-31`
+- ✅ **베타 테스트 종료일**: `2024-12-31` → `2026-03-30`
+- ✅ **쿠폰 유효기간**: `2024-12-31` → `2026-03-30`
 
 **수정 파일 (7개):**
 - `js/config.js` - CURRENT_DATE: 2025-12-11
-- `js/shop-dashboard.js` - expires_at: 2025-12-31
-- `js/subscription-manager.js` - validUntil, end_date: 2025-12-31
-- `js/coupon-system.js` - validUntil: 2025-12-31 (BETA70, BETA30)
+- `js/shop-dashboard.js` - expires_at: 2026-03-30
+- `js/subscription-manager.js` - validUntil, end_date: 2026-03-30
+- `js/coupon-system.js` - validUntil: 2026-03-30 (BETA70, BETA30, REVIEW3K)
 - `shop-dashboard.html` - 남은 무료 기간: 170일
 - `SHOP_OWNER_MANUAL.md` - 무료 기간: 170일 남음
-- `BETA_TEST_LAUNCH_IMMEDIATE_ACTION.md` - 베타 테스트: 2025-12-31까지
+- `BETA_TEST_LAUNCH_IMMEDIATE_ACTION.md` - 베타 테스트: 2026-03-30까지
+- `index.html` - 회원 전용 안내: 2026-03-30까지
 - `BEAUTYCAT_SYSTEM_OPTIMIZATION.md` - 무료 기간: 170일 남음
 
 **계산 근거:**
