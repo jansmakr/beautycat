@@ -2438,6 +2438,10 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // 버튼 참조를 먼저 가져오기 (catch 블록에서도 사용)
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
             try {
                 const title = document.getElementById('new-announcement-title').value.trim();
                 const content = document.getElementById('new-announcement-content').value.trim();
@@ -2455,8 +2459,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // 빈자리 알림인 경우 추가 정보 수집 및 검증
-                let slotsInfo = null;
+                let slotsInfo = '';
                 let eventType = 'normal';
+                let discountRate = 0;
                 
                 if (category === '빈자리알림') {
                     const slotDate = document.getElementById('slot-date').value;
@@ -2469,16 +2474,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
                     
-                    slotsInfo = JSON.stringify({
-                        date: slotDate,
-                        time: slotTime,
-                        discount: slotDiscount || ''
-                    });
+                    // slots_info: 날짜와 시간 정보를 텍스트로 저장
+                    slotsInfo = `${slotDate} ${slotTime}`;
+                    if (slotDiscount) {
+                        slotsInfo += ` (${slotDiscount})`;
+                    }
+                    
+                    // discount_rate: 숫자형 할인율 추출 (예: "20%" -> 20)
+                    const discountMatch = slotDiscount.match(/(\d+)/);
+                    if (discountMatch) {
+                        discountRate = parseInt(discountMatch[1]);
+                    }
                 }
                 
                 // 버튼 비활성화
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>등록 중...';
                 
@@ -2488,27 +2497,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 const state = currentShop?.state || '';
                 const district = currentShop?.district || '';
                 
-                // 공지사항 데이터 준비
-                const now = Date.now();
+                // 공지사항 데이터 준비 (스키마에 맞춰 정확히 전송)
                 const announcementData = {
                     shop_id: shopId || 'demo_shop',
                     shop_name: shopName,
                     title: title,
                     content: content,
-                    category: category,
-                    event_type: eventType,
-                    slots_info: slotsInfo,
-                    priority: 'normal',
-                    state: state,
-                    district: district,
-                    is_published: isPublished ? 1 : 0,
-                    publish_date: isPublished ? new Date().toISOString() : null,
-                    expire_date: null,
-                    view_count: 0,
-                    created_at: now,
-                    updated_at: now,
-                    deleted: 0
-                };
+                    category: category || '일반공지',
+                    event_type: eventType || 'normal',
+                    slots_info: slotsInfo || '',
+                    discount_rate: discountRate || 0,
+                    is_published: isPublished,
+                    views: 0,
+                    state: state || '',
+                    district: district || ''
+                }
                 
                 console.log('Sending announcement data:', announcementData);
                 
@@ -2520,7 +2523,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (!response.ok) {
-                    throw new Error('공지사항 등록 실패');
+                    const errorText = await response.text();
+                    console.error('API 에러 응답:', errorText);
+                    throw new Error(`공지사항 등록 실패 (${response.status}): ${errorText}`);
                 }
                 
                 const result = await response.json();
@@ -2548,8 +2553,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('공지사항 작성 중 오류가 발생했습니다: ' + error.message);
                 
                 // 버튼 복원
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>등록';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText || '<i class="fas fa-paper-plane mr-2"></i>작성 완료';
+                }
             }
         });
     }
