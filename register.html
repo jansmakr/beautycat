@@ -267,6 +267,94 @@
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
                 </div>
                 
+                <!-- 뷰티샵 정보 입력 섹션 (뷰티샵 선택 시에만 표시) -->
+                <div id="shopInfoSection" style="display: none;">
+                    <div class="space-y-4">
+                        <!-- 샵 이름 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-store text-pink-500 mr-1"></i>
+                                피부관리실 이름
+                            </label>
+                            <input type="text" id="shop_name" name="shop_name" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                   placeholder="예: 뷰티캣 강남점">
+                        </div>
+                        
+                        <!-- 지역 선택 -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- 시/도 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-map-marker-alt text-pink-500 mr-1"></i>
+                                    시/도
+                                </label>
+                                <select id="shop_state" name="shop_state" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                    <option value="">시/도 선택</option>
+                                </select>
+                            </div>
+                            
+                            <!-- 구/군 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    <i class="fas fa-map-pin text-pink-500 mr-1"></i>
+                                    구/군
+                                </label>
+                                <select id="shop_district" name="shop_district" disabled
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:bg-gray-100">
+                                    <option value="">먼저 시/도를 선택하세요</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 상세 주소 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-building text-pink-500 mr-1"></i>
+                                상세 주소
+                            </label>
+                            <input type="text" id="shop_address" name="shop_address" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                   placeholder="동/읍/면, 도로명/지번, 건물명, 층수 등">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 사업자등록번호 섹션 (뷰티샵 선택 시에만 표시) -->
+                <div id="businessNumberSection" style="display: none;">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-file-alt text-pink-500 mr-1"></i>
+                            사업자등록번호 (선택)
+                        </label>
+                        <input type="text" id="business_number" name="business_number" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                               placeholder="000-00-00000">
+                        <p class="mt-1 text-xs text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            사업자등록번호는 선택사항입니다. 나중에 대시보드에서 등록 가능합니다.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 네이버 카페 ID 섹션 (뷰티샵 선택 시에만 표시) -->
+                <div id="cafeIdSection" style="display: none;">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-comments text-green-500 mr-1"></i>
+                            네이버 피.창.성 카페 ID (선택)
+                        </label>
+                        <input type="text" id="naver_cafe_id" name="naver_cafe_id" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+                               placeholder="네이버 카페 회원 아이디">
+                        <p class="mt-1 text-xs text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            네이버 피.창.성 카페 가입자는 우선 승인됩니다.
+                        </p>
+                    </div>
+                </div>
+                
                 <!-- 뷰티샵 회원 안내 메시지 -->
                 <div id="shopNotice" style="display: none;" class="bg-blue-50 border-l-4 border-blue-400 p-4">
                     <div class="flex">
@@ -427,16 +515,84 @@
             const shopInfoSection = document.getElementById('shopInfoSection');
             const businessNumberSection = document.getElementById('businessNumberSection');
             const cafeIdSection = document.getElementById('cafeIdSection');
+            const shopNotice = document.getElementById('shopNotice');
             
             if (selectedValue === 'shop') {
                 shopInfoSection.style.display = 'block';
                 businessNumberSection.style.display = 'block';
                 cafeIdSection.style.display = 'block';
+                shopNotice.style.display = 'none'; // 샵 필드가 있으므로 안내 메시지 숨김
+                
+                // 샵 지역 선택 초기화
+                initializeShopRegionalSelection();
             } else {
                 shopInfoSection.style.display = 'none';
                 businessNumberSection.style.display = 'none';
                 cafeIdSection.style.display = 'none';
+                shopNotice.style.display = 'none';
             }
+        }
+        
+        // 샵 회원가입 지역 선택 초기화
+        function initializeShopRegionalSelection() {
+            const shopStateSelect = document.getElementById('shop_state');
+            const shopDistrictSelect = document.getElementById('shop_district');
+            
+            // 이미 초기화되었는지 확인
+            if (shopStateSelect.options.length > 1) {
+                return; // 이미 초기화됨
+            }
+            
+            // 지역 데이터 (index.html과 동일)
+            const regionData = {
+                "서울특별시": ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
+                "부산광역시": ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "영도구", "중구", "해운대구"],
+                "대구광역시": ["남구", "달서구", "달성군", "동구", "북구", "서구", "수성구", "중구"],
+                "인천광역시": ["강화군", "계양구", "남동구", "동구", "미추홀구", "부평구", "서구", "연수구", "옹진군", "중구"],
+                "광주광역시": ["광산구", "남구", "동구", "북구", "서구"],
+                "대전광역시": ["대덕구", "동구", "서구", "유성구", "중구"],
+                "울산광역시": ["남구", "동구", "북구", "울주군", "중구"],
+                "세종특별자치시": ["세종시"],
+                "경기도": ["고양시 덕양구", "고양시 일산동구", "고양시 일산서구", "과천시", "광명시", "광주시", "구리시", "군포시", "김포시", "남양주시", "동두천시", "부천시", "성남시 분당구", "성남시 수정구", "성남시 중원구", "수원시 권선구", "수원시 영통구", "수원시 장안구", "수원시 팔달구", "시흥시", "안산시 단원구", "안산시 상록구", "안성시", "안양시 동안구", "안양시 만안구", "양주시", "양평군", "여주시", "연천군", "오산시", "용인시 기흥구", "용인시 수지구", "용인시 처인구", "의왕시", "의정부시", "이천시", "파주시", "평택시", "포천시", "하남시", "화성시"],
+                "강원특별자치도": ["강릉시", "고성군", "동해시", "삼척시", "속초시", "양구군", "양양군", "영월군", "원주시", "인제군", "정선군", "철원군", "춘천시", "태백시", "평창군", "홍천군", "화천군", "횡성군"],
+                "충청북도": ["괴산군", "단양군", "보은군", "영동군", "옥천군", "음성군", "제천시", "증평군", "진천군", "청주시 상당구", "청주시 서원구", "청주시 청원구", "청주시 흥덕구", "충주시"],
+                "충청남도": ["공주시", "계룡시", "금산군", "논산시", "당진시", "보령시", "부여군", "서산시", "서천군", "아산시", "예산군", "천안시 동남구", "천안시 서북구", "청양군", "태안군", "홍성군"],
+                "전북특별자치도": ["고창군", "군산시", "김제시", "남원시", "무주군", "부안군", "순창군", "완주군", "익산시", "임실군", "장수군", "전주시 덕진구", "전주시 완산구", "정읍시", "진안군"],
+                "전라남도": ["강진군", "고흥군", "곡성군", "광양시", "구례군", "나주시", "담양군", "목포시", "무안군", "보성군", "순천시", "신안군", "여수시", "영광군", "영암군", "완도군", "장성군", "장흥군", "진도군", "함평군", "해남군", "화순군"],
+                "경상북도": ["경산시", "경주시", "고령군", "구미시", "군위군", "김천시", "문경시", "봉화군", "상주시", "성주군", "안동시", "영덕군", "영양군", "영주시", "영천시", "예천군", "울릉군", "울진군", "의성군", "청도군", "청송군", "칠곡군", "포항시 남구", "포항시 북구"],
+                "경상남도": ["거제시", "거창군", "고성군", "김해시", "남해군", "밀양시", "사천시", "산청군", "양산시", "의령군", "진주시", "창녕군", "창원시 마산합포구", "창원시 마산회원구", "창원시 성산구", "창원시 의창구", "창원시 진해구", "통영시", "하동군", "함안군", "함양군", "합천군"],
+                "제주특별자치도": ["서귀포시", "제주시"]
+            };
+            
+            console.log('🏪 샵 지역 선택 초기화 중...');
+            
+            // 시/도 옵션 추가
+            Object.keys(regionData).forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                shopStateSelect.appendChild(option);
+            });
+            
+            console.log('✅ 시/도 옵션 추가 완료:', shopStateSelect.options.length);
+            
+            // 시/도 변경 시 구/군 업데이트
+            shopStateSelect.addEventListener('change', function() {
+                const selectedState = this.value;
+                shopDistrictSelect.innerHTML = '<option value="">구/군 선택</option>';
+                shopDistrictSelect.disabled = true;
+                
+                if (selectedState && regionData[selectedState]) {
+                    regionData[selectedState].forEach(district => {
+                        const option = document.createElement('option');
+                        option.value = district;
+                        option.textContent = district;
+                        shopDistrictSelect.appendChild(option);
+                    });
+                    shopDistrictSelect.disabled = false;
+                    console.log('✅ 구/군 옵션 업데이트:', selectedState, shopDistrictSelect.options.length);
+                }
+            });
         }
         
         // 라벨 클릭 시 라디오 버튼 선택 및 업데이트

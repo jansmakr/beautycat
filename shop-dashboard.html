@@ -556,6 +556,66 @@
                             </div>
 
                             <form id="shop-announcement-form" class="space-y-6">
+                                <!-- 분류 선택 -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        분류 <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="new-announcement-category" required 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                            onchange="toggleSlotsInfoSection()">
+                                        <option value="일반공지">일반공지</option>
+                                        <option value="빈자리알림">🔥 빈자리 알림</option>
+                                        <option value="이벤트">이벤트</option>
+                                        <option value="할인">할인</option>
+                                    </select>
+                                </div>
+
+                                <!-- 빈자리 상세 정보 섹션 (빈자리알림 선택 시에만 표시) -->
+                                <div id="slots-info-section" class="hidden bg-pink-50 border border-pink-200 rounded-lg p-4">
+                                    <h4 class="font-semibold text-pink-900 mb-3 flex items-center">
+                                        <i class="fas fa-clock mr-2"></i>빈자리 상세 정보
+                                    </h4>
+                                    
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                날짜 <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="date" id="slot-date" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                시간대 <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" id="slot-time" placeholder="예: 14:00 ~ 16:00, 오후 3시" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                긴급도 <span class="text-red-500">*</span>
+                                            </label>
+                                            <select id="event-type" 
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                                <option value="normal">일반</option>
+                                                <option value="today">오늘 빈자리</option>
+                                                <option value="urgent">긴급 (2시간 이내)</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                할인율 (선택)
+                                            </label>
+                                            <input type="text" id="slot-discount" placeholder="예: 20%, 3만원 할인" 
+                                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         제목 <span class="text-red-500">*</span>
@@ -1400,8 +1460,9 @@
     <!-- Firebase API 백엔드 - Cloudflare Workers 사용으로 비활성화 -->
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
-<script src="js/auth.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/shop-dashboard.js"></script>
+    <script src="js/slots-info-toggle.js"></script>
 
 <!-- 🔥 긴급 핫픽스: PATCH → PUT 변경 + null 값 필터링 -->
 <script>
