@@ -2508,7 +2508,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     slots_info: slotsInfo || '',
                     discount_rate: discountRate || 0,
                     is_published: isPublished,
-                    views: 0,
+                    view_count: 0,
                     state: state || '',
                     district: district || ''
                 }
