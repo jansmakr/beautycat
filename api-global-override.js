@@ -1,179 +1,280 @@
 /**
- * BeautyCat 글로벌 API Fetch ?�버?�이??v2.3.6.2
- * 모든 fetch('tables/...') ?�출??Cloudflare Workers API�??�동 변?? * 
- * ?�� HOTFIX v2.3.6.2: sort=timestamp ??sort=created_at ?�동 변?? * 
- * ???�일?� 모든 HTML ?�일?�서 가??먼�? 로드?�어???�니??
- * ?�데?�트: 2024-11-16 v2.3.6.2
+ * API Global Override
+ * 전역 API 설정 및 오버라이드 관리
  */
-
-console.log('?? API Global Override v2.3.6.2 - timestamp ?�픽???�성??);
 
 (function() {
     'use strict';
-    
-    // Workers API 기본 URL
-    const WORKERS_API_BASE = 'https://beautycat-api.jansmakr.workers.dev/api';
-    
-    // ?�본 fetch ?�수 백업
-    const originalFetch = window.fetch;
-    
-    // ?�버�?모드 (콘솔 로그 출력)
-    const DEBUG = true;
-    
+
+    console.log('🔧 API Global Override 로드됨');
+
+    // 전역 API 설정 객체
+    window.apiConfig = window.apiConfig || {
+        baseURL: '',
+        timeout: 30000,
+        retryCount: 3,
+        retryDelay: 1000,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    // API 엔드포인트 매핑
+    window.apiEndpoints = {
+        users: 'tables/users',
+        shops: 'tables/shops',
+        consultations: 'tables/consultations',
+        quotes: 'tables/quotes',
+        announcements: 'tables/announcements',
+        reports: 'tables/reports',
+        reviews: 'tables/reviews'
+    };
+
     /**
-     * 글로벌 fetch ?�버?�이??     */
-    window.fetch = function(url, options) {
-        // Request 객체 처리
-        if (url instanceof Request) {
-            const originalUrl = url.url;
-            if (originalUrl.includes('/tables/') || originalUrl.startsWith('tables/')) {
-                try {
-                    let targetUrl = originalUrl;
-                    
-                    // ?��? 경로 처리
-                    if (originalUrl.startsWith('tables/') || originalUrl.startsWith('/tables/')) {
-                        const cleanPath = originalUrl.replace(/^\//, '');
-                        targetUrl = `${WORKERS_API_BASE}/${cleanPath}`;
-                    }
-                    // ?��? 경로 처리
-                    else if (originalUrl.match(/^https?:\/\//)) {
-                        const urlObj = new URL(originalUrl);
-                        if (urlObj.pathname.startsWith('/tables/')) {
-                            const cleanPath = urlObj.pathname.replace(/^\//, '');
-                            targetUrl = `${WORKERS_API_BASE}/${cleanPath}${urlObj.search}${urlObj.hash}`;
-                        }
-                    }
-                    
-                    if (targetUrl !== originalUrl) {
-                        if (DEBUG) {
-                            console.log(`?�� [Request 변?? ${originalUrl} ??${targetUrl}`);
-                        }
-                        
-                        const newRequest = new Request(targetUrl, {
-                            method: url.method,
-                            headers: url.headers,
-                            body: url.body,
-                            mode: url.mode === 'navigate' ? 'cors' : url.mode,
-                            credentials: url.credentials,
-                            cache: url.cache,
-                            redirect: url.redirect,
-                            referrer: url.referrer,
-                            referrerPolicy: url.referrerPolicy,
-                            integrity: url.integrity,
-                            keepalive: url.keepalive,
-                            signal: url.signal
-                        });
-                        
-                        return originalFetch(newRequest, options);
-                    }
-                } catch (error) {
-                    console.error('??Request ?�버?�이???�류:', error);
-                }
+     * 전역 fetch 래퍼
+     * @param {string} url - 요청 URL
+     * @param {object} options - fetch 옵션
+     * @returns {Promise} - fetch 응답
+     */
+    window.apiFetch = async function(url, options = {}) {
+        const config = {
+            ...options,
+            headers: {
+                ...window.apiConfig.headers,
+                ...options.headers
             }
-            return originalFetch(url, options);
-        }
-        
-        // URL??문자?�인지 ?�인
-        if (typeof url !== 'string') {
-            return originalFetch(url, options);
-        }
-        
-        // ?�� 긴급 ?�픽?? sort=timestamp ??sort=created_at ?�동 변??(최우??처리)
-        let processedUrl = url;
-        if (typeof url === 'string' && url.includes('sort=timestamp')) {
-            processedUrl = url.replace(/sort=timestamp/g, 'sort=created_at');
-            console.log('?�� HOTFIX: sort=timestamp ??sort=created_at ?�동 변??);
-            console.log(`   Before: ${url}`);
-            console.log(`   After:  ${processedUrl}`);
-        }
-        
-        // /tables/ ?�는 tables/ 경로가 ?�함?�어 ?�는지 ?�인
-        if (processedUrl.includes('/tables/') || processedUrl.startsWith('tables/')) {
-            try {
-                let targetUrl = processedUrl;
-                
-                // ?��? 경로 처리 (tables/users, /tables/users)
-                if (processedUrl.startsWith('tables/') || processedUrl.startsWith('/tables/')) {
-                    // ?�의 ?�래???�거
-                    const cleanPath = processedUrl.replace(/^\//, '');
-                    
-                    // ?�� CRITICAL FIX: sort=timestamp�?sort=created_at�?변??                    const finalPath = cleanPath.replace(/sort=timestamp/g, 'sort=created_at');
-                    
-                    targetUrl = `${WORKERS_API_BASE}/${finalPath}`;
-                    
-                    if (DEBUG) {
-                        console.log(`?�� [?��?경로 변?? ${processedUrl} ??${targetUrl}`);
-                    }
-                }
-                // ?��? 경로 처리 (https://beautycat-v2.pages.dev/tables/users)
-                else if (processedUrl.match(/^https?:\/\//)) {
-                    const urlObj = new URL(processedUrl);
-                    if (urlObj.pathname.startsWith('/tables/')) {
-                        const cleanPath = urlObj.pathname.replace(/^\//, '');
-                        
-                        // ?�� CRITICAL FIX: search ?�라미터?�서??sort=timestamp 변??                        let finalSearch = urlObj.search.replace(/sort=timestamp/g, 'sort=created_at');
-                        
-                        targetUrl = `${WORKERS_API_BASE}/${cleanPath}${finalSearch}${urlObj.hash}`;
-                        
-                        if (DEBUG) {
-                            console.log(`?�� [?��?경로 변?? ${processedUrl} ??${targetUrl}`);
-                        }
-                    }
-                }
-                
-                // 변?�된 URL�?fetch ?�출
-                return originalFetch(targetUrl, options);
-                
-            } catch (error) {
-                console.error('??API ?�버?�이???�류:', error);
-                // ?�류 발생 ???�본 fetch ?�용
-                return originalFetch(url, options);
+        };
+
+        // 타임아웃 설정
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), window.apiConfig.timeout);
+        config.signal = controller.signal;
+
+        try {
+            const response = await fetch(url, config);
+            clearTimeout(timeoutId);
+
+            // HTTP 오류 처리
+            if (!response.ok) {
+                const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                error.status = response.status;
+                error.response = response;
+                throw error;
             }
+
+            return response;
+        } catch (error) {
+            clearTimeout(timeoutId);
+
+            // 재시도 로직
+            if (options._retryCount === undefined) {
+                options._retryCount = 0;
+            }
+
+            if (options._retryCount < window.apiConfig.retryCount) {
+                console.warn(`⚠️ API 요청 실패, 재시도 중... (${options._retryCount + 1}/${window.apiConfig.retryCount})`);
+                await new Promise(resolve => setTimeout(resolve, window.apiConfig.retryDelay));
+                options._retryCount++;
+                return window.apiFetch(url, options);
+            }
+
+            console.error('❌ API 요청 최종 실패:', error);
+            throw error;
         }
-        
-        // /tables/ 경로가 ?�닌 경우 ?�본 fetch ?�용
-        return originalFetch(url, options);
     };
-    
-    // ?�버?�이???�치 ?�인
-    console.log('??글로벌 Fetch ?�버?�이???�치 ?�료');
-    console.log('?�� Workers API Base:', WORKERS_API_BASE);
-    console.log('?�� 모든 fetch(\'/tables/...\') ?�출???�동?�로 변?�됩?�다');
-    
-    // ?�스???�수 (개발???�구?�서 ?�용 가??
-    window.testFetchOverride = async function() {
-        console.log('\n?�� Fetch ?�버?�이???�스???�작...\n');
+
+    /**
+     * GET 요청 헬퍼
+     */
+    window.apiGet = async function(endpoint, params = {}) {
+        const queryString = new URLSearchParams(params).toString();
+        const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+        const response = await window.apiFetch(url);
+        return response.json();
+    };
+
+    /**
+     * POST 요청 헬퍼
+     */
+    window.apiPost = async function(endpoint, data = {}) {
+        const response = await window.apiFetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+        return response.json();
+    };
+
+    /**
+     * PUT 요청 헬퍼
+     */
+    window.apiPut = async function(endpoint, data = {}) {
+        const response = await window.apiFetch(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+        return response.json();
+    };
+
+    /**
+     * PATCH 요청 헬퍼
+     */
+    window.apiPatch = async function(endpoint, data = {}) {
+        const response = await window.apiFetch(endpoint, {
+            method: 'PATCH',
+            body: JSON.stringify(data)
+        });
+        return response.json();
+    };
+
+    /**
+     * DELETE 요청 헬퍼
+     */
+    window.apiDelete = async function(endpoint) {
+        const response = await window.apiFetch(endpoint, {
+            method: 'DELETE'
+        });
+        // DELETE는 보통 204 No Content를 반환하므로 응답이 없을 수 있음
+        if (response.status === 204) {
+            return { success: true };
+        }
+        return response.json();
+    };
+
+    /**
+     * 필드 매핑: DB 스키마와 프론트엔드 코드 호환성
+     */
+    function mapShopFields(shop) {
+        if (!shop) return shop;
+        return {
+            ...shop,
+            shop_name: shop.name || shop.shop_name,     // name → shop_name
+            region: shop.state || shop.region,           // state → region
+            name: shop.name || shop.shop_name            // 원본 유지
+        };
+    }
+
+    function mapResponseFields(data) {
+        if (!data) return data;
         
-        const testCases = [
-            { url: 'tables/users?limit=1', desc: '?�래???�는 ?��? 경로' },
-            { url: '/tables/users?limit=1', desc: '?�래???�는 ?��? 경로' },
-            { url: 'https://beautycat-v2.pages.dev/tables/users?limit=1', desc: 'Pages ?��? 경로' },
-            { url: new Request('/tables/users?limit=1', { method: 'POST', body: '{}' }), desc: 'POST Request 객체' }
-        ];
-        
-        for (const testCase of testCases) {
-            const testUrl = testCase.url;
-            const displayUrl = testUrl instanceof Request ? `Request(${testUrl.url})` : testUrl;
-            console.log(`\n?�� ?�스?? ${testCase.desc}`);
-            console.log(`   URL: ${displayUrl}`);
-            try {
-                const response = await fetch(testUrl);
-                console.log(`   ??결과: ${response.status} ${response.statusText}`);
-                console.log(`   ?�� ?�제 URL: ${response.url}`);
-                if (response.ok) {
-                    try {
-                        const data = await response.json();
-                        console.log(`   ?�� ?�이?? ${data.total || 0}�?);
-                    } catch (e) {
-                        console.log(`   ?�️ JSON ?�싱 ?�패`);
-                    }
-                }
-            } catch (error) {
-                console.error(`   ???�패: ${error.message}`);
-            }
+        // 단일 객체
+        if (data.id && !Array.isArray(data)) {
+            return mapShopFields(data);
         }
         
-        console.log('\n?�� Fetch ?�버?�이???�스???�료\n');
+        // 배열 형태의 data
+        if (Array.isArray(data)) {
+            return data.map(item => mapShopFields(item));
+        }
+        
+        // RESTful API 응답 형태 {data: [], total: ...}
+        if (data.data && Array.isArray(data.data)) {
+            return {
+                ...data,
+                data: data.data.map(item => mapShopFields(item))
+            };
+        }
+        
+        return data;
+    }
+
+    /**
+     * 테이블 데이터 조회
+     */
+    window.getTableData = async function(tableName, params = {}) {
+        const endpoint = window.apiEndpoints[tableName] || `tables/${tableName}`;
+        const result = await window.apiGet(endpoint, params);
+        
+        // skincare_shops 테이블인 경우 필드 매핑
+        if (tableName === 'skincare_shops' || endpoint.includes('skincare_shops')) {
+            return mapResponseFields(result);
+        }
+        
+        return result;
     };
-    
+
+    /**
+     * 레코드 조회
+     */
+    window.getRecord = async function(tableName, recordId) {
+        const endpoint = window.apiEndpoints[tableName] || `tables/${tableName}`;
+        const result = await window.apiGet(`${endpoint}/${recordId}`);
+        
+        // skincare_shops 테이블인 경우 필드 매핑
+        if (tableName === 'skincare_shops' || endpoint.includes('skincare_shops')) {
+            return mapShopFields(result);
+        }
+        
+        return result;
+    };
+
+    /**
+     * 레코드 생성
+     */
+    window.createRecord = async function(tableName, data) {
+        const endpoint = window.apiEndpoints[tableName] || `tables/${tableName}`;
+        
+        // skincare_shops 생성 시 필드 역매핑 (shop_name → name)
+        if ((tableName === 'skincare_shops' || endpoint.includes('skincare_shops')) && data) {
+            const mappedData = {
+                ...data,
+                name: data.name || data.shop_name,           // shop_name → name
+                state: data.state || data.region             // region → state
+            };
+            // 중복 필드 제거
+            delete mappedData.shop_name;
+            delete mappedData.region;
+            
+            const result = await window.apiPost(endpoint, mappedData);
+            return mapShopFields(result);
+        }
+        
+        return window.apiPost(endpoint, data);
+    };
+
+    /**
+     * 레코드 업데이트
+     */
+    window.updateRecord = async function(tableName, recordId, data) {
+        const endpoint = window.apiEndpoints[tableName] || `tables/${tableName}`;
+        return window.apiPatch(`${endpoint}/${recordId}`, data);
+    };
+
+    /**
+     * 레코드 삭제
+     */
+    window.deleteRecord = async function(tableName, recordId) {
+        const endpoint = window.apiEndpoints[tableName] || `tables/${tableName}`;
+        return window.apiDelete(`${endpoint}/${recordId}`);
+    };
+
+    /**
+     * API 상태 확인
+     */
+    window.checkAPIStatus = async function() {
+        try {
+            const response = await window.apiFetch('tables/users?limit=1');
+            console.log('✅ API 연결 정상');
+            return { status: 'online', response };
+        } catch (error) {
+            console.error('❌ API 연결 실패:', error);
+            return { status: 'offline', error };
+        }
+    };
+
+    console.log('✅ API Global Override 설정 완료');
+    console.log('🔄 필드 매핑 활성화: name → shop_name, state → region');
+    console.log('📡 사용 가능한 함수:');
+    console.log('  - apiFetch(url, options)');
+    console.log('  - apiGet(endpoint, params)');
+    console.log('  - apiPost(endpoint, data)');
+    console.log('  - apiPut(endpoint, data)');
+    console.log('  - apiPatch(endpoint, data)');
+    console.log('  - apiDelete(endpoint)');
+    console.log('  - getTableData(tableName, params)');
+    console.log('  - getRecord(tableName, recordId)');
+    console.log('  - createRecord(tableName, data)');
+    console.log('  - updateRecord(tableName, recordId, data)');
+    console.log('  - deleteRecord(tableName, recordId)');
+    console.log('  - checkAPIStatus()');
+
 })();

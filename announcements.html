@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>공�??�항 - beautycat</title>
+    <title>공지사항 - beautycat</title>
     
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js?v=2.7.3.2"></script>
+    <script src="api-global-override.js?v=2.7.3.3"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
@@ -52,9 +52,9 @@
                     <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
                 </a>
                 <nav class="hidden md:flex items-center space-x-6">
-                    <a href="index.html" class="text-gray-600 hover:text-primary-500 font-medium">??/a>
-                    <a href="announcements.html" class="text-primary-500 font-semibold">공�??�항</a>
-                    <a href="login.html" class="text-gray-600 hover:text-primary-500 font-medium">로그??/a>
+                    <a href="index.html" class="text-gray-600 hover:text-primary-500 font-medium">홈</a>
+                    <a href="announcements.html" class="text-primary-500 font-semibold">공지사항</a>
+                    <a href="login.html" class="text-gray-600 hover:text-primary-500 font-medium">로그인</a>
                 </nav>
             </div>
         </div>
@@ -65,61 +65,61 @@
         <!-- Page Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">
-                <i class="fas fa-bullhorn text-primary-500 mr-3"></i>공�??�항
+                <i class="fas fa-bullhorn text-primary-500 mr-3"></i>공지사항
             </h1>
-            <p class="text-gray-600 text-lg">BeautyCat??최신 ?�식�??�체 ?�벤???�보�??�인?�세??/p>
+            <p class="text-gray-600 text-lg">BeautyCat의 최신 소식과 업체 이벤트 정보를 확인하세요</p>
         </div>
 
-        <!-- 관리자 공�??�항 ?�션 -->
+        <!-- 관리자 공지사항 섹션 -->
         <section class="mb-12">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">
-                    <i class="fas fa-crown text-yellow-500 mr-2"></i>?�영�?공�?
+                    <i class="fas fa-crown text-yellow-500 mr-2"></i>운영진 공지
                 </h2>
-                <span class="text-sm text-gray-500">??�� 최상?�에 고정?�니??/span>
+                <span class="text-sm text-gray-500">항상 최상단에 고정됩니다</span>
             </div>
             
             <div id="admin-announcements" class="space-y-4">
-                <!-- 로딩 ?�태 -->
+                <!-- 로딩 상태 -->
                 <div class="flex items-center justify-center py-8">
                     <i class="fas fa-spinner fa-spin text-3xl text-primary-500 mr-3"></i>
-                    <span class="text-gray-600">공�??�항??불러?�는 �?..</span>
+                    <span class="text-gray-600">공지사항을 불러오는 중...</span>
                 </div>
             </div>
         </section>
 
-        <!-- ?�체 공�??�항 ?�션 -->
+        <!-- 업체 공지사항 섹션 -->
         <section>
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">
-                    <i class="fas fa-store text-green-500 mr-2"></i>?�체 ?�식
+                    <i class="fas fa-store text-green-500 mr-2"></i>업체 소식
                 </h2>
                 <div class="flex items-center gap-3">
                     <select id="region-filter" onchange="filterShopAnnouncements()"
                             class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                        <option value="">?�체 지??/option>
-                        <option value="?�울">?�울</option>
+                        <option value="">전체 지역</option>
+                        <option value="서울">서울</option>
                         <option value="경기">경기</option>
-                        <option value="부??>부??/option>
-                        <option value="?��?>?��?/option>
-                        <option value="?�천">?�천</option>
+                        <option value="부산">부산</option>
+                        <option value="대구">대구</option>
+                        <option value="인천">인천</option>
                     </select>
                 </div>
             </div>
             
             <div id="shop-announcements" class="space-y-4">
-                <!-- 로딩 ?�태 -->
+                <!-- 로딩 상태 -->
                 <div class="flex items-center justify-center py-8">
                     <i class="fas fa-spinner fa-spin text-3xl text-green-500 mr-3"></i>
-                    <span class="text-gray-600">?�체 ?�식??불러?�는 �?..</span>
+                    <span class="text-gray-600">업체 소식을 불러오는 중...</span>
                 </div>
             </div>
         </section>
 
-        <!-- �??�태 -->
+        <!-- 빈 상태 -->
         <div id="empty-state" class="hidden text-center py-16">
             <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
-            <p class="text-gray-500 text-lg">?�록??공�??�항???�습?�다.</p>
+            <p class="text-gray-500 text-lg">등록된 공지사항이 없습니다.</p>
         </div>
     </main>
 
@@ -132,7 +132,7 @@
         </div>
     </footer>
 
-    <!-- ?�세보기 모달 -->
+    <!-- 상세보기 모달 -->
     <div id="detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
             <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
@@ -160,7 +160,7 @@
             
             <div class="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end border-t">
                 <button onclick="closeDetailModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    ?�기
+                    닫기
                 </button>
             </div>
         </div>
