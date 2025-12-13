@@ -517,25 +517,21 @@
             checkCircle.classList.add('bg-black');
             checkIcon.classList.remove('hidden');
             
-            // 업체 관련 섹션 표시/숨김 (업체 회원만 표시)
+            // v2.7.3: 간편 가입 정책 - 업체 선택 시에도 추가 필드 없음
+            // 모든 추가 필드 숨김 (간편 가입)
             const shopInfoSection = document.getElementById('shopInfoSection');
             const businessNumberSection = document.getElementById('businessNumberSection');
             const cafeIdSection = document.getElementById('cafeIdSection');
             const shopNotice = document.getElementById('shopNotice');
             
-            if (selectedValue === 'shop') {
-                shopInfoSection.style.display = 'block';
-                businessNumberSection.style.display = 'block';
-                cafeIdSection.style.display = 'block';
-                shopNotice.style.display = 'none'; // 샵 필드가 있으므로 안내 메시지 숨김
-                
-                // 샵 지역 선택 초기화
-                initializeShopRegionalSelection();
-            } else {
-                shopInfoSection.style.display = 'none';
-                businessNumberSection.style.display = 'none';
-                cafeIdSection.style.display = 'none';
-                shopNotice.style.display = 'none';
+            // 항상 숨김 처리 (간편 가입 정책)
+            if (shopInfoSection) shopInfoSection.style.display = 'none';
+            if (businessNumberSection) businessNumberSection.style.display = 'none';
+            if (cafeIdSection) cafeIdSection.style.display = 'none';
+            
+            // 업체 선택 시 안내 메시지만 표시
+            if (shopNotice) {
+                shopNotice.style.display = selectedValue === 'shop' ? 'block' : 'none';
             }
         }
         
@@ -635,15 +631,20 @@
                 }
             }
             
-            // 뷰티샵 선택 시 안내 메시지 표시
+            // v2.7.3: 간편 가입 정책 - 모든 추가 필드 숨김
+            const shopInfoSection = document.getElementById('shopInfoSection');
+            const businessNumberSection = document.getElementById('businessNumberSection');
+            const cafeIdSection = document.getElementById('cafeIdSection');
             const shopNotice = document.getElementById('shopNotice');
+            
+            // 항상 숨김 처리 (간편 가입 정책)
+            if (shopInfoSection) shopInfoSection.style.display = 'none';
+            if (businessNumberSection) businessNumberSection.style.display = 'none';
+            if (cafeIdSection) cafeIdSection.style.display = 'none';
+            
+            // 업체 선택 시 안내 메시지만 표시
             if (shopNotice) {
                 shopNotice.style.display = type === 'shop' ? 'block' : 'none';
-            }
-            
-            // updateUserTypeSelection 호출
-            if (typeof updateUserTypeSelection === 'function') {
-                updateUserTypeSelection();
             }
         };
         
