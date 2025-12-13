@@ -454,6 +454,12 @@
                 "제주특별자치도": ["서귀포시", "제주시"]
             };
             
+            // 요소 존재 확인
+            if (!stateSelect || !districtSelect) {
+                console.warn('⚠️ 지역 선택 요소를 찾을 수 없습니다 (일반 회원가입에서는 정상)');
+                return;
+            }
+            
             // 시/도 옵션 추가
             Object.keys(regionData).forEach(state => {
                 const option = document.createElement('option');
@@ -595,18 +601,62 @@
             });
         }
         
-        // 라벨 클릭 시 라디오 버튼 선택 및 업데이트
-        function selectUserType(type) {
-            const radio = document.querySelector(`input[name="userType"][value="${type}"]`);
-            if (radio) {
-                radio.checked = true;
+        // 사용자 유형 선택 함수 (중복 제거)
+        window.selectUserType = function(type) {
+            // 모든 라벨 초기화
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('bg-primary-50', 'shadow-md');
+                const checkIcon = btn.querySelector('.fa-check');
+                if (checkIcon) {
+                    const checkCircle = checkIcon.parentElement;
+                    checkCircle.classList.remove('bg-black');
+                    checkIcon.classList.add('hidden');
+                }
+            });
+            
+            // 선택된 라벨 강조
+            const selectedLabel = type === 'customer' ? 
+                document.getElementById('customer-label-register') : 
+                document.getElementById('shop-label-register');
+            
+            if (selectedLabel) {
+                selectedLabel.classList.add('bg-primary-50', 'shadow-md');
+                const checkIcon = selectedLabel.querySelector('.fa-check');
+                if (checkIcon) {
+                    const checkCircle = checkIcon.parentElement;
+                    checkCircle.classList.add('bg-black');
+                    checkIcon.classList.remove('hidden');
+                }
+                
+                // 라디오 버튼 체크
+                const radioButton = selectedLabel.querySelector('input[type="radio"]');
+                if (radioButton) {
+                    radioButton.checked = true;
+                }
+            }
+            
+            // 뷰티샵 선택 시 안내 메시지 표시
+            const shopNotice = document.getElementById('shopNotice');
+            if (shopNotice) {
+                shopNotice.style.display = type === 'shop' ? 'block' : 'none';
+            }
+            
+            // updateUserTypeSelection 호출
+            if (typeof updateUserTypeSelection === 'function') {
                 updateUserTypeSelection();
             }
-        }
+        };
         
-        // 라디오 버튼 변경 이벤트
-        document.querySelectorAll('input[name="userType"]').forEach(radio => {
-            radio.addEventListener('change', updateUserTypeSelection);
+        // 라디오 버튼 변경 이벤트 (DOM 로드 후 실행)
+        document.addEventListener('DOMContentLoaded', function() {
+            const radios = document.querySelectorAll('input[name="userType"]');
+            if (radios && radios.length > 0) {
+                radios.forEach(radio => {
+                    if (radio && typeof updateUserTypeSelection === 'function') {
+                        radio.addEventListener('change', updateUserTypeSelection);
+                    }
+                });
+            }
         });
         
         // 초기 상태 설정
@@ -654,44 +704,7 @@
             }
         }
         
-        // 사용자 유형 선택 함수
-        function selectUserType(type) {
-            // 모든 라벨 초기화
-            document.querySelectorAll('.user-type-btn').forEach(btn => {
-                btn.classList.remove('bg-primary-50', 'shadow-md');
-                const checkIcon = btn.querySelector('.fa-check');
-                if (checkIcon) {
-                    const checkCircle = checkIcon.parentElement;
-                    checkCircle.classList.remove('bg-black');
-                    checkIcon.classList.add('hidden');
-                }
-            });
-            
-            // 선택된 라벨 강조
-            const selectedLabel = type === 'customer' ? 
-                document.getElementById('customer-label-register') : 
-                document.getElementById('shop-label-register');
-            
-            selectedLabel.classList.add('bg-primary-50', 'shadow-md');
-            const checkIcon = selectedLabel.querySelector('.fa-check');
-            if (checkIcon) {
-                const checkCircle = checkIcon.parentElement;
-                checkCircle.classList.add('bg-black');
-                checkIcon.classList.remove('hidden');
-            }
-            
-            // 라디오 버튼 체크
-            const radioButton = selectedLabel.querySelector('input[type="radio"]');
-            if (radioButton) {
-                radioButton.checked = true;
-            }
-            
-            // 뷰티샵 선택 시 안내 메시지 표시
-            const shopNotice = document.getElementById('shopNotice');
-            if (shopNotice) {
-                shopNotice.style.display = type === 'shop' ? 'block' : 'none';
-            }
-        }
+        // selectUserType 함수는 위에서 이미 정의됨 (중복 제거)
         
         // 페이지 로드 시 초기 상태 설정
         document.addEventListener('DOMContentLoaded', function() {
