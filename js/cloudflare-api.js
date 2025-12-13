@@ -5,10 +5,10 @@
 
 console.log('🚀 Cloudflare API 브릿지 활성화');
 
-// Cloudflare API 설정 (DNS 문제로 Fallback 우선 사용)
+// Cloudflare API 설정
 const CLOUDFLARE_API = {
-    baseUrl: 'https://beautycat-api.jansmakr.workers.dev/api',  // 안정적인 URL 우선
-    fallbackUrl: 'https://api.beautycat.kr/api',               // 커스텀 도메인 대기
+    baseUrl: 'https://api.beautycat.kr/api',                   // 메인 커스텀 도메인
+    fallbackUrl: 'https://api.beautycat.kr/api',               // 동일하게 유지
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

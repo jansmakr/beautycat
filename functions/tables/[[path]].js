@@ -9,7 +9,7 @@ export async function onRequest(context) {
   const search = url.search;
   
   // Workers API URL 구성
-  const workerUrl = `https://beautycat-api.jansmakr.workers.dev/api/tables/${path}${search}`;
+  const workerUrl = `https://api.beautycat.kr/api/tables/${path}${search}`;
   
   // Workers API로 프록시
   const response = await fetch(workerUrl, {

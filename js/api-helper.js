@@ -5,7 +5,7 @@
 
 const API = {
     // Cloudflare Workers API 기본 URL
-    BASE_URL: 'https://beautycat-api.jansmakr.workers.dev/api',
+    BASE_URL: 'https://api.beautycat.kr/api',
     
     // 공통 헤더
     headers: {
@@ -55,21 +55,36 @@ const API = {
      */
     async create(endpoint, data) {
         try {
+            // 🔧 call_statistics 테이블 예외 처리 (서버 DB에 updated_at 컬럼 없음)
+            const bodyData = endpoint === 'call_statistics' ? {
+                ...data,
+                created_at: new Date().toISOString()
+                // updated_at 제외 (DB 컬럼 없음)
+            } : {
+                ...data,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+            
+            const bodyString = JSON.stringify(bodyData);
+            console.log(`📤 [API Helper] POST ${endpoint}:`, bodyString);
+            
             const response = await fetch(`${this.BASE_URL}/tables/${endpoint}`, {
                 method: 'POST',
                 headers: this.headers,
-                body: JSON.stringify({
-                    ...data,
-                    created_at: Date.now(),
-                    updated_at: Date.now()
-                })
+                body: bodyString
             });
             
+            console.log(`📡 [API Helper] Response status: ${response.status}`);
+            
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const errorText = await response.text();
+                console.log(`❌ [API Helper] Error response:`, errorText);
+                throw new Error(`HTTP ${response.status}: ${errorText}`);
             }
             
             const result = await response.json();
+            console.log(`✅ [API Helper] Success:`, result);
             return { success: true, data: result };
             
         } catch (error) {
@@ -87,7 +102,7 @@ const API = {
                 headers: this.headers,
                 body: JSON.stringify({
                     ...data,
-                    updated_at: Date.now()
+                    updated_at: new Date().toISOString()
                 })
             });
             
