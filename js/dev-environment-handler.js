@@ -27,14 +27,14 @@
                 }
                 
                 // 🔄 /tables/ API는 api-global-override.js에서 이미 처리됨 - 여기서는 패스
-                if (typeof url === 'string' && url.includes('/tables/') && !url.includes('beautycat-api.jansmakr.workers.dev')) {
+                if (typeof url === 'string' && url.includes('/tables/') && !url.includes('api.beautycat.kr')) {
                     // 상대 경로만 감지, 이미 변환된 절대 경로는 무시
                     console.log('🔄 Dev Handler: 상대 경로 감지:', url, '→ api-global-override.js로 위임');
                     return originalFetch.apply(this, args);
                 }
                 
                 // 이미 변환된 Cloudflare URL은 그대로 통과
-                if (typeof url === 'string' && url.includes('beautycat-api.jansmakr.workers.dev')) {
+                if (typeof url === 'string' && url.includes('api.beautycat.kr')) {
                     return originalFetch.apply(this, args);
                 }
                 
