@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>?��?관리실 마이 ?�이지 - beautycat (뷰티+?�티�?</title>
+    <title>?��?관리실 마이 ?�이지 - beautycat (뷰티+?�티�?</title>
     
-    <!-- ?�� CRITICAL FIX: 최우???�행 -->
+    <!-- ?�� CRITICAL FIX: 최우???�행 -->
     <script src="sw-unregister.js"></script>
     <script src="api-global-override.js?v=2.7.3.2"></script>
     
@@ -14,7 +14,7 @@
     <!-- 모바??최적??CSS -->
     <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
     
-    <!-- ?? 고속 ?�환 최적??CSS -->
+    <!-- ?? 고속 ?�환 최적??CSS -->
     <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
@@ -30,7 +30,7 @@
                         'primary': {
                             50: '#fff0f8',
                             100: '#ffe3f2',
-                            500: '#ff2d92', // beautycat 메인 ?�크
+                            500: '#ff2d92', // beautycat 메인 ?�크
                             600: '#e6297f',
                             700: '#cc256c',
                         }
@@ -70,50 +70,50 @@
                     </a>
                 </div>
                 
-                <!-- ?�스?�톱 ?�비게이??-->
+                <!-- ?�스?�톱 ?�비게이??-->
                 <nav class="hidden lg:flex items-center space-x-6">
-                    <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">마이 ?�이지</a>
-                    <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공�??�항</a>
-                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�담 ?�청</a>
-                    <a href="#" onclick="showSection('quotes')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 관�?/a>
-                    <a href="#" onclick="showSection('shop-info')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">???�보</a>
-                    <a href="#" onclick="showSection('reviews')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">리뷰 관�?/a>
+                    <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">마이 ?�이지</a>
+                    <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공�??�항</a>
+                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�담 ?�청</a>
+                    <a href="#" onclick="showSection('quotes')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 관�?/a>
+                    <a href="#" onclick="showSection('shop-info')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">???�보</a>
+                    <a href="#" onclick="showSection('reviews')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">리뷰 관�?/a>
                 </nav>
                 
-                <!-- ?�측 메뉴 -->
+                <!-- ?�측 메뉴 -->
                 <div class="flex items-center space-x-3">
-                    <!-- ?�림 -->
+                    <!-- ?�림 -->
                     <button id="notification-btn" class="relative p-2 text-gray-600 hover:text-primary-500 transition-colors">
                         <i class="fas fa-bell text-xl"></i>
                         <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                     </button>
                     
-                    <!-- ?�스?�톱 ?�로??-->
+                    <!-- ?�스?�톱 ?�로??-->
                     <div class="hidden lg:flex relative" id="profile-dropdown">
                         <button onclick="toggleProfileMenu()" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg">
                             <div class="w-8 h-8 bg-primary-50 rounded-full flex items-center justify-center mr-2">
                                 <i class="fas fa-user text-primary-500"></i>
                             </div>
-                            <span id="user-name" class="font-medium">?�체??/span>
+                            <span id="user-name" class="font-medium">?�체??/span>
                             <i class="fas fa-chevron-down ml-2"></i>
                         </button>
                         
                         <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                             <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-home mr-2"></i>?�으�?                            </a>
+                                <i class="fas fa-home mr-2"></i>?�으�?                            </a>
                             <a href="#" onclick="showSection('shop-info')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-store mr-2"></i>???�보 관�?                            </a>
+                                <i class="fas fa-store mr-2"></i>???�보 관�?                            </a>
                             <a href="#" onclick="showSection('settings')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-cog mr-2"></i>?�정
+                                <i class="fas fa-cog mr-2"></i>?�정
                             </a>
                             <div class="border-t border-gray-100"></div>
                             <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-sign-out-alt mr-2"></i>로그?�웃
+                                <i class="fas fa-sign-out-alt mr-2"></i>로그?�웃
                             </a>
                         </div>
                     </div>
                     
-                    <!-- 모바??메뉴 버튼 (??�� �??�측) -->
+                    <!-- 모바??메뉴 버튼 (??�� �??�측) -->
                     <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-gray-600 hover:text-primary-500 transition-colors ml-3">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
@@ -121,7 +121,7 @@
             </div>
         </div>
         
-        <!-- 모바???�비게이??메뉴 -->
+        <!-- 모바???�비게이??메뉴 -->
         <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 shadow-lg">
             <div class="px-4 py-4 space-y-2">
                 <a href="index.html" onclick="closeMobileMenu()" 
@@ -129,30 +129,30 @@
                     <i class="fas fa-home mr-3"></i>??                </a>
                 <button onclick="showSection('dashboard'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl bg-primary-50 text-primary-500 font-medium flex items-center">
-                    <i class="fas fa-user mr-3"></i>마이 ?�이지
+                    <i class="fas fa-user mr-3"></i>마이 ?�이지
                 </button>
                 <button onclick="showSection('announcements'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-bullhorn mr-3"></i>공�??�항
+                    <i class="fas fa-bullhorn mr-3"></i>공�??�항
                 </button>
                 <button onclick="showSection('consultations'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-comments mr-3"></i>?�담 ?�청
+                    <i class="fas fa-comments mr-3"></i>?�담 ?�청
                 </button>
                 <button onclick="showSection('quotes'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-file-invoice mr-3"></i>견적 관�?                </button>
+                    <i class="fas fa-file-invoice mr-3"></i>견적 관�?                </button>
                 <button onclick="showSection('shop-info'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-store mr-3"></i>???�보
+                    <i class="fas fa-store mr-3"></i>???�보
                 </button>
                 <button onclick="showSection('reviews'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-star mr-3"></i>리뷰 관�?                </button>
+                    <i class="fas fa-star mr-3"></i>리뷰 관�?                </button>
                 <div class="border-t pt-3 mt-3">
                     <button onclick="logout()" 
                             class="w-full text-left px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 flex items-center transition-colors">
-                        <i class="fas fa-sign-out-alt mr-3"></i>로그?�웃
+                        <i class="fas fa-sign-out-alt mr-3"></i>로그?�웃
                     </button>
                 </div>
             </div>
@@ -175,7 +175,7 @@
     </div>
 
     <div class="flex min-h-screen">
-        <!-- Sidebar (?�스?�톱?? -->
+        <!-- Sidebar (?�스?�톱?? -->
         <div class="hidden md:block w-64 bg-white shadow-sm border-r">
             <div class="p-4">
                 <div class="flex items-center mb-6">
@@ -183,14 +183,14 @@
                     <i class="fas fa-store text-white text-lg"></i>
                 </div>
                     <div class="flex-1 min-w-0">
-                        <div id="sidebar-shop-name" class="font-semibold text-gray-900 text-sm leading-tight">?��?관리실</div>
-                        <div class="text-xs text-gray-500 mt-1">?�체 ?�원</div>
+                        <div id="sidebar-shop-name" class="font-semibold text-gray-900 text-sm leading-tight">?��?관리실</div>
+                        <div class="text-xs text-gray-500 mt-1">?�체 ?�원</div>
                     </div>
                 </div>
                 
-                <!-- ?�체 ?�태 -->
+                <!-- ?�체 ?�태 -->
                 <div id="shop-status-card" class="mb-6 p-3 rounded-lg">
-                    <!-- ?�적?�로 로드?�니??-->
+                    <!-- ?�적?�로 로드?�니??-->
                 </div>
             </div>
             
@@ -201,7 +201,7 @@
                            class="sidebar-item active flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="dashboard">
                             <i class="fas fa-home mr-3 text-primary-500"></i>
-                            마이 ?�이지
+                            마이 ?�이지
                         </a>
                     </li>
                     <li>
@@ -209,7 +209,7 @@
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="announcements">
                             <i class="fas fa-bullhorn mr-3 text-primary-500"></i>
-                            공�??�항
+                            공�??�항
                             <span id="new-announcements-badge" class="ml-auto bg-blue-500 text-white text-xs rounded-full px-2 py-1 hidden">0</span>
                         </a>
                     </li>
@@ -218,7 +218,7 @@
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="consultations">
                             <i class="fas fa-comments mr-3 text-primary-500"></i>
-                            ?�담 ?�청
+                            ?�담 ?�청
                             <span id="new-consultations-badge" class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1 hidden">0</span>
                         </a>
                     </li>
@@ -227,14 +227,14 @@
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="quotes">
                             <i class="fas fa-file-invoice-dollar mr-3 text-primary-500"></i>
-                            견적 관�?                        </a>
+                            견적 관�?                        </a>
                     </li>
                     <li>
                         <a href="#" onclick="showSection('analytics')" 
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="analytics">
                             <i class="fas fa-chart-bar mr-3 text-primary-500"></i>
-                            ?�계 분석
+                            ?�계 분석
                         </a>
                     </li>
                     <li>
@@ -242,7 +242,7 @@
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="subscription">
                             <i class="fas fa-credit-card mr-3 text-primary-500"></i>
-                            ?�비???�용?�황
+                            ?�비???�용?�황
                             <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">NEW</span>
                         </a>
                     </li>
@@ -251,7 +251,7 @@
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="deposit-management">
                             <i class="fas fa-credit-card mr-3 text-primary-500"></i>
-                            ?�약�?관�??��
+                            ?�약�?관�??��
                         </a>
                     </li>
                     <li>
@@ -259,14 +259,14 @@
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="shop-info">
                             <i class="fas fa-store mr-3 text-primary-500"></i>
-                            ?�체 ?�보 관�?                        </a>
+                            ?�체 ?�보 관�?                        </a>
                     </li>
                     <li>
                         <a href="#" onclick="showSection('representative-application')" 
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="representative-application">
                             <i class="fas fa-crown mr-3 text-primary-500"></i>
-                            ?�?�샵 ?�청
+                            ?�?�샵 ?�청
                             <span id="rep-shop-status-badge" class="ml-auto text-xs px-2 py-1 rounded-full hidden">-</span>
                         </a>
                     </li>
@@ -278,14 +278,14 @@
         <div class="flex-1 overflow-hidden">
             <div class="h-full overflow-y-auto">
                 
-                <!-- 마이 ?�이지 ?�션 -->
+                <!-- 마이 ?�이지 ?�션 -->
                 <div id="dashboard-section" class="content-section p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">마이 ?�이지</h1>
-                        <p class="text-gray-600">?�담 ?�청 ?�황�??�체 ?�영 ?�태�??�인?�세??/p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">마이 ?�이지</h1>
+                        <p class="text-gray-600">?�담 ?�청 ?�황�??�체 ?�영 ?�태�??�인?�세??/p>
                     </div>
 
-                    <!-- ???�보 미등�??�내 (shop-dashboard.js?�서 ?�어) -->
+                    <!-- ???�보 미등�??�내 (shop-dashboard.js?�서 ?�어) -->
                     <div id="shop-register-notice" class="hidden mb-8">
                         <div class="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-pink-300 rounded-xl p-6 shadow-lg">
                             <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
@@ -295,15 +295,15 @@
                                     </div>
                                     <div>
                                         <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                            ?�� ?�영?�니??
+                                            ?�� ?�영?�니??
                                         </h3>
                                         <p class="text-gray-700 mb-2">
-                                            고객???�담 ?�청??받으?�면 <strong class="text-pink-600">?��?관리실 ?�보�?먼�? ?�록</strong>?�주?�요.
+                                            고객???�담 ?�청??받으?�면 <strong class="text-pink-600">?��?관리실 ?�보�?먼�? ?�록</strong>?�주?�요.
                                         </p>
                                         <ul class="text-sm text-gray-600 space-y-1 ml-4">
-                                            <li>???�리 지??고객?�게 견적?��? 보낼 ???�어??/li>
-                                            <li>???�?�샵?�로 ?�청?�여 ??많�? 고객??만날 ???�어??/li>
-                                            <li>???�록?� <strong>5�?/strong>?�면 ?�료?�니??/li>
+                                            <li>???�리 지??고객?�게 견적?��? 보낼 ???�어??/li>
+                                            <li>???�?�샵?�로 ?�청?�여 ??많�? 고객??만날 ???�어??/li>
+                                            <li>???�록?� <strong>5�?/strong>?�면 ?�료?�니??/li>
                                         </ul>
                                     </div>
                                 </div>
@@ -311,14 +311,14 @@
                                     <button onclick="showSection('shop-info')" 
                                        class="block w-full md:w-auto text-center bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 px-8 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all">
                                         <i class="fas fa-arrow-right mr-2"></i>
-                                        지�??�록?�기
+                                        지�??�록?�기
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ?�계 카드 -->
+                    <!-- ?�계 카드 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="unni-card p-6">
                             <div class="flex items-center">
@@ -327,7 +327,7 @@
                                 </div>
                                 <div>
                                     <div class="text-2xl font-bold text-gray-900" id="total-consultations">0</div>
-                                    <div class="text-sm text-gray-500">�??�담 ?�청</div>
+                                    <div class="text-sm text-gray-500">�??�담 ?�청</div>
                                 </div>
                             </div>
                         </div>
@@ -339,7 +339,7 @@
                                 </div>
                                 <div>
                                     <div class="text-2xl font-bold text-gray-900" id="pending-consultations">0</div>
-                                    <div class="text-sm text-gray-500">?��?�?/div>
+                                    <div class="text-sm text-gray-500">?��?�?/div>
                                 </div>
                             </div>
                         </div>
@@ -363,58 +363,58 @@
                                 </div>
                                 <div>
                                     <div class="text-2xl font-bold text-gray-900" id="accepted-quotes">0</div>
-                                    <div class="text-sm text-gray-500">?�락??견적</div>
+                                    <div class="text-sm text-gray-500">?�락??견적</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 최근 ?�동 -->
+                    <!-- 최근 ?�동 -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- ?�로???�담 ?�청 -->
+                        <!-- ?�로???�담 ?�청 -->
                         <div class="unni-card p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-xl font-semibold text-gray-900">?�로???�담 ?�청</h2>
-                                <a href="#" onclick="showSection('consultations')" class="text-primary-500 hover:text-primary-600 text-sm">?�체보기</a>
+                                <h2 class="text-xl font-semibold text-gray-900">?�로???�담 ?�청</h2>
+                                <a href="#" onclick="showSection('consultations')" class="text-primary-500 hover:text-primary-600 text-sm">?�체보기</a>
                             </div>
                             <div id="recent-consultations" class="space-y-4">
-                                <!-- ?�적?�로 로드?�니??-->
+                                <!-- ?�적?�로 로드?�니??-->
                             </div>
                         </div>
 
-                        <!-- 견적 ?�황 -->
+                        <!-- 견적 ?�황 -->
                         <div class="unni-card p-6">
                             <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-xl font-semibold text-gray-900">견적 ?�황</h2>
-                                <a href="#" onclick="showSection('quotes')" class="text-primary-500 hover:text-primary-600 text-sm">?�체보기</a>
+                                <h2 class="text-xl font-semibold text-gray-900">견적 ?�황</h2>
+                                <a href="#" onclick="showSection('quotes')" class="text-primary-500 hover:text-primary-600 text-sm">?�체보기</a>
                             </div>
                             <div id="recent-quotes" class="space-y-4">
-                                <!-- ?�적?�로 로드?�니??-->
+                                <!-- ?�적?�로 로드?�니??-->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ?�담 ?�청 ?�션 -->
+                <!-- ?�담 ?�청 ?�션 -->
                 <div id="consultations-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�담 ?�청 관�?/h1>
-                        <p class="text-gray-600">?�어???�담 ?�청???�인?�고 견적?��? ?�성?�세??/p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�담 ?�청 관�?/h1>
+                        <p class="text-gray-600">?�어???�담 ?�청???�인?�고 견적?��? ?�성?�세??/p>
                     </div>
 
-                    <!-- ?�터 -->
+                    <!-- ?�터 -->
                     <div class="unni-card p-6 mb-6">
                         <div class="flex flex-wrap gap-4 items-center">
                             <div>
                                 <select id="consultation-filter" class="border border-gray-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    <option value="">?�체 ?�태</option>
-                                    <option value="pending">?��?�?/option>
-                                    <option value="in_progress">진행 �?/option>
-                                    <option value="completed">?�료</option>
+                                    <option value="">?�체 ?�태</option>
+                                    <option value="pending">?��?�?/option>
+                                    <option value="in_progress">진행 �?/option>
+                                    <option value="completed">?�료</option>
                                 </select>
                             </div>
                             <div>
-                                <input type="text" id="search-consultations" placeholder="고객명이??관�??�로그램?�로 검??.."
+                                <input type="text" id="search-consultations" placeholder="고객명이??관�??�로그램?�로 검??.."
                                        class="border border-gray-200 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-primary-500">
                             </div>
                             <button onclick="filterConsultations()" class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-lg">
@@ -422,37 +422,37 @@
                         </div>
                     </div>
 
-                    <!-- ?�담 ?�청 목록 -->
+                    <!-- ?�담 ?�청 목록 -->
                     <div class="unni-card">
                         <div class="p-6 border-b border-gray-100">
-                            <h2 class="text-xl font-semibold text-gray-900">?�담 ?�청 목록</h2>
+                            <h2 class="text-xl font-semibold text-gray-900">?�담 ?�청 목록</h2>
                         </div>
                         <div id="consultations-list" class="divide-y divide-gray-100">
-                            <!-- ?�적?�로 로드?�니??-->
+                            <!-- ?�적?�로 로드?�니??-->
                         </div>
                     </div>
                 </div>
 
-                <!-- 견적 관�??�션 -->
+                <!-- 견적 관�??�션 -->
                 <div id="quotes-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">견적 관�?/h1>
-                        <p class="text-gray-600">?�성??견적?�의 ?�황???�인?�고 관리하?�요</p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">견적 관�?/h1>
+                        <p class="text-gray-600">?�성??견적?�의 ?�황???�인?�고 관리하?�요</p>
                     </div>
 
-                    <!-- 견적???�계 -->
+                    <!-- 견적???�계 -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                         <div class="unni-card p-6 text-center">
                             <div class="text-3xl font-bold text-blue-600 mb-2" id="total-quotes-count">0</div>
-                            <div class="text-gray-600">�?견적??/div>
+                            <div class="text-gray-600">�?견적??/div>
                         </div>
                         <div class="unni-card p-6 text-center">
                             <div class="text-3xl font-bold text-yellow-600 mb-2" id="pending-quotes-count">0</div>
-                            <div class="text-gray-600">검??�?/div>
+                            <div class="text-gray-600">검??�?/div>
                         </div>
                         <div class="unni-card p-6 text-center">
                             <div class="text-3xl font-bold text-green-600 mb-2" id="accepted-quotes-count">0</div>
-                            <div class="text-gray-600">?�락??/div>
+                            <div class="text-gray-600">?�락??/div>
                         </div>
                         <div class="unni-card p-6 text-center">
                             <div class="text-3xl font-bold text-red-600 mb-2" id="rejected-quotes-count">0</div>
@@ -466,17 +466,17 @@
                             <h2 class="text-xl font-semibold text-gray-900">견적??목록</h2>
                         </div>
                         <div id="quotes-list" class="divide-y divide-gray-100">
-                            <!-- ?�적?�로 로드?�니??-->
+                            <!-- ?�적?�로 로드?�니??-->
                         </div>
                     </div>
                 </div>
 
-                <!-- 공�??�항 ?�션 -->
+                <!-- 공�??�항 ?�션 -->
                 <div id="announcements-section" class="content-section hidden p-8">
                     <div class="mb-8">
                         <h1 class="text-3xl font-bold text-gray-900 mb-2">
-                            <i class="fas fa-bullhorn text-primary-500 mr-3"></i>공�??�항 관�?                        </h1>
-                        <p class="text-gray-600">?�영�?공�?�??�인?�고 ?�리 ?�체???�식??고객?�게 ?�리?�요</p>
+                            <i class="fas fa-bullhorn text-primary-500 mr-3"></i>공�??�항 관�?                        </h1>
+                        <p class="text-gray-600">?�영�?공�?�??�인?�고 ?�리 ?�체???�식??고객?�게 ?�리?�요</p>
                     </div>
 
                     <!-- ??메뉴 -->
@@ -485,77 +485,77 @@
                             <button onclick="switchAnnouncementTab('view')" 
                                     id="announcement-tab-view"
                                     class="announcement-tab pb-4 px-1 border-b-2 border-primary-500 font-medium text-primary-600">
-                                <i class="fas fa-eye mr-2"></i>공�? ?�인
+                                <i class="fas fa-eye mr-2"></i>공�? ?�인
                             </button>
                             <button onclick="switchAnnouncementTab('write')" 
                                     id="announcement-tab-write"
                                     class="announcement-tab pb-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                <i class="fas fa-pencil-alt mr-2"></i>?�식 ?�성
+                                <i class="fas fa-pencil-alt mr-2"></i>?�식 ?�성
                             </button>
                             <button onclick="switchAnnouncementTab('my')" 
                                     id="announcement-tab-my"
                                     class="announcement-tab pb-4 px-1 border-b-2 border-transparent font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
-                                <i class="fas fa-list mr-2"></i>?��? ?�성???�식
+                                <i class="fas fa-list mr-2"></i>?��? ?�성???�식
                             </button>
                         </nav>
                     </div>
 
-                    <!-- 공�? ?�인 ??-->
+                    <!-- 공�? ?�인 ??-->
                     <div id="announcement-view-tab" class="announcement-tab-content">
-                        <!-- 공�??�항 ?�터 -->
+                        <!-- 공�??�항 ?�터 -->
                         <div class="mb-6 flex flex-wrap items-center gap-4">
                             <div class="flex-1 min-w-[200px]">
                                 <div class="relative">
                                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <input type="text" id="announcement-search" 
-                                           placeholder="공�??�항 검??.." 
+                                           placeholder="공�??�항 검??.." 
                                            onkeyup="filterShopAnnouncements()"
                                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                                 </div>
                             </div>
                             <select id="announcement-priority-filter" onchange="filterShopAnnouncements()" 
                                     class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
-                                <option value="">?�체 ?�선?�위</option>
+                                <option value="">?�체 ?�선?�위</option>
                                 <option value="urgent">긴급</option>
                                 <option value="important">중요</option>
-                                <option value="normal">?�반</option>
+                                <option value="normal">?�반</option>
                             </select>
                         </div>
 
-                        <!-- 공�??�항 목록 -->
+                        <!-- 공�??�항 목록 -->
                         <div id="shop-announcements-list" class="space-y-4">
-                            <!-- 로딩 ?�태 -->
+                            <!-- 로딩 ?�태 -->
                             <div class="flex items-center justify-center py-12">
                                 <i class="fas fa-spinner fa-spin text-4xl text-primary-500 mr-3"></i>
-                                <span class="text-gray-600">공�??�항??불러?�는 �?..</span>
+                                <span class="text-gray-600">공�??�항??불러?�는 �?..</span>
                             </div>
                         </div>
 
-                        <!-- �??�태 메시지 (JavaScript�??�어?? -->
+                        <!-- �??�태 메시지 (JavaScript�??�어?? -->
                         <div id="announcements-empty-state" class="hidden text-center py-12">
                             <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500 text-lg">?�록??공�??�항???�습?�다.</p>
+                            <p class="text-gray-500 text-lg">?�록??공�??�항???�습?�다.</p>
                         </div>
                     </div>
 
-                    <!-- ?�식 ?�성 ??-->
+                    <!-- ?�식 ?�성 ??-->
                     <div id="announcement-write-tab" class="announcement-tab-content hidden">
                         <div class="max-w-3xl mx-auto">
                             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                                 <div class="flex items-start">
                                     <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
                                     <div>
-                                        <h4 class="font-semibold text-blue-900 mb-1">?�체 ?�식 ?�성 ?�내</h4>
+                                        <h4 class="font-semibold text-blue-900 mb-1">?�체 ?�식 ?�성 ?�내</h4>
                                         <p class="text-sm text-blue-700">
-                                            ?�성?�신 ?�식?� BeautyCat 메인 ?�이지?� 공�??�항 게시?�에 ?�출?�어<br>
-                                            고객?�에�??�리 ?�체???�벤?? ?�로모션, ?�규 ?�비???�을 ?�릴 ???�습?�다.
+                                            ?�성?�신 ?�식?� BeautyCat 메인 ?�이지?� 공�??�항 게시?�에 ?�출?�어<br>
+                                            고객?�에�??�리 ?�체???�벤?? ?�로모션, ?�규 ?�비???�을 ?�릴 ???�습?�다.
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
                             <form id="shop-announcement-form" class="space-y-6">
-                                <!-- 분류 ?�택 -->
+                                <!-- 분류 ?�택 -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         분류 <span class="text-red-500">*</span>
@@ -563,23 +563,23 @@
                                     <select id="new-announcement-category" required 
                                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                             onchange="toggleSlotsInfoSection()">
-                                        <option value="?�반공�?">?�반공�?</option>
-                                        <option value="빈자리알�?>?�� 빈자�??�림</option>
-                                        <option value="?�벤??>?�벤??/option>
-                                        <option value="?�인">?�인</option>
+                                        <option value="?�반공�?">?�반공�?</option>
+                                        <option value="빈자리알�?>?�� 빈자�??�림</option>
+                                        <option value="?�벤??>?�벤??/option>
+                                        <option value="?�인">?�인</option>
                                     </select>
                                 </div>
 
-                                <!-- 빈자�??�세 ?�보 ?�션 (빈자리알�??�택 ?�에�??�시) -->
+                                <!-- 빈자�??�세 ?�보 ?�션 (빈자리알�??�택 ?�에�??�시) -->
                                 <div id="slots-info-section" class="hidden bg-pink-50 border border-pink-200 rounded-lg p-4">
                                     <h4 class="font-semibold text-pink-900 mb-3 flex items-center">
-                                        <i class="fas fa-clock mr-2"></i>빈자�??�세 ?�보
+                                        <i class="fas fa-clock mr-2"></i>빈자�??�세 ?�보
                                     </h4>
                                     
                                     <div class="space-y-3">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                ?�짜 <span class="text-red-500">*</span>
+                                                ?�짜 <span class="text-red-500">*</span>
                                             </label>
                                             <input type="date" id="slot-date" 
                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
@@ -587,9 +587,9 @@
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                ?�간?� <span class="text-red-500">*</span>
+                                                ?�간?� <span class="text-red-500">*</span>
                                             </label>
-                                            <input type="text" id="slot-time" placeholder="?? 14:00 ~ 16:00, ?�후 3?? 
+                                            <input type="text" id="slot-time" placeholder="?? 14:00 ~ 16:00, ?�후 3?? 
                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                                         </div>
 
@@ -599,18 +599,18 @@
                                             </label>
                                             <select id="event-type" 
                                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                                                <option value="normal">?�반</option>
-                                                <option value="thisweek">?�번 �?/option>
-                                                <option value="today">?�늘 빈자�?/option>
-                                                <option value="urgent">긴급 (2?�간 ?�내)</option>
+                                                <option value="normal">?�반</option>
+                                                <option value="thisweek">?�번 �?/option>
+                                                <option value="today">?�늘 빈자�?/option>
+                                                <option value="urgent">긴급 (2?�간 ?�내)</option>
                                             </select>
                                         </div>
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                                ?�인??(?�택)
+                                                ?�인??(?�택)
                                             </label>
-                                            <input type="text" id="slot-discount" placeholder="?? 20%, 3만원 ?�인" 
+                                            <input type="text" id="slot-discount" placeholder="?? 20%, 3만원 ?�인" 
                                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                                         </div>
                                     </div>
@@ -618,28 +618,28 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        ?�목 <span class="text-red-500">*</span>
+                                        ?�목 <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" id="new-announcement-title" required maxlength="100"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                           placeholder="?? ?�규 고객 50% ?�인 ?�벤??>
+                                           placeholder="?? ?�규 고객 50% ?�인 ?�벤??>
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                                        ?�용 <span class="text-red-500">*</span>
+                                        ?�용 <span class="text-red-500">*</span>
                                     </label>
                                     <textarea id="new-announcement-content" required rows="10"
                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                              placeholder="고객?�에�??�하�??��? ?�식???�성?�주?�요.&#10;&#10;??&#10;- ?�벤???�로모션 ?�보&#10;- ?�규 ?�비???�내&#10;- ?�별 ?�인 ?�택&#10;- ?�업?�간 변�???></textarea>
-                                    <p class="text-sm text-gray-500 mt-1">최�? 1,000?�까지 ?�력 가?�합?�다.</p>
+                                              placeholder="고객?�에�??�하�??��? ?�식???�성?�주?�요.&#10;&#10;??&#10;- ?�벤???�로모션 ?�보&#10;- ?�규 ?�비???�내&#10;- ?�별 ?�인 ?�택&#10;- ?�업?�간 변�???></textarea>
+                                    <p class="text-sm text-gray-500 mt-1">최�? 1,000?�까지 ?�력 가?�합?�다.</p>
                                 </div>
 
                                 <div class="flex items-center">
                                     <input type="checkbox" id="new-announcement-published" checked
                                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                                     <label for="new-announcement-published" class="ml-2 text-sm text-gray-700">
-                                        즉시 게시 (체크 ?�제 ???�시?�??
+                                        즉시 게시 (체크 ?�제 ???�시?�??
                                     </label>
                                 </div>
 
@@ -650,84 +650,84 @@
                                     </button>
                                     <button type="submit"
                                             class="flex-1 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
-                                        <i class="fas fa-paper-plane mr-2"></i>?�성 ?�료
+                                        <i class="fas fa-paper-plane mr-2"></i>?�성 ?�료
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <!-- ?��? ?�성???�식 ??-->
+                    <!-- ?��? ?�성???�식 ??-->
                     <div id="announcement-my-tab" class="announcement-tab-content hidden">
                         <div class="mb-4 flex justify-between items-center">
-                            <p class="text-gray-600">고객?�게 ?�달???�리 ?�체???�식 목록?�니??</p>
+                            <p class="text-gray-600">고객?�게 ?�달???�리 ?�체???�식 목록?�니??</p>
                             <button onclick="switchAnnouncementTab('write')" 
                                     class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                                <i class="fas fa-plus mr-2"></i>???�식 ?�성
+                                <i class="fas fa-plus mr-2"></i>???�식 ?�성
                             </button>
                         </div>
 
                         <div id="my-announcements-list" class="space-y-4">
-                            <!-- 로딩 ?�태 -->
+                            <!-- 로딩 ?�태 -->
                             <div class="flex items-center justify-center py-12">
                                 <i class="fas fa-spinner fa-spin text-4xl text-green-500 mr-3"></i>
-                                <span class="text-gray-600">?��? ?�성???�식??불러?�는 �?..</span>
+                                <span class="text-gray-600">?��? ?�성???�식??불러?�는 �?..</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ?�계 분석 ?�션 -->
+                <!-- ?�계 분석 ?�션 -->
                 <div id="analytics-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�계 분석</h1>
-                        <p class="text-gray-600">?�체 ?�영 ?�황??분석?�고 개선?�을 찾아보세??/p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�계 분석</h1>
+                        <p class="text-gray-600">?�체 ?�영 ?�황??분석?�고 개선?�을 찾아보세??/p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- ?�별 ?�담 ?�청 -->
+                        <!-- ?�별 ?�담 ?�청 -->
                         <div class="unni-card p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">?�별 ?�담 ?�청</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">?�별 ?�담 ?�청</h3>
                             <div class="h-64 flex items-center justify-center text-gray-500">
                                 <div class="text-center">
                                     <i class="fas fa-chart-line text-4xl mb-2 opacity-50"></i>
-                                    <p>차트 준�?�?/p>
+                                    <p>차트 준�?�?/p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 견적 ?�락�?-->
+                        <!-- 견적 ?�락�?-->
                         <div class="unni-card p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">견적 ?�락�?/h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">견적 ?�락�?/h3>
                             <div class="h-64 flex items-center justify-center text-gray-500">
                                 <div class="text-center">
                                     <i class="fas fa-chart-pie text-4xl mb-2 opacity-50"></i>
-                                    <p>차트 준�?�?/p>
+                                    <p>차트 준�?�?/p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ?�비???�용 ?�황 ?�션 -->
+                <!-- ?�비???�용 ?�황 ?�션 -->
                 <div id="subscription-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�비???�용 ?�황</h1>
-                        <p class="text-gray-600">beautycat 무료 ?�비??기간 �??�용 ?�황</p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�비???�용 ?�황</h1>
+                        <p class="text-gray-600">beautycat 무료 ?�비??기간 �??�용 ?�황</p>
                     </div>
 
-                    <!-- 무료 ?�비???�황 카드 -->
+                    <!-- 무료 ?�비???�황 카드 -->
                     <div class="unni-card p-6 mb-8">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-xl font-semibold text-gray-900">무료 ?�비???�황</h2>
+                            <h2 class="text-xl font-semibold text-gray-900">무료 ?�비???�황</h2>
                             <div id="subscription-status-badge" class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
-                                ?�� 무료 ?�용 �?                            </div>
+                                ?�� 무료 ?�용 �?                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div class="text-center p-4 bg-green-50 rounded-lg border border-green-200">
-                                <div class="text-2xl font-bold text-green-600 mb-1" id="current-plan-name">?�칭 기념 무료</div>
-                                <div class="text-sm text-gray-600">?�재 ?�비??/div>
+                                <div class="text-2xl font-bold text-green-600 mb-1" id="current-plan-name">?�칭 기념 무료</div>
+                                <div class="text-sm text-gray-600">?�재 ?�비??/div>
                             </div>
                             <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
                                 <div class="text-2xl font-bold text-blue-600 mb-1" id="subscription-expires">2026??5??30??/div>
@@ -735,7 +735,7 @@
                             </div>
                             <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
                                 <div class="text-2xl font-bold text-orange-600 mb-1" id="remaining-days">170??/div>
-                                <div class="text-sm text-gray-600">?��? 무료 기간</div>
+                                <div class="text-sm text-gray-600">?��? 무료 기간</div>
                             </div>
                         </div>
 
@@ -743,32 +743,32 @@
                             <div class="flex items-start">
                                 <i class="fas fa-gift text-pink-500 mt-1 mr-3"></i>
                                 <div>
-                                    <div class="font-semibold text-pink-900 mb-2">?�� ?�칭 기념 무료 ?�비??</div>
+                                    <div class="font-semibold text-pink-900 mb-2">?�� ?�칭 기념 무료 ?�비??</div>
                                     <div class="text-pink-800 text-sm space-y-1">
-                                        <p>??<strong>2026??5??30??/strong>까�? 모든 기능??무료�??�용?�세??</p>
-                                        <p>???�담 매칭, 고객 관�? ?�약 ?�스??모두 무제???�용</p>
-                                        <p>??무료 기간 종료 ??별도 ?�내?�립?�다</p>
+                                        <p>??<strong>2026??5??30??/strong>까�? 모든 기능??무료�??�용?�세??</p>
+                                        <p>???�담 매칭, 고객 관�? ?�약 ?�스??모두 무제???�용</p>
+                                        <p>??무료 기간 종료 ??별도 ?�내?�립?�다</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 무료 ?�비???�공 기능 -->
+                    <!-- 무료 ?�비???�공 기능 -->
                     <div class="unni-card p-6 mb-8">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-6">?�재 ?�용 가?�한 무료 기능</h2>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">?�재 ?�용 가?�한 무료 기능</h2>
                         
                         <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-lg border border-green-200 mb-6">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h3 class="text-lg font-semibold text-green-900 mb-2">beautycat ?� ?�비??(무료)</h3>
+                                    <h3 class="text-lg font-semibold text-green-900 mb-2">beautycat ?� ?�비??(무료)</h3>
                                     <div class="text-green-700 mb-3">
                                         <span class="text-2xl font-bold">??</span>
                                         <span class="text-sm">/??/span>
-                                        <span class="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">2026.05.30까�?</span>
+                                        <span class="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">2026.05.30까�?</span>
                                     </div>
                                     <div class="text-green-600 text-sm mb-3">
-                                        ?�칭 기념?�로 <strong>170??/strong> ??무료�??�용?�세??
+                                        ?�칭 기념?�로 <strong>170??/strong> ??무료�??�용?�세??
                                     </div>
                                 </div>
                                 <div class="text-green-500 text-4xl">
@@ -777,88 +777,88 @@
                             </div>
                             
                             <div class="mt-4">
-                                <div class="text-sm text-green-700 font-medium mb-2">무료�??�공?�는 모든 기능:</div>
+                                <div class="text-sm text-green-700 font-medium mb-2">무료�??�공?�는 모든 기능:</div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-green-600">
-                                    <div><i class="fas fa-check mr-2"></i>무제???�담 ?�청 ?�신</div>
-                                    <div><i class="fas fa-check mr-2"></i>견적???�성 �??�송</div>
-                                    <div><i class="fas fa-check mr-2"></i>고객 채팅 ?�스??/div>
-                                    <div><i class="fas fa-check mr-2"></i>?�약 관�??�구</div>
+                                    <div><i class="fas fa-check mr-2"></i>무제???�담 ?�청 ?�신</div>
+                                    <div><i class="fas fa-check mr-2"></i>견적???�성 �??�송</div>
+                                    <div><i class="fas fa-check mr-2"></i>고객 채팅 ?�스??/div>
+                                    <div><i class="fas fa-check mr-2"></i>?�약 관�??�구</div>
                                     <div><i class="fas fa-check mr-2"></i>매출 분석 리포??/div>
-                                    <div><i class="fas fa-check mr-2"></i>마�???지???�구</div>
-                                    <div><i class="fas fa-check mr-2"></i>?�위 ?�출 ?�비??/div>
-                                    <div><i class="fas fa-check mr-2"></i>?�리미엄 지??/div>
+                                    <div><i class="fas fa-check mr-2"></i>마�???지???�구</div>
+                                    <div><i class="fas fa-check mr-2"></i>?�위 ?�출 ?�비??/div>
+                                    <div><i class="fas fa-check mr-2"></i>?�리미엄 지??/div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 무료 기간 ???�정 ?�비??-->
+                        <!-- 무료 기간 ???�정 ?�비??-->
                         <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">
                                 <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>
-                                2026??6???�후 ?�비???�내
+                                2026??6???�후 ?�비???�내
                             </h3>
                             <div class="text-sm text-gray-600 mb-4">
-                                무료 기간 종료 ?�에???�리?�인 가격으�??�비?��? 계속 ?�용?�실 ???�습?�다.
+                                무료 기간 종료 ?�에???�리?�인 가격으�??�비?��? 계속 ?�용?�실 ???�습?�다.
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="bg-white p-4 rounded-lg border">
-                                    <div class="text-lg font-semibold text-gray-900 mb-2">기본 ?�랜 (?�정)</div>
+                                    <div class="text-lg font-semibold text-gray-900 mb-2">기본 ?�랜 (?�정)</div>
                                     <div class="text-2xl font-bold text-blue-600 mb-2">??1,000<span class="text-sm font-normal text-gray-600">/??/span></div>
-                                    <div class="text-sm text-gray-600">?�재 무료 ?�비?��? ?�일??모든 기능</div>
+                                    <div class="text-sm text-gray-600">?�재 무료 ?�비?��? ?�일??모든 기능</div>
                                 </div>
                                 <div class="bg-white p-4 rounded-lg border">
-                                    <div class="text-lg font-semibold text-gray-900 mb-2">?�리미엄 ?�랜 (?�정)</div>
+                                    <div class="text-lg font-semibold text-gray-900 mb-2">?�리미엄 ?�랜 (?�정)</div>
                                     <div class="text-2xl font-bold text-purple-600 mb-2">??2,000<span class="text-sm font-normal text-gray-600">/??/span></div>
-                                    <div class="text-sm text-gray-600">추�? 마�????�구 + ?�담 지??/div>
+                                    <div class="text-sm text-gray-600">추�? 마�????�구 + ?�담 지??/div>
                                 </div>
                             </div>
                             <div class="mt-4 text-xs text-gray-500">
-                                * 무료 기간 종료 1개월 ?�에 ?�세???�금???�내�??�립?�다.
+                                * 무료 기간 종료 1개월 ?�에 ?�세???�금???�내�??�립?�다.
                             </div>
                         </div>
                     </div>
 
-                    <!-- ?�비???�용 ?�계 -->
+                    <!-- ?�비???�용 ?�계 -->
                     <div class="unni-card p-6 mb-8">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-xl font-semibold text-gray-900">무료 기간 ?�용 ?�황</h2>
-                            <div class="text-sm text-gray-500">2025??9??29??기�?</div>
+                            <h2 class="text-xl font-semibold text-gray-900">무료 기간 ?�용 ?�황</h2>
+                            <div class="text-sm text-gray-500">2025??9??29??기�?</div>
                         </div>
 
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead>
                                     <tr class="border-b border-gray-200">
-                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�짜</th>
-                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�비??/th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�짜</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�비??/th>
                                         <th class="text-left py-3 text-sm font-semibold text-gray-600">금액</th>
-                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�태</th>
-                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�수�?/th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�태</th>
+                                        <th class="text-left py-3 text-sm font-semibold text-gray-600">?�수�?/th>
                                     </tr>
                                 </thead>
                                 <tbody id="payment-history">
                                     <tr class="border-b border-gray-100">
                                         <td class="py-3 text-sm">2024-01-15</td>
-                                        <td class="py-3 text-sm">?�점�?/td>
+                                        <td class="py-3 text-sm">?�점�?/td>
                                         <td class="py-3 text-sm font-semibold">?? <span class="text-green-600">(무료)</span></td>
                                         <td class="py-3">
-                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">?�료</span>
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">?�료</span>
                                         </td>
                                         <td class="py-3">
                                             <button class="text-primary-500 text-sm hover:underline">
-                                                <i class="fas fa-download mr-1"></i>?�운로드
+                                                <i class="fas fa-download mr-1"></i>?�운로드
                                             </button>
                                         </td>
                                     </tr>
                                     <tr class="border-b border-gray-100">
-                                        <td class="py-3 text-sm">2024???�체</td>
-                                        <td class="py-3 text-sm">???�용�?(12개월)</td>
-                                        <td class="py-3 text-sm font-semibold">?? <span class="text-green-600">(무료 ?�벤??</span></td>
+                                        <td class="py-3 text-sm">2024???�체</td>
+                                        <td class="py-3 text-sm">???�용�?(12개월)</td>
+                                        <td class="py-3 text-sm font-semibold">?? <span class="text-green-600">(무료 ?�벤??</span></td>
                                         <td class="py-3">
-                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">무료 ?�공</span>
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">무료 ?�공</span>
                                         </td>
                                         <td class="py-3">
-                                            <span class="text-gray-400 text-sm">?�당?�음</span>
+                                            <span class="text-gray-400 text-sm">?�당?�음</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -866,17 +866,17 @@
                         </div>
                     </div>
 
-                    <!-- 2025??결제 ?�약 -->
+                    <!-- 2025??결제 ?�약 -->
                     <div class="unni-card p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-6">2025??결제 ?�약</h2>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">2025??결제 ?�약</h2>
                         
                         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                             <div class="flex items-start">
                                 <i class="fas fa-calendar-alt text-yellow-500 mt-1 mr-3"></i>
                                 <div>
-                                    <div class="font-semibold text-yellow-900 mb-1">2025??1?��????�상 ?�금???�용</div>
+                                    <div class="font-semibold text-yellow-900 mb-1">2025??1?��????�상 ?�금???�용</div>
                                     <div class="text-yellow-800 text-sm">
-                                        무료 ?�벤??종료 ???�동?�로 ?�탠?�드 ?�랜(??11,000?????�용?�니??
+                                        무료 ?�벤??종료 ???�동?�로 ?�탠?�드 ?�랜(??11,000?????�용?�니??
                                     </div>
                                 </div>
                             </div>
@@ -884,79 +884,79 @@
 
                         <div class="flex flex-col sm:flex-row gap-4">
                             <button onclick="setupAutoPayment()" class="flex-1 bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
-                                <i class="fas fa-credit-card mr-2"></i>?�동 결제 ?�정
+                                <i class="fas fa-credit-card mr-2"></i>?�동 결제 ?�정
                             </button>
                             <button onclick="postponePayment()" class="flex-1 border border-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
-                                <i class="fas fa-pause mr-2"></i>결제 ?�기 ?�청
+                                <i class="fas fa-pause mr-2"></i>결제 ?�기 ?�청
                             </button>
                             <button onclick="cancelSubscription()" class="flex-1 border border-red-300 text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-colors">
-                                <i class="fas fa-times mr-2"></i>구독 ?��?
+                                <i class="fas fa-times mr-2"></i>구독 ?��?
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- ?�약�?관�??�션 -->
+                <!-- ?�약�?관�??�션 -->
                 <div id="deposit-management-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�� ?�약�?관�?/h1>
-                        <p class="text-gray-600">고객 ?�약�??�금 ?�역???�인?�고 ?�약???�정?�세??/p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�� ?�약�?관�?/h1>
+                        <p class="text-gray-600">고객 ?�약�??�금 ?�역???�인?�고 ?�약???�정?�세??/p>
                     </div>
 
-                    <!-- 결제 ?�보 ?�록 -->
+                    <!-- 결제 ?�보 ?�록 -->
                     <div class="unni-card p-6 mb-8">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-xl font-semibold text-gray-900">결제 ?�보 ?�정</h2>
+                            <h2 class="text-xl font-semibold text-gray-900">결제 ?�보 ?�정</h2>
                             <button id="edit-payment-btn" onclick="togglePaymentForm()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
-                                <i class="fas fa-edit mr-2"></i>?�정?�기
+                                <i class="fas fa-edit mr-2"></i>?�정?�기
                             </button>
                         </div>
 
-                        <!-- ?�재 ?�록??결제 ?�보 ?�시 -->
+                        <!-- ?�재 ?�록??결제 ?�보 ?�시 -->
                         <div id="payment-info-display" class="mb-6">
                             <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                                 <p class="text-gray-500 text-center py-4">
                                     <i class="fas fa-info-circle mr-2"></i>
-                                    결제 ?�보가 ?�록?��? ?�았?�니?? ?�정?�기 버튼???�러 ?�록?�주?�요.
+                                    결제 ?�보가 ?�록?��? ?�았?�니?? ?�정?�기 버튼???�러 ?�록?�주?�요.
                                 </p>
                             </div>
                         </div>
 
-                        <!-- 결제 ?�보 ?�록 ??-->
+                        <!-- 결제 ?�보 ?�록 ??-->
                         <form id="payment-method-form" class="hidden">
                             <div class="space-y-6">
-                                <!-- 결제 방식 ?�택 -->
+                                <!-- 결제 방식 ?�택 -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-3">결제 방식 ?�택</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">결제 방식 ?�택</label>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
                                             <input type="radio" name="payment_type" value="간편결제링크" class="mr-3" onchange="togglePaymentFields()">
                                             <div>
                                                 <div class="font-semibold text-gray-900">간편결제 링크</div>
-                                                <div class="text-sm text-gray-500">?�스, 카카?�페????/div>
+                                                <div class="text-sm text-gray-500">?�스, 카카?�페????/div>
                                             </div>
                                         </label>
                                         <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
                                             <input type="radio" name="payment_type" value="계좌번호" class="mr-3" onchange="togglePaymentFields()">
                                             <div>
                                                 <div class="font-semibold text-gray-900">계좌번호</div>
-                                                <div class="text-sm text-gray-500">무통???�금</div>
+                                                <div class="text-sm text-gray-500">무통???�금</div>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
 
-                                <!-- 간편결제 링크 ?�력 -->
+                                <!-- 간편결제 링크 ?�력 -->
                                 <div id="payment-link-fields" class="hidden space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">결제 ?�공??/label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">결제 ?�공??/label>
                                         <select id="payment-provider" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                            <option value="">?�택?�세??/option>
-                                            <option value="?�스">?�스</option>
-                                            <option value="카카?�페??>카카?�페??/option>
-                                            <option value="?�이버페??>?�이버페??/option>
-                                            <option value="?�이�?>?�이�?/option>
-                                            <option value="기�?">기�?</option>
+                                            <option value="">?�택?�세??/option>
+                                            <option value="?�스">?�스</option>
+                                            <option value="카카?�페??>카카?�페??/option>
+                                            <option value="?�이버페??>?�이버페??/option>
+                                            <option value="?�이�?>?�이�?/option>
+                                            <option value="기�?">기�?</option>
                                         </select>
                                     </div>
                                     <div>
@@ -968,22 +968,22 @@
                                     </div>
                                 </div>
 
-                                <!-- 계좌번호 ?�력 -->
+                                <!-- 계좌번호 ?�력 -->
                                 <div id="account-fields" class="hidden space-y-4">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�?�명</label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�?�명</label>
                                             <select id="bank-name" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                                <option value="">?�택?�세??/option>
-                                                <option value="KB�??">KB�??</option>
-                                                <option value="?�한">?�한</option>
-                                                <option value="?�리">?�리</option>
-                                                <option value="?�나">?�나</option>
-                                                <option value="NH?�협">NH?�협</option>
+                                                <option value="">?�택?�세??/option>
+                                                <option value="KB�??">KB�??</option>
+                                                <option value="?�한">?�한</option>
+                                                <option value="?�리">?�리</option>
+                                                <option value="?�나">?�나</option>
+                                                <option value="NH?�협">NH?�협</option>
                                                 <option value="IBK기업">IBK기업</option>
-                                                <option value="카카?�뱅??>카카?�뱅??/option>
-                                                <option value="?�스뱅크">?�스뱅크</option>
-                                                <option value="기�?">기�?</option>
+                                                <option value="카카?�뱅??>카카?�뱅??/option>
+                                                <option value="?�스뱅크">?�스뱅크</option>
+                                                <option value="기�?">기�?</option>
                                             </select>
                                         </div>
                                         <div>
@@ -992,15 +992,15 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">?�금�?/label>
-                                        <input type="text" id="account-holder" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�길??>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">?�금�?/label>
+                                        <input type="text" id="account-holder" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�길??>
                                     </div>
                                 </div>
 
-                                <!-- ?�??버튼 -->
+                                <!-- ?�??버튼 -->
                                 <div class="flex gap-3">
                                     <button type="submit" class="flex-1 bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
-                                        <i class="fas fa-save mr-2"></i>?�?�하�?                                    </button>
+                                        <i class="fas fa-save mr-2"></i>?�?�하�?                                    </button>
                                     <button type="button" onclick="togglePaymentForm()" class="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
                                         취소
                                     </button>
@@ -1008,179 +1008,179 @@
                             </div>
                         </form>
 
-                        <!-- ?�랫???�용�??�내 -->
+                        <!-- ?�랫???�용�??�내 -->
                         <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
                             <div class="flex items-start">
                                 <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
                                 <div>
-                                    <div class="font-semibold text-blue-900 mb-1">?�� ?�랫???�용�??�내</div>
+                                    <div class="font-semibold text-blue-900 mb-1">?�� ?�랫???�용�??�내</div>
                                     <div class="text-blue-800 text-sm space-y-1">
-                                        <p>??<strong>?�재 (무료 기간):</strong> ?�약�??�용�?<strong class="text-green-600">0??/strong></p>
-                                        <p>??<strong>2026??6???�후:</strong> ?�약�?건당 <strong>1,000??/strong> (?�쇼 방�? ?�스??비용)</p>
-                                        <p class="text-xs text-blue-600 mt-2">???�약금�? 고객???�장?�께 직접 ?�금?�며, ?�랫?��? 중개�??�니??</p>
+                                        <p>??<strong>?�재 (무료 기간):</strong> ?�약�??�용�?<strong class="text-green-600">0??/strong></p>
+                                        <p>??<strong>2026??6???�후:</strong> ?�약�?건당 <strong>1,000??/strong> (?�쇼 방�? ?�스??비용)</p>
+                                        <p class="text-xs text-blue-600 mt-2">???�약금�? 고객???�장?�께 직접 ?�금?�며, ?�랫?��? 중개�??�니??</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ?�약�??�금 ?��?목록 -->
+                    <!-- ?�약�??�금 ?��?목록 -->
                     <div class="unni-card p-6 mb-8">
                         <div class="flex items-center justify-between mb-6">
                             <h2 class="text-xl font-semibold text-gray-900">
-                                ?�� ?�금 ?�인 ?��?�?                                <span id="pending-count" class="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">0</span>
+                                ?�� ?�금 ?�인 ?��?�?                                <span id="pending-count" class="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-sm rounded-full">0</span>
                             </h2>
                             <button onclick="refreshDepositList()" class="px-4 py-2 text-gray-600 hover:text-primary-500 transition-colors">
-                                <i class="fas fa-sync-alt mr-2"></i>?�로고침
+                                <i class="fas fa-sync-alt mr-2"></i>?�로고침
                             </button>
                         </div>
 
                         <div id="pending-deposits-list" class="space-y-4">
-                            <!-- JavaScript�??�적 ?�성 -->
+                            <!-- JavaScript�??�적 ?�성 -->
                             <div class="text-center text-gray-500 py-8">
                                 <i class="fas fa-inbox text-4xl mb-3"></i>
-                                <p>?�금 ?��?중인 ?�약???�습?�다.</p>
+                                <p>?�금 ?��?중인 ?�약???�습?�다.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ?�약 ?�정 ?�료 목록 -->
+                    <!-- ?�약 ?�정 ?�료 목록 -->
                     <div class="unni-card p-6">
                         <div class="flex items-center justify-between mb-6">
                             <h2 class="text-xl font-semibold text-gray-900">
-                                ???�약 ?�정 ?�료
+                                ???�약 ?�정 ?�료
                                 <span id="confirmed-count" class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">0</span>
                             </h2>
                             <div class="flex gap-2">
                                 <select id="date-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    <option value="all">?�체</option>
-                                    <option value="today">?�늘</option>
-                                    <option value="week">?�번 �?/option>
-                                    <option value="month">?�번 ??/option>
+                                    <option value="all">?�체</option>
+                                    <option value="today">?�늘</option>
+                                    <option value="week">?�번 �?/option>
+                                    <option value="month">?�번 ??/option>
                                 </select>
                             </div>
                         </div>
 
                         <div id="confirmed-deposits-list" class="space-y-4">
-                            <!-- JavaScript�??�적 ?�성 -->
+                            <!-- JavaScript�??�적 ?�성 -->
                             <div class="text-center text-gray-500 py-8">
                                 <i class="fas fa-check-circle text-4xl mb-3"></i>
-                                <p>?�정???�약???�습?�다.</p>
+                                <p>?�정???�약???�습?�다.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ?�체 ?�보 관�??�션 -->
+                <!-- ?�체 ?�보 관�??�션 -->
                 <div id="shop-info-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�체 ?�보 관�?/h1>
-                        <p class="text-gray-600">?��?관리실 ?�보�??�정?�고 관리하?�요</p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">?�체 ?�보 관�?/h1>
+                        <p class="text-gray-600">?��?관리실 ?�보�??�정?�고 관리하?�요</p>
                     </div>
 
                     <div class="max-w-4xl">
                         <div class="unni-card p-6">
                             <form id="shop-info-form" class="space-y-6">
-                                <!-- 기본 ?�보 -->
+                                <!-- 기본 ?�보 -->
                                 <div class="border-b border-gray-200 pb-6">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">기본 ?�보</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">기본 ?�보</h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?��?관리실�?/label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?��?관리실�?/label>
                                             <input type="text" id="shop-name" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�?�자�?/label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�?�자�?/label>
                                             <input type="text" id="owner-name" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�등록번??*</label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�등록번??*</label>
                                             <input type="text" id="business-number" pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="000-00-00000">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�고�?번호 *</label>
-                                            <input type="text" id="business-license-number" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ??024-?�울강남-0000??>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�고�?번호 *</label>
+                                            <input type="text" id="business-license-number" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ??024-?�울강남-0000??>
                                         </div>
                                     </div>
                                     <div class="mt-4">
-                                        <p class="text-xs text-gray-500">* ?�업?�등록번?��? ?�업?�고�?번호???�수 ?�력 ??��?�니??</p>
+                                        <p class="text-xs text-gray-500">* ?�업?�등록번?��? ?�업?�고�?번호???�수 ?�력 ??��?�니??</p>
                                     </div>
                                 </div>
 
-                                <!-- ?�락�??�보 -->
+                                <!-- ?�락�??�보 -->
                                 <div class="border-b border-gray-200 pb-6">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�락�??�보</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�락�??�보</h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�화번호</label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�화번호</label>
                                             <input type="tel" id="shop-phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�메??/label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�메??/label>
                                             <input type="email" id="shop-email" disabled class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-gray-500">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- ?�치 �??�영 ?�보 -->
+                                <!-- ?�치 �??�영 ?�보 -->
                                 <div class="border-b border-gray-200 pb-6">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�치 �??�영 ?�보</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�치 �??�영 ?�보</h3>
                                     <div class="space-y-4">
-                                        <!-- 지???�택 -->
+                                        <!-- 지???�택 -->
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <label class="block text-sm font-medium text-gray-700 mb-2">????*</label>
                                                 <select id="shop-state" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                                    <option value="">???��? ?�택?�주?�요</option>
+                                                    <option value="">???��? ?�택?�주?�요</option>
                                                 </select>
                                             </div>
                                             <div>
-                                                <label class="block text-sm font-medium text-gray-700 mb-2">�?�?*</label>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">�?�?*</label>
                                                 <select id="shop-district" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" disabled>
-                                                    <option value="">먼�? ???��? ?�택?�주?�요</option>
+                                                    <option value="">먼�? ???��? ?�택?�주?�요</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�세 주소</label>
-                                            <input type="text" id="shop-address" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="????�? ?�로�?지�? 건물�? 층수 ??>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�세 주소</label>
+                                            <input type="text" id="shop-address" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="????�? ?�로�?지�? 건물�? 층수 ??>
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�간</label>
-                                            <input type="text" id="business-hours" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="??�?09:00-18:00">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�간</label>
+                                            <input type="text" id="business-hours" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="??�?09:00-18:00">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- ???�개 -->
+                                <!-- ???�개 -->
                                 <div class="border-b border-gray-200 pb-6">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">???�개</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">???�개</h3>
                                     
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�??관�?<span class="text-xs text-gray-500">(?�출)</span></label>
-                                            <input type="text" id="representative-service" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�드�?집중 관�?>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">?�??관�?<span class="text-xs text-gray-500">(?�출)</span></label>
+                                            <input type="text" id="representative-service" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�드�?집중 관�?>
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">1??관�?가�?<span class="text-xs text-gray-500">(?�출)</span></label>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">1??관�?가�?<span class="text-xs text-gray-500">(?�출)</span></label>
                                             <input type="text" id="service-price" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? 150,000??>
                                         </div>
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">관리용 ?�장??(브랜??</label>
-                                            <input type="text" id="cosmetic-brands" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�터?�르?? ?�이?�페">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">관리용 ?�장??(브랜??</label>
+                                            <input type="text" id="cosmetic-brands" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�터?�르?? ?�이?�페">
                                         </div>
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 ?��?미용기기</label>
-                                            <input type="text" id="beauty-equipment" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�쎄?? ?�마지">
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 ?��?미용기기</label>
+                                            <input type="text" id="beauty-equipment" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�쎄?? ?�마지">
                                         </div>
                                     </div>
 
                                     <div class="mt-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">???�징 �?차별 ?�인??/label>
-                                        <textarea id="shop-features" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�리 ?�만???�별???�점�?차별???�인?��? ?�성?�주?�요"></textarea>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">???�징 �?차별 ?�인??/label>
+                                        <textarea id="shop-features" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�리 ?�만???�별???�점�?차별???�인?��? ?�성?�주?�요"></textarea>
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
@@ -1190,27 +1190,27 @@
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">베드 ??/label>
-                                            <input type="text" id="bed-count" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? 5?�">
+                                            <input type="text" id="bed-count" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? 5?�">
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">직원 ??/label>
-                                            <input type="text" id="staff-count" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? 7�?>
+                                            <input type="text" id="staff-count" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? 7�?>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- ?�장 ?�개 -->
+                                <!-- ?�장 ?�개 -->
                                 <div class="border-b border-gray-200 pb-6">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�장 ?�개</h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�장 ?�개</h3>
                                     
                                     <div class="space-y-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 ?�로??/label>
-                                            <textarea id="director-profile" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�장?�의 ?�력, ?�격�? ?�문 분야 ?�을 ?�성?�주?�요"></textarea>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">주요 ?�로??/label>
+                                            <textarea id="director-profile" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�장?�의 ?�력, ?�격�? ?�문 분야 ?�을 ?�성?�주?�요"></textarea>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">주요 경력</label>
-                                            <textarea id="director-experience" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="주요 경력 ?�항�?근무 ?�력???�성?�주?�요"></textarea>
+                                            <textarea id="director-experience" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="주요 경력 ?�항�?근무 ?�력???�성?�주?�요"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -1220,7 +1220,7 @@
                                         취소
                                     </button>
                                     <button type="submit" class="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg">
-                                        ?�?�하�?                                    </button>
+                                        ?�?�하�?                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -1231,11 +1231,11 @@
         </div>
     </div>
 
-    <!-- 견적???�성 모달 -->
+    <!-- 견적???�성 모달 -->
     <div id="quote-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">견적???�성</h3>
+                <h3 class="text-lg font-semibold text-gray-900">견적???�성</h3>
                 <button onclick="closeQuoteModal()" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1244,16 +1244,16 @@
             <form id="quote-form" class="space-y-4">
                 <input type="hidden" id="quote-consultation-id">
                 
-                <!-- ?�내 메시지 -->
+                <!-- ?�내 메시지 -->
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <div class="flex items-start">
                         <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
                         <div class="text-sm text-blue-800">
-                            <p class="font-semibold mb-1">?�� 견적???�성 ?�내</p>
+                            <p class="font-semibold mb-1">?�� 견적???�성 ?�내</p>
                             <ul class="list-disc list-inside space-y-1 text-blue-700">
-                                <li>?�세??관�??�용???�력?�면 고객???�뢰?��? ?�아집니??/li>
-                                <li>가격�? ?�자�??�력 (?? 150000)</li>
-                                <li>?�요?�간?� �??�위 ?�자�??�력 (?? 60�???60)</li>
+                                <li>?�세??관�??�용???�력?�면 고객???�뢰?��? ?�아집니??/li>
+                                <li>가격�? ?�자�??�력 (?? 150000)</li>
+                                <li>?�요?�간?� �??�위 ?�자�??�력 (?? 60�???60)</li>
                             </ul>
                         </div>
                     </div>
@@ -1261,49 +1261,49 @@
                 
                 <div>
                     <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">
-                        관�??�용 ?�세 <span class="text-red-500">*</span>
+                        관�??�용 ?�세 <span class="text-red-500">*</span>
                     </label>
-                    <textarea id="treatment-details" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�러�?케??+ 진정 관�?+ ?�분 ??#10;- ???�렌�?�?각질 ?�거&#10;- ?�러�?집중 케??#10;- 진정 마스?�팩&#10;- ?�분 ?�림 마무�? required></textarea>
-                    <p class="mt-1 text-xs text-gray-500">?�� 구체?�으�??�성?�수�?좋습?�다 (?�계�?관�?과정, ?�용 ?�품 ??</p>
+                    <textarea id="treatment-details" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�러�?케??+ 진정 관�?+ ?�분 ??#10;- ???�렌�?�?각질 ?�거&#10;- ?�러�?집중 케??#10;- 진정 마스?�팩&#10;- ?�분 ?�림 마무�? required></textarea>
+                    <p class="mt-1 text-xs text-gray-500">?�� 구체?�으�??�성?�수�?좋습?�다 (?�계�?관�?과정, ?�용 ?�품 ??</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">
-                            견적 가�?<span class="text-red-500">*</span>
+                            견적 가�?<span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
                             <input type="number" id="quote-price" min="0" step="1000" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="150000" required>
                             <span class="absolute right-3 top-2.5 text-gray-500 text-sm">??/span>
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">?�� ?�자�??�력 (?? 150000)</p>
+                        <p class="mt-1 text-xs text-gray-500">?�� ?�자�??�력 (?? 150000)</p>
                     </div>
                     <div>
                         <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">
-                            ?�상 ?�요?�간 <span class="text-red-500">*</span>
+                            ?�상 ?�요?�간 <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
                             <input type="number" id="duration" min="10" step="10" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="60" required>
-                            <span class="absolute right-3 top-2.5 text-gray-500 text-sm">�?/span>
+                            <span class="absolute right-3 top-2.5 text-gray-500 text-sm">�?/span>
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">?�� �??�위 ?�자�??�력 (?? 60, 90, 120)</p>
+                        <p class="mt-1 text-xs text-gray-500">?�� �??�위 ?�자�??�력 (?? 60, 90, 120)</p>
                     </div>
                 </div>
 
                 <div>
                     <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">
-                        ?�약 가?�일 <span class="text-red-500">*</span>
+                        ?�약 가?�일 <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="available-dates" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ??�??�전 10???�후 6?? 주말 ?�전 가?? required>
-                    <p class="mt-1 text-xs text-gray-500">?�� 고객???�약?�기 ?�한 ?�간?��??�세???�내?�주?�요</p>
+                    <input type="text" id="available-dates" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ??�??�전 10???�후 6?? 주말 ?�전 가?? required>
+                    <p class="mt-1 text-xs text-gray-500">?�� 고객???�약?�기 ?�한 ?�간?��??�세???�내?�주?�요</p>
                 </div>
 
                 <div>
                     <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">
-                        추�? ?�내?�항 <span class="text-gray-400">(?�택)</span>
+                        추�? ?�내?�항 <span class="text-gray-400">(?�택)</span>
                     </label>
-                    <textarea id="additional-notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�규 고객 10% ?�인 ?�벤??#10;- ?�일 ?�약 가??(?�화 문의)&#10;- 주차 2?�간 무료 지??></textarea>
-                    <p class="mt-1 text-xs text-gray-500">?�� ?�인 ?�보, 주의?�항, ?�택 ?�을 ?�력?�세??/p>
+                    <textarea id="additional-notes" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? ?�규 고객 10% ?�인 ?�벤??#10;- ?�일 ?�약 가??(?�화 문의)&#10;- 주차 2?�간 무료 지??></textarea>
+                    <p class="mt-1 text-xs text-gray-500">?�� ?�인 ?�보, 주의?�항, ?�택 ?�을 ?�력?�세??/p>
                 </div>
 
                 <div class="flex justify-end space-x-3">
@@ -1311,71 +1311,71 @@
                         취소
                     </button>
                     <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        견적???�송
+                        견적???�송
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ?�?�샵 ?�청 ?�션 -->
+    <!-- ?�?�샵 ?�청 ?�션 -->
     <div id="representative-application-section" class="content-section hidden p-8">
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
                 <i class="fas fa-crown text-primary-500 mr-3"></i>
-                ?�?�샵 ?�청
+                ?�?�샵 ?�청
             </h1>
-            <p class="text-gray-600">?�리 ?�네 ?�???��?관리실�??�록?�여 ?�화?�담 ?�비?��? ?�공?�세??/p>
+            <p class="text-gray-600">?�리 ?�네 ?�???��?관리실�??�록?�여 ?�화?�담 ?�비?��? ?�공?�세??/p>
         </div>
 
-        <!-- ?�?�샵 ?�재 ?�태 -->
+        <!-- ?�?�샵 ?�재 ?�태 -->
         <div id="rep-status-card" class="mb-6">
-            <!-- ?�적?�로 로드?�니??-->
+            <!-- ?�적?�로 로드?�니??-->
         </div>
 
-        <!-- ?�?�샵 ?�택 ?�내 -->
+        <!-- ?�?�샵 ?�택 ?�내 -->
         <div class="mb-6 bg-gradient-to-r from-primary-50 to-pink-50 border border-primary-200 rounded-lg p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                 <i class="fas fa-star text-primary-500 mr-2"></i>
-                ?�?�샵 ?�택
+                ?�?�샵 ?�택
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex items-start">
                     <i class="fas fa-phone text-primary-500 mr-3 mt-1"></i>
                     <div>
-                        <h4 class="font-medium text-gray-900">?�화?�담 ?�선 ?�출</h4>
-                        <p class="text-sm text-gray-600">메인 ?�이지?�서 지???�?�업체로 ?�시</p>
+                        <h4 class="font-medium text-gray-900">?�화?�담 ?�선 ?�출</h4>
+                        <p class="text-sm text-gray-600">메인 ?�이지?�서 지???�?�업체로 ?�시</p>
                     </div>
                 </div>
                 <div class="flex items-start">
                     <i class="fas fa-map-marker-alt text-primary-500 mr-3 mt-1"></i>
                     <div>
-                        <h4 class="font-medium text-gray-900">지???�점 ?�비??/h4>
-                        <p class="text-sm text-gray-600">??지??�� ?�나???�?�샵�?지??/p>
+                        <h4 class="font-medium text-gray-900">지???�점 ?�비??/h4>
+                        <p class="text-sm text-gray-600">??지??�� ?�나???�?�샵�?지??/p>
                     </div>
                 </div>
                 <div class="flex items-start">
                     <i class="fas fa-certificate text-primary-500 mr-3 mt-1"></i>
                     <div>
-                        <h4 class="font-medium text-gray-900">?�뢰???�상</h4>
-                        <p class="text-sm text-gray-600">관리자 ?�인??받�? ?�수 ?�체 ?�시</p>
+                        <h4 class="font-medium text-gray-900">?�뢰???�상</h4>
+                        <p class="text-sm text-gray-600">관리자 ?�인??받�? ?�수 ?�체 ?�시</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="max-w-4xl">
-            <!-- ?�청 ??-->
+            <!-- ?�청 ??-->
             <div id="rep-application-form-container" class="unni-card p-6">
                 <form id="representative-application-form" class="space-y-6">
-                    <!-- 기본 ?�보 ?�인 -->
+                    <!-- 기본 ?�보 ?�인 -->
                     <div class="border-b border-gray-200 pb-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">기본 ?�보 ?�인</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">기본 ?�보 ?�인</h3>
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
-                            <p class="text-sm text-gray-600 mb-3">?�재 ?�록???�체 ?�보�??�?�샵 ?�청??진행?�니??</p>
+                            <p class="text-sm text-gray-600 mb-3">?�재 ?�록???�체 ?�보�??�?�샵 ?�청??진행?�니??</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <span class="text-sm font-medium text-gray-700">?��?관리실�?</span>
+                                    <span class="text-sm font-medium text-gray-700">?��?관리실�?</span>
                                     <span id="rep-shop-name" class="ml-2 text-gray-900">-</span>
                                 </div>
                                 <div>
@@ -1383,41 +1383,41 @@
                                     <span id="rep-shop-location" class="ml-2 text-gray-900">-</span>
                                 </div>
                                 <div>
-                                    <span class="text-sm font-medium text-gray-700">?�화번호:</span>
+                                    <span class="text-sm font-medium text-gray-700">?�화번호:</span>
                                     <span id="rep-shop-phone" class="ml-2 text-gray-900">-</span>
                                 </div>
                                 <div>
-                                    <span class="text-sm font-medium text-gray-700">?�?�자:</span>
+                                    <span class="text-sm font-medium text-gray-700">?�?�자:</span>
                                     <span id="rep-shop-owner" class="ml-2 text-gray-900">-</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ?�??관�??�로그램 ?�택 -->
+                    <!-- ?�??관�??�로그램 ?�택 -->
                     <div class="border-b border-gray-200 pb-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">?�??관�??�로그램</h3>
-                        <p class="text-sm text-gray-600 mb-4">고객?�게 ?�시???�??관�??�로그램??3개까지 ?�택?�주?�요.</p>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">?�??관�??�로그램</h3>
+                        <p class="text-sm text-gray-600 mb-4">고객?�게 ?�시???�??관�??�로그램??3개까지 ?�택?�주?�요.</p>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                <input type="checkbox" name="representative_treatments" value="?�드�?관�? class="mr-3">
-                                <span class="text-sm">?�드�?관�?/span>
+                                <input type="checkbox" name="representative_treatments" value="?�드�?관�? class="mr-3">
+                                <span class="text-sm">?�드�?관�?/span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                <input type="checkbox" name="representative_treatments" value="미백 관�? class="mr-3">
-                                <span class="text-sm">미백 관�?/span>
+                                <input type="checkbox" name="representative_treatments" value="미백 관�? class="mr-3">
+                                <span class="text-sm">미백 관�?/span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                <input type="checkbox" name="representative_treatments" value="주름 관�? class="mr-3">
-                                <span class="text-sm">주름 관�?/span>
+                                <input type="checkbox" name="representative_treatments" value="주름 관�? class="mr-3">
+                                <span class="text-sm">주름 관�?/span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
                                 <input type="checkbox" name="representative_treatments" value="모공 축소" class="mr-3">
                                 <span class="text-sm">모공 축소</span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                <input type="checkbox" name="representative_treatments" value="?�분 관�? class="mr-3">
-                                <span class="text-sm">?�분 관�?/span>
+                                <input type="checkbox" name="representative_treatments" value="?�분 관�? class="mr-3">
+                                <span class="text-sm">?�분 관�?/span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
                                 <input type="checkbox" name="representative_treatments" value="민감??케?? class="mr-3">
@@ -1432,51 +1432,51 @@
                                 <span class="text-sm">바디 케??/span>
                             </label>
                             <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer">
-                                <input type="checkbox" name="representative_treatments" value="?�소침착 개선" class="mr-3">
-                                <span class="text-sm">?�소침착 개선</span>
+                                <input type="checkbox" name="representative_treatments" value="?�소침착 개선" class="mr-3">
+                                <span class="text-sm">?�소침착 개선</span>
                             </label>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2">최�? 3개까지 ?�택 가?�합?�다.</p>
+                        <p class="text-xs text-gray-500 mt-2">최�? 3개까지 ?�택 가?�합?�다.</p>
                     </div>
 
-                    <!-- ?�청 ?�유 -->
+                    <!-- ?�청 ?�유 -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">?�청 ?�유</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">?�청 ?�유</h3>
                         <textarea 
                             id="application-reason" 
                             rows="4" 
                             class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" 
-                            placeholder="?�?�샵?�로 ?�청?�는 ?�유?� 고객 ?�비??계획???�성?�주?�요 (?�택?�항)"></textarea>
+                            placeholder="?�?�샵?�로 ?�청?�는 ?�유?� 고객 ?�비??계획???�성?�주?�요 (?�택?�항)"></textarea>
                     </div>
 
-                    <!-- ?��? ?�의 -->
+                    <!-- ?��? ?�의 -->
                     <div class="border-t border-gray-200 pt-6">
                         <div class="space-y-3">
                             <label class="flex items-start">
                                 <input type="checkbox" id="rep-terms-service" class="mt-1 mr-3" required>
                                 <span class="text-sm">
-                                    <span class="font-medium">?�?�샵 ?�영 ?��?</span>???�의?�니?? 
-                                    <span class="text-gray-500">(?�수)</span>
+                                    <span class="font-medium">?�?�샵 ?�영 ?��?</span>???�의?�니?? 
+                                    <span class="text-gray-500">(?�수)</span>
                                 </span>
                             </label>
                             <label class="flex items-start">
                                 <input type="checkbox" id="rep-terms-responsibility" class="mt-1 mr-3" required>
                                 <span class="text-sm">
-                                    ?�화?�담 ?�비???�공 ??<span class="font-medium">?�실??고객 ?��?</span>�??�속?�니?? 
-                                    <span class="text-gray-500">(?�수)</span>
+                                    ?�화?�담 ?�비???�공 ??<span class="font-medium">?�실??고객 ?��?</span>�??�속?�니?? 
+                                    <span class="text-gray-500">(?�수)</span>
                                 </span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- ?�출 버튼 -->
+                    <!-- ?�출 버튼 -->
                     <div class="pt-6">
                         <button 
                             type="submit" 
                             id="rep-submit-button"
                             class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
                             <i class="fas fa-paper-plane mr-2"></i>
-                            ?�?�샵 ?�청???�출
+                            ?�?�샵 ?�청???�출
                         </button>
                     </div>
                 </form>
@@ -1484,14 +1484,14 @@
         </div>
     </div>
 
-    <!-- 리뷰 관�??�션 -->
+    <!-- 리뷰 관�??�션 -->
     <div id="reviews-section" class="content-section hidden p-8">
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">리뷰 관�?/h1>
-            <p class="text-gray-600">고객?�이 ?�성??리뷰�??�인?�고 관리하?�요</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">리뷰 관�?/h1>
+            <p class="text-gray-600">고객?�이 ?�성??리뷰�??�인?�고 관리하?�요</p>
         </div>
 
-        <!-- 리뷰 ?�계 -->
+        <!-- 리뷰 ?�계 -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="unni-card p-6">
                 <div class="flex items-center">
@@ -1499,7 +1499,7 @@
                         <i class="fas fa-star text-xl"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">?�균 ?�점</p>
+                        <p class="text-sm font-medium text-gray-500">?�균 ?�점</p>
                         <p class="text-2xl font-bold text-gray-900" id="average-rating">-</p>
                     </div>
                 </div>
@@ -1511,7 +1511,7 @@
                         <i class="fas fa-comments text-xl"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">�?리뷰</p>
+                        <p class="text-sm font-medium text-gray-500">�?리뷰</p>
                         <p class="text-2xl font-bold text-gray-900" id="total-reviews">-</p>
                     </div>
                 </div>
@@ -1523,7 +1523,7 @@
                         <i class="fas fa-thumbs-up text-xl"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">추천�?/p>
+                        <p class="text-sm font-medium text-gray-500">추천�?/p>
                         <p class="text-2xl font-bold text-gray-900" id="recommendation-rate">-</p>
                     </div>
                 </div>
@@ -1535,34 +1535,34 @@
                         <i class="fas fa-clock text-xl"></i>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">?�번 ??/p>
+                        <p class="text-sm font-medium text-gray-500">?�번 ??/p>
                         <p class="text-2xl font-bold text-gray-900" id="monthly-reviews">-</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 리뷰 ?�터 -->
+        <!-- 리뷰 ?�터 -->
         <div class="unni-card p-6 mb-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4 sm:mb-0">고객 리뷰 목록</h3>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <select id="review-rating-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="">?�체 ?�점</option>
-                        <option value="5">⭐⭐⭐⭐�?(5??</option>
+                        <option value="">?�체 ?�점</option>
+                        <option value="5">⭐⭐⭐⭐�?(5??</option>
                         <option value="4">⭐⭐⭐⭐ (4??</option>
-                        <option value="3">⭐⭐�?(3??</option>
+                        <option value="3">⭐⭐�?(3??</option>
                         <option value="2">⭐⭐ (2??</option>
-                        <option value="1">�?(1??</option>
+                        <option value="1">�?(1??</option>
                     </select>
                     <select id="review-sort-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <option value="newest">최신??/option>
-                        <option value="oldest">?�래?�순</option>
-                        <option value="highest">?�점 ?��???/option>
-                        <option value="lowest">?�점 ?????/option>
+                        <option value="oldest">?�래?�순</option>
+                        <option value="highest">?�점 ?��???/option>
+                        <option value="lowest">?�점 ?????/option>
                     </select>
                     <button onclick="filterReviews()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
-                        <i class="fas fa-filter mr-2"></i>?�터 ?�용
+                        <i class="fas fa-filter mr-2"></i>?�터 ?�용
                     </button>
                 </div>
             </div>
@@ -1570,33 +1570,33 @@
 
         <!-- 리뷰 목록 -->
         <div class="space-y-4" id="reviews-list">
-            <!-- 리뷰 ?�이?��? 로드?�니??-->
+            <!-- 리뷰 ?�이?��? 로드?�니??-->
         </div>
 
-        <!-- 리뷰가 ?�을 ??-->
+        <!-- 리뷰가 ?�을 ??-->
         <div id="no-reviews" class="hidden text-center py-12">
             <i class="fas fa-star text-gray-300 text-6xl mb-4"></i>
-            <h3 class="text-xl font-semibold text-gray-600 mb-2">?�직 리뷰가 ?�습?�다</h3>
-            <p class="text-gray-500">고객 ?�담???�료?�면 리뷰�?받을 ???�습?�다.</p>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">?�직 리뷰가 ?�습?�다</h3>
+            <p class="text-gray-500">고객 ?�담???�료?�면 리뷰�?받을 ???�습?�다.</p>
         </div>
     </div>
 
-    <!-- 공�??�항 ?�세보기 모달 -->
+    <!-- 공�??�항 ?�세보기 모달 -->
     <div id="announcement-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
-            <!-- 모달 ?�더 -->
+            <!-- 모달 ?�더 -->
             <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
                 <h2 class="text-xl font-bold text-gray-900" id="modal-announcement-title">
-                    공�??�항 ?�목
+                    공�??�항 ?�목
                 </h2>
                 <button onclick="closeAnnouncementDetailModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
             
-            <!-- 모달 ?�용 -->
+            <!-- 모달 ?�용 -->
             <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 140px);">
-                <!-- 공�??�항 ?�보 -->
+                <!-- 공�??�항 ?�보 -->
                 <div class="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b">
                     <span id="modal-announcement-priority" class="px-3 py-1 text-sm font-semibold rounded-full">
                         중요
@@ -1610,16 +1610,16 @@
                         조회 <span id="modal-announcement-views">0</span>??                    </span>
                 </div>
                 
-                <!-- 공�??�항 본문 -->
+                <!-- 공�??�항 본문 -->
                 <div id="modal-announcement-content" class="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
-                    공�??�항 ?�용???�기???�시?�니??
+                    공�??�항 ?�용???�기???�시?�니??
                 </div>
             </div>
             
-            <!-- 모달 ?�터 -->
+            <!-- 모달 ?�터 -->
             <div class="sticky bottom-0 bg-gray-50 px-6 py-4 flex justify-end border-t">
                 <button onclick="closeAnnouncementDetailModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
-                    ?�기
+                    ?�기
                 </button>
             </div>
         </div>
@@ -1629,7 +1629,7 @@
     <script src="js/security.js"></script>
     <script src="js/external-payment.js"></script>
     <script src="js/regional-matching.js"></script>
-    <!-- Firebase API 백엔??- Cloudflare Workers ?�용?�로 비활?�화 -->
+    <!-- Firebase API 백엔??- Cloudflare Workers ?�용?�로 비활?�화 -->
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
     <script src="js/auth.js"></script>
@@ -1637,40 +1637,40 @@
     <script src="js/slots-info-toggle.js"></script>
     <script src="js/deposit-system.js"></script>
 
-<!-- ?�� 긴급 ?�픽?? PATCH ??PUT 변�?+ null �??�터�?-->
+<!-- ?�� 긴급 ?�픽?? PATCH ??PUT 변�?+ null �??�터�?-->
 <script>
-console.log('?�� HOTFIX: PATCH ??PUT 메서??변�?+ null ?�터�??�용');
+console.log('?�� HOTFIX: PATCH ??PUT 메서??변�?+ null ?�터�??�용');
 
-// handleShopInfoUpdate ?�수 ?�버?�이??if (typeof handleShopInfoUpdate !== 'undefined') {
+// handleShopInfoUpdate ?�수 ?�버?�이??if (typeof handleShopInfoUpdate !== 'undefined') {
     const originalHandler = handleShopInfoUpdate;
     window.handleShopInfoUpdate = async function(event) {
         event.preventDefault();
         
         const formData = new FormData(event.target);
         
-        // null �??�터�? 값이 ?�는 ?�드�??�함
+        // null �??�터�? 값이 ?�는 ?�드�??�함
         const updateData = {};
         const fieldNames = ['shop_name', 'owner_name', 'phone', 'address', 'services', 'business_number', 'description'];
         
         fieldNames.forEach(field => {
             const value = formData.get(field);
             if (value !== null && value !== undefined && value !== '') {
-                // shop_name ??name?�로 변??                const apiFieldName = field === 'shop_name' ? 'name' : field;
+                // shop_name ??name?�로 변??                const apiFieldName = field === 'shop_name' ? 'name' : field;
                 updateData[apiFieldName] = value;
             }
         });
         
-        console.log('?�체 ?�보 ?�데?�트 (?�터�???:', updateData);
+        console.log('?�체 ?�보 ?�데?�트 (?�터�???:', updateData);
         
-        // ?�데?�트???�이?��? ?�는 경우
+        // ?�데?�트???�이?��? ?�는 경우
         if (Object.keys(updateData).length === 0) {
-            alert('변경된 ?�보가 ?�습?�다.');
+            alert('변경된 ?�보가 ?�습?�다.');
             return;
         }
         
         try {
             if (currentShop && currentShop.id) {
-                // ??PUT?�로 변�?(PATCH ?�??
+                // ??PUT?�로 변�?(PATCH ?�??
                 const response = await fetch(`tables/skincare_shops/${currentShop.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -1679,24 +1679,24 @@ console.log('?�� HOTFIX: PATCH ??PUT 메서??변�?+ null ?�터�??�용');
                 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error('API ?�러 ?�답:', errorText);
-                    throw new Error(`?�데?�트 ?�패: ${response.status}`);
+                    console.error('API ?�러 ?�답:', errorText);
+                    throw new Error(`?�데?�트 ?�패: ${response.status}`);
                 }
                 
                 const result = await response.json();
-                console.log('?�데?�트 ?�공:', result);
+                console.log('?�데?�트 ?�공:', result);
                 
-                alert('?�체 ?�보가 ?�공?�으�??�데?�트?�었?�니??');
+                alert('?�체 ?�보가 ?�공?�으�??�데?�트?�었?�니??');
                 location.reload();
             } else {
-                throw new Error('?�재 ???�보�?찾을 ???�습?�다.');
+                throw new Error('?�재 ???�보�?찾을 ???�습?�다.');
             }
         } catch (error) {
-            console.error('?�데?�트 ?�류:', error);
-            alert('?�데?�트 �??�류가 발생?�습?�다: ' + error.message);
+            console.error('?�데?�트 ?�류:', error);
+            alert('?�데?�트 �??�류가 발생?�습?�다: ' + error.message);
         }
     };
-    console.log('??handleShopInfoUpdate ?�수 ?�버?�이???�료 (null ?�터�??�함)');
+    console.log('??handleShopInfoUpdate ?�수 ?�버?�이???�료 (null ?�터�??�함)');
 }
 </script>
 </body>

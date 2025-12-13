@@ -7,11 +7,11 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="last-modified" content="2024-11-27T03:00:00+09:00">
-    <!-- ?�� Cache Busting Timestamp: 2024-11-27 03:00 KST -->
+    <!-- ?�� Cache Busting Timestamp: 2024-11-27 03:00 KST -->
     <meta name="version" content="2.5.4.7-20241127-0300">
-    <title>?�담 채팅 - beautycat (뷰티+?�티�?</title>
+    <title>?�담 채팅 - beautycat (뷰티+?�티�?</title>
     
-    <!-- ?�� CRITICAL FIX: 최우???�행 -->
+    <!-- ?�� CRITICAL FIX: 최우???�행 -->
     <script src="sw-unregister.js"></script>
     <script src="api-global-override.js?v=2.7.3.2"></script>
     
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- ?? 고속 ?�환 최적??CSS -->
+    <!-- ?? 고속 ?�환 최적??CSS -->
     <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
     
     <script>
@@ -33,7 +33,7 @@
                             200: '#fecaca',
                             300: '#fca5a5',
                             400: '#f87171',
-                            500: '#ff2d92', // beautycat 메인 ?�크
+                            500: '#ff2d92', // beautycat 메인 ?�크
                             600: '#dc2626',
                             700: '#b91c1c',
                             800: '#991b1b',
@@ -75,7 +75,7 @@
             }
         }
         
-        /* 강남?�니 ?��???메시지 버블 */
+        /* 강남?�니 ?��???메시지 버블 */
         .message-bubble {
             max-width: 80%;
             word-wrap: break-word;
@@ -96,7 +96,7 @@
             border-radius: 18px 18px 18px 4px;
         }
 
-        /* 강남?�니 ?��???카드 */
+        /* 강남?�니 ?��???카드 */
         .unni-card {
             background: white;
             border: 1px solid #f0f0f0;
@@ -104,7 +104,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        /* 버튼 ?��???*/
+        /* 버튼 ?��???*/
         .btn-primary {
             background: #ff2d92;
             color: white;
@@ -119,7 +119,7 @@
             background: #e6297f;
         }
         
-        /* ?�니메이??*/
+        /* ?�니메이??*/
         .fade-in {
             animation: fadeIn 0.3s ease-in;
         }
@@ -136,40 +136,40 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex items-center justify-between px-4 py-3">
                 
-                <!-- 로고 �??�?��? -->
+                <!-- 로고 �??�?��? -->
                 <div class="flex items-center">
                     <a href="index.html" class="flex items-center mr-4">
                         <i class="fas fa-arrow-left text-gray-600 text-xl mr-3 lg:hidden"></i>
                         <div class="flex items-center space-x-3">
-                            <!-- 강남?�니 ?��???로고 -->
+                            <!-- 강남?�니 ?��???로고 -->
                             <div class="w-8 h-8 flex items-center justify-center">
-                                <span class="text-xl">?��</span>
+                                <span class="text-xl">?��</span>
                             </div>
                             <div>
-                                <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+?�티�?</span></h1>
-                                <p class="text-xs text-primary-500 font-medium">?��?관리실 견적 ?�랫??/p>
+                                <h1 class="text-xl font-bold text-gray-900">beautycat <span class="text-sm text-gray-500">(뷰티+?�티�?</span></h1>
+                                <p class="text-xs text-primary-500 font-medium">?��?관리실 견적 ?�랫??/p>
                             </div>
                         </div>
                     </a>
                 </div>
                 
-                <!-- ?�측 ?�비게이??-->
+                <!-- ?�측 ?�비게이??-->
                 <div class="flex items-center space-x-3">
                     <!-- ??버튼 -->
-                    <a href="index.html" class="hidden sm:flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors" title="?�으�?>
+                    <a href="index.html" class="hidden sm:flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors" title="?�으�?>
                         <i class="fas fa-home mr-2"></i>
                         <span class="hidden md:inline">??/span>
                     </a>
                     
-                    <!-- 마이?�이지 버튼 -->
-                    <button id="dashboard-btn" onclick="goToDashboard()" class="hidden sm:flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors" title="마이?�이지">
+                    <!-- 마이?�이지 버튼 -->
+                    <button id="dashboard-btn" onclick="goToDashboard()" class="hidden sm:flex items-center px-3 py-1.5 text-sm text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors" title="마이?�이지">
                         <i class="fas fa-user-circle mr-2"></i>
-                        <span class="hidden md:inline">마이?�이지</span>
+                        <span class="hidden md:inline">마이?�이지</span>
                     </button>
                     
-                    <!-- ?�담 ?�태 -->
+                    <!-- ?�담 ?�태 -->
                     <span id="consultation-status" class="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800 font-medium">
-                        <i class="fas fa-circle text-green-500 text-xs mr-1"></i>?�담 진행 �?                    </span>
+                        <i class="fas fa-circle text-green-500 text-xs mr-1"></i>?�담 진행 �?                    </span>
                 </div>
             </div>
         </div>
@@ -178,48 +178,48 @@
     <div class="max-w-6xl mx-auto px-4 py-4">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
             
-            <!-- ?�담 ?�보 ?�이?�바 -->
+            <!-- ?�담 ?�보 ?�이?�바 -->
             <div class="lg:col-span-1">
                 <div class="unni-card p-5 mb-4">
                     <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-info-circle text-pink-500 mr-2"></i>
-                        ?�담 ?�보
+                        ?�담 ?�보
                     </h3>
                     <div id="consultation-info" class="space-y-3 text-sm">
                         <div class="flex justify-between items-center">
-                            <span class="font-medium text-gray-600">?�담 번호</span>
+                            <span class="font-medium text-gray-600">?�담 번호</span>
                             <span id="consultation-id" class="text-gray-900 font-medium">#CS001</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="font-medium text-gray-600">고객�?/span>
+                            <span class="font-medium text-gray-600">고객�?/span>
                             <span id="customer-name" class="text-gray-900 font-medium">김미영??/span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="font-medium text-gray-600">지??/span>
-                            <span id="consultation-region" class="text-gray-900 font-medium">?�국 강남�?/span>
+                            <span id="consultation-region" class="text-gray-900 font-medium">?�국 강남�?/span>
                         </div>
                         <div class="border-t pt-3 mt-3">
                             <div class="mb-2">
-                                <span class="font-medium text-gray-600 block mb-1">관???�로그램</span>
-                                <span id="treatment-type" class="text-pink-600 font-medium text-sm bg-pink-50 px-2 py-1 rounded-lg">?�드�?관�? 미백 관�?/span>
+                                <span class="font-medium text-gray-600 block mb-1">관???�로그램</span>
+                                <span id="treatment-type" class="text-pink-600 font-medium text-sm bg-pink-50 px-2 py-1 rounded-lg">?�드�?관�? 미백 관�?/span>
                             </div>
                             <div class="mb-2">
-                                <span class="font-medium text-gray-600 block mb-1">?�산</span>
+                                <span class="font-medium text-gray-600 block mb-1">?�산</span>
                                 <span id="budget-range" class="text-gray-900 font-medium">30-50만원</span>
                             </div>
                             <div>
-                                <span class="font-medium text-gray-600 block mb-1">?�호 ?�정</span>
-                                <span id="preferred-schedule" class="text-gray-900 font-medium">?�일 ?�후</span>
+                                <span class="font-medium text-gray-600 block mb-1">?�호 ?�정</span>
+                                <span id="preferred-schedule" class="text-gray-900 font-medium">?�일 ?�후</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 참여 ?��?관리실 목록 -->
+                <!-- 참여 ?��?관리실 목록 -->
                 <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
                     <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-store text-pink-500 mr-2"></i>
-                        참여 ?�체
+                        참여 ?�체
                     </h3>
                     <div id="participating-shops" class="space-y-3">
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -228,8 +228,8 @@
                                     <i class="fas fa-spa text-pink-600 text-sm"></i>
                                 </div>
                                 <div>
-                                    <div class="font-medium text-gray-900 text-sm">뷰티?�킨 ?�리??/div>
-                                    <div class="text-gray-500 text-xs">강남�?· 4.8??/div>
+                                    <div class="font-medium text-gray-900 text-sm">뷰티?�킨 ?�리??/div>
+                                    <div class="text-gray-500 text-xs">강남�?· 4.8??/div>
                                 </div>
                             </div>
                             <span class="w-2 h-2 bg-green-400 rounded-full"></span>
@@ -238,14 +238,14 @@
                 </div>
             </div>
 
-            <!-- 채팅 ?�역 -->
+            <!-- 채팅 ?�역 -->
             <div class="lg:col-span-3">
                 <div class="unni-card chat-container">
                     <div class="p-4 border-b border-gray-200 bg-gray-50">
                         <div class="flex items-center justify-between">
                             <h3 class="text-lg font-bold text-gray-900 flex items-center">
                                 <i class="fas fa-comments text-pink-500 mr-2"></i>
-                                ?�시�??�담
+                                ?�시�??�담
                             </h3>
                             <div class="flex space-x-2">
                                 <button onclick="refreshMessages()" class="p-2 text-gray-500 hover:text-primary-500 hover:bg-white rounded-lg transition-colors">
@@ -258,10 +258,10 @@
                         </div>
                     </div>
 
-                    <!-- 메시지 ?�역 -->
+                    <!-- 메시지 ?�역 -->
                     <div class="messages-container p-4" id="messages-container">
                         <div id="messages-list" class="space-y-4">
-                            <!-- 메시지가 ?�적?�로 로드?�니??-->
+                            <!-- 메시지가 ?�적?�로 로드?�니??-->
                         </div>
                         <div id="typing-indicator" class="hidden">
                             <div class="flex items-center space-x-2 text-gray-500 text-sm">
@@ -270,12 +270,12 @@
                                     <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
                                     <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
                                 </div>
-                                <span>?�군가 ?�력 �?..</span>
+                                <span>?�군가 ?�력 �?..</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 메시지 ?�력 ?�역 -->
+                    <!-- 메시지 ?�력 ?�역 -->
                     <div class="p-4 border-t border-gray-200">
                         <form id="message-form" class="flex space-x-4">
                             <div class="flex-1">
@@ -283,7 +283,7 @@
                                     <input 
                                         type="text" 
                                         id="message-input" 
-                                        placeholder="메시지�??�력?�세??.."
+                                        placeholder="메시지�??�력?�세??.."
                                         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                                     >
                                     <button type="button" onclick="toggleQuoteForm()" class="px-4 py-2 text-gray-500 hover:text-pink-500 border border-gray-300 rounded-lg">
@@ -304,11 +304,11 @@
             </div>
         </div>
 
-        <!-- 견적???�성 모달 -->
+        <!-- 견적???�성 모달 -->
         <div id="quote-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">견적???�성</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">견적???�성</h3>
                     <button onclick="toggleQuoteForm()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times"></i>
                     </button>
@@ -316,19 +316,19 @@
 
                 <form id="quote-form" class="space-y-4">
                     <div>
-                        <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">관�??�용 ?�세</label>
+                        <label for="treatment-details" class="block text-sm font-medium text-gray-700 mb-2">관�??�용 ?�세</label>
                         <textarea 
                             id="treatment-details" 
                             rows="4" 
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            placeholder="?�공??관리의 ?�세 ?�용???�력?�세??.."
+                            placeholder="?�공??관리의 ?�세 ?�용???�력?�세??.."
                             required
                         ></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">견적 가�?(??</label>
+                            <label for="quote-price" class="block text-sm font-medium text-gray-700 mb-2">견적 가�?(??</label>
                             <input 
                                 type="number" 
                                 id="quote-price" 
@@ -338,35 +338,35 @@
                             >
                         </div>
                         <div>
-                            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">?�상 ?�요?�간</label>
+                            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">?�상 ?�요?�간</label>
                             <input 
                                 type="text" 
                                 id="duration" 
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-                                placeholder="?? 1?�간 30�?
+                                placeholder="?? 1?�간 30�?
                                 required
                             >
                         </div>
                     </div>
 
                     <div>
-                        <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">?�약 가?�일</label>
+                        <label for="available-dates" class="block text-sm font-medium text-gray-700 mb-2">?�약 가?�일</label>
                         <input 
                             type="text" 
                             id="available-dates" 
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            placeholder="?? ??�??�전, 주말 가??
+                            placeholder="?? ??�??�전, 주말 가??
                             required
                         >
                     </div>
 
                     <div>
-                        <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">추�? ?�내?�항</label>
+                        <label for="additional-notes" class="block text-sm font-medium text-gray-700 mb-2">추�? ?�내?�항</label>
                         <textarea 
                             id="additional-notes" 
                             rows="3" 
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-                            placeholder="?�인 ?�보, 주의?�항 ?�을 ?�력?�세??.."
+                            placeholder="?�인 ?�보, 주의?�항 ?�을 ?�력?�세??.."
                         ></textarea>
                     </div>
 
@@ -375,33 +375,33 @@
                             취소
                         </button>
                         <button type="submit" class="btn-primary">
-                            견적???�송
+                            견적???�송
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- 견적???�세 보기 모달 -->
+        <!-- 견적???�세 보기 모달 -->
         <div id="quote-detail-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="unni-card p-6 max-w-2xl w-full mx-4">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">견적???�세</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">견적???�세</h3>
                     <button onclick="closeQuoteDetail()" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 
                 <div id="quote-detail-content" class="space-y-4">
-                    <!-- 견적???�용???�적?�로 로드?�니??-->
+                    <!-- 견적???�용???�적?�로 로드?�니??-->
                 </div>
 
                 <div class="flex justify-end space-x-3 mt-6">
                     <button onclick="closeQuoteDetail()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
-                        ?�기
+                        ?�기
                     </button>
                     <button onclick="acceptQuote()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        견적 ?�락
+                        견적 ?�락
                     </button>
                 </div>
             </div>
@@ -409,11 +409,11 @@
     </div>
 
     <!-- JavaScript -->
-    <!-- Firebase API 백엔??- Cloudflare Workers ?�용?�로 비활?�화 -->
+    <!-- Firebase API 백엔??- Cloudflare Workers ?�용?�로 비활?�화 -->
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
 <script src="js/chat.js?v=2.5.6"></script>
 
-<!-- ?�� ?�픽?�는 api-global-override.js?�서 ?�동 처리??(sort=timestamp ??sort=created_at) -->
+<!-- ?�� ?�픽?�는 api-global-override.js?�서 ?�동 처리??(sort=timestamp ??sort=created_at) -->
 </body>
 </html>

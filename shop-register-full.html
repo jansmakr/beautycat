@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>?��?관리실 ?�보 ?�록 - beautycat</title>
+    <title>?��?관리실 ?�보 ?�록 - beautycat</title>
     
-    <!-- ?�� CRITICAL FIX: 최우???�행 -->
+    <!-- ?�� CRITICAL FIX: 최우???�행 -->
     <script src="sw-unregister.js"></script>
     <script src="api-global-override.js?v=2.7.3.2"></script>
     
@@ -49,60 +49,60 @@
                 <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
             </a>
             <button onclick="logout()" class="text-sm text-gray-600 hover:text-gray-900">
-                <i class="fas fa-sign-out-alt mr-2"></i>로그?�웃
+                <i class="fas fa-sign-out-alt mr-2"></i>로그?�웃
             </button>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 py-8">
-        <!-- ?�내 메시지 -->
+        <!-- ?�내 메시지 -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-3">
-                <i class="fas fa-store text-pink-500 mr-3"></i>?��?관리실 ?�보 ?�록
+                <i class="fas fa-store text-pink-500 mr-3"></i>?��?관리실 ?�보 ?�록
             </h1>
             <p class="text-gray-600 mb-4">
-                고객?�게 견적??받으?�면 ?��?관리실 ?�보�??�록?�주?�요. 
-                <span class="text-pink-600 font-medium">?�록 ?�료 ???�담 ?�청??받을 ???�습?�다.</span>
+                고객?�게 견적??받으?�면 ?��?관리실 ?�보�??�록?�주?�요. 
+                <span class="text-pink-600 font-medium">?�록 ?�료 ???�담 ?�청??받을 ???�습?�다.</span>
             </p>
             
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div class="flex items-start">
                     <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
                     <div class="text-sm text-blue-800">
-                        <p class="font-semibold mb-1">?�� ?�록 ???�택</p>
+                        <p class="font-semibold mb-1">?�� ?�록 ???�택</p>
                         <ul class="list-disc list-inside space-y-1">
-                            <li>?�리 지??고객???�담 ?�청??받을 ???�어??/li>
-                            <li>견적?��? 보내�??�약???�정?????�어??/li>
-                            <li>?�?�샵?�로 ?�청?�여 ?�화?�담 ?�비?��? ?�공?????�어??/li>
+                            <li>?�리 지??고객???�담 ?�청??받을 ???�어??/li>
+                            <li>견적?��? 보내�??�약???�정?????�어??/li>
+                            <li>?�?�샵?�로 ?�청?�여 ?�화?�담 ?�비?��? ?�공?????�어??/li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ?�록 ??-->
+        <!-- ?�록 ??-->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
             <form id="shop-register-form" class="p-6 space-y-6">
                 
-                <!-- 1. 기본 ?�보 -->
+                <!-- 1. 기본 ?�보 -->
                 <div class="border-b border-gray-200 pb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">1</span>
-                        기본 ?�보
+                        기본 ?�보
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?��?관리실�?<span class="text-red-500">*</span>
+                                ?��?관리실�?<span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="shop-name" required 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? 강남 ?�리미엄 ?�킨케??>
+                                   placeholder="?? 강남 ?�리미엄 ?�킨케??>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�?�자�?<span class="text-red-500">*</span>
+                                ?�?�자�?<span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="owner-name" required 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�업?�등록번??<span class="text-red-500">*</span>
+                                ?�업?�등록번??<span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="business-number" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
@@ -118,25 +118,25 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�업?�고�?번호 <span class="text-red-500">*</span>
+                                ?�업?�고�?번호 <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="business-license-number" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? ??024-?�울강남-0000??>
+                                   placeholder="?? ??024-?�울강남-0000??>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. ?�락�??�보 -->
+                <!-- 2. ?�락�??�보 -->
                 <div class="border-b border-gray-200 pb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">2</span>
-                        ?�락�??�보
+                        ?�락�??�보
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�화번호 <span class="text-red-500">*</span>
+                                ?�화번호 <span class="text-red-500">*</span>
                             </label>
                             <input type="tel" id="shop-phone" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
@@ -144,7 +144,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�메??<span class="text-gray-500 text-xs">(?�동?�력)</span>
+                                ?�메??<span class="text-gray-500 text-xs">(?�동?�력)</span>
                             </label>
                             <input type="email" id="shop-email" readonly 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600">
@@ -152,11 +152,11 @@
                     </div>
                 </div>
 
-                <!-- 3. ?�치 ?�보 -->
+                <!-- 3. ?�치 ?�보 -->
                 <div class="border-b border-gray-200 pb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">3</span>
-                        ?�치 ?�보
+                        ?�치 ?�보
                     </h3>
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,59 +166,59 @@
                                 </label>
                                 <select id="shop-state" required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500">
-                                    <option value="">???��? ?�택?�주?�요</option>
+                                    <option value="">???��? ?�택?�주?�요</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    �?�?<span class="text-red-500">*</span>
+                                    �?�?<span class="text-red-500">*</span>
                                 </label>
                                 <select id="shop-district" required disabled
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500 disabled:bg-gray-100">
-                                    <option value="">먼�? ???��? ?�택?�주?�요</option>
+                                    <option value="">먼�? ???��? ?�택?�주?�요</option>
                                 </select>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�세 주소 <span class="text-red-500">*</span>
+                                ?�세 주소 <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="shop-address" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="????�? ?�로�?지�? 건물�? 층수 ??>
+                                   placeholder="????�? ?�로�?지�? 건물�? 층수 ??>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�업?�간 <span class="text-red-500">*</span>
+                                ?�업?�간 <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="business-hours" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? ??�?09:00-18:00, ??09:00-15:00">
+                                   placeholder="?? ??�?09:00-18:00, ??09:00-15:00">
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. ???�개 -->
+                <!-- 4. ???�개 -->
                 <div class="border-b border-gray-200 pb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">4</span>
-                        ???�개
+                        ???�개
                     </h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                ?�??관�?<span class="text-red-500">*</span>
-                                <span class="text-xs text-gray-500">(고객?�게 ?�출)</span>
+                                ?�??관�?<span class="text-red-500">*</span>
+                                <span class="text-xs text-gray-500">(고객?�게 ?�출)</span>
                             </label>
                             <input type="text" id="representative-service" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? ?�드�?집중 관�?>
+                                   placeholder="?? ?�드�?집중 관�?>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                1??관�?가�?<span class="text-red-500">*</span>
-                                <span class="text-xs text-gray-500">(고객?�게 ?�출)</span>
+                                1??관�?가�?<span class="text-red-500">*</span>
+                                <span class="text-xs text-gray-500">(고객?�게 ?�출)</span>
                             </label>
                             <input type="text" id="service-price" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
@@ -229,29 +229,29 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                관리용 ?�장??(브랜??
+                                관리용 ?�장??(브랜??
                             </label>
                             <input type="text" id="cosmetic-brands"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? ?�터?�르?? ?�이?�페">
+                                   placeholder="?? ?�터?�르?? ?�이?�페">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                주요 ?��?미용기기
+                                주요 ?��?미용기기
                             </label>
                             <input type="text" id="beauty-equipment"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? ?�쎄?? ?�마지">
+                                   placeholder="?? ?�쎄?? ?�마지">
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            ???�징 �?차별 ?�인??<span class="text-red-500">*</span>
+                            ???�징 �?차별 ?�인??<span class="text-red-500">*</span>
                         </label>
                         <textarea id="shop-features" rows="3" required
                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                  placeholder="?�리 ?�만???�별???�점�?차별???�인?��? ?�성?�주?�요"></textarea>
+                                  placeholder="?�리 ?�만???�별???�점�?차별???�인?��? ?�성?�주?�요"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -267,32 +267,32 @@
                                 베드 ??                            </label>
                             <input type="text" id="bed-count"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? 5?�">
+                                   placeholder="?? 5?�">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 직원 ??                            </label>
                             <input type="text" id="staff-count"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="?? 7�?>
+                                   placeholder="?? 7�?>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. ?�장 ?�개 (?�택) -->
+                <!-- 5. ?�장 ?�개 (?�택) -->
                 <div class="pb-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <span class="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center mr-3 text-sm">5</span>
-                        ?�장 ?�개 <span class="text-sm text-gray-500 ml-2">(?�택?�항)</span>
+                        ?�장 ?�개 <span class="text-sm text-gray-500 ml-2">(?�택?�항)</span>
                     </h3>
                     
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                주요 ?�로??                            </label>
+                                주요 ?�로??                            </label>
                             <textarea id="director-profile" rows="3"
                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                      placeholder="?�장?�의 ?�력, ?�격�? ?�문 분야 ?�을 ?�성?�주?�요"></textarea>
+                                      placeholder="?�장?�의 ?�력, ?�격�? ?�문 분야 ?�을 ?�성?�주?�요"></textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -300,20 +300,20 @@
                             </label>
                             <textarea id="director-experience" rows="3"
                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                      placeholder="주요 경력 ?�항�?근무 ?�력???�성?�주?�요"></textarea>
+                                      placeholder="주요 경력 ?�항�?근무 ?�력???�성?�주?�요"></textarea>
                         </div>
                     </div>
                 </div>
 
-                <!-- ?�출 버튼 -->
+                <!-- ?�출 버튼 -->
                 <div class="pt-6 border-t border-gray-200">
                     <button type="submit" 
                             class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-4 px-6 rounded-lg font-semibold text-lg transition-all shadow-lg hover:shadow-xl">
                         <i class="fas fa-check-circle mr-2"></i>
-                        ?��?관리실 ?�록 ?�료
+                        ?��?관리실 ?�록 ?�료
                     </button>
                     <p class="text-center text-sm text-gray-500 mt-3">
-                        ?�록 ??바로 고객 ?�담 ?�청??받을 ???�어??                    </p>
+                        ?�록 ??바로 고객 ?�담 ?�청??받을 ???�어??                    </p>
                 </div>
             </form>
         </div>
@@ -324,43 +324,43 @@
     <script src="js/regional-matching.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        console.log('?�� ???�록 ?�이지 초기??);
+        console.log('?�� ???�록 ?�이지 초기??);
         
-        // ?�용???�보 로드
+        // ?�용???�보 로드
         async function loadUserInfo() {
             const userData = localStorage.getItem('userData');
             if (!userData) {
-                alert('로그?�이 ?�요?�니??');
+                alert('로그?�이 ?�요?�니??');
                 window.location.href = 'login.html';
                 return;
             }
             
             const user = JSON.parse(userData);
             
-            // ?�메???�동 ?�력
+            // ?�메???�동 ?�력
             document.getElementById('shop-email').value = user.email || '';
             
-            // ???�원???�니�??�근 불�?
+            // ???�원???�니�??�근 불�?
             if (user.user_type !== 'shop') {
-                alert('?��?관리실 ?�원�??�근 가?�합?�다.');
+                alert('?��?관리실 ?�원�??�근 가?�합?�다.');
                 window.location.href = 'index.html';
                 return;
             }
             
-            console.log('???�용???�보 로드 ?�료:', user);
+            console.log('???�용???�보 로드 ?�료:', user);
         }
         
-        // 지???�택 ?�롭?�운 초기??(regional-matching.js가 ?�동 처리)
+        // 지???�택 ?�롭?�운 초기??(regional-matching.js가 ?�동 처리)
         function initializeRegionDropdowns() {
-            console.log('??지???�롭?�운 초기??(regional-matching.js ?�용)');
-            // regional-matching.js가 ?�동?�로 shop-state, shop-district 처리
+            console.log('??지???�롭?�운 초기??(regional-matching.js ?�용)');
+            // regional-matching.js가 ?�동?�로 shop-state, shop-district 처리
         }
         
-        // ???�출 처리
+        // ???�출 처리
         document.getElementById('shop-register-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
-            // ?�수 ?�드 검�?            const requiredFields = [
+            // ?�수 ?�드 검�?            const requiredFields = [
                 'shop-name', 'owner-name', 'business-number', 'business-license-number',
                 'shop-phone', 'shop-state', 'shop-district', 'shop-address', 
                 'business-hours', 'representative-service', 'service-price', 'shop-features'
@@ -369,20 +369,20 @@
             for (const fieldId of requiredFields) {
                 const field = document.getElementById(fieldId);
                 if (!field.value.trim()) {
-                    alert('모든 ?�수 ??��???�력?�주?�요.');
+                    alert('모든 ?�수 ??��???�력?�주?�요.');
                     field.focus();
                     return;
                 }
             }
             
-            // ?�업?�등록번???�효??검??            const businessNumber = document.getElementById('business-number').value;
+            // ?�업?�등록번???�효??검??            const businessNumber = document.getElementById('business-number').value;
             if (!/^\d{3}-\d{2}-\d{5}$/.test(businessNumber)) {
-                alert('?�업?�등록번?�는 000-00-00000 ?�식?�로 ?�력?�주?�요.');
+                alert('?�업?�등록번?�는 000-00-00000 ?�식?�로 ?�력?�주?�요.');
                 document.getElementById('business-number').focus();
                 return;
             }
             
-            // ?�이???�집
+            // ?�이???�집
             const shopData = {
                 name: document.getElementById('shop-name').value.trim(),
                 owner_name: document.getElementById('owner-name').value.trim(),
@@ -409,10 +409,10 @@
                 created_at: new Date().toISOString()
             };
             
-            console.log('?�� ???�록 ?�청:', shopData);
+            console.log('?�� ???�록 ?�청:', shopData);
             
             try {
-                // API ?�청
+                // API ?�청
                 const response = await fetch('tables/skincare_shops', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -421,31 +421,31 @@
                 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error('??API ?�러:', errorText);
-                    throw new Error(`?�록 ?�패: ${response.status}`);
+                    console.error('??API ?�러:', errorText);
+                    throw new Error(`?�록 ?�패: ${response.status}`);
                 }
                 
                 const result = await response.json();
-                console.log('?????�록 ?�공:', result);
+                console.log('?????�록 ?�공:', result);
                 
-                alert('?�� ?��?관리실 ?�보가 ?�공?�으�??�록?�었?�니??\n\n?�제 고객???�담 ?�청??받을 ???�습?�다.');
+                alert('?�� ?��?관리실 ?�보가 ?�공?�으�??�록?�었?�니??\n\n?�제 고객???�담 ?�청??받을 ???�습?�다.');
                 window.location.href = 'shop-dashboard.html';
                 
             } catch (error) {
-                console.error('???�록 ?�류:', error);
-                alert('?�록 �??�류가 발생?�습?�다.\n?�시 ?�도?�주?�요.\n\n?�류: ' + error.message);
+                console.error('???�록 ?�류:', error);
+                alert('?�록 �??�류가 발생?�습?�다.\n?�시 ?�도?�주?�요.\n\n?�류: ' + error.message);
             }
         });
         
-        // 로그?�웃
+        // 로그?�웃
         function logout() {
-            if (confirm('로그?�웃 ?�시겠습?�까?')) {
+            if (confirm('로그?�웃 ?�시겠습?�까?')) {
                 localStorage.removeItem('userData');
                 window.location.href = 'login.html';
             }
         }
         
-        // ?�이지 로드 ??초기??        window.addEventListener('DOMContentLoaded', function() {
+        // ?�이지 로드 ??초기??        window.addEventListener('DOMContentLoaded', function() {
             loadUserInfo();
             initializeRegionDropdowns();
         });
