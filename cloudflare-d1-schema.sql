@@ -11,6 +11,12 @@ CREATE TABLE users (
     phone TEXT,
     status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'pending')),
     shop_id TEXT,
+    state TEXT,                  -- 시/도 (예: 서울특별시)
+    district TEXT,               -- 구/군 (예: 강남구)
+    detail_address TEXT,         -- 상세 주소
+    is_verified INTEGER DEFAULT 0,  -- 이메일 인증 여부 (0: 미인증, 1: 인증완료)
+    cafe_platform TEXT,          -- 제휴 카페 플랫폼 (예: 'naver')
+    cafe_id TEXT,                -- 제휴 카페 회원 ID
     email_verified INTEGER DEFAULT 0,
     phone_verified INTEGER DEFAULT 0,
     last_login_at INTEGER,
@@ -224,6 +230,8 @@ CREATE TABLE user_sessions (
 -- 인덱스 생성 (성능 최적화)
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_type ON users(user_type);
+CREATE INDEX idx_users_location ON users(state, district);
+CREATE INDEX idx_users_cafe ON users(cafe_platform, cafe_id);
 CREATE INDEX idx_shops_location ON skincare_shops(state, district);
 CREATE INDEX idx_shops_status ON skincare_shops(status);
 CREATE INDEX idx_consultations_status ON consultations(status);

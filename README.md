@@ -307,6 +307,18 @@ beautycat/
 
 ## 📜 **Version History**
 
+### **v2.7.3.1** (2025-12-13) 🔴 **CRITICAL**
+- 🔥 **HOTFIX**: register.html 업체 선택 시 구버전 폼 표시 문제 해결
+- 🗄️ **DB Migration**: users 테이블에 누락된 컬럼 추가
+  - `state`, `district`, `detail_address` (지역 정보)
+  - `is_verified` (이메일 인증)
+  - `cafe_platform`, `cafe_id` (제휴 카페)
+- ✅ cloudflare-d1-schema.sql 업데이트 (완전한 스키마)
+- 📋 DB_MIGRATION_ADD_USER_COLUMNS_v2.7.3.1.sql 작성
+- 📋 DB_MIGRATION_REPORT_v2.7.3.1.md 작성
+- 📋 HOTFIX_v2.7.3.1_REGISTER_SHOP_FORM.md 작성
+- **Status**: ⏳ **DB 마이그레이션 대기 중**
+
 ### **v2.7.3** (2025-12-12)
 - ✅ 비즈니스 모델 명확화 (예약 건당 수수료 제외)
 - ✅ `platformFee` 변수 제거 (js/deposit-system.js)
