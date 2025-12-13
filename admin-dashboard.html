@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 대시보드 - beautycat (뷰티+에티켓)</title>
+    <title>관리자 ?�?�보??- beautycat (뷰티+?�티�?</title>
     
-    <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
+    <!-- ?�� CRITICAL FIX: 최우???�행 -->
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js?v=2.5.5"></script>
+    <script src="api-global-override.js?v=2.7.3.2"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 모바일 최적화 CSS -->
+    <!-- 모바??최적??CSS -->
     <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
     
-    <!-- 🚀 고속 전환 최적화 CSS -->
+    <!-- ?? 고속 ?�환 최적??CSS -->
     <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
@@ -30,7 +30,7 @@
                         'primary': {
                             50: '#fff0f8',
                             100: '#ffe3f2',
-                            500: '#ff2d92', // beautycat 메인 핑크
+                            500: '#ff2d92', // beautycat 메인 ?�크
                             600: '#e6297f',
                             700: '#cc256c',
                         }
@@ -66,12 +66,12 @@
                         <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
                     </a>
                     <nav class="hidden md:flex space-x-6">
-                        <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
-                        <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
-                        <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 입점관리</a>
-                        <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
-                        <a href="#" onclick="showSection('representative-shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대표샵 지정</a>
-                        <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
+                        <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�?�보??/a>
+                        <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�용??관�?/a>
+                        <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">???�점관�?/a>
+                        <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�담 관�?/a>
+                        <a href="#" onclick="showSection('representative-shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�?�샵 지??/a>
+                        <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">?�계</a>
                     </nav>
                 </div>
 
@@ -84,23 +84,20 @@
                     </button>
                     <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                         <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-home mr-2"></i>홈으로
-                        </a>
+                            <i class="fas fa-home mr-2"></i>?�으�?                        </a>
                         <a href="#" onclick="showSection('profile')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-user mr-2"></i>프로필 설정
+                            <i class="fas fa-user mr-2"></i>?�로???�정
                         </a>
                         <a href="#" onclick="showSection('settings')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-cog mr-2"></i>시스템 설정
+                            <i class="fas fa-cog mr-2"></i>?�스???�정
                         </a>
                         <a href="#" onclick="showSection('announcements')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-bullhorn mr-2"></i>공지사항 관리
-                        </a>
+                            <i class="fas fa-bullhorn mr-2"></i>공�??�항 관�?                        </a>
                         <a href="#" onclick="showSection('test')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-flask mr-2"></i>기능 테스트
-                        </a>
+                            <i class="fas fa-flask mr-2"></i>기능 ?�스??                        </a>
                         <hr class="my-1">
                         <a href="#" onclick="logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-sign-out-alt mr-2"></i>로그아웃
+                            <i class="fas fa-sign-out-alt mr-2"></i>로그?�웃
                         </a>
                     </div>
                 </div>
@@ -113,8 +110,8 @@
         <!-- Dashboard Section -->
         <div id="dashboard-section" class="section">
             <div class="mb-6">
-                <h1 class="text-3xl font-bold text-gray-900">관리자 대시보드</h1>
-                <p class="text-gray-600">플랫폼 전체 현황을 관리하고 모니터링하세요.</p>
+                <h1 class="text-3xl font-bold text-gray-900">관리자 ?�?�보??/h1>
+                <p class="text-gray-600">?�랫???�체 ?�황??관리하�?모니?�링?�세??</p>
             </div>
 
             <!-- Stats Grid -->
@@ -125,7 +122,7 @@
                             <i class="fas fa-users text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">전체 사용자</p>
+                            <p class="text-sm font-medium text-gray-500">?�체 ?�용??/p>
                             <p class="text-2xl font-bold text-gray-900" id="total-users">-</p>
                         </div>
                     </div>
@@ -137,7 +134,7 @@
                             <i class="fas fa-store text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">등록 샵</p>
+                            <p class="text-sm font-medium text-gray-500">?�록 ??/p>
                             <p class="text-2xl font-bold text-gray-900" id="total-shops">-</p>
                         </div>
                     </div>
@@ -149,7 +146,7 @@
                             <i class="fas fa-comments text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">상담 요청</p>
+                            <p class="text-sm font-medium text-gray-500">?�담 ?�청</p>
                             <p class="text-2xl font-bold text-gray-900" id="total-consultations">-</p>
                         </div>
                     </div>
@@ -161,7 +158,7 @@
                             <i class="fas fa-file-invoice text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">견적서</p>
+                            <p class="text-sm font-medium text-gray-500">견적??/p>
                             <p class="text-2xl font-bold text-gray-900" id="total-quotes">-</p>
                         </div>
                     </div>
@@ -173,9 +170,9 @@
                 <!-- Recent Members -->
                 <div class="unni-card p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium text-gray-900">최근 가입자</h3>
+                        <h3 class="text-lg font-medium text-gray-900">최근 가?�자</h3>
                         <button onclick="showSection('users')" class="text-sm text-primary-500 hover:text-primary-600 font-medium">
-                            전체보기 <i class="fas fa-chevron-right ml-1"></i>
+                            ?�체보기 <i class="fas fa-chevron-right ml-1"></i>
                         </button>
                     </div>
                     <div id="recent-members" class="space-y-3">
@@ -185,31 +182,28 @@
 
                 <!-- Quick Actions -->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">빠른 작업</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">빠른 ?�업</h3>
                     <div class="space-y-3">
                         <button onclick="openNewShopModal()" class="w-full px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors flex items-center justify-center">
                             <i class="fas fa-store mr-2"></i>
-                            업체 신규 등록
+                            ?�체 ?�규 ?�록
                         </button>
                         <button onclick="showSection('shops')" class="w-full px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center">
                             <i class="fas fa-check-circle mr-2"></i>
-                            업체 승인 관리
-                        </button>
+                            ?�체 ?�인 관�?                        </button>
                         <button onclick="showSection('consultations')" class="w-full px-4 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center">
                             <i class="fas fa-comments mr-2"></i>
-                            상담 요청 관리
-                        </button>
+                            ?�담 ?�청 관�?                        </button>
                         <button onclick="showSection('representative-shops')" class="w-full px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center">
                             <i class="fas fa-star mr-2"></i>
-                            대표샵 지정
-                        </button>
+                            ?�?�샵 지??                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Activity -->
             <div class="unni-card p-6 mb-8">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">최근 활동</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">최근 ?�동</h3>
                 <div id="recent-activities" class="space-y-3">
                     <!-- Activities will be loaded here -->
                 </div>
@@ -219,16 +213,16 @@
         <!-- Users Management Section -->
         <div id="users-section" class="section hidden">
             <div class="mb-6 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-gray-900">사용자 관리</h2>
+                <h2 class="text-2xl font-bold text-gray-900">?�용??관�?/h2>
                 <div class="flex space-x-2">
                     <select id="user-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="">전체 사용자</option>
+                        <option value="">?�체 ?�용??/option>
                         <option value="customer">고객</option>
-                        <option value="shop">업체</option>
+                        <option value="shop">?�체</option>
                         <option value="admin">관리자</option>
                     </select>
                     <button onclick="refreshUsers()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        <i class="fas fa-refresh mr-2"></i>새로고침
+                        <i class="fas fa-refresh mr-2"></i>?�로고침
                     </button>
                 </div>
             </div>
@@ -237,12 +231,12 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">사용자</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">타입</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">비밀번호</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">가입일</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�용??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">비�?번호</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">가?�일</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�업</th>
                         </tr>
                     </thead>
                     <tbody id="users-table" class="bg-white divide-y divide-gray-200">
@@ -256,11 +250,11 @@
         <div id="shops-section" class="section hidden">
             <div class="mb-6 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900">샵 관리</h2>
-                    <p class="text-gray-600 mt-1">플랫폼에 가입한 피부관리실의 입점 승인 및 정보를 관리하세요</p>
+                    <h2 class="text-2xl font-bold text-gray-900">??관�?/h2>
+                    <p class="text-gray-600 mt-1">?�랫?�에 가?�한 ?��?관리실???�점 ?�인 �??�보�?관리하?�요</p>
                 </div>
                 <button onclick="refreshShops()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                    <i class="fas fa-refresh mr-2"></i>새로고침
+                    <i class="fas fa-refresh mr-2"></i>?�로고침
                 </button>
             </div>
 
@@ -269,12 +263,12 @@
                 <div class="flex items-start">
                     <i class="fas fa-info-circle text-blue-500 mr-3 mt-1"></i>
                     <div>
-                        <h4 class="text-blue-800 font-medium mb-1">샵 입점 관리 안내</h4>
+                        <h4 class="text-blue-800 font-medium mb-1">???�점 관�??�내</h4>
                         <p class="text-blue-700 text-sm mb-2">
-                            • <strong>입점승인</strong>: 플랫폼에서 견적 서비스 제공 가능 (일반 업체 등록)
+                            ??<strong>?�점?�인</strong>: ?�랫?�에??견적 ?�비???�공 가??(?�반 ?�체 ?�록)
                         </p>
                         <p class="text-blue-700 text-sm">
-                            • <strong>대표샵 지정</strong>: 지역별 전화상담 대표업체 지정 (별도 메뉴에서 관리)
+                            ??<strong>?�?�샵 지??/strong>: 지??�� ?�화?�담 ?�?�업�?지??(별도 메뉴?�서 관�?
                         </p>
                     </div>
                 </div>
@@ -284,50 +278,49 @@
             <div class="mb-4 bg-white p-4 rounded-lg border border-gray-200">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">검색</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">검??/label>
                         <div class="relative">
-                            <input type="text" id="shop-search" placeholder="샵명, 대표자명, 이메일 검색..." 
+                            <input type="text" id="shop-search" placeholder="?�명, ?�?�자�? ?�메??검??.." 
                                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">지역 필터</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">지???�터</label>
                         <select id="shop-region-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <option value="">모든 지역</option>
-                            <option value="서울특별시">서울특별시</option>
-                            <option value="부산광역시">부산광역시</option>
-                            <option value="대구광역시">대구광역시</option>
-                            <option value="인천광역시">인천광역시</option>
-                            <option value="광주광역시">광주광역시</option>
-                            <option value="대전광역시">대전광역시</option>
-                            <option value="울산광역시">울산광역시</option>
-                            <option value="세종특별자치시">세종특별자치시</option>
-                            <option value="경기도">경기도</option>
-                            <option value="강원도">강원도</option>
+                            <option value="">모든 지??/option>
+                            <option value="?�울?�별??>?�울?�별??/option>
+                            <option value="부?�광??��">부?�광??��</option>
+                            <option value="?�구광??��">?�구광??��</option>
+                            <option value="?�천광역??>?�천광역??/option>
+                            <option value="광주광역??>광주광역??/option>
+                            <option value="?�?�광??��">?�?�광??��</option>
+                            <option value="?�산광역??>?�산광역??/option>
+                            <option value="?�종?�별?�치??>?�종?�별?�치??/option>
+                            <option value="경기??>경기??/option>
+                            <option value="강원??>강원??/option>
                             <option value="충청북도">충청북도</option>
-                            <option value="충청남도">충청남도</option>
-                            <option value="전라북도">전라북도</option>
-                            <option value="전라남도">전라남도</option>
+                            <option value="충청?�도">충청?�도</option>
+                            <option value="?�라북도">?�라북도</option>
+                            <option value="?�라?�도">?�라?�도</option>
                             <option value="경상북도">경상북도</option>
-                            <option value="경상남도">경상남도</option>
-                            <option value="제주특별자치도">제주특별자치도</option>
+                            <option value="경상?�도">경상?�도</option>
+                            <option value="?�주?�별?�치??>?�주?�별?�치??/option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">상태 필터</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">?�태 ?�터</label>
                         <select id="shop-status-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <option value="">모든 상태</option>
-                            <option value="active">승인됨</option>
-                            <option value="pending">승인대기</option>
-                            <option value="rejected">거부됨</option>
-                            <option value="inactive">비활성</option>
+                            <option value="">모든 ?�태</option>
+                            <option value="active">?�인??/option>
+                            <option value="pending">?�인?��?/option>
+                            <option value="rejected">거�???/option>
+                            <option value="inactive">비활??/option>
                         </select>
                     </div>
                     <div class="flex items-end">
                         <button onclick="clearShopFilters()" class="w-full px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                            <i class="fas fa-times mr-2"></i>필터 초기화
-                        </button>
+                            <i class="fas fa-times mr-2"></i>?�터 초기??                        </button>
                     </div>
                 </div>
             </div>
@@ -336,13 +329,13 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">샵명</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">네이버 카페 ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">등록일</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">입점상태</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">대표샵 상태</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">관리작업</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�명</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�이�?카페 ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�록??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�점?�태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�?�샵 ?�태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">관리작??/th>
                         </tr>
                     </thead>
                     <tbody id="shops-table" class="bg-white divide-y divide-gray-200">
@@ -355,16 +348,16 @@
         <!-- Consultations Management Section -->
         <div id="consultations-section" class="section hidden">
             <div class="mb-6 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-gray-900">상담 관리</h2>
+                <h2 class="text-2xl font-bold text-gray-900">?�담 관�?/h2>
                 <div class="flex space-x-2">
                     <select id="consultation-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="">전체 상담</option>
-                        <option value="pending">대기중</option>
-                        <option value="in_progress">진행중</option>
-                        <option value="completed">완료</option>
+                        <option value="">?�체 ?�담</option>
+                        <option value="pending">?�기중</option>
+                        <option value="in_progress">진행�?/option>
+                        <option value="completed">?�료</option>
                     </select>
                     <button onclick="refreshConsultations()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        <i class="fas fa-refresh mr-2"></i>새로고침
+                        <i class="fas fa-refresh mr-2"></i>?�로고침
                     </button>
                 </div>
             </div>
@@ -374,10 +367,10 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">고객</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">신청일</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�청??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�업</th>
                         </tr>
                     </thead>
                     <tbody id="consultations-table" class="bg-white divide-y divide-gray-200">
@@ -391,18 +384,18 @@
         <div id="representative-shops-section" class="section hidden">
             <div class="mb-6 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-900">대표샵 관리</h2>
-                    <p class="text-gray-600 mt-1">지역별 대표샵 지정 및 승인을 관리하세요</p>
+                    <h2 class="text-2xl font-bold text-gray-900">?�?�샵 관�?/h2>
+                    <p class="text-gray-600 mt-1">지??�� ?�?�샵 지??�??�인??관리하?�요</p>
                 </div>
                 <div class="flex space-x-2">
                     <select id="rep-shop-filter" class="px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="">전체</option>
-                        <option value="approved">승인됨</option>
-                        <option value="pending">승인대기</option>
-                        <option value="rejected">거부됨</option>
+                        <option value="">?�체</option>
+                        <option value="approved">?�인??/option>
+                        <option value="pending">?�인?��?/option>
+                        <option value="rejected">거�???/option>
                     </select>
                     <button onclick="refreshRepresentativeShops()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        <i class="fas fa-refresh mr-2"></i>새로고침
+                        <i class="fas fa-refresh mr-2"></i>?�로고침
                     </button>
                 </div>
             </div>
@@ -415,7 +408,7 @@
                             <i class="fas fa-check-circle text-green-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">승인된 대표샵</p>
+                            <p class="text-sm font-medium text-gray-600">?�인???�?�샵</p>
                             <p class="text-2xl font-bold text-gray-900" id="approved-rep-shops">-</p>
                         </div>
                     </div>
@@ -426,7 +419,7 @@
                             <i class="fas fa-clock text-yellow-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">승인대기</p>
+                            <p class="text-sm font-medium text-gray-600">?�인?��?/p>
                             <p class="text-2xl font-bold text-gray-900" id="pending-rep-shops">-</p>
                         </div>
                     </div>
@@ -437,7 +430,7 @@
                             <i class="fas fa-map-marker-alt text-blue-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">커버 지역</p>
+                            <p class="text-sm font-medium text-gray-600">커버 지??/p>
                             <p class="text-2xl font-bold text-gray-900" id="covered-regions">-</p>
                         </div>
                     </div>
@@ -448,7 +441,7 @@
                             <i class="fas fa-phone text-purple-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">전화 상담</p>
+                            <p class="text-sm font-medium text-gray-600">?�화 ?�담</p>
                             <p class="text-2xl font-bold text-gray-900" id="phone-consultations">-</p>
                         </div>
                     </div>
@@ -459,12 +452,12 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">샵명</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">전화번호</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">대표 관리</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�명</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지??/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�화번호</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�??관�?/th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">?�업</th>
                         </tr>
                     </thead>
                     <tbody id="representative-shops-table" class="bg-white divide-y divide-gray-200">
@@ -477,25 +470,25 @@
         <!-- Analytics Section -->
         <div id="analytics-section" class="section hidden">
             <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">통계 및 분석</h2>
-                <p class="text-gray-600">플랫폼 사용 현황과 트렌드를 확인하세요.</p>
+                <h2 class="text-2xl font-bold text-gray-900">?�계 �?분석</h2>
+                <p class="text-gray-600">?�랫???�용 ?�황�??�렌?��? ?�인?�세??</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Monthly Stats -->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">월별 통계</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">?�별 ?�계</h3>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">신규 가입자</span>
+                            <span class="text-gray-600">?�규 가?�자</span>
                             <span class="font-bold text-blue-600" id="monthly-users">-</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">상담 요청</span>
+                            <span class="text-gray-600">?�담 ?�청</span>
                             <span class="font-bold text-green-600" id="monthly-consultations">-</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">견적서 발행</span>
+                            <span class="text-gray-600">견적??발행</span>
                             <span class="font-bold text-primary-500" id="monthly-quotes">-</span>
                         </div>
                     </div>
@@ -503,7 +496,7 @@
 
                 <!-- Regional Stats -->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">지역별 현황</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">지??�� ?�황</h3>
                     <div id="regional-stats" class="space-y-2">
                         <!-- Regional data will be loaded here -->
                     </div>
@@ -514,32 +507,32 @@
         <!-- Profile Section -->
         <div id="profile-section" class="section hidden">
             <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">프로필 설정</h2>
+                <h2 class="text-2xl font-bold text-gray-900">?�로???�정</h2>
             </div>
 
             <div class="unni-card p-6">
                 <form id="profile-form">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�름</label>
                             <input type="text" id="profile-name" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�메??/label>
                             <input type="email" id="profile-email" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100" readonly>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">연락처</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�락�?/label>
                             <input type="tel" id="profile-phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">부서</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">부??/label>
                             <input type="text" id="profile-department" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                     </div>
                     <div class="mt-6">
                         <button type="submit" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                            프로필 업데이트
+                            ?�로???�데?�트
                         </button>
                     </div>
                 </form>
@@ -549,36 +542,36 @@
         <!-- Settings Section -->
         <div id="settings-section" class="section hidden">
             <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">시스템 설정</h2>
+                <h2 class="text-2xl font-bold text-gray-900">?�스???�정</h2>
             </div>
 
             <div class="space-y-6">
                 <!-- System Maintenance -->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">시스템 유지보수</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">?�스???��?보수</h3>
                     <div class="space-y-4">
                         <button onclick="clearCache()" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
-                            <i class="fas fa-broom mr-2"></i>캐시 정리
+                            <i class="fas fa-broom mr-2"></i>캐시 ?�리
                         </button>
                         <button onclick="exportData()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                            <i class="fas fa-download mr-2"></i>데이터 내보내기
+                            <i class="fas fa-download mr-2"></i>?�이???�보?�기
                         </button>
                     </div>
                 </div>
 
                 <!-- Platform Settings -->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">플랫폼 설정</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">?�랫???�정</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-700">신규 가입 허용</span>
+                            <span class="text-gray-700">?�규 가???�용</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="allow-registration" class="sr-only peer" checked>
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
                             </label>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-700">자동 매칭 활성화</span>
+                            <span class="text-gray-700">?�동 매칭 ?�성??/span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="auto-matching" class="sr-only peer" checked>
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
@@ -592,9 +585,9 @@
         <!-- Announcements Section -->
         <div id="announcements" class="section hidden">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">공지사항 관리</h2>
+                <h2 class="text-2xl font-bold text-gray-900">공�??�항 관�?/h2>
                 <button onclick="showAnnouncementModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg">
-                    <i class="fas fa-plus mr-2"></i>새 공지사항 작성
+                    <i class="fas fa-plus mr-2"></i>??공�??�항 ?�성
                 </button>
             </div>
 
@@ -602,13 +595,13 @@
             <div class="unni-card">
                 <div class="px-6 py-4 border-b border-gray-100">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-900">공지사항 목록</h3>
+                        <h3 class="text-lg font-medium text-gray-900">공�??�항 목록</h3>
                         <div class="flex space-x-2">
                             <select id="announcement-filter" onchange="filterAnnouncements()" class="border border-gray-200 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="">전체</option>
-                                <option value="published">게시중</option>
-                                <option value="draft">임시저장</option>
-                                <option value="expired">만료됨</option>
+                                <option value="">?�체</option>
+                                <option value="published">게시�?/option>
+                                <option value="draft">?�시?�??/option>
+                                <option value="expired">만료??/option>
                             </select>
                         </div>
                     </div>
@@ -618,13 +611,13 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">제목</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">우선순위</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">대상</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작성일</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">조회수</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">작업</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">?�목</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">?�선?�위</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">?�??/th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">?�태</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">?�성??/th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">조회??/th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">?�업</th>
                             </tr>
                         </thead>
                         <tbody id="announcements-table" class="bg-white divide-y divide-gray-200">
@@ -638,87 +631,82 @@
         <!-- Test section for demo -->
         <div id="test" class="section hidden">
             <div class="space-y-6">
-                <!-- 데이터 검증 테스트 -->
+                <!-- ?�이??검�??�스??-->
                 <div class="unni-card p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">데이터 검증 테스트</h2>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">?�이??검�??�스??/h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button onclick="console.log('전체 사용자:', allUsers)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-users mr-2"></i>사용자 데이터 확인
+                        <button onclick="console.log('?�체 ?�용??', allUsers)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-users mr-2"></i>?�용???�이???�인
                         </button>
-                        <button onclick="console.log('전체 샵:', allShops)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-store mr-2"></i>샵 데이터 확인
+                        <button onclick="console.log('?�체 ??', allShops)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-store mr-2"></i>???�이???�인
                         </button>
-                        <button onclick="console.log('전체 상담:', allConsultations)" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-comments mr-2"></i>상담 데이터 확인
+                        <button onclick="console.log('?�체 ?�담:', allConsultations)" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-comments mr-2"></i>?�담 ?�이???�인
                         </button>
-                        <button onclick="console.log('전체 공지사항:', allAnnouncements)" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-bullhorn mr-2"></i>공지사항 데이터 확인
+                        <button onclick="console.log('?�체 공�??�항:', allAnnouncements)" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-bullhorn mr-2"></i>공�??�항 ?�이???�인
                         </button>
                     </div>
                 </div>
                 
-                <!-- API 테스트 -->
+                <!-- API ?�스??-->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">API 연결 테스트</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">API ?�결 ?�스??/h3>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
                             <span class="text-gray-700">users API</span>
                             <button onclick="testAPI('tables/users')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
-                                테스트
-                            </button>
+                                ?�스??                            </button>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-gray-700">shops API</span>
                             <button onclick="testAPI('tables/skincare_shops')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
-                                테스트
-                            </button>
+                                ?�스??                            </button>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-gray-700">consultations API</span>
                             <button onclick="testAPI('tables/consultations')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
-                                테스트
-                            </button>
+                                ?�스??                            </button>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-gray-700">announcements API</span>
                             <button onclick="testAPI('tables/announcements')" class="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded">
-                                테스트
-                            </button>
+                                ?�스??                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 모달 테스트 -->
+                <!-- 모달 ?�스??-->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">UI 컴포넌트 테스트</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">UI 컴포?�트 ?�스??/h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button onclick="showAnnouncementModal()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-plus mr-2"></i>공지사항 작성 모달
+                            <i class="fas fa-plus mr-2"></i>공�??�항 ?�성 모달
                         </button>
                         <button onclick="testNotification()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
-                            <i class="fas fa-bell mr-2"></i>알림 테스트
-                        </button>
+                            <i class="fas fa-bell mr-2"></i>?�림 ?�스??                        </button>
                     </div>
                 </div>
                 
-                <!-- 시스템 정보 -->
+                <!-- ?�스???�보 -->
                 <div class="unni-card p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">시스템 정보</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">?�스???�보</h3>
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-600">관리자 ID:</span>
                             <span class="font-mono" id="test-admin-id">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">세션 시작:</span>
+                            <span class="text-gray-600">?�션 ?�작:</span>
                             <span class="font-mono" id="test-session-time">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">API 베이스 URL:</span>
+                            <span class="text-gray-600">API 베이??URL:</span>
                             <span class="font-mono text-xs" id="test-api-url">-</span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">브라우저:</span>
+                            <span class="text-gray-600">브라?��?:</span>
                             <span class="font-mono text-xs" id="test-browser">-</span>
                         </div>
                     </div>
@@ -732,7 +720,7 @@
         <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">사용자 상세정보</h3>
+                    <h3 class="text-lg font-medium text-gray-900">?�용???�세?�보</h3>
                     <button onclick="closeUserModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -742,10 +730,10 @@
                 </div>
                 <div class="mt-6 flex justify-end space-x-2">
                     <button onclick="closeUserModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                        닫기
+                        ?�기
                     </button>
                     <button id="user-action-btn" onclick="toggleUserStatus()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
-                        계정 비활성화
+                        계정 비활?�화
                     </button>
                 </div>
             </div>
@@ -757,7 +745,7 @@
         <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900" id="announcement-modal-title">새 공지사항 작성</h3>
+                    <h3 class="text-lg font-medium text-gray-900" id="announcement-modal-title">??공�??�항 ?�성</h3>
                     <button onclick="closeAnnouncementModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -768,41 +756,41 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="announcement-title" class="block text-sm font-medium text-gray-700 mb-2">제목 *</label>
+                            <label for="announcement-title" class="block text-sm font-medium text-gray-700 mb-2">?�목 *</label>
                             <input type="text" id="announcement-title" name="title" required
                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         
                         <div>
-                            <label for="announcement-priority" class="block text-sm font-medium text-gray-700 mb-2">우선순위</label>
+                            <label for="announcement-priority" class="block text-sm font-medium text-gray-700 mb-2">?�선?�위</label>
                             <select id="announcement-priority" name="priority"
                                     class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="normal">일반</option>
+                                <option value="normal">?�반</option>
                                 <option value="important">중요</option>
                                 <option value="urgent">긴급</option>
-                                <option value="low">낮음</option>
+                                <option value="low">??��</option>
                             </select>
                         </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="announcement-target" class="block text-sm font-medium text-gray-700 mb-2">대상 사용자</label>
+                            <label for="announcement-target" class="block text-sm font-medium text-gray-700 mb-2">?�???�용??/label>
                             <select id="announcement-target" name="target_audience"
                                     class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="all">전체 사용자</option>
+                                <option value="all">?�체 ?�용??/option>
                                 <option value="customers">고객</option>
-                                <option value="shops">피부관리실</option>
+                                <option value="shops">?��?관리실</option>
                                 <option value="admins">관리자</option>
                             </select>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">옵션</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�션</label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
                                     <input type="checkbox" id="announcement-pinned" name="is_pinned" class="rounded border-gray-300">
-                                    <span class="ml-2 text-sm text-gray-700">상단 고정</span>
+                                    <span class="ml-2 text-sm text-gray-700">?�단 고정</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox" id="announcement-published" name="is_published" class="rounded border-gray-300" checked>
@@ -814,23 +802,23 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="announcement-publish-date" class="block text-sm font-medium text-gray-700 mb-2">게시 시작일</label>
+                            <label for="announcement-publish-date" class="block text-sm font-medium text-gray-700 mb-2">게시 ?�작??/label>
                             <input type="datetime-local" id="announcement-publish-date" name="publish_date"
                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         
                         <div>
-                            <label for="announcement-expire-date" class="block text-sm font-medium text-gray-700 mb-2">게시 종료일 (선택)</label>
+                            <label for="announcement-expire-date" class="block text-sm font-medium text-gray-700 mb-2">게시 종료??(?�택)</label>
                             <input type="datetime-local" id="announcement-expire-date" name="expire_date"
                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                     </div>
                     
                     <div>
-                        <label for="announcement-content" class="block text-sm font-medium text-gray-700 mb-2">내용 *</label>
+                        <label for="announcement-content" class="block text-sm font-medium text-gray-700 mb-2">?�용 *</label>
                         <textarea id="announcement-content" name="content" rows="8" required
                                   class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                  placeholder="공지사항 내용을 입력해주세요..."></textarea>
+                                  placeholder="공�??�항 ?�용???�력?�주?�요..."></textarea>
                     </div>
                     
                     <div class="flex justify-end space-x-2">
@@ -840,7 +828,7 @@
                         </button>
                         <button type="submit" 
                                 class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                            <span id="announcement-submit-text">저장</span>
+                            <span id="announcement-submit-text">?�??/span>
                         </button>
                     </div>
                 </form>
@@ -853,7 +841,7 @@
         <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">샵 정보 수정</h3>
+                    <h3 class="text-lg font-medium text-gray-900">???�보 ?�정</h3>
                     <button onclick="closeShopEditModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times"></i>
                     </button>
@@ -863,51 +851,51 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">샵명</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�명</label>
                             <input type="text" id="edit-shop-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">대표자명</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�?�자�?/label>
                             <input type="text" id="edit-owner-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�화번호</label>
                             <input type="tel" id="edit-phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�메??/label>
                             <input type="email" id="edit-email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">사업자번호</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">?�업?�번??/label>
                             <input type="text" id="edit-business-number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">시/도</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">????/label>
                             <select id="edit-state" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="">선택하세요</option>
-                                <option value="서울특별시">서울특별시</option>
-                                <option value="부산광역시">부산광역시</option>
-                                <option value="대구광역시">대구광역시</option>
-                                <option value="인천광역시">인천광역시</option>
-                                <option value="광주광역시">광주광역시</option>
-                                <option value="대전광역시">대전광역시</option>
-                                <option value="울산광역시">울산광역시</option>
-                                <option value="세종특별자치시">세종특별자치시</option>
-                                <option value="경기도">경기도</option>
-                                <option value="강원도">강원도</option>
+                                <option value="">?�택?�세??/option>
+                                <option value="?�울?�별??>?�울?�별??/option>
+                                <option value="부?�광??��">부?�광??��</option>
+                                <option value="?�구광??��">?�구광??��</option>
+                                <option value="?�천광역??>?�천광역??/option>
+                                <option value="광주광역??>광주광역??/option>
+                                <option value="?�?�광??��">?�?�광??��</option>
+                                <option value="?�산광역??>?�산광역??/option>
+                                <option value="?�종?�별?�치??>?�종?�별?�치??/option>
+                                <option value="경기??>경기??/option>
+                                <option value="강원??>강원??/option>
                                 <option value="충청북도">충청북도</option>
-                                <option value="충청남도">충청남도</option>
-                                <option value="전라북도">전라북도</option>
-                                <option value="전라남도">전라남도</option>
+                                <option value="충청?�도">충청?�도</option>
+                                <option value="?�라북도">?�라북도</option>
+                                <option value="?�라?�도">?�라?�도</option>
                                 <option value="경상북도">경상북도</option>
-                                <option value="경상남도">경상남도</option>
-                                <option value="제주특별자치도">제주특별자치도</option>
+                                <option value="경상?�도">경상?�도</option>
+                                <option value="?�주?�별?�치??>?�주?�별?�치??/option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">구/군</label>
-                            <input type="text" id="edit-district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 강남구, 서초구">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">�?�?/label>
+                            <input type="text" id="edit-district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?? 강남�? ?�초�?>
                         </div>
                     </div>
                     
@@ -917,79 +905,78 @@
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">전문 관리 프로그램</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">?�문 관�??�로그램</label>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
                             <label class="flex items-center">
-                                <input type="checkbox" value="여드름 관리" class="edit-treatment-checkbox mr-2">
-                                <span class="text-sm">여드름 관리</span>
+                                <input type="checkbox" value="?�드�?관�? class="edit-treatment-checkbox mr-2">
+                                <span class="text-sm">?�드�?관�?/span>
                             </label>
                             <label class="flex items-center">
-                                <input type="checkbox" value="미백 관리" class="edit-treatment-checkbox mr-2">
-                                <span class="text-sm">미백 관리</span>
+                                <input type="checkbox" value="미백 관�? class="edit-treatment-checkbox mr-2">
+                                <span class="text-sm">미백 관�?/span>
                             </label>
                             <label class="flex items-center">
-                                <input type="checkbox" value="주름 관리" class="edit-treatment-checkbox mr-2">
-                                <span class="text-sm">주름 관리</span>
+                                <input type="checkbox" value="주름 관�? class="edit-treatment-checkbox mr-2">
+                                <span class="text-sm">주름 관�?/span>
                             </label>
                             <label class="flex items-center">
                                 <input type="checkbox" value="모공 축소" class="edit-treatment-checkbox mr-2">
                                 <span class="text-sm">모공 축소</span>
                             </label>
                             <label class="flex items-center">
-                                <input type="checkbox" value="수분 관리" class="edit-treatment-checkbox mr-2">
-                                <span class="text-sm">수분 관리</span>
+                                <input type="checkbox" value="?�분 관�? class="edit-treatment-checkbox mr-2">
+                                <span class="text-sm">?�분 관�?/span>
                             </label>
                             <label class="flex items-center">
-                                <input type="checkbox" value="민감성 케어" class="edit-treatment-checkbox mr-2">
-                                <span class="text-sm">민감성 케어</span>
+                                <input type="checkbox" value="민감??케?? class="edit-treatment-checkbox mr-2">
+                                <span class="text-sm">민감??케??/span>
                             </label>
                         </div>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">가격대</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">가격�?</label>
                         <select id="edit-price-range" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                            <option value="">선택하세요</option>
-                            <option value="5만원 이하">5만원 이하</option>
+                            <option value="">?�택?�세??/option>
+                            <option value="5만원 ?�하">5만원 ?�하</option>
                             <option value="5-10만원">5-10만원</option>
                             <option value="10-20만원">10-20만원</option>
                             <option value="20-30만원">20-30만원</option>
-                            <option value="30만원 이상">30만원 이상</option>
+                            <option value="30만원 ?�상">30만원 ?�상</option>
                         </select>
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">업체 소개</label>
-                        <textarea id="edit-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="업체 소개를 입력하세요..."></textarea>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">?�체 ?�개</label>
+                        <textarea id="edit-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="?�체 ?�개�??�력?�세??.."></textarea>
                     </div>
                     
-                    <!-- 유튜브 URL 입력 -->
+                    <!-- ?�튜�?URL ?�력 -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fab fa-youtube text-red-600 mr-1"></i>유튜브 URL
+                            <i class="fab fa-youtube text-red-600 mr-1"></i>?�튜�?URL
                         </label>
                         <input type="url" id="edit-youtube-url" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="https://www.youtube.com/watch?v=..." onblur="loadYoutubeThumbnail()">
-                        <p class="text-xs text-gray-500 mt-1">유튜브 영상 URL을 입력하면 썸네일이 자동으로 표시됩니다</p>
-                        <!-- 유튜브 썸네일 미리보기 -->
+                        <p class="text-xs text-gray-500 mt-1">?�튜�??�상 URL???�력?�면 ?�네?�이 ?�동?�로 ?�시?�니??/p>
+                        <!-- ?�튜�??�네??미리보기 -->
                         <div id="youtube-thumbnail-preview" class="hidden mt-3">
-                            <img id="youtube-thumbnail-img" src="" alt="유튜브 썸네일" class="w-full max-w-md rounded-lg shadow-md">
+                            <img id="youtube-thumbnail-img" src="" alt="?�튜�??�네?? class="w-full max-w-md rounded-lg shadow-md">
                             <a id="youtube-link" href="" target="_blank" class="inline-flex items-center mt-2 text-sm text-blue-600 hover:text-blue-800">
-                                <i class="fab fa-youtube mr-1"></i>유튜브에서 보기
+                                <i class="fab fa-youtube mr-1"></i>?�튜브에??보기
                             </a>
                         </div>
                     </div>
                     
-                    <!-- 파일 업로드 -->
+                    <!-- ?�일 ?�로??-->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-image text-purple-600 mr-1"></i>샵 이미지 업로드
-                        </label>
+                            <i class="fas fa-image text-purple-600 mr-1"></i>???��?지 ?�로??                        </label>
                         <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-primary-500 transition-colors">
                             <input type="file" id="edit-shop-image" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
                             <label for="edit-shop-image" class="cursor-pointer flex flex-col items-center">
                                 <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
-                                <span class="text-sm text-gray-600">클릭하여 이미지 선택</span>
-                                <span class="text-xs text-gray-500 mt-1">최대 1MB, JPG/PNG/GIF 형식</span>
+                                <span class="text-sm text-gray-600">?�릭?�여 ?��?지 ?�택</span>
+                                <span class="text-xs text-gray-500 mt-1">최�? 1MB, JPG/PNG/GIF ?�식</span>
                             </label>
                         </div>
                         <div id="image-preview" class="hidden mt-3">
@@ -1009,8 +996,7 @@
                         취소
                     </button>
                     <button onclick="saveShopChanges()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        저장
-                    </button>
+                        ?�??                    </button>
                 </div>
             </div>
         </div>
@@ -1021,110 +1007,110 @@
         <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-gray-900">샵 상세 정보</h3>
+                    <h3 class="text-xl font-bold text-gray-900">???�세 ?�보</h3>
                     <button onclick="closeShopViewModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-lg"></i>
                     </button>
                 </div>
                 
                 <div id="shop-view-content" class="space-y-6">
-                    <!-- 기본 정보 -->
+                    <!-- 기본 ?�보 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-store text-primary-500 mr-2"></i>기본 정보
+                            <i class="fas fa-store text-primary-500 mr-2"></i>기본 ?�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">샵명</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�명</label>
                                 <div id="view-shop-name" class="text-gray-900 font-medium">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">대표자명</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�?�자�?/label>
                                 <div id="view-owner-name" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">전화번호</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�화번호</label>
                                 <div id="view-phone" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">이메일</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�메??/label>
                                 <div id="view-email" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">사업자번호</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�업?�번??/label>
                                 <div id="view-business-number" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">영업신고증 번호</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�업?�고�?번호</label>
                                 <div id="view-license-number" class="text-gray-900">-</div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- 위치 정보 -->
+                    <!-- ?�치 ?�보 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-map-marker-alt text-primary-500 mr-2"></i>위치 정보
+                            <i class="fas fa-map-marker-alt text-primary-500 mr-2"></i>?�치 ?�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">시/도</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">????/label>
                                 <div id="view-state" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">구/군</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">�?�?/label>
                                 <div id="view-district" class="text-gray-900">-</div>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label class="block text-sm font-medium text-gray-600 mb-1">상세 주소</label>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">?�세 주소</label>
                             <div id="view-address" class="text-gray-900">-</div>
                         </div>
                     </div>
                     
-                    <!-- 서비스 정보 -->
+                    <!-- ?�비???�보 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-spa text-primary-500 mr-2"></i>서비스 정보
+                            <i class="fas fa-spa text-primary-500 mr-2"></i>?�비???�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">전문 관리 프로그램</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�문 관�??�로그램</label>
                                 <div id="view-treatments" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">가격대</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">가격�?</label>
                                 <div id="view-price-range" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">네이버 카페 ID</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�이�?카페 ID</label>
                                 <div id="view-naver-cafe" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">상태</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�태</label>
                                 <div id="view-status" class="inline-flex">
                                     <span id="view-status-badge" class="px-2 py-1 text-xs font-semibold rounded-full">-</span>
                                 </div>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label class="block text-sm font-medium text-gray-600 mb-1">업체 소개</label>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">?�체 ?�개</label>
                             <div id="view-description" class="text-gray-900 bg-white p-3 rounded border">-</div>
                         </div>
                     </div>
                     
-                    <!-- 등록 정보 -->
+                    <!-- ?�록 ?�보 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-calendar text-primary-500 mr-2"></i>등록 정보
+                            <i class="fas fa-calendar text-primary-500 mr-2"></i>?�록 ?�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">등록일시</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�록?�시</label>
                                 <div id="view-created-at" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">수정일시</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�정?�시</label>
                                 <div id="view-updated-at" class="text-gray-900">-</div>
                             </div>
                         </div>
@@ -1133,10 +1119,10 @@
                 
                 <div class="mt-6 flex justify-end space-x-2">
                     <button onclick="closeShopViewModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                        닫기
+                        ?�기
                     </button>
                     <button onclick="editShopFromView()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        <i class="fas fa-edit mr-2"></i>수정하기
+                        <i class="fas fa-edit mr-2"></i>?�정?�기
                     </button>
                 </div>
             </div>
@@ -1148,158 +1134,156 @@
         <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-gray-900">상담 요청 상세 정보</h3>
+                    <h3 class="text-xl font-bold text-gray-900">?�담 ?�청 ?�세 ?�보</h3>
                     <button onclick="closeConsultationViewModal()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-lg"></i>
                     </button>
                 </div>
                 
                 <div id="consultation-view-content" class="space-y-6">
-                    <!-- 고객 정보 -->
+                    <!-- 고객 ?�보 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-user text-primary-500 mr-2"></i>고객 정보
+                            <i class="fas fa-user text-primary-500 mr-2"></i>고객 ?�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">이름</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�름</label>
                                 <div id="view-consultation-name" class="text-gray-900 font-medium">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">연령대</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�령?�</label>
                                 <div id="view-consultation-age" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">전화번호</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�화번호</label>
                                 <div id="view-consultation-phone" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">성별</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�별</label>
                                 <div id="view-consultation-gender" class="text-gray-900">-</div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- 위치 정보 -->
+                    <!-- ?�치 ?�보 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-map-marker-alt text-primary-500 mr-2"></i>위치 정보
+                            <i class="fas fa-map-marker-alt text-primary-500 mr-2"></i>?�치 ?�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">지역</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">지??/label>
                                 <div id="view-consultation-region" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">상세 지역</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�세 지??/label>
                                 <div id="view-consultation-detailed-region" class="text-gray-900">-</div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- 관심 서비스 -->
+                    <!-- 관???�비??-->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-heart text-primary-500 mr-2"></i>관심 서비스
-                        </h4>
+                            <i class="fas fa-heart text-primary-500 mr-2"></i>관???�비??                        </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">피부 타입</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?��? ?�??/label>
                                 <div id="view-consultation-skin-type" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">관심 관리</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">관??관�?/label>
                                 <div id="view-consultation-treatments" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">예산</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�산</label>
                                 <div id="view-consultation-budget" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">희망 빈도</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�망 빈도</label>
                                 <div id="view-consultation-frequency" class="text-gray-900">-</div>
                             </div>
                         </div>
                         <div class="mt-3">
-                            <label class="block text-sm font-medium text-gray-600 mb-1">추가 요청사항</label>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">추�? ?�청?�항</label>
                             <div id="view-consultation-additional" class="text-gray-900 bg-white p-3 rounded border min-h-[80px]">-</div>
                         </div>
                     </div>
                     
-                    <!-- 상담 상태 및 처리 -->
+                    <!-- ?�담 ?�태 �?처리 -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-clipboard-check text-primary-500 mr-2"></i>상담 처리 정보
+                            <i class="fas fa-clipboard-check text-primary-500 mr-2"></i>?�담 처리 ?�보
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">현재 상태</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�재 ?�태</label>
                                 <div id="view-consultation-status" class="inline-flex">
                                     <span id="view-consultation-status-badge" class="px-2 py-1 text-xs font-semibold rounded-full">-</span>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">신청일시</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">?�청?�시</label>
                                 <div id="view-consultation-created-at" class="text-gray-900">-</div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">처리일시</label>
+                                <label class="block text-sm font-medium text-gray-600 mb-1">처리?�시</label>
                                 <div id="view-consultation-updated-at" class="text-gray-900">-</div>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <label class="block text-sm font-medium text-gray-600 mb-2">상태 변경</label>
+                            <label class="block text-sm font-medium text-gray-600 mb-2">?�태 변�?/label>
                             <div class="flex space-x-2">
                                 <select id="consultation-status-change" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    <option value="pending">대기중</option>
-                                    <option value="in_progress">진행중</option>
-                                    <option value="completed">완료</option>
+                                    <option value="pending">?�기중</option>
+                                    <option value="in_progress">진행�?/option>
+                                    <option value="completed">?�료</option>
                                     <option value="cancelled">취소</option>
                                 </select>
                                 <button onclick="updateConsultationStatus()" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                    <i class="fas fa-save mr-2"></i>상태 변경
-                                </button>
+                                    <i class="fas fa-save mr-2"></i>?�태 변�?                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 매칭된 업체 정보 (있는 경우) -->
+                    <!-- 매칭???�체 ?�보 (?�는 경우) -->
                     <div id="matched-shops-section" class="bg-gray-50 rounded-lg p-4 hidden">
                         <h4 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-store text-primary-500 mr-2"></i>매칭된 업체 정보
+                            <i class="fas fa-store text-primary-500 mr-2"></i>매칭???�체 ?�보
                         </h4>
                         <div id="matched-shops-list" class="space-y-2">
-                            <!-- 매칭된 업체 목록이 여기에 표시됩니다 -->
+                            <!-- 매칭???�체 목록???�기???�시?�니??-->
                         </div>
                     </div>
                 </div>
                 
                 <div class="mt-6 flex justify-end space-x-2">
                     <button onclick="closeConsultationViewModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">
-                        닫기
+                        ?�기
                     </button>
                     <button onclick="printConsultation()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
-                        <i class="fas fa-print mr-2"></i>인쇄
+                        <i class="fas fa-print mr-2"></i>?�쇄
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase API 백엔드 - Cloudflare Workers 사용으로 비활성화 -->
+    <!-- Firebase API 백엔??- Cloudflare Workers ?�용?�로 비활?�화 -->
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
     
-    <!-- Critical: 전역 함수 먼저 정의 -->
+    <!-- Critical: ?�역 ?�수 먼�? ?�의 -->
     <script>
-        // onclick에서 사용되는 전역 함수들을 먼저 정의
+        // onclick?�서 ?�용?�는 ?�역 ?�수?�을 먼�? ?�의
         window.showSection = function(sectionName) {
-            console.log('showSection 호출:', sectionName);
-            // 실제 함수는 admin-dashboard.js에서 오버라이드됨
+            console.log('showSection ?�출:', sectionName);
+            // ?�제 ?�수??admin-dashboard.js?�서 ?�버?�이?�됨
         };
         
         window.toggleUserMenu = function() {
-            console.log('toggleUserMenu 호출');
+            console.log('toggleUserMenu ?�출');
         };
         
         window.logout = function() {
@@ -1312,13 +1296,12 @@
     <script src="js/auth.js"></script>
     <script src="js/admin-dashboard.js"></script>
 
-<!-- 샵 정보 수정 폼 확장 기능 -->
+<!-- ???�보 ?�정 ???�장 기능 -->
 <script>
-// 전역 변수
-let uploadedImageFile = null;
+// ?�역 변??let uploadedImageFile = null;
 let uploadedImageDataUrl = null;
 
-// 유튜브 썸네일 로드
+// ?�튜�??�네??로드
 function loadYoutubeThumbnail() {
     const urlInput = document.getElementById('edit-youtube-url');
     const url = urlInput.value.trim();
@@ -1331,11 +1314,10 @@ function loadYoutubeThumbnail() {
         return;
     }
     
-    // 유튜브 비디오 ID 추출
+    // ?�튜�?비디??ID 추출
     let videoId = null;
     
-    // 다양한 유튜브 URL 형식 지원
-    const patterns = [
+    // ?�양???�튜�?URL ?�식 지??    const patterns = [
         /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\?\/]+)/,
         /youtube\.com\/watch\?.*v=([^&]+)/
     ];
@@ -1349,51 +1331,49 @@ function loadYoutubeThumbnail() {
     }
     
     if (videoId) {
-        // 유튜브 썸네일 URL (고화질)
+        // ?�튜�??�네??URL (고화�?
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
         thumbnailImg.src = thumbnailUrl;
         youtubeLink.href = url;
         preview.classList.remove('hidden');
         
-        // 썸네일 로드 실패시 중간 화질로 대체
-        thumbnailImg.onerror = function() {
+        // ?�네??로드 ?�패??중간 ?�질�??��?        thumbnailImg.onerror = function() {
             this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-            this.onerror = null; // 무한 루프 방지
+            this.onerror = null; // 무한 루프 방�?
         };
     } else {
         preview.classList.add('hidden');
-        alert('올바른 유튜브 URL을 입력해주세요.\\n예: https://www.youtube.com/watch?v=VIDEO_ID');
+        alert('?�바�??�튜�?URL???�력?�주?�요.\\n?? https://www.youtube.com/watch?v=VIDEO_ID');
     }
 }
 
-// 이미지 업로드 처리
+// ?��?지 ?�로??처리
 function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
     
-    // 파일 크기 체크 (1MB = 1,048,576 bytes)
+    // ?�일 ?�기 체크 (1MB = 1,048,576 bytes)
     const maxSize = 1 * 1024 * 1024; // 1MB
     if (file.size > maxSize) {
-        alert('파일 크기는 1MB 이하만 업로드 가능합니다.\\n현재 파일 크기: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB');
-        event.target.value = ''; // 파일 선택 초기화
-        return;
+        alert('?�일 ?�기??1MB ?�하�??�로??가?�합?�다.\\n?�재 ?�일 ?�기: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB');
+        event.target.value = ''; // ?�일 ?�택 초기??        return;
     }
     
-    // 이미지 파일 타입 체크
+    // ?��?지 ?�일 ?�??체크
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-        alert('JPG, PNG, GIF, WEBP 형식의 이미지만 업로드 가능합니다.');
+        alert('JPG, PNG, GIF, WEBP ?�식???��?지�??�로??가?�합?�다.');
         event.target.value = '';
         return;
     }
     
-    // 파일 읽기
+    // ?�일 ?�기
     const reader = new FileReader();
     reader.onload = function(e) {
         uploadedImageDataUrl = e.target.result;
         uploadedImageFile = file;
         
-        // 미리보기 표시
+        // 미리보기 ?�시
         const preview = document.getElementById('image-preview');
         const previewImg = document.getElementById('preview-img');
         const imageInfo = document.getElementById('image-info');
@@ -1401,7 +1381,7 @@ function handleImageUpload(event) {
         previewImg.src = e.target.result;
         preview.classList.remove('hidden');
         
-        // 파일 정보 표시
+        // ?�일 ?�보 ?�시
         const fileSizeKB = (file.size / 1024).toFixed(2);
         imageInfo.innerHTML = `
             <i class="fas fa-check-circle text-green-500 mr-1"></i>
@@ -1412,7 +1392,7 @@ function handleImageUpload(event) {
     reader.readAsDataURL(file);
 }
 
-// 이미지 제거
+// ?��?지 ?�거
 function removeImage() {
     uploadedImageFile = null;
     uploadedImageDataUrl = null;
@@ -1422,12 +1402,12 @@ function removeImage() {
     document.getElementById('preview-img').src = '';
 }
 
-// 기존 saveShopChanges 함수 확장 (js/admin-dashboard.js의 status 필드 제거)
+// 기존 saveShopChanges ?�수 ?�장 (js/admin-dashboard.js??status ?�드 ?�거)
 const originalSaveShopChanges = window.saveShopChanges;
 window.saveShopChanges = async function() {
     const shopId = document.getElementById('edit-shop-id').value;
     
-    // 기본 정보 수집
+    // 기본 ?�보 ?�집
     const selectedTreatments = [];
     document.querySelectorAll('.edit-treatment-checkbox:checked').forEach(checkbox => {
         selectedTreatments.push(checkbox.value);
@@ -1461,11 +1441,10 @@ window.saveShopChanges = async function() {
         });
         
         if (response.ok) {
-            alert('샵 정보가 성공적으로 수정되었습니다.');
+            alert('???�보가 ?�공?�으�??�정?�었?�니??');
             closeShopEditModal();
             
-            // 업로드된 이미지 초기화
-            removeImage();
+            // ?�로?�된 ?��?지 초기??            removeImage();
             
             if (typeof refreshShops === 'function') {
                 refreshShops();
@@ -1476,7 +1455,7 @@ window.saveShopChanges = async function() {
     } catch (error) {
         console.error('Shop update error:', error);
         
-        // 로컬 데이터 업데이트
+        // 로컬 ?�이???�데?�트
         if (typeof allShops !== 'undefined') {
             const shopIndex = allShops.findIndex(s => s.id === shopId);
             if (shopIndex !== -1) {
@@ -1486,26 +1465,25 @@ window.saveShopChanges = async function() {
                 }
                 closeShopEditModal();
                 removeImage();
-                alert('샵 정보가 로컬에서 업데이트되었습니다.');
+                alert('???�보가 로컬?�서 ?�데?�트?�었?�니??');
             } else {
-                alert('샵 정보 수정에 실패했습니다.');
+                alert('???�보 ?�정???�패?�습?�다.');
             }
         }
     }
 };
 
-// 모달이 열릴 때 기존 데이터 로드
+// 모달???�릴 ??기존 ?�이??로드
 const originalOpenShopEditModal = window.openShopEditModal;
 if (originalOpenShopEditModal) {
     window.openShopEditModal = function(shopId) {
-        // 기존 함수 실행
+        // 기존 ?�수 ?�행
         originalOpenShopEditModal(shopId);
         
-        // 추가 필드 초기화
-        setTimeout(() => {
+        // 추�? ?�드 초기??        setTimeout(() => {
             const shop = allShops.find(s => s.id === shopId);
             if (shop) {
-                // 유튜브 URL 로드
+                // ?�튜�?URL 로드
                 if (shop.youtube_url) {
                     document.getElementById('edit-youtube-url').value = shop.youtube_url;
                     loadYoutubeThumbnail();
@@ -1514,7 +1492,7 @@ if (originalOpenShopEditModal) {
                     document.getElementById('youtube-thumbnail-preview').classList.add('hidden');
                 }
                 
-                // 이미지 로드
+                // ?��?지 로드
                 if (shop.shop_image) {
                     document.getElementById('preview-img').src = shop.shop_image;
                     document.getElementById('image-preview').classList.remove('hidden');
@@ -1533,8 +1511,7 @@ if (originalOpenShopEditModal) {
     };
 }
 
-// 모달 닫을 때 초기화
-const originalCloseShopEditModal = window.closeShopEditModal;
+// 모달 ?�을 ??초기??const originalCloseShopEditModal = window.closeShopEditModal;
 if (originalCloseShopEditModal) {
     window.closeShopEditModal = function() {
         originalCloseShopEditModal();
@@ -1545,98 +1522,97 @@ if (originalCloseShopEditModal) {
 }
 </script>
 
-<!-- 상담 상세보기 모달 -->
+<!-- ?�담 ?�세보기 모달 -->
 <div id="consultation-view-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         <div class="p-6">
             <div class="flex justify-between items-start mb-6">
-                <h3 class="text-2xl font-bold text-gray-900">상담 상세 정보</h3>
+                <h3 class="text-2xl font-bold text-gray-900">?�담 ?�세 ?�보</h3>
                 <button onclick="closeConsultationModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
-            <!-- 상태 배지 -->
+            <!-- ?�태 배�? -->
             <div class="mb-6">
-                <span id="view-consultation-status-badge" class="px-3 py-1 text-sm font-semibold rounded-full">대기중</span>
+                <span id="view-consultation-status-badge" class="px-3 py-1 text-sm font-semibold rounded-full">?�기중</span>
             </div>
 
-            <!-- 고객 정보 -->
+            <!-- 고객 ?�보 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">고객명</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">고객�?/label>
                     <p id="view-consultation-name" class="text-gray-900 font-medium">-</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">전화번호</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">?�화번호</label>
                     <p id="view-consultation-phone" class="text-gray-900">-</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">지역</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">지??/label>
                     <p id="view-consultation-region" class="text-gray-900">-</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">예산</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">?�산</label>
                     <p id="view-consultation-budget" class="text-gray-900">-</p>
                 </div>
             </div>
 
-            <!-- 관리 정보 -->
+            <!-- 관�??�보 -->
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">관심 관리</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">관??관�?/label>
                 <p id="view-consultation-treatments" class="text-gray-900 bg-gray-50 p-3 rounded-lg">-</p>
             </div>
 
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">피부 상태</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">?��? ?�태</label>
                 <p id="view-consultation-skin-condition" class="text-gray-900 bg-gray-50 p-3 rounded-lg">-</p>
             </div>
 
             <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">추가 요청사항</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">추�? ?�청?�항</label>
                 <p id="view-consultation-notes" class="text-gray-900 bg-gray-50 p-3 rounded-lg whitespace-pre-wrap">-</p>
             </div>
 
-            <!-- 신청일시 -->
+            <!-- ?�청?�시 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">신청일시</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">?�청?�시</label>
                     <p id="view-consultation-created-at" class="text-gray-600 text-sm">-</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">최종 수정</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">최종 ?�정</label>
                     <p id="view-consultation-updated-at" class="text-gray-600 text-sm">-</p>
                 </div>
             </div>
 
-            <!-- 상태 변경 -->
+            <!-- ?�태 변�?-->
             <div class="border-t pt-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">상태 변경</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">?�태 변�?/label>
                 <div class="flex space-x-3">
                     <select id="consultation-status-change" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                        <option value="pending">대기중</option>
-                        <option value="in_progress">진행중</option>
-                        <option value="completed">완료</option>
+                        <option value="pending">?�기중</option>
+                        <option value="in_progress">진행�?/option>
+                        <option value="completed">?�료</option>
                         <option value="cancelled">취소</option>
                     </select>
                     <button onclick="updateConsultationStatus()" class="px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
-                        변경
-                    </button>
+                        변�?                    </button>
                 </div>
             </div>
 
-            <!-- 매칭된 업체 (있는 경우) -->
+            <!-- 매칭???�체 (?�는 경우) -->
             <div id="matched-shops-section" class="hidden border-t mt-6 pt-6">
-                <label class="block text-sm font-medium text-gray-700 mb-3">매칭된 업체</label>
+                <label class="block text-sm font-medium text-gray-700 mb-3">매칭???�체</label>
                 <div id="matched-shops-list" class="space-y-2">
                     <!-- Matched shops will be loaded here -->
                 </div>
             </div>
 
-            <!-- 닫기 버튼 -->
+            <!-- ?�기 버튼 -->
             <div class="mt-6 flex justify-end">
                 <button onclick="closeConsultationModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    닫기
+                    ?�기
                 </button>
             </div>
         </div>
@@ -1644,19 +1620,19 @@ if (originalCloseShopEditModal) {
 </div>
 
 <script>
-// 상담 모달 열기/닫기 함수
+// ?�담 모달 ?�기/?�기 ?�수
 function closeConsultationModal() {
     document.getElementById('consultation-view-modal').classList.add('hidden');
 }
 
-// ESC 키로 모달 닫기
+// ESC ?�로 모달 ?�기
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeConsultationModal();
     }
 });
 
-// 모달 외부 클릭시 닫기
+// 모달 ?��? ?�릭???�기
 document.getElementById('consultation-view-modal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeConsultationModal();
@@ -1664,37 +1640,35 @@ document.getElementById('consultation-view-modal').addEventListener('click', fun
 });
 </script>
 
-<!-- 공지사항 관리 시스템 -->
+<!-- 공�??�항 관�??�스??-->
 <script src="js/announcements.js"></script>
 
-<!-- 🔥 긴급 핫픽스: PATCH → GET + PUT 변환 -->
+<!-- ?�� 긴급 ?�픽?? PATCH ??GET + PUT 변??-->
 <script>
-console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환');
+console.log('?�� HOTFIX: PATCH ?�청??GET + PUT?�로 ?�동 변??);
 
-// 원본 fetch 저장
-const originalFetch = window.fetch;
+// ?�본 fetch ?�??const originalFetch = window.fetch;
 
-// fetch 오버라이드
-window.fetch = async function(url, options = {}) {
-    // PATCH 요청을 감지
+// fetch ?�버?�이??window.fetch = async function(url, options = {}) {
+    // PATCH ?�청??감�?
     if (options.method === 'PATCH' || options.method === 'patch') {
-        console.log(`🔄 PATCH 감지: ${url} → GET + PUT로 변환`);
+        console.log(`?�� PATCH 감�?: ${url} ??GET + PUT�?변??);
         
         try {
-            // 1. 먼저 기존 데이터 가져오기 (GET)
+            // 1. 먼�? 기존 ?�이??가?�오�?(GET)
             const getResponse = await originalFetch(url, {
                 method: 'GET',
                 headers: options.headers
             });
             
             if (!getResponse.ok) {
-                console.error('GET 실패:', url);
+                console.error('GET ?�패:', url);
                 return getResponse;
             }
             
             const existingData = await getResponse.json();
             
-            // 2. PATCH 데이터 파싱
+            // 2. PATCH ?�이???�싱
             let patchData = {};
             if (options.body) {
                 try {
@@ -1704,16 +1678,16 @@ window.fetch = async function(url, options = {}) {
                 }
             }
             
-            // 3. 기존 데이터 + PATCH 데이터 병합
+            // 3. 기존 ?�이??+ PATCH ?�이??병합
             const mergedData = {
                 ...existingData,
                 ...patchData,
                 updated_at: Date.now()
             };
             
-            console.log('📦 병합된 데이터:', mergedData);
+            console.log('?�� 병합???�이??', mergedData);
             
-            // 4. PUT 요청으로 전송
+            // 4. PUT ?�청?�로 ?�송
             return await originalFetch(url, {
                 ...options,
                 method: 'PUT',
@@ -1721,25 +1695,25 @@ window.fetch = async function(url, options = {}) {
             });
             
         } catch (error) {
-            console.error('PATCH → PUT 변환 오류:', error);
-            // 실패 시 원본 요청 그대로 전송
+            console.error('PATCH ??PUT 변???�류:', error);
+            // ?�패 ???�본 ?�청 그�?�??�송
             return await originalFetch(url, options);
         }
     }
     
-    // PATCH가 아니면 그대로 전송
+    // PATCH가 ?�니�?그�?�??�송
     return await originalFetch(url, options);
 };
 
-console.log('✅ PATCH 자동 변환 활성화 완료');
+console.log('??PATCH ?�동 변???�성???�료');
 </script>
 
-<!-- 업체 신규 등록 모달 -->
+<!-- ?�체 ?�규 ?�록 모달 -->
 <div id="new-shop-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
     <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
             <h2 class="text-xl font-bold text-gray-900">
-                <i class="fas fa-store text-primary-500 mr-2"></i>업체 신규 등록
+                <i class="fas fa-store text-primary-500 mr-2"></i>?�체 ?�규 ?�록
             </h2>
             <button onclick="closeNewShopModal()" class="text-gray-400 hover:text-gray-600">
                 <i class="fas fa-times text-xl"></i>
@@ -1747,90 +1721,90 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
         </div>
         
         <form id="new-shop-form" class="p-6 space-y-4">
-            <!-- 업체 정보 -->
+            <!-- ?�체 ?�보 -->
             <div class="bg-gray-50 p-4 rounded-lg">
                 <h3 class="font-semibold text-gray-900 mb-3">
-                    <i class="fas fa-building mr-2"></i>업체 정보
+                    <i class="fas fa-building mr-2"></i>?�체 ?�보
                 </h3>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            업체명 <span class="text-red-500">*</span>
+                            ?�체�?<span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="new-shop-name" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            placeholder="예: 강남 피부관리샵">
+                            placeholder="?? 강남 ?��?관리샵">
                     </div>
                     
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                시/도 <span class="text-red-500">*</span>
+                                ????<span class="text-red-500">*</span>
                             </label>
                             <select id="new-shop-state" required onchange="updateDistricts()"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                                <option value="">선택하세요</option>
-                                <option value="서울">서울</option>
-                                <option value="부산">부산</option>
-                                <option value="대구">대구</option>
-                                <option value="인천">인천</option>
+                                <option value="">?�택?�세??/option>
+                                <option value="?�울">?�울</option>
+                                <option value="부??>부??/option>
+                                <option value="?��?>?��?/option>
+                                <option value="?�천">?�천</option>
                                 <option value="광주">광주</option>
-                                <option value="대전">대전</option>
-                                <option value="울산">울산</option>
-                                <option value="세종">세종</option>
+                                <option value="?�??>?�??/option>
+                                <option value="?�산">?�산</option>
+                                <option value="?�종">?�종</option>
                                 <option value="경기">경기</option>
                                 <option value="강원">강원</option>
                                 <option value="충북">충북</option>
                                 <option value="충남">충남</option>
-                                <option value="전북">전북</option>
-                                <option value="전남">전남</option>
+                                <option value="?�북">?�북</option>
+                                <option value="?�남">?�남</option>
                                 <option value="경북">경북</option>
                                 <option value="경남">경남</option>
-                                <option value="제주">제주</option>
+                                <option value="?�주">?�주</option>
                             </select>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
-                                시/군/구 <span class="text-red-500">*</span>
+                                ??�?�?<span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="new-shop-district" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                placeholder="예: 강남구">
+                                placeholder="?? 강남�?>
                         </div>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            상세 주소 <span class="text-red-500">*</span>
+                            ?�세 주소 <span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="new-shop-address" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            placeholder="예: 테헤란로 123, 2층">
+                            placeholder="?? ?�헤?��?123, 2�?>
                     </div>
                 </div>
             </div>
             
-            <!-- 대표자 정보 -->
+            <!-- ?�?�자 ?�보 -->
             <div class="bg-gray-50 p-4 rounded-lg">
                 <h3 class="font-semibold text-gray-900 mb-3">
-                    <i class="fas fa-user mr-2"></i>대표자 정보
+                    <i class="fas fa-user mr-2"></i>?�?�자 ?�보
                 </h3>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            대표자명 <span class="text-red-500">*</span>
+                            ?�?�자�?<span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="new-shop-owner" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            placeholder="예: 홍길동">
+                            placeholder="?? ?�길??>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            전화번호 <span class="text-red-500">*</span>
+                            ?�화번호 <span class="text-red-500">*</span>
                         </label>
                         <input type="tel" id="new-shop-phone" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -1839,7 +1813,7 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            이메일 <span class="text-red-500">*</span>
+                            ?�메??<span class="text-red-500">*</span>
                         </label>
                         <input type="email" id="new-shop-email" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -1848,25 +1822,25 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            비밀번호 <span class="text-red-500">*</span>
+                            비�?번호 <span class="text-red-500">*</span>
                         </label>
                         <input type="password" id="new-shop-password" required minlength="8"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            placeholder="최소 8자 이상">
+                            placeholder="최소 8???�상">
                     </div>
                 </div>
             </div>
             
-            <!-- 사업자 정보 -->
+            <!-- ?�업???�보 -->
             <div class="bg-gray-50 p-4 rounded-lg">
                 <h3 class="font-semibold text-gray-900 mb-3">
-                    <i class="fas fa-file-alt mr-2"></i>사업자 정보
+                    <i class="fas fa-file-alt mr-2"></i>?�업???�보
                 </h3>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            사업자등록번호 <span class="text-red-500">*</span>
+                            ?�업?�등록번??<span class="text-red-500">*</span>
                         </label>
                         <input type="text" id="new-shop-business-number" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -1875,25 +1849,24 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            영업신고번호
+                            ?�업?�고번호
                         </label>
                         <input type="text" id="new-shop-license-number"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            placeholder="제0000-0000000호 (선택사항)">
+                            placeholder="??000-0000000??(?�택?�항)">
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            네이버 카페 아이디
-                        </label>
+                            ?�이�?카페 ?�이??                        </label>
                         <input type="text" id="new-shop-naver-id"
                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            placeholder="naver_cafe_id (선택사항)">
+                            placeholder="naver_cafe_id (?�택?�항)">
                     </div>
                 </div>
             </div>
             
-            <!-- 제출 버튼 -->
+            <!-- ?�출 버튼 -->
             <div class="flex gap-3 pt-4">
                 <button type="button" onclick="closeNewShopModal()" 
                     class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
@@ -1901,7 +1874,7 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
                 </button>
                 <button type="submit"
                     class="flex-1 px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
-                    <i class="fas fa-check mr-2"></i>등록하기
+                    <i class="fas fa-check mr-2"></i>?�록?�기
                 </button>
             </div>
         </form>
