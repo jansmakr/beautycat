@@ -46,3 +46,6 @@ build/
 
 # VS Code 설치 파일 제외
 *.exe
+
+# 실행 파일 제외
+*.exe
