@@ -2688,3 +2688,4 @@ function displayRecentMembers(users) {
         `;
     }).join('');
 }
+
