@@ -1,9 +1,14 @@
 # 💎 BeautyCat - 피부관리샵 매칭 플랫폼
 
-**버전**: v2.7.3.2  
+**버전**: v2.7.3.3  
 **최종 업데이트**: 2025-12-13  
 **Production URL**: https://beautycat.kr  
 **API URL**: https://api.beautycat.kr/api
+
+**⚠️ CRITICAL: DB 마이그레이션 필요**
+- 파일: `DB_MIGRATION_FIX_SHOP_NULLABLE_v2.7.3.3.sql`
+- 이유: 뷰티샵 회원가입 간소화를 위한 스키마 수정
+- 상태: ⏳ **수동 실행 필요** (Cloudflare Dashboard)
 
 ---
 

@@ -753,7 +753,12 @@
                 window.processRegister(formData).then(result => {
                     console.log('📬 processRegister 결과:', result);
                     if (result.success) {
-                        let message = '회원가입이 완료되었습니다!\n\n견적 신청 시 ' + state + ' ' + district + ' 지역의 업체에 견적이 전달됩니다.';
+                        let message = '회원가입이 완료되었습니다!';
+                        
+                        // 피부관리샵인 경우 추가 안내
+                        if (formData.user_type === 'shop') {
+                            message += '\n\n로그인 후 샵 대시보드에서 업체 정보를 등록해주세요.';
+                        }
                         
                         // 제휴 카페 정보가 있는 경우 추가 메시지
                         if (formData.naver_cafe_id) {
