@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>피부관리실 정보 등록 - beautycat</title>
+    <title>업체 회원가입 - beautycat</title>
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
@@ -21,20 +21,14 @@
             font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
         
-        input, textarea, select {
-            appearance: none;
-            -webkit-appearance: none;
-        }
-        
-        input:focus, textarea:focus, select:focus {
+        input:focus {
             outline: none;
             border-color: #ff2d92;
             box-shadow: 0 0 0 3px rgba(255, 45, 146, 0.1);
         }
         
-        /* 모바일 최적화 */
         @media (max-width: 640px) {
-            input, textarea, select, button {
+            input, button {
                 font-size: 16px;
                 min-height: 52px;
             }
@@ -43,449 +37,223 @@
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+    <header class="bg-white shadow-sm">
+        <div class="max-w-4xl mx-auto px-4 py-4">
             <a href="index.html" class="flex items-center">
                 <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
             </a>
-            <button onclick="logout()" class="text-sm text-gray-600 hover:text-gray-900">
-                <i class="fas fa-sign-out-alt mr-2"></i>로그아웃
-            </button>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-md mx-auto px-4 py-8">
         <!-- 안내 메시지 -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-3">
-                <i class="fas fa-store text-pink-500 mr-3"></i>피부관리실 정보 등록
-            </h1>
-            <p class="text-gray-600 mb-4">
-                고객에게 견적을 받으려면 피부관리실 정보를 등록해주세요. 
-                <span class="text-pink-600 font-medium">등록 완료 후 상담 요청을 받을 수 있습니다.</span>
-            </p>
-            
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div class="flex items-start">
-                    <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
-                    <div class="text-sm text-blue-800">
-                        <p class="font-semibold mb-1">📝 등록 후 혜택</p>
-                        <ul class="list-disc list-inside space-y-1">
-                            <li>우리 지역 고객의 상담 요청을 받을 수 있어요</li>
-                            <li>견적서를 보내고 예약을 확정할 수 있어요</li>
-                            <li>대표샵으로 신청하여 전화상담 서비스를 제공할 수 있어요</li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="mb-8 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-pink-100 rounded-full mb-4">
+                <i class="fas fa-store text-pink-500 text-2xl"></i>
             </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">
+                업체 회원가입
+            </h1>
+            <p class="text-gray-600 mb-2">
+                간단한 정보만 입력하세요
+            </p>
+            <p class="text-sm text-gray-500">
+                상세 정보는 가입 후 대시보드에서 등록하실 수 있습니다
+            </p>
         </div>
 
         <!-- 등록 폼 -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <form id="shop-register-form" class="p-6 space-y-6">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <form id="shop-register-form" class="space-y-4">
                 
-                <!-- 1. 기본 정보 -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">1</span>
-                        기본 정보
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                피부관리실명 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="shop-name" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 강남 프리미엄 스킨케어">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                대표자명 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="owner-name" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 김미영">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                사업자등록번호 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="business-number" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{5}"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="000-00-00000">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                영업신고증 번호 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="business-license-number" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 제2024-서울강남-0000호">
-                        </div>
-                    </div>
+                <!-- 이름 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        이름 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="name" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
+                           placeholder="홍길동">
                 </div>
 
-                <!-- 2. 연락처 정보 -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">2</span>
-                        연락처 정보
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                전화번호 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="tel" id="shop-phone" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="02-1234-5678">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                이메일 <span class="text-gray-500 text-xs">(자동입력)</span>
-                            </label>
-                            <input type="email" id="shop-email" readonly 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600">
-                        </div>
-                    </div>
+                <!-- 이메일 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        이메일 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="email" required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
+                           placeholder="example@email.com">
                 </div>
 
-                <!-- 3. 위치 정보 -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">3</span>
-                        위치 정보
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    시/도 <span class="text-red-500">*</span>
-                                </label>
-                                <select id="shop-state" required
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500">
-                                    <option value="">시/도를 선택해주세요</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    구/군 <span class="text-red-500">*</span>
-                                </label>
-                                <select id="shop-district" required disabled
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500 disabled:bg-gray-100">
-                                    <option value="">먼저 시/도를 선택해주세요</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                상세 주소 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="shop-address" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="동/읍/면, 도로명/지번, 건물명, 층수 등">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                영업시간 <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="business-hours" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 월-금 09:00-18:00, 토 09:00-15:00">
-                        </div>
-                    </div>
+                <!-- 비밀번호 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        비밀번호 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="password" id="password" required minlength="6"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
+                           placeholder="6자 이상 입력">
+                    <p class="text-xs text-gray-500 mt-1">최소 6자 이상 입력해주세요</p>
                 </div>
 
-                <!-- 4. 샵 소개 -->
-                <div class="border-b border-gray-200 pb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center mr-3 text-sm">4</span>
-                        샵 소개
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                대표 관리 <span class="text-red-500">*</span>
-                                <span class="text-xs text-gray-500">(고객에게 노출)</span>
-                            </label>
-                            <input type="text" id="representative-service" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 여드름 집중 관리">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                1회 관리 가격 <span class="text-red-500">*</span>
-                                <span class="text-xs text-gray-500">(고객에게 노출)</span>
-                            </label>
-                            <input type="text" id="service-price" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 150,000원">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                관리용 화장품 (브랜드)
-                            </label>
-                            <input type="text" id="cosmetic-brands"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 닥터자르트, 아이오페">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                주요 피부미용기기
-                            </label>
-                            <input type="text" id="beauty-equipment"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 울쎄라, 써마지">
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            샵 특징 및 차별 포인트 <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="shop-features" rows="3" required
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                  placeholder="우리 샵만의 특별한 장점과 차별화 포인트를 작성해주세요"></textarea>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                평 수
-                            </label>
-                            <input type="text" id="shop-size"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 30평">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                베드 수
-                            </label>
-                            <input type="text" id="bed-count"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 5대">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                직원 수
-                            </label>
-                            <input type="text" id="staff-count"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                   placeholder="예: 7명">
-                        </div>
-                    </div>
+                <!-- 비밀번호 확인 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        비밀번호 확인 <span class="text-red-500">*</span>
+                    </label>
+                    <input type="password" id="password-confirm" required minlength="6"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
+                           placeholder="비밀번호 재입력">
                 </div>
 
-                <!-- 5. 원장 소개 (선택) -->
-                <div class="pb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <span class="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center mr-3 text-sm">5</span>
-                        원장 소개 <span class="text-sm text-gray-500 ml-2">(선택사항)</span>
-                    </h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                주요 프로필
-                            </label>
-                            <textarea id="director-profile" rows="3"
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                      placeholder="원장님의 학력, 자격증, 전문 분야 등을 작성해주세요"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                주요 경력
-                            </label>
-                            <textarea id="director-experience" rows="3"
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pink-500" 
-                                      placeholder="주요 경력 사항과 근무 이력을 작성해주세요"></textarea>
+                <!-- 안내 메시지 -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-800">
+                            <p class="font-semibold mb-1">📝 가입 후 절차</p>
+                            <ol class="list-decimal list-inside space-y-1">
+                                <li><strong>대시보드 > 샵 정보</strong>에서 업체 정보 등록 (5분 소요)</li>
+                                <li>관리자 승인 (1-2 영업일)</li>
+                                <li>고객 상담 요청 받기 시작</li>
+                            </ol>
                         </div>
                     </div>
                 </div>
 
                 <!-- 제출 버튼 -->
-                <div class="pt-6 border-t border-gray-200">
-                    <button type="submit" 
-                            class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-4 px-6 rounded-lg font-semibold text-lg transition-all shadow-lg hover:shadow-xl">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        피부관리실 등록 완료
-                    </button>
-                    <p class="text-center text-sm text-gray-500 mt-3">
-                        등록 후 바로 고객 상담 요청을 받을 수 있어요
+                <button type="submit" 
+                        class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                    <i class="fas fa-check mr-2"></i>가입하기
+                </button>
+
+                <!-- 로그인 링크 -->
+                <div class="text-center pt-4 border-t border-gray-200">
+                    <p class="text-sm text-gray-600">
+                        이미 계정이 있으신가요? 
+                        <a href="login.html" class="text-pink-500 hover:text-pink-600 font-medium">로그인</a>
                     </p>
                 </div>
             </form>
         </div>
+
+        <!-- 추가 안내 -->
+        <div class="mt-6 text-center">
+            <p class="text-xs text-gray-500">
+                회원가입 시 <a href="legal/terms.html" class="text-pink-500 underline">이용약관</a> 및 
+                <a href="legal/privacy.html" class="text-pink-500 underline">개인정보처리방침</a>에 동의하게 됩니다.
+            </p>
+        </div>
     </main>
 
     <!-- Scripts -->
-    <script src="js/regional-matching.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/security-manager.js"></script>
+    <script src="js/api-helper.js"></script>
     <script src="js/auth.js"></script>
+    
     <script>
-        console.log('🏪 샵 등록 페이지 초기화');
-        
-        // 사용자 정보 로드
-        async function loadUserInfo() {
-            const userData = localStorage.getItem('userData');
-            if (!userData) {
-                alert('로그인이 필요합니다.');
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            const user = JSON.parse(userData);
-            
-            // 이메일 자동 입력
-            document.getElementById('shop-email').value = user.email || '';
-            
-            // 샵 회원이 아니면 접근 불가
-            if (user.user_type !== 'shop') {
-                alert('피부관리실 회원만 접근 가능합니다.');
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            console.log('✅ 사용자 정보 로드 완료:', user);
-        }
-        
-        // 지역 선택 드롭다운 초기화
-        function initializeRegionDropdowns() {
-            const stateSelect = document.getElementById('shop-state');
-            const districtSelect = document.getElementById('shop-district');
-            
-            if (typeof regionData === 'undefined') {
-                console.error('❌ regionData가 로드되지 않았습니다.');
-                return;
-            }
-            
-            // 시/도 옵션 추가
-            Object.keys(regionData).forEach(state => {
-                const option = document.createElement('option');
-                option.value = state;
-                option.textContent = state;
-                stateSelect.appendChild(option);
-            });
-            
-            // 시/도 선택 시 구/군 업데이트
-            stateSelect.addEventListener('change', function() {
-                districtSelect.innerHTML = '<option value="">구/군을 선택해주세요</option>';
-                districtSelect.disabled = false;
-                
-                const selectedState = this.value;
-                if (selectedState && regionData[selectedState]) {
-                    regionData[selectedState].forEach(district => {
-                        const option = document.createElement('option');
-                        option.value = district;
-                        option.textContent = district;
-                        districtSelect.appendChild(option);
-                    });
-                }
-            });
-            
-            console.log('✅ 지역 드롭다운 초기화 완료');
-        }
+        console.log('🏪 업체 간편 회원가입 페이지 초기화');
         
         // 폼 제출 처리
         document.getElementById('shop-register-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
-            // 필수 필드 검증
-            const requiredFields = [
-                'shop-name', 'owner-name', 'business-number', 'business-license-number',
-                'shop-phone', 'shop-state', 'shop-district', 'shop-address', 
-                'business-hours', 'representative-service', 'service-price', 'shop-features'
-            ];
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('password-confirm').value;
             
-            for (const fieldId of requiredFields) {
-                const field = document.getElementById(fieldId);
-                if (!field.value.trim()) {
-                    alert('모든 필수 항목을 입력해주세요.');
-                    field.focus();
-                    return;
-                }
-            }
-            
-            // 사업자등록번호 유효성 검사
-            const businessNumber = document.getElementById('business-number').value;
-            if (!/^\d{3}-\d{2}-\d{5}$/.test(businessNumber)) {
-                alert('사업자등록번호는 000-00-00000 형식으로 입력해주세요.');
-                document.getElementById('business-number').focus();
+            // 유효성 검증
+            if (!name || !email || !password || !passwordConfirm) {
+                alert('모든 필수 항목을 입력해주세요.');
                 return;
             }
             
-            // 데이터 수집
-            const shopData = {
-                name: document.getElementById('shop-name').value.trim(),
-                owner_name: document.getElementById('owner-name').value.trim(),
-                business_number: businessNumber,
-                business_license_number: document.getElementById('business-license-number').value.trim(),
-                phone: document.getElementById('shop-phone').value.trim(),
-                email: document.getElementById('shop-email').value.trim(),
-                state: document.getElementById('shop-state').value,
-                district: document.getElementById('shop-district').value,
-                address: document.getElementById('shop-address').value.trim(),
-                business_hours: document.getElementById('business-hours').value.trim(),
-                representative_service: document.getElementById('representative-service').value.trim(),
-                service_price: document.getElementById('service-price').value.trim(),
-                cosmetic_brands: document.getElementById('cosmetic-brands').value.trim() || null,
-                beauty_equipment: document.getElementById('beauty-equipment').value.trim() || null,
-                shop_features: document.getElementById('shop-features').value.trim(),
-                shop_size: document.getElementById('shop-size').value.trim() || null,
-                bed_count: document.getElementById('bed-count').value.trim() || null,
-                staff_count: document.getElementById('staff-count').value.trim() || null,
-                director_profile: document.getElementById('director-profile').value.trim() || null,
-                director_experience: document.getElementById('director-experience').value.trim() || null,
-                user_id: JSON.parse(localStorage.getItem('userData')).id,
-                status: 'active',
-                created_at: new Date().toISOString()
-            };
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
             
-            console.log('📤 샵 등록 요청:', shopData);
+            if (password.length < 6) {
+                alert('비밀번호는 최소 6자 이상이어야 합니다.');
+                return;
+            }
+            
+            // 이메일 형식 확인
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('올바른 이메일 형식을 입력해주세요.');
+                return;
+            }
             
             try {
-                // API 요청
-                const response = await fetch('tables/skincare_shops', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(shopData)
-                });
+                // 버튼 비활성화
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>가입 중...';
                 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('❌ API 에러:', errorText);
-                    throw new Error(`등록 실패: ${response.status}`);
+                // 사용자 데이터 준비
+                const userData = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    user_type: 'shop', // 업체 회원
+                    status: 'pending', // 승인 대기
+                    is_verified: false,
+                    created_at: Date.now()
+                };
+                
+                // auth.js의 processRegister 함수 사용
+                if (typeof processRegister === 'function') {
+                    await processRegister(userData);
+                } else {
+                    // auth.js가 없는 경우 직접 API 호출
+                    const response = await fetch('/tables/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('회원가입 처리 실패');
+                    }
+                    
+                    const result = await response.json();
+                    console.log('✅ 회원가입 성공:', result);
+                    
+                    // 로컬 스토리지에 임시 저장
+                    localStorage.setItem('userData', JSON.stringify({
+                        ...result,
+                        user_type: 'shop'
+                    }));
+                    
+                    // 성공 메시지
+                    alert('🎉 회원가입이 완료되었습니다!\n\n다음 단계: 대시보드에서 "샵 정보"를 등록해주세요.\n(등록 완료 후 고객의 상담 요청을 받을 수 있습니다)');
+                    
+                    // 대시보드로 이동
+                    window.location.href = 'shop-dashboard.html';
                 }
                 
-                const result = await response.json();
-                console.log('✅ 샵 등록 성공:', result);
-                
-                alert('🎉 피부관리실 정보가 성공적으로 등록되었습니다!\n\n이제 고객의 상담 요청을 받을 수 있습니다.');
-                window.location.href = 'shop-dashboard.html';
-                
             } catch (error) {
-                console.error('❌ 등록 오류:', error);
-                alert('등록 중 오류가 발생했습니다.\n다시 시도해주세요.\n\n오류: ' + error.message);
+                console.error('❌ 회원가입 오류:', error);
+                
+                // 버튼 복구
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-check mr-2"></i>가입하기';
+                
+                // 에러 메시지 표시
+                if (error.message.includes('이미 사용')) {
+                    alert('이미 사용 중인 이메일입니다.');
+                } else {
+                    alert('회원가입 중 오류가 발생했습니다.\n다시 시도해주세요.');
+                }
             }
-        });
-        
-        // 로그아웃
-        function logout() {
-            if (confirm('로그아웃 하시겠습니까?')) {
-                localStorage.removeItem('userData');
-                window.location.href = 'login.html';
-            }
-        }
-        
-        // 페이지 로드 시 초기화
-        window.addEventListener('DOMContentLoaded', function() {
-            loadUserInfo();
-            initializeRegionDropdowns();
         });
     </script>
 </body>

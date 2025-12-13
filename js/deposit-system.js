@@ -5,7 +5,6 @@ class DepositManagementSystem {
     constructor() {
         this.currentShopId = null;
         this.currentShopName = null;
-        this.platformFee = 0; // 무료 기간: 0원, 유료 전환 후: 1000원
         this.init();
     }
 
