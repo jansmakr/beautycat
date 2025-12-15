@@ -1256,6 +1256,7 @@
 
             <form id="quote-form" class="space-y-4">
                 <input type="hidden" id="quote-consultation-id">
+                <input type="hidden" id="quote-id">
                 
                 <!-- 안내 메시지 -->
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
@@ -1328,6 +1329,60 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 견적서 보기 모달 -->
+    <div id="view-quote-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">📄 견적서 상세</h3>
+                <button onclick="closeViewQuoteModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <input type="hidden" id="view-quote-consultation-id">
+                <input type="hidden" id="view-quote-id">
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">관리 종류</label>
+                            <input type="text" id="view-treatment-type" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-md" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">견적 가격</label>
+                            <div class="flex items-center">
+                                <input type="text" id="view-price" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-md" readonly>
+                                <span class="ml-2 text-gray-600">원</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">예상 소요시간</label>
+                            <div class="flex items-center">
+                                <input type="text" id="view-duration" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-md" readonly>
+                                <span class="ml-2 text-gray-600">분</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">상세 내용</label>
+                    <textarea id="view-description" rows="6" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md" readonly></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeViewQuoteModal()" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                        닫기
+                    </button>
+                    <button type="button" onclick="editQuote(document.getElementById('view-quote-id').value)" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600">
+                        <i class="fas fa-edit mr-1"></i>수정하기
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1647,7 +1702,7 @@
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
     <script src="js/auth.js"></script>
-    <script src="js/shop-dashboard.js"></script>
+    <script src="js/shop-dashboard.js?v=2.8.3"></script>
     <script src="js/slots-info-toggle.js"></script>
     <script src="js/deposit-system.js"></script>
 
