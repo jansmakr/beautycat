@@ -443,9 +443,7 @@ function displayRecentConsultations() {
                 <span class="px-2 py-1 text-xs rounded-full ${getStatusBadgeClass(consultation.status)}">
                     ${getStatusText(consultation.status)}
                 </span>
-                <button onclick="createQuote('${consultation.id}')" class="text-purple-600 hover:text-purple-700 text-sm">
-                    견적서 작성
-                </button>
+                ${getQuoteButton(consultation.id)}
             </div>
         </div>
     `).join('');
@@ -552,9 +550,7 @@ function displayConsultationsList() {
                     ` : ''}
                 </div>
                 <div class="flex flex-col space-y-2">
-                    <button onclick="createQuote('${consultation.id}')" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm">
-                        <i class="fas fa-file-invoice-dollar mr-1"></i>견적서 작성
-                    </button>
+                    ${getQuoteButtonLarge(consultation.id)}
                     <button onclick="openChat('${consultation.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
                         <i class="fas fa-comments mr-1"></i>채팅하기
                     </button>
@@ -691,6 +687,74 @@ function initializeRegionalSelection() {
     }
 }
 
+// 견적서 존재 여부 확인 및 버튼 생성
+function getQuoteButton(consultationId) {
+    const existingQuote = currentQuotes.find(q => q.consultation_id === consultationId);
+    if (existingQuote) {
+        return `<button onclick="viewQuote('${existingQuote.id}')" class="text-blue-600 hover:text-blue-700 text-sm">
+            견적서 보기
+        </button>`;
+    }
+    return `<button onclick="createQuote('${consultationId}')" class="text-purple-600 hover:text-purple-700 text-sm">
+        견적서 작성
+    </button>`;
+}
+
+function getQuoteButtonLarge(consultationId) {
+    const existingQuote = currentQuotes.find(q => q.consultation_id === consultationId);
+    if (existingQuote) {
+        return `<button onclick="viewQuote('${existingQuote.id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+            <i class="fas fa-eye mr-1"></i>견적서 보기
+        </button>`;
+    }
+    return `<button onclick="createQuote('${consultationId}')" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm">
+        <i class="fas fa-file-invoice-dollar mr-1"></i>견적서 작성
+    </button>`;
+}
+
+// 견적서 보기 모달 열기
+function viewQuote(quoteId) {
+    const quote = currentQuotes.find(q => q.id === quoteId);
+    if (!quote) {
+        alert('견적서를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 견적서 보기 모달 내용 설정
+    document.getElementById('view-quote-consultation-id').value = quote.consultation_id;
+    document.getElementById('view-quote-id').value = quote.id;
+    document.getElementById('view-treatment-type').value = quote.treatment_type || '';
+    document.getElementById('view-price').value = quote.price || '';
+    document.getElementById('view-duration').value = quote.duration || '';
+    document.getElementById('view-description').value = quote.description || '';
+    
+    // 모달 표시
+    document.getElementById('view-quote-modal').classList.remove('hidden');
+}
+
+// 견적서 보기 모달 닫기
+function closeViewQuoteModal() {
+    document.getElementById('view-quote-modal').classList.add('hidden');
+}
+
+// 견적서 수정 모드로 전환
+function editQuote(quoteId) {
+    closeViewQuoteModal();
+    const quote = currentQuotes.find(q => q.id === quoteId);
+    if (!quote) return;
+    
+    // 견적서 작성 모달에 기존 데이터 채우기
+    document.getElementById('quote-consultation-id').value = quote.consultation_id;
+    document.getElementById('quote-id').value = quote.id; // 수정 모드 표시
+    document.getElementById('treatment-type').value = quote.treatment_type || '';
+    document.getElementById('price').value = quote.price || '';
+    document.getElementById('duration').value = quote.duration || '';
+    document.getElementById('description').value = quote.description || '';
+    
+    // 모달 표시
+    document.getElementById('quote-modal').classList.remove('hidden');
+}
+
 // 견적서 작성 모달 열기
 function createQuote(consultationId) {
     const modal = document.getElementById('quote-modal');
@@ -699,6 +763,10 @@ function createQuote(consultationId) {
     // 폼 초기화
     form.reset();
     document.getElementById('quote-consultation-id').value = consultationId;
+    document.getElementById('quote-id').value = ''; // 새 견적서 (수정 모드 아님)
+    
+    // 폼 초기화
+    document.getElementById('quote-form').reset();
     
     // 모달 열기
     modal.classList.remove('hidden');
@@ -707,18 +775,23 @@ function createQuote(consultationId) {
 // 견적서 작성 모달 닫기
 function closeQuoteModal() {
     document.getElementById('quote-modal').classList.add('hidden');
+    document.getElementById('quote-form').reset();
+    document.getElementById('quote-id').value = ''; // 초기화
 }
 
 // 견적서 제출 처리
 async function handleQuoteSubmit(e) {
     e.preventDefault();
     
+    const quoteId = document.getElementById('quote-id').value; // 수정 모드 확인
     const consultationId = document.getElementById('quote-consultation-id').value;
     const treatmentDetails = document.getElementById('treatment-details').value;
     const price = parseInt(document.getElementById('quote-price').value);
     const duration = document.getElementById('duration').value;
     const availableDates = document.getElementById('available-dates').value;
     const additionalNotes = document.getElementById('additional-notes').value;
+    
+    const isEditMode = !!quoteId; // quoteId가 있으면 수정 모드
     
     try {
         // 견적서 데이터 생성
@@ -733,15 +806,21 @@ async function handleQuoteSubmit(e) {
             additional_notes: additionalNotes || '',
             status: 'sent',
             valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            created_at: Date.now(), // INTEGER 필수
             updated_at: Date.now()  // INTEGER 필수
         };
         
-        console.log('📤 견적서 전송 데이터:', quoteData);
+        if (!isEditMode) {
+            quoteData.created_at = Date.now(); // 새 견적서만 created_at 추가
+        }
         
-        // 견적서 저장
-        const response = await fetch('tables/quotes', {
-            method: 'POST',
+        console.log(`📤 견적서 ${isEditMode ? '수정' : '전송'} 데이터:`, quoteData);
+        
+        // 견적서 저장 또는 수정
+        const url = isEditMode ? `tables/quotes/${quoteId}` : 'tables/quotes';
+        const method = isEditMode ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -750,11 +829,11 @@ async function handleQuoteSubmit(e) {
         
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('❌ 견적서 저장 실패 응답:', errorText);
-            throw new Error(`견적서 저장 실패: ${errorText}`);
+            console.error(`❌ 견적서 ${isEditMode ? '수정' : '저장'} 실패 응답:`, errorText);
+            throw new Error(`견적서 ${isEditMode ? '수정' : '저장'} 실패: ${errorText}`);
         }
         
-        console.log('✅ 견적서 저장 성공');
+        console.log(`✅ 견적서 ${isEditMode ? '수정' : '저장'} 성공`);
         
         // 채팅 메시지로도 전송
         const messageData = {
@@ -776,7 +855,7 @@ async function handleQuoteSubmit(e) {
             body: JSON.stringify(messageData)
         });
         
-        showNotification('견적서가 성공적으로 전송되었습니다!', 'success');
+        showNotification(isEditMode ? '견적서가 성공적으로 수정되었습니다!' : '견적서가 성공적으로 전송되었습니다!', 'success');
         closeQuoteModal();
         
         // 데이터 새로고침
@@ -1214,6 +1293,9 @@ function showNotification(message, type = 'info') {
 window.showSection = showSection;
 window.toggleProfileMenu = toggleProfileMenu;
 window.createQuote = createQuote;
+window.viewQuote = viewQuote;
+window.closeViewQuoteModal = closeViewQuoteModal;
+window.editQuote = editQuote;
 window.closeQuoteModal = closeQuoteModal;
 window.filterConsultations = filterConsultations;
 window.openChat = openChat;
@@ -2503,14 +2585,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     shop_name: shopName,
                     title: title,
                     content: content,
-                    category: category || '일반공지',
-                    event_type: eventType || 'normal',
-                    slots_info: slotsInfo || '',
-                    discount_rate: discountRate || 0,
-                    is_published: isPublished,
-                    view_count: 0,
-                    state: state || '',
-                    district: district || ''
+                    priority: 'normal', // 우선순위 (urgent, important, normal)
+                    is_published: isPublished ? 1 : 0, // INTEGER로 변환
+                    view_count: 0
+                    // state, district 필드 제거 (D1 스키마에 없음)
+                    // category, event_type, slots_info, discount_rate 제거 (D1 스키마에 없음)
                 }
                 
                 console.log('Sending announcement data:', announcementData);
