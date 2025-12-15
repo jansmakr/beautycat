@@ -287,9 +287,19 @@ async function loadConsultationRequests() {
                 const consultState = consultation.state || consultation.province || '';
                 const consultDistrict = consultation.district || consultation.city || '';
                 
-                // 지역 정보가 없는 견적 요청은 제외
-                if (!consultState || !consultDistrict) {
+                // 개발 환경에서는 지역 정보 없어도 표시 (테스트용)
+                const isProduction = window.location.hostname === 'beautycat.kr' || 
+                                    window.location.hostname.includes('beautycat.pages.dev');
+                
+                // 프로덕션: 지역 정보 필수, 개발: 지역 정보 선택
+                if (isProduction && (!consultState || !consultDistrict)) {
                     return false;
+                }
+                
+                // 지역 정보가 없으면 모든 샵에게 표시 (개발 환경)
+                if (!consultState || !consultDistrict) {
+                    console.log('⚠️ 지역 정보 없는 상담 요청 (테스트 데이터):', consultation.customer_name);
+                    return true;
                 }
                 
                 // 지역 매칭 로직 개선
