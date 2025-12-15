@@ -4,6 +4,25 @@ let currentConsultations = [];
 let currentQuotes = [];
 let subscriptionData = null;
 
+// 안전한 JSON 파싱 함수
+function safeJSONParse(value, fallback = []) {
+    if (!value) return fallback;
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'object') return fallback;
+    
+    try {
+        // JSON 문자열 파싱 시도
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : fallback;
+    } catch (e) {
+        // JSON 파싱 실패 시 쉼표로 분리된 문자열로 처리
+        if (typeof value === 'string') {
+            return value.split(',').map(s => s.trim()).filter(s => s);
+        }
+        return fallback;
+    }
+}
+
 // DOM 로드 완료 후 초기화
 document.addEventListener('DOMContentLoaded', function() {
     initializeShopDashboard();
@@ -554,13 +573,13 @@ function displayConsultationsList() {
                         ${consultation.treatment_types ? `
                         <div class="bg-purple-50 p-3 rounded-lg">
                             <strong class="text-purple-900">💆 관심 관리:</strong>
-                            <span class="text-purple-700">${typeof consultation.treatment_types === 'string' ? JSON.parse(consultation.treatment_types || '[]').join(', ') : (consultation.treatment_types || []).join(', ')}</span>
+                            <span class="text-purple-700">${safeJSONParse(consultation.treatment_types).join(', ')}</span>
                         </div>
                         ` : ''}
                         ${consultation.skin_concerns ? `
                         <div class="bg-pink-50 p-3 rounded-lg">
                             <strong class="text-pink-900">😟 피부 고민:</strong>
-                            <span class="text-pink-700">${typeof consultation.skin_concerns === 'string' ? JSON.parse(consultation.skin_concerns || '[]').join(', ') : (consultation.skin_concerns || []).join(', ')}</span>
+                            <span class="text-pink-700">${safeJSONParse(consultation.skin_concerns).join(', ')}</span>
                         </div>
                         ` : ''}
                         ${consultation.additional_notes ? `
