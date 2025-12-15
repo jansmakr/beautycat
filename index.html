@@ -4100,20 +4100,23 @@
                     console.log('🔍 선택된 treatments:', treatments);
                     console.log('🔍 treatments 타입:', typeof treatments, Array.isArray(treatments));
                     
+                    // 피부 고민 수집
+                    const skinConcerns = Array.from(document.querySelectorAll('input[name="skin_concern"]:checked'))
+                        .map(cb => cb.value);
+                    
                     // 추가 정보를 JSON으로 저장
                     const additionalInfo = {
-                        budget: document.getElementById('budget').value,
-                        skin_condition: document.getElementById('skinCondition').value,
-                        notes: document.getElementById('importantFactors').value,
+                        budget: document.getElementById('budget') ? document.getElementById('budget').value : '',
+                        skin_condition: document.getElementById('skinCondition') ? document.getElementById('skinCondition').value : '',
+                        notes: document.getElementById('importantFactors') ? document.getElementById('importantFactors').value : '',
+                        age_range: document.getElementById('ageRange') ? document.getElementById('ageRange').value : '',
+                        budget_range: document.getElementById('budgetRange') ? document.getElementById('budgetRange').value : '',
+                        preferred_schedule: document.getElementById('preferredSchedule') ? document.getElementById('preferredSchedule').value : '',
                         customer_type: isLoggedIn ? 'member' : 'guest',
                         customer_email: isLoggedIn ? currentUser.email : null,
                         state: document.getElementById('customerState').value,
                         district: document.getElementById('customerDistrict').value
                     };
-                    
-                    // consultations 테이블 스키마에 맞춤
-                    const skinConcernsArray = additionalInfo.skin_concerns ? 
-                        additionalInfo.skin_concerns.split(',').map(s => s.trim()).filter(s => s) : [];
                     
                     // ⚠️ 중요: D1 array 타입은 텍스트로 저장되므로 쉼표로 구분
                     // JSON 배열이 아닌 "트러블관리,리프팅" 형식으로 저장
@@ -4124,11 +4127,13 @@
                         state: document.getElementById('customerState').value,
                         district: document.getElementById('customerDistrict').value,
                         treatment_types: treatments.length > 0 ? treatments.join(',') : '', // "트러블관리,리프팅" 형식
-                        skin_concerns: skinConcernsArray.length > 0 ? skinConcernsArray.join(',') : '', // 쉼표로 구분
-                        age_range: additionalInfo.age_range || '',
-                        budget_range: additionalInfo.budget_range || '',
-                        preferred_schedule: additionalInfo.preferred_time || '',
-                        additional_notes: additionalInfo.notes || '',
+                        skin_concerns: skinConcerns.length > 0 ? skinConcerns.join(',') : '', // 쉼표로 구분
+                        age_range: additionalInfo.age_range || additionalInfo.budget || '', // budget 필드도 대체 가능
+                        budget_range: additionalInfo.budget_range || additionalInfo.budget || '',
+                        preferred_schedule: additionalInfo.preferred_schedule || '',
+                        additional_notes: additionalInfo.notes || additionalInfo.skin_condition || '',
+                        skin_photos: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
+                        image_urls: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
                         status: 'pending',
                         submission_date: new Date().toISOString()
                     };
