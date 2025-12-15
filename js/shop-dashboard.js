@@ -539,25 +539,40 @@ function displayConsultationsList() {
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <div class="flex items-center mb-2">
-                        <h3 class="text-lg font-semibold text-gray-900 mr-3">${consultation.customer_name}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mr-3">${consultation.customer_name || 'Unknown'}</h3>
                         <span class="px-3 py-1 text-sm rounded-full ${getStatusBadgeClass(consultation.status)}">
                             ${getStatusText(consultation.status)}
                         </span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
-                        <div><strong>지역:</strong> ${consultation.region}</div>
-                        <div><strong>관심 프로그램:</strong> ${formatServicesDisplay(consultation)}</div>
-                        <div><strong>중요사항:</strong> ${consultation.important_factors || '미설정'}</div>
-                        <div><strong>연락처:</strong> <span class="text-gray-500 italic">개인정보 보호</span></div>
-                        <div><strong>선호 일정:</strong> ${consultation.preferred_schedule || '미설정'}</div>
-                        <div><strong>신청일:</strong> ${formatDate(consultation.created_at)}</div>
-                    </div>
-                    ${consultation.consultation_text ? `
-                        <div class="bg-gray-50 p-3 rounded-lg text-sm text-gray-700 mb-4">
-                            <strong>상담 내용:</strong><br>
-                            ${consultation.consultation_text}
+                    <div class="space-y-3 text-sm text-gray-700 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div><strong class="text-gray-900">📍 지역:</strong> ${consultation.state || ''} ${consultation.district || ''}</div>
+                            <div><strong class="text-gray-900">🗓️ 선호 일정:</strong> ${consultation.preferred_schedule || '미설정'}</div>
+                            <div><strong class="text-gray-900">💰 예산:</strong> ${consultation.budget_range || '미설정'}</div>
+                            <div><strong class="text-gray-900">👤 나이대:</strong> ${consultation.age_range || '미설정'}</div>
                         </div>
-                    ` : ''}
+                        ${consultation.treatment_types ? `
+                        <div class="bg-purple-50 p-3 rounded-lg">
+                            <strong class="text-purple-900">💆 관심 관리:</strong>
+                            <span class="text-purple-700">${typeof consultation.treatment_types === 'string' ? JSON.parse(consultation.treatment_types || '[]').join(', ') : (consultation.treatment_types || []).join(', ')}</span>
+                        </div>
+                        ` : ''}
+                        ${consultation.skin_concerns ? `
+                        <div class="bg-pink-50 p-3 rounded-lg">
+                            <strong class="text-pink-900">😟 피부 고민:</strong>
+                            <span class="text-pink-700">${typeof consultation.skin_concerns === 'string' ? JSON.parse(consultation.skin_concerns || '[]').join(', ') : (consultation.skin_concerns || []).join(', ')}</span>
+                        </div>
+                        ` : ''}
+                        ${consultation.additional_notes ? `
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <strong class="text-blue-900">📝 추가 요청사항:</strong><br>
+                            <span class="text-blue-700">${consultation.additional_notes}</span>
+                        </div>
+                        ` : ''}
+                        <div class="text-xs text-gray-500">
+                            <i class="fas fa-clock mr-1"></i> 신청일: ${formatDate(consultation.created_at)}
+                        </div>
+                    </div>
                 </div>
                 <div class="flex flex-col space-y-2">
                     ${getQuoteButtonLarge(consultation.id)}
@@ -1001,6 +1016,26 @@ function updateShopInfoForm() {
 async function handleShopInfoUpdate(e) {
     e.preventDefault();
     
+    // 🔥 1. 지역 정보 필수 검증 (최우선)
+    const stateValue = document.getElementById('shop-state')?.value || '';
+    const districtValue = document.getElementById('shop-district')?.value || '';
+    
+    if (!stateValue || !districtValue) {
+        showNotification(
+            '⚠️ 지역 정보는 필수입니다!\n\n' +
+            `시/도: ${stateValue || '미선택'}\n` +
+            `구/군: ${districtValue || '미선택'}\n\n` +
+            '지역 정보를 입력해야 해당 지역 고객의 견적 요청을 받을 수 있습니다.',
+            'error',
+            8000
+        );
+        
+        // 지역 선택 필드로 스크롤
+        document.getElementById('shop-state')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('shop-state')?.focus();
+        return; // 저장 중단
+    }
+    
     const formData = new FormData(e.target);
     const specialties = [];
     document.querySelectorAll('input[name="specialties"]:checked').forEach(checkbox => {
@@ -1018,11 +1053,11 @@ async function handleShopInfoUpdate(e) {
         email: currentUser.email,
         user_type: 'shop',
         
-        // 지역 정보 (다중 필드 지원)
-        state: document.getElementById('shop-state')?.value || '',
-        district: document.getElementById('shop-district')?.value || '',
-        shop_state: document.getElementById('shop-state')?.value || '',
-        shop_district: document.getElementById('shop-district')?.value || '',
+        // 지역 정보 (다중 필드 지원) - 이미 검증 완료
+        state: stateValue,
+        district: districtValue,
+        shop_state: stateValue,
+        shop_district: districtValue,
         
         address: formData.get('shop-address') || document.getElementById('shop-address')?.value || '',
         shop_address: formData.get('shop-address') || document.getElementById('shop-address')?.value || '',
@@ -1092,7 +1127,13 @@ async function handleShopInfoUpdate(e) {
         }
         
         if (response.ok) {
-            showNotification('업체 정보가 성공적으로 저장되었습니다.', 'success');
+            showNotification(
+                `✅ 업체 정보가 저장되었습니다!\n\n` +
+                `지역: ${stateValue} ${districtValue}\n` +
+                `해당 지역 고객의 견적 요청을 수신합니다.`,
+                'success',
+                5000
+            );
             
             // currentShop 객체 업데이트
             currentShop = { ...currentShop, ...updateData };

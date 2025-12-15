@@ -909,6 +909,40 @@ function editShopFromView() {
 // Approve shop (placeholder)
 async function approveShop(shopId) {
     try {
+        // 1. 샵 정보 먼저 가져오기 (지역 검증용)
+        const shopResponse = await fetch(`tables/skincare_shops/${shopId}`);
+        if (!shopResponse.ok) {
+            throw new Error('샵 정보를 가져올 수 없습니다.');
+        }
+        const shop = await shopResponse.json();
+        
+        // 2. 지역 정보 검증 (필수)
+        if (!shop.state || !shop.district) {
+            showNotification(
+                `⚠️ 승인 불가: 지역 정보가 없습니다.\n\n` +
+                `샵명: ${shop.name}\n` +
+                `시/도: ${shop.state || '미입력'}\n` +
+                `구/군: ${shop.district || '미입력'}\n\n` +
+                `해당 샵에 연락하여 지역 정보를 입력하도록 안내해주세요.`,
+                'error',
+                10000 // 10초 표시
+            );
+            console.error('❌ 승인 거부:', {
+                shop_id: shopId,
+                shop_name: shop.name,
+                state: shop.state,
+                district: shop.district,
+                reason: '지역 정보 누락'
+            });
+            return; // 승인 중단
+        }
+        
+        // 3. 지역 정보 확인 완료 - 승인 진행
+        console.log('✅ 지역 정보 검증 완료:', {
+            shop_name: shop.name,
+            region: `${shop.state} ${shop.district}`
+        });
+        
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
             method: 'PATCH',
             headers: {
@@ -918,7 +952,14 @@ async function approveShop(shopId) {
         });
         
         if (response.ok) {
-            showNotification('피부관리실의 플랫폼 입점이 승인되었습니다.', 'success');
+            showNotification(
+                `✅ 플랫폼 입점 승인 완료!\n\n` +
+                `샵명: ${shop.name}\n` +
+                `지역: ${shop.state} ${shop.district}\n\n` +
+                `해당 지역의 고객 견적 요청을 수신합니다.`,
+                'success',
+                8000
+            );
             loadShops(); // Refresh shops list
         } else {
             throw new Error('플랫폼 입점 승인 실패');
