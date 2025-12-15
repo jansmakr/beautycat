@@ -1912,6 +1912,14 @@
                 
                 <!-- 사용자 메뉴 -->
                 <div id="userMenu" class="flex items-center gap-2" style="position: relative; z-index: 1001 !important;">
+                    <!-- 로그인 전 -->
+                    <button id="registerBtn" class="btn-primary touch-feedback mobile-auth-btn" onclick="location.href='register.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.625rem 1.25rem; font-size: 0.9375rem; font-weight: 600; border-radius: 1.75rem; border: none; position: relative; z-index: 1002 !important; min-width: 75px; height: 42px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); transition: all 0.2s;">
+                        가입
+                    </button>
+                    <button id="loginBtn" class="btn-secondary touch-feedback mobile-auth-btn" onclick="location.href='login.html'" style="background: white; color: #374151; border: 2px solid #667eea !important; padding: 0.625rem 1.25rem; font-size: 0.9375rem; font-weight: 600; border-radius: 1.75rem; position: relative; z-index: 1002 !important; min-width: 75px; height: 42px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                        로그인
+                    </button>
+                    
                     <!-- 로그인 후 (숨김 상태로 시작) -->
                     <div id="loggedInMenu" class="hidden items-center gap-2">
                         <!-- 홈 버튼 -->
@@ -2743,7 +2751,7 @@
     <script src="js/legal-contents.js?v=2.4.1" defer></script>
     <script src="js/config.js?v=2.5.4" defer></script>
     <script src="js/logger.js?v=2.5.4" defer></script>
-    <script src="js/main.js?v=2.8.8" defer></script>
+    <script src="js/main.js?v=2.8.11" defer></script>
     <script src="js/auth.js?v=2.5.4" defer></script>
     <script src="js/regional-matching.js?v=2.5.4" defer></script>
     <script src="js/announcement-sidebar.js?v=2.5.10" defer></script>
