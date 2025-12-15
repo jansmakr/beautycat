@@ -12,7 +12,7 @@ export default {
         // CORS 헤더 설정
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         };
         
@@ -110,9 +110,14 @@ async function handleTableAPI(request, env, method, tableName, recordId, corsHea
                 return await createRecord(env, tableName, createData, corsHeaders);
                 
             case 'PUT':
-                // 레코드 업데이트
+                // 레코드 전체 업데이트
                 const updateData = await request.json();
                 return await updateRecord(env, tableName, recordId, updateData, corsHeaders);
+                
+            case 'PATCH':
+                // 레코드 부분 업데이트
+                const patchData = await request.json();
+                return await updateRecord(env, tableName, recordId, patchData, corsHeaders);
                 
             case 'DELETE':
                 // 레코드 삭제
@@ -291,7 +296,7 @@ async function getTableSchema(tableName) {
             fields: ['id', 'email', 'name', 'user_type', 'phone', 'status', 'created_at', 'updated_at']
         },
         consultations: {
-            fields: ['id', 'customer_name', 'customer_phone', 'customer_email', 'state', 'district', 'status', 'created_at']
+            fields: ['id', 'customer_name', 'customer_phone', 'customer_email', 'state', 'district', 'treatment_types', 'skin_concerns', 'age_range', 'budget_range', 'preferred_schedule', 'additional_notes', 'skin_photos', 'image_urls', 'status', 'created_at', 'updated_at']
         },
         skincare_shops: {
             fields: ['id', 'name', 'owner_name', 'phone', 'email', 'state', 'district', 'status', 'created_at']
