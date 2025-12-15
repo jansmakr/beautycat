@@ -3954,6 +3954,85 @@
             checkbox.checked = !checkbox.checked;
             label.classList.toggle('selected', checkbox.checked);
         }
+        
+        // 이미지 리사이즈 함수 (DB 저장 크기 최적화)
+        function resizeImage(dataUrl, maxWidth, maxHeight, quality) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // 비율 유지하면서 리사이즈
+                    if (width > maxWidth || height > maxHeight) {
+                        const ratio = Math.min(maxWidth / width, maxHeight / height);
+                        width = width * ratio;
+                        height = height * ratio;
+                    }
+                    
+                    // Canvas에 그리기
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Data URL로 변환 (JPEG, 품질 조정)
+                    const resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    resolve(resizedDataUrl);
+                };
+                img.src = dataUrl;
+            });
+        }
+        
+        // 피부 사진 업로드 처리 (리사이즈 포함)
+        async function handleSkinPhotoUpload(input) {
+            const files = input.files;
+            if (!files || files.length === 0) return;
+            
+            // 최대 5개 제한
+            if (files.length > 5) {
+                alert('최대 5개까지 업로드 가능합니다.');
+                return;
+            }
+            
+            // 각 파일 처리
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // 파일 크기 체크 (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`${file.name}: 파일 크기는 5MB 이하여야 합니다.`);
+                    continue;
+                }
+                
+                // 이미지 파일 체크
+                if (!file.type.startsWith('image/')) {
+                    alert(`${file.name}: 이미지 파일만 업로드 가능합니다.`);
+                    continue;
+                }
+                
+                // 파일을 Data URL로 변환 후 리사이즈
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        // 이미지 리사이즈 (최대 600x600, 품질 0.6 = 매우 작게)
+                        const resizedDataUrl = await resizeImage(e.target.result, 600, 600, 0.6);
+                        
+                        // 전역 배열에 추가
+                        if (typeof uploadedSkinPhotos === 'undefined') {
+                            window.uploadedSkinPhotos = [];
+                        }
+                        uploadedSkinPhotos.push(resizedDataUrl);
+                        
+                        console.log(`✅ 피부 사진 ${uploadedSkinPhotos.length}개 업로드 완료`);
+                    } catch (error) {
+                        console.error('이미지 리사이즈 오류:', error);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
         // 페이지 로드 후 실행
         document.addEventListener('DOMContentLoaded', function() {

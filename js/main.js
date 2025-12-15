@@ -1,6 +1,6 @@
 // 전역 변수
 let uploadedImageUrl = null;
-let uploadedSkinPhotos = []; // 피부 사진 업로드용 배열
+let uploadedSkinPhotos = []; // 피부 사진 업로드용 배열 (v2.8.12)
 
 // 지역 데이터
 const regionData = {
@@ -185,26 +185,29 @@ function handleImageFile(file) {
         return;
     }
     
-    // 파일을 Data URL로 변환
+    // 파일을 Data URL로 변환 (리사이즈 포함)
     const reader = new FileReader();
     reader.onload = function(e) {
-        uploadedImageUrl = e.target.result;
-        
-        // 업로드 영역에 이미지 미리보기 표시
-        const imageUploadArea = document.getElementById('imageUploadArea');
-        if (imageUploadArea) {
-            imageUploadArea.innerHTML = `
-                <div class="text-center">
-                    <img src="${uploadedImageUrl}" alt="업로드된 이미지" class="max-w-full max-h-32 mx-auto mb-2 rounded">
-                    <p class="text-sm text-gray-600">이미지가 업로드되었습니다.</p>
-                    <button type="button" onclick="removeUploadedImage()" class="mt-2 text-red-500 hover:text-red-700 text-sm">
-                        <i class="fas fa-trash mr-1"></i>삭제
-                    </button>
-                </div>
-            `;
-        }
-        
-        showNotification('이미지가 성공적으로 업로드되었습니다.', 'success');
+        // 이미지 리사이즈 (최대 800x800, 품질 0.7)
+        resizeImage(e.target.result, 800, 800, 0.7).then(resizedDataUrl => {
+            uploadedImageUrl = resizedDataUrl;
+            
+            // 업로드 영역에 이미지 미리보기 표시
+            const imageUploadArea = document.getElementById('imageUploadArea');
+            if (imageUploadArea) {
+                imageUploadArea.innerHTML = `
+                    <div class="text-center">
+                        <img src="${uploadedImageUrl}" alt="업로드된 이미지" class="max-w-full max-h-32 mx-auto mb-2 rounded">
+                        <p class="text-sm text-gray-600">이미지가 업로드되었습니다.</p>
+                        <button type="button" onclick="removeUploadedImage()" class="mt-2 text-red-500 hover:text-red-700 text-sm">
+                            <i class="fas fa-trash mr-1"></i>삭제
+                        </button>
+                    </div>
+                `;
+            }
+            
+            showNotification('이미지가 성공적으로 업로드되었습니다.', 'success');
+        });
     };
     
     reader.onerror = function() {
@@ -212,6 +215,36 @@ function handleImageFile(file) {
     };
     
     reader.readAsDataURL(file);
+}
+
+// 이미지 리사이즈 함수
+function resizeImage(dataUrl, maxWidth, maxHeight, quality) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function() {
+            let width = img.width;
+            let height = img.height;
+            
+            // 비율 유지하면서 리사이즈
+            if (width > maxWidth || height > maxHeight) {
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width = width * ratio;
+                height = height * ratio;
+            }
+            
+            // Canvas에 그리기
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Data URL로 변환 (JPEG, 품질 0.7)
+            const resizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            resolve(resizedDataUrl);
+        };
+        img.src = dataUrl;
+    });
 }
 
 // 업로드된 이미지 제거
