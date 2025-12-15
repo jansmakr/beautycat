@@ -1,4 +1,4 @@
-// Admin Dashboard JavaScript (auth.js?�서 ?�의??currentUser�??�용)
+// Admin Dashboard JavaScript (auth.js에서 정의된 currentUser를 사용)
 let currentSection = 'dashboard';
 let allUsers = [];
 let allShops = [];
@@ -26,25 +26,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Check admin authentication  
 function checkAdminAuth() {
-    // 관리자 ?�증 ?�인 (비�?번호 5874�?로그?�한 경우)
+    // 관리자 인증 확인 (비밀번호 5874로 로그인한 경우)
     const adminAuth = localStorage.getItem('adminAuth');
     const adminLoginTime = localStorage.getItem('adminLoginTime');
     
-    // 24?�간 ?�션 ?��? (24 * 60 * 60 * 1000 = 86400000ms)
+    // 24시간 세션 유지 (24 * 60 * 60 * 1000 = 86400000ms)
     const sessionExpiry = 24 * 60 * 60 * 1000;
     const currentTime = new Date().getTime();
     
     if (adminAuth === 'true' && adminLoginTime && (currentTime - parseInt(adminLoginTime)) < sessionExpiry) {
-        // 관리자 ?�션 ?�효
+        // 관리자 세션 유효
         currentUser = {
             id: 'admin_5874',
             email: 'admin@beautycat.com',
             name: 'beautycat 관리자',
             user_type: 'admin'
         };
-        console.log('관리자 ?�증 ?�공');
+        console.log('관리자 인증 성공');
     } else {
-        // ?�션???�거??만료??        alert('관리자 권한???�요?�니?? 로그???�이지�??�동?�니??');
+        // 세션이 없거나 만료됨
+        alert('관리자 권한이 필요합니다. 로그인 페이지로 이동합니다.');
         localStorage.removeItem('adminAuth');
         localStorage.removeItem('adminLoginTime');
         window.location.href = 'index.html';
@@ -153,7 +154,7 @@ async function loadDashboardData() {
         
     } catch (error) {
         console.error('Dashboard data loading error:', error);
-        showNotification('?�?�보???�이?��? 불러?�는???�패?�습?�다.', 'error');
+        showNotification('대시보드 데이터를 불러오는데 실패했습니다.', 'error');
     }
 }
 
@@ -183,7 +184,7 @@ function loadRecentActivities() {
     recentConsultations.forEach(consultation => {
         activities.push({
             type: 'consultation',
-            message: `${consultation.name}?�이 ?�담???�청?�습?�다. (${consultation.region})`,
+            message: `${consultation.name}님이 상담을 요청했습니다. (${consultation.region})`,
             time: formatDate(consultation.created_at),
             icon: 'fas fa-comments text-blue-600'
         });
@@ -197,7 +198,7 @@ function loadRecentActivities() {
     recentShops.forEach(shop => {
         activities.push({
             type: 'shop',
-            message: `${shop.business_name}???�체�??�록?�습?�다.`,
+            message: `${shop.business_name}이 업체로 등록했습니다.`,
             time: formatDate(shop.created_at),
             icon: 'fas fa-store text-green-600'
         });
@@ -208,7 +209,7 @@ function loadRecentActivities() {
     const limitedActivities = activities.slice(0, 8);
     
     if (limitedActivities.length === 0) {
-        activitiesContainer.innerHTML = '<p class="text-gray-500">최근 ?�동???�습?�다.</p>';
+        activitiesContainer.innerHTML = '<p class="text-gray-500">최근 활동이 없습니다.</p>';
         return;
     }
     
@@ -226,30 +227,30 @@ function loadRecentActivities() {
 // Load users
 async function loadUsers(updateTable = true) {
     try {
-        console.log('?�� ?�용???�이??로딩 �?..');
+        console.log('👥 사용자 데이터 로딩 중...');
         const response = await fetch('tables/users?limit=1000&sort=created_at');
-        console.log('?�� ?�답 ?�태:', response.status, response.statusText);
+        console.log('📡 응답 상태:', response.status, response.statusText);
         
         const data = await response.json();
-        console.log('?�� ?�체 ?�이??', data);
-        console.log('?�� ?�용????', data.total, '�?);
+        console.log('📊 전체 데이터:', data);
+        console.log('👥 사용자 수:', data.total, '명');
         
         allUsers = data.data || [];
-        console.log('??allUsers 배열:', allUsers.length, '�?);
+        console.log('✅ allUsers 배열:', allUsers.length, '명');
         
         if (updateTable) {
-            console.log('?�� ?�이�??�데?�트 ?�작');
+            console.log('🔄 테이블 업데이트 시작');
             displayUsers(allUsers);
         }
     } catch (error) {
-        console.error('??Users loading error:', error);
+        console.error('❌ Users loading error:', error);
         
-        // API ?�패???�모 ?�이???�용
+        // API 실패시 데모 데이터 사용
         allUsers = [
             {
                 id: 'demo_customer_1',
                 email: 'demo@customer.com',
-                name: '?�모 고객',
+                name: '데모 고객',
                 phone: '010-1111-1111',
                 user_type: 'customer',
                 status: 'active',
@@ -259,7 +260,7 @@ async function loadUsers(updateTable = true) {
             {
                 id: 'demo_shop_1',
                 email: 'demo@shop.com',
-                name: '?�모 ?�점',
+                name: '데모 상점',
                 phone: '010-2222-2222',
                 user_type: 'shop',
                 status: 'active',
@@ -286,28 +287,28 @@ async function loadUsers(updateTable = true) {
 
 // Display users in table
 function displayUsers(users) {
-    console.log('?���?displayUsers ?�출?? ?�용????', users.length);
+    console.log('🖼️ displayUsers 호출됨, 사용자 수:', users.length);
     
     const tableBody = document.getElementById('users-table');
     
     if (!tableBody) {
-        console.error('??users-table ?�소�?찾을 ???�습?�다!');
+        console.error('❌ users-table 요소를 찾을 수 없습니다!');
         return;
     }
     
-    console.log('??users-table ?�소 찾음');
+    console.log('✅ users-table 요소 찾음');
     
     if (users.length === 0) {
-        console.log('?�️ ?�시???�용?��? ?�습?�다');
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">?�록???�용?��? ?�습?�다.</td></tr>';
+        console.log('⚠️ 표시할 사용자가 없습니다');
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">등록된 사용자가 없습니다.</td></tr>';
         return;
     }
     
-    console.log('?�� ?�이�?HTML ?�성 �?..');
+    console.log('🔨 테이블 HTML 생성 중...');
     tableBody.innerHTML = users.map(user => {
         const userTypeLabels = {
             'customer': '고객',
-            'shop': '?�체',
+            'shop': '업체',
             'admin': '관리자'
         };
         
@@ -319,25 +320,25 @@ function displayUsers(users) {
         
         const status = user.status || 'active';
         
-        // 비�?번호 ?�시 (?�시??경우 ?��?�? ?�문??경우 ?�체)
+        // 비밀번호 표시 (해시된 경우 일부만, 평문인 경우 전체)
         let passwordDisplay = '';
-        // password??:가 ?�함?�어 ?�으�??�시??비�?번호 (hash:salt ?�식)
+        // password에 :가 포함되어 있으면 해시된 비밀번호 (hash:salt 형식)
         if (user.password && user.password.includes(':')) {
-            // ?�시??비�?번호 - ?��?�??�시
+            // 해시된 비밀번호 - 일부만 표시
             const [hash] = user.password.split(':');
             passwordDisplay = `
-                <span class="text-gray-400 text-xs" title="?�시??비�?번호 (hash:salt)">
+                <span class="text-gray-400 text-xs" title="해시된 비밀번호 (hash:salt)">
                     ${hash.substring(0, 12)}...
                 </span>
-                <button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900 text-xs" title="?�체 ?�시 복사">
+                <button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900 text-xs" title="전체 해시 복사">
                     <i class="fas fa-copy"></i>
                 </button>
             `;
         } else {
-            // ?�문 비�?번호 - ?�체 ?�시
+            // 평문 비밀번호 - 전체 표시
             passwordDisplay = `
                 <span class="font-mono text-sm" id="password-${user.id}">${user.password || '-'}</span>
-                <button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900" title="비�?번호 복사">
+                <button onclick="copyPassword('${user.id}')" class="ml-2 text-blue-600 hover:text-blue-900" title="비밀번호 복사">
                     <i class="fas fa-copy"></i>
                 </button>
             `;
@@ -371,7 +372,7 @@ function displayUsers(users) {
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[status]}">
-                        ${status === 'active' ? '?�성' : status === 'inactive' ? '비활?? : '?��?}
+                        ${status === 'active' ? '활성' : status === 'inactive' ? '비활성' : '대기'}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -379,7 +380,7 @@ function displayUsers(users) {
                         보기
                     </button>
                     <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900">
-                        ?�정
+                        수정
                     </button>
                 </td>
             </tr>
@@ -408,19 +409,19 @@ function refreshUsers() {
 function copyPassword(userId) {
     const user = allUsers.find(u => u.id === userId);
     if (!user || !user.password) {
-        alert('비�?번호�?찾을 ???�습?�다.');
+        alert('비밀번호를 찾을 수 없습니다.');
         return;
     }
     
-    // ?�립보드??복사
+    // 클립보드에 복사
     navigator.clipboard.writeText(user.password).then(() => {
-        // ?�공 ?�림
+        // 성공 알림
         const notification = document.createElement('div');
         notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
         notification.innerHTML = `
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
-                <span>비�?번호가 ?�립보드??복사?�었?�니??/span>
+                <span>비밀번호가 클립보드에 복사되었습니다</span>
             </div>
         `;
         document.body.appendChild(notification);
@@ -429,8 +430,8 @@ function copyPassword(userId) {
             notification.remove();
         }, 2000);
     }).catch(err => {
-        console.error('복사 ?�패:', err);
-        alert('복사???�패?�습?�다.');
+        console.error('복사 실패:', err);
+        alert('복사에 실패했습니다.');
     });
 }
 
@@ -447,15 +448,15 @@ async function loadShops(updateTable = true) {
     } catch (error) {
         console.error('Shops loading error:', error);
         
-        // API ?�패???�모 ?�이???�용
+        // API 실패시 데모 데이터 사용
         allShops = [
             {
                 id: 'shop_001',
-                shop_name: '뷰티?�킨 ?�리??,
+                shop_name: '뷰티스킨 클리닉',
                 owner_name: '김미영',
                 phone: '02-123-4567',
                 email: 'beautyskin@example.com',
-                region: '?�울?�별??강남�?,
+                region: '서울특별시 강남구',
                 status: 'active',
                 is_active: true,
                 verified: true,
@@ -463,11 +464,11 @@ async function loadShops(updateTable = true) {
             },
             {
                 id: 'shop_002',
-                shop_name: '글로우 ?�킨케??,
-                owner_name: '박�??�',
+                shop_name: '글로우 스킨케어',
+                owner_name: '박지은',
                 phone: '02-987-6543',
                 email: 'glow@example.com',
-                region: '?�울?�별???�초�?,
+                region: '서울특별시 서초구',
                 status: 'active',
                 is_active: true,
                 verified: false,
@@ -486,7 +487,7 @@ function displayShops(shops) {
     const tableBody = document.getElementById('shops-table');
     
     if (shops.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">?�록???�체가 ?�습?�다.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
         return;
     }
     
@@ -498,20 +499,20 @@ function displayShops(shops) {
             'pending': 'text-yellow-600 bg-yellow-100'
         };
         
-        // ?�?�샵 ?�태 ?�인
+        // 대표샵 상태 확인
         const isRepresentative = shop.is_representative === true || shop.is_representative === 'true';
         const repStatus = shop.representative_status || 'none';
         
-        // ?�?�샵 ?�태 ?�시
+        // 대표샵 상태 표시
         let repStatusHtml = '';
         if (isRepresentative && repStatus === 'approved') {
             repStatusHtml = `
                 <div class="flex items-center">
                     <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        <i class="fas fa-star mr-1"></i>?�?�샵
+                        <i class="fas fa-star mr-1"></i>대표샵
                     </span>
                     <button onclick="toggleRepresentativeStatus('${shop.id}', false)" 
-                            class="ml-2 text-red-600 hover:text-red-800" title="?�?�샵 ?�제">
+                            class="ml-2 text-red-600 hover:text-red-800" title="대표샵 해제">
                         <i class="fas fa-times-circle"></i>
                     </button>
                 </div>
@@ -520,15 +521,16 @@ function displayShops(shops) {
             repStatusHtml = `
                 <button onclick="toggleRepresentativeStatus('${shop.id}', true)" 
                         class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-blue-100 hover:text-blue-700"
-                        title="?�?�샵?�로 지??>
-                    <i class="fas fa-star mr-1"></i>?�?�샵 지??                </button>
+                        title="대표샵으로 지정">
+                    <i class="fas fa-star mr-1"></i>대표샵 지정
+                </button>
             `;
         }
         
         return `
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">${shop.name || '?�체�??�음'}</div>
+                    <div class="text-sm font-medium text-gray-900">${shop.name || '업체명 없음'}</div>
                     <div class="text-sm text-gray-500">${shop.owner_name || '-'}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -538,16 +540,16 @@ function displayShops(shops) {
                     <div class="text-sm font-medium text-gray-900">${shop.naver_cafe_id || '-'}</div>
                     ${shop.naver_cafe_id ? `<div class="text-xs text-blue-600">
                         <a href="https://cafe.naver.com/cosmetickr" target="_blank" class="hover:underline">
-                            <i class="fas fa-external-link-alt mr-1"></i>카페 ?�인
+                            <i class="fas fa-external-link-alt mr-1"></i>카페 확인
                         </a>
-                    </div>` : '<div class="text-xs text-gray-400">미입??/div>'}
+                    </div>` : '<div class="text-xs text-gray-400">미입력</div>'}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${formatDate(shop.created_at)}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[status]}">
-                        ${status === 'active' ? '?�성' : status === 'inactive' ? '비활?? : '?�인?��?}
+                        ${status === 'active' ? '활성' : status === 'inactive' ? '비활성' : '승인대기'}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -558,17 +560,17 @@ function displayShops(shops) {
                         보기
                     </button>
                     <button onclick="editShop('${shop.id}')" class="text-blue-600 hover:text-blue-900 mr-2">
-                        ?�정
+                        수정
                     </button>
-                    <button onclick="approveShop('${shop.id}')" class="text-green-600 hover:text-green-900 mr-2" title="?�랫???�점 ?�인">
-                        ?�점?�인
+                    <button onclick="approveShop('${shop.id}')" class="text-green-600 hover:text-green-900 mr-2" title="플랫폼 입점 승인">
+                        입점승인
                     </button>
-                    <button onclick="deleteShop('${shop.id}')" class="text-red-600 hover:text-red-900 mr-2" title="??��">
+                    <button onclick="deleteShop('${shop.id}')" class="text-red-600 hover:text-red-900 mr-2" title="삭제">
                         <i class="fas fa-trash"></i>
                     </button>
                     ${shop.naver_cafe_id ? `
                         <button onclick="verifyCafeId('${shop.naver_cafe_id}')" class="text-blue-600 hover:text-blue-900">
-                            카페 ?�인
+                            카페 확인
                         </button>
                     ` : ''}
                 </td>
@@ -595,27 +597,27 @@ async function loadConsultations(updateTable = true) {
     } catch (error) {
         console.error('Consultations loading error:', error);
         
-        // API ?�패???�모 ?�이???�용
+        // API 실패시 데모 데이터 사용
         allConsultations = [
             {
                 id: 'consult_001',
                 customer_name: '김민수',
                 customer_phone: '010-1234-5678',
                 customer_email: 'minsu@example.com',
-                region: '?�울?�별??강남�?,
-                treatment_type: '?�드�?관�? 모공 축소',
-                consultation_text: '?�드름이 ?�해??고�??�니?? 모공???�어??관리�? 받고 ?�습?�다.',
+                region: '서울특별시 강남구',
+                treatment_type: '여드름 관리, 모공 축소',
+                consultation_text: '여드름이 심해서 고민입니다. 모공도 넓어서 관리를 받고 싶습니다.',
                 status: 'pending',
                 created_at: '2024-09-18T03:00:00Z'
             },
             {
                 id: 'consult_002',
-                customer_name: '?��??�',
+                customer_name: '이지은',
                 customer_phone: '010-9876-5432',
                 customer_email: 'jieun@example.com',
-                region: '?�울?�별???�초�?,
-                treatment_type: '미백 관�? ?�분 관�?,
-                consultation_text: '?��?가 칙칙?�고 건조?�니?? 미백 관리도 받고 ?�어??',
+                region: '서울특별시 서초구',
+                treatment_type: '미백 관리, 수분 관리',
+                consultation_text: '피부가 칙칙하고 건조합니다. 미백 관리도 받고 싶어요.',
                 status: 'in_progress',
                 created_at: '2024-09-18T03:00:00Z'
             }
@@ -632,16 +634,16 @@ function displayConsultations(consultations) {
     const tableBody = document.getElementById('consultations-table');
     
     if (consultations.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">?�담 ?�청???�습?�다.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">상담 요청이 없습니다.</td></tr>';
         return;
     }
     
     tableBody.innerHTML = consultations.map(consultation => {
         const status = consultation.status || 'pending';
         const statusLabels = {
-            'pending': '?�기중',
-            'in_progress': '진행�?,
-            'completed': '?�료',
+            'pending': '대기중',
+            'in_progress': '진행중',
+            'completed': '완료',
             'cancelled': '취소'
         };
         const statusColors = {
@@ -670,7 +672,7 @@ function displayConsultations(consultations) {
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onclick="viewConsultation('${consultation.id}')" class="text-indigo-600 hover:text-indigo-900">
-                        ?�세보기
+                        상세보기
                     </button>
                 </td>
             </tr>
@@ -753,14 +755,14 @@ function loadRegionalStats() {
     const regionalStatsContainer = document.getElementById('regional-stats');
     
     if (sortedRegions.length === 0) {
-        regionalStatsContainer.innerHTML = '<p class="text-gray-500">지??�� ?�이?��? ?�습?�다.</p>';
+        regionalStatsContainer.innerHTML = '<p class="text-gray-500">지역별 데이터가 없습니다.</p>';
         return;
     }
     
     regionalStatsContainer.innerHTML = sortedRegions.map(([region, count]) => `
         <div class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
             <span class="text-gray-700">${region}</span>
-            <span class="font-semibold text-blue-600">${count}�?/span>
+            <span class="font-semibold text-blue-600">${count}건</span>
         </div>
     `).join('');
 }
@@ -773,19 +775,19 @@ function viewUser(userId) {
     const userDetails = document.getElementById('user-details');
     userDetails.innerHTML = `
         <div class="space-y-2">
-            <div><strong>?�름:</strong> ${selectedUser.name}</div>
-            <div><strong>?�메??</strong> ${selectedUser.email}</div>
-            <div><strong>?�락�?</strong> ${selectedUser.phone || '미등�?}</div>
-            <div><strong>?�용???�??</strong> ${selectedUser.user_type}</div>
-            <div><strong>가?�일:</strong> ${formatDate(selectedUser.created_at)}</div>
-            <div><strong>?�태:</strong> ${selectedUser.status || 'active'}</div>
+            <div><strong>이름:</strong> ${selectedUser.name}</div>
+            <div><strong>이메일:</strong> ${selectedUser.email}</div>
+            <div><strong>연락처:</strong> ${selectedUser.phone || '미등록'}</div>
+            <div><strong>사용자 타입:</strong> ${selectedUser.user_type}</div>
+            <div><strong>가입일:</strong> ${formatDate(selectedUser.created_at)}</div>
+            <div><strong>상태:</strong> ${selectedUser.status || 'active'}</div>
         </div>
     `;
     
     // Update action button
     const actionBtn = document.getElementById('user-action-btn');
     const isActive = selectedUser.status !== 'inactive';
-    actionBtn.textContent = isActive ? '계정 비활?�화' : '계정 ?�성??;
+    actionBtn.textContent = isActive ? '계정 비활성화' : '계정 활성화';
     actionBtn.className = isActive ? 
         'px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700' :
         'px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700';
@@ -816,28 +818,28 @@ async function toggleUserStatus() {
         
         if (response.ok) {
             selectedUser.status = newStatus;
-            showNotification(`?�용???�태가 ${newStatus === 'active' ? '?�성?? : '비활?�화'}?�었?�니??`, 'success');
+            showNotification(`사용자 상태가 ${newStatus === 'active' ? '활성화' : '비활성화'}되었습니다.`, 'success');
             closeUserModal();
             loadUsers(); // Refresh users list
         } else {
-            throw new Error('?�용???�태 변�??�패');
+            throw new Error('사용자 상태 변경 실패');
         }
     } catch (error) {
         console.error('User status toggle error:', error);
-        showNotification('?�용???�태 변경에 ?�패?�습?�다.', 'error');
+        showNotification('사용자 상태 변경에 실패했습니다.', 'error');
     }
 }
 
 // Edit user (placeholder)
 function editUser(userId) {
-    showNotification('?�용???�집 기능?� 준비중?�니??', 'info');
+    showNotification('사용자 편집 기능은 준비중입니다.', 'info');
 }
 
 // View shop (placeholder)
 function viewShop(shopId) {
     const shop = allShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('???�보�?찾을 ???�습?�다.', 'error');
+        showNotification('샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
@@ -871,10 +873,10 @@ function viewShop(shopId) {
     
     // Handle status with colored badge
     const status = shop.status || 'pending';
-    const statusText = status === 'active' ? '?�인?? : 
-                      status === 'inactive' ? '비활?? : 
-                      status === 'approved' ? '?�인?? : 
-                      status === 'rejected' ? '거�??? : '?�인?��?;
+    const statusText = status === 'active' ? '승인됨' : 
+                      status === 'inactive' ? '비활성' : 
+                      status === 'approved' ? '승인됨' : 
+                      status === 'rejected' ? '거부됨' : '승인대기';
     const statusColors = {
         'active': 'text-green-700 bg-green-100',
         'approved': 'text-green-700 bg-green-100',
@@ -916,32 +918,32 @@ async function approveShop(shopId) {
         });
         
         if (response.ok) {
-            showNotification('?��?관리실???�랫???�점???�인?�었?�니??', 'success');
+            showNotification('피부관리실의 플랫폼 입점이 승인되었습니다.', 'success');
             loadShops(); // Refresh shops list
         } else {
-            throw new Error('?�랫???�점 ?�인 ?�패');
+            throw new Error('플랫폼 입점 승인 실패');
         }
     } catch (error) {
         console.error('Shop approval error:', error);
-        showNotification('?�랫???�점 ?�인???�패?�습?�다.', 'error');
+        showNotification('플랫폼 입점 승인에 실패했습니다.', 'error');
     }
 }
 
 // Verify Naver Cafe ID
 function verifyCafeId(cafeId) {
     if (!cafeId) {
-        showNotification('?�이�?카페 ID가 ?�습?�다.', 'warning');
+        showNotification('네이버 카페 ID가 없습니다.', 'warning');
         return;
     }
     
-    // ??창에???�이�?카페 ?�이지 ?�기
+    // 새 창에서 네이버 카페 페이지 열기
     const cafeUrl = `https://cafe.naver.com/cosmetickr`;
     const verificationWindow = window.open(cafeUrl, '_blank');
     
     if (verificationWindow) {
-        showNotification(`?�이�?카페?�서 "${cafeId}" ?�원???�인?�세??`, 'info');
+        showNotification(`네이버 카페에서 "${cafeId}" 회원을 확인하세요.`, 'info');
     } else {
-        showNotification('?�업??차단?�었?�니?? 브라?��? ?�정???�인?�세??', 'warning');
+        showNotification('팝업이 차단되었습니다. 브라우저 설정을 확인하세요.', 'warning');
     }
 }
 
@@ -949,18 +951,18 @@ function verifyCafeId(cafeId) {
 function viewConsultation(consultationId) {
     const consultation = allConsultations.find(c => c.id === consultationId);
     if (!consultation) {
-        showNotification('?�담 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('상담 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
-    // message ?�드?�서 추�? ?�보 ?�싱
+    // message 필드에서 추가 정보 파싱
     let additionalInfo = {};
     try {
         if (consultation.message) {
             additionalInfo = JSON.parse(consultation.message);
         }
     } catch (e) {
-        console.log('메시지 ?�싱 ?�패:', consultation.message);
+        console.log('메시지 파싱 실패:', consultation.message);
         additionalInfo = { notes: consultation.message };
     }
     
@@ -970,13 +972,13 @@ function viewConsultation(consultationId) {
     document.getElementById('view-consultation-region').textContent = consultation.region || '-';
     document.getElementById('view-consultation-budget').textContent = additionalInfo.budget || '-';
     
-    // ?��? ?�태
+    // 피부 상태
     document.getElementById('view-consultation-skin-condition').textContent = additionalInfo.skin_condition || '-';
     
-    // 추�? ?�청?�항
+    // 추가 요청사항
     document.getElementById('view-consultation-notes').textContent = additionalInfo.notes || '-';
     
-    // ?�청?�시 �??�정?�시
+    // 신청일시 및 수정일시
     document.getElementById('view-consultation-created-at').textContent = formatDate(consultation.created_at) || '-';
     document.getElementById('view-consultation-updated-at').textContent = formatDate(consultation.updated_at) || '-';
     
@@ -987,9 +989,9 @@ function viewConsultation(consultationId) {
     // Handle status with colored badge
     const status = consultation.status || 'pending';
     const statusText = {
-        'pending': '?�기중',
-        'in_progress': '진행�?,
-        'completed': '?�료',
+        'pending': '대기중',
+        'in_progress': '진행중',
+        'completed': '완료',
         'cancelled': '취소'
     }[status];
     
@@ -1017,7 +1019,7 @@ function viewConsultation(consultationId) {
             return `
                 <div class="bg-white p-3 rounded border flex justify-between items-center">
                     <div>
-                        <div class="font-medium text-gray-900">${shop.name || '?�체�??�음'}</div>
+                        <div class="font-medium text-gray-900">${shop.name || '업체명 없음'}</div>
                         <div class="text-sm text-gray-500">${shop.region || shop.location || ''}</div>
                     </div>
                     <div class="text-xs text-gray-400">
@@ -1033,7 +1035,7 @@ function viewConsultation(consultationId) {
     // Store current consultation ID for status update
     window.currentConsultationId = consultationId;
     
-    // 모달 ?�기
+    // 모달 열기
     const modal = document.getElementById('consultation-view-modal');
     modal.setAttribute('data-consultation-id', consultationId);
     modal.classList.remove('hidden');
@@ -1049,18 +1051,18 @@ async function updateConsultationStatus() {
     const newStatus = document.getElementById('consultation-status-change').value;
     
     if (!consultationId || !newStatus) {
-        showNotification('?�담 ?�보가 ?�습?�다.', 'error');
+        showNotification('상담 정보가 없습니다.', 'error');
         return;
     }
     
     const consultation = allConsultations.find(c => c.id === consultationId);
     if (!consultation) {
-        showNotification('?�담 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('상담 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
     if (consultation.status === newStatus) {
-        showNotification('?��? ?�일???�태?�니??', 'info');
+        showNotification('이미 동일한 상태입니다.', 'info');
         return;
     }
     
@@ -1087,7 +1089,7 @@ async function updateConsultationStatus() {
             // Refresh consultations table
             displayConsultations(allConsultations);
             
-            showNotification('?�담 ?�태가 ?�공?�으�?변경되?�습?�다.', 'success');
+            showNotification('상담 상태가 성공적으로 변경되었습니다.', 'success');
         } else {
             throw new Error(`HTTP ${response.status}`);
         }
@@ -1102,7 +1104,7 @@ async function updateConsultationStatus() {
         viewConsultation(consultationId);
         displayConsultations(allConsultations);
         
-        showNotification('?�담 ?�태가 로컬?�서 ?�데?�트?�었?�니?? (API ?�결 ?�요)', 'warning');
+        showNotification('상담 상태가 로컬에서 업데이트되었습니다. (API 연결 필요)', 'warning');
     }
 }
 
@@ -1112,7 +1114,7 @@ function printConsultation() {
     const consultation = allConsultations.find(c => c.id === consultationId);
     
     if (!consultation) {
-        showNotification('?�쇄???�담 ?�보가 ?�습?�다.', 'error');
+        showNotification('인쇄할 상담 정보가 없습니다.', 'error');
         return;
     }
     
@@ -1120,7 +1122,7 @@ function printConsultation() {
     const printContent = `
         <html>
         <head>
-            <title>?�담 ?�청??- ${consultation.name}</title>
+            <title>상담 요청서 - ${consultation.name}</title>
             <style>
                 body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
                 .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
@@ -1143,93 +1145,93 @@ function printConsultation() {
         </head>
         <body>
             <div class="header">
-                <h1>beautycat (뷰티+?�티�?</h1>
-                <h2>?��?관�??�담 ?�청??/h2>
-                <p>출력?�시: ${new Date().toLocaleString('ko-KR')}</p>
+                <h1>beautycat (뷰티+에티켓)</h1>
+                <h2>피부관리 상담 요청서</h2>
+                <p>출력일시: ${new Date().toLocaleString('ko-KR')}</p>
             </div>
             
             <div class="section">
-                <div class="section-title">고객 ?�보</div>
+                <div class="section-title">고객 정보</div>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="label">?�름:</span>
+                        <span class="label">이름:</span>
                         <span class="value">${consultation.name || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">?�령?�:</span>
+                        <span class="label">연령대:</span>
                         <span class="value">${consultation.age || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">?�화번호:</span>
+                        <span class="label">전화번호:</span>
                         <span class="value">${consultation.phone || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">?�별:</span>
-                        <span class="value">${consultation.gender === 'male' ? '?�성' : consultation.gender === 'female' ? '?�성' : consultation.gender || '-'}</span>
+                        <span class="label">성별:</span>
+                        <span class="value">${consultation.gender === 'male' ? '남성' : consultation.gender === 'female' ? '여성' : consultation.gender || '-'}</span>
                     </div>
                 </div>
             </div>
             
             <div class="section">
-                <div class="section-title">?�치 ?�보</div>
+                <div class="section-title">위치 정보</div>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="label">지??</span>
+                        <span class="label">지역:</span>
                         <span class="value">${consultation.region || consultation.location || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">?�세 지??</span>
+                        <span class="label">상세 지역:</span>
                         <span class="value">${consultation.detailed_region || consultation.detailed_location || '-'}</span>
                     </div>
                 </div>
             </div>
             
             <div class="section">
-                <div class="section-title">관???�비??/div>
+                <div class="section-title">관심 서비스</div>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="label">?��? ?�??</span>
+                        <span class="label">피부 타입:</span>
                         <span class="value">${consultation.skin_type || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">관??관�?</span>
+                        <span class="label">관심 관리:</span>
                         <span class="value">${Array.isArray(consultation.treatment_types) ? consultation.treatment_types.join(', ') : consultation.treatment_types || consultation.interested_treatments || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">중요?�항:</span>
+                        <span class="label">중요사항:</span>
                         <span class="value">${consultation.important_factors || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">?�망 빈도:</span>
+                        <span class="label">희망 빈도:</span>
                         <span class="value">${consultation.frequency || '-'}</span>
                     </div>
                 </div>
                 <div class="info-item" style="margin-top: 15px;">
-                    <span class="label">추�? ?�청?�항:</span>
+                    <span class="label">추가 요청사항:</span>
                     <div style="margin-top: 10px; padding: 10px; background-color: #f9f9f9; border-radius: 5px;">
-                        ${consultation.additional_requests || consultation.message || '?�음'}
+                        ${consultation.additional_requests || consultation.message || '없음'}
                     </div>
                 </div>
             </div>
             
             <div class="section">
-                <div class="section-title">처리 ?�보</div>
+                <div class="section-title">처리 정보</div>
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="label">?�재 ?�태:</span>
+                        <span class="label">현재 상태:</span>
                         <span class="status ${consultation.status || 'pending'}">${{
-                            'pending': '?�기중',
-                            'in_progress': '진행�?, 
-                            'completed': '?�료',
+                            'pending': '대기중',
+                            'in_progress': '진행중', 
+                            'completed': '완료',
                             'cancelled': '취소'
-                        }[consultation.status] || '?�기중'}</span>
+                        }[consultation.status] || '대기중'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">?�청?�시:</span>
+                        <span class="label">신청일시:</span>
                         <span class="value">${formatDate(consultation.created_at) || '-'}</span>
                     </div>
                     <div class="info-item">
-                        <span class="label">처리?�시:</span>
+                        <span class="label">처리일시:</span>
                         <span class="value">${formatDate(consultation.updated_at) || '-'}</span>
                     </div>
                 </div>
@@ -1245,10 +1247,10 @@ function printConsultation() {
     printWindow.print();
     printWindow.close();
     
-    showNotification('?�담 ?�보�??�쇄?�니??', 'info');
+    showNotification('상담 정보를 인쇄합니다.', 'info');
 }
 
-// ===== ?�?�샵 관�?관???�수??=====
+// ===== 대표샵 관리 관련 함수들 =====
 
 let allRepresentativeShops = [];
 
@@ -1266,48 +1268,48 @@ async function loadRepresentativeShops(updateTable = true) {
     } catch (error) {
         console.error('Representative shops loading error:', error);
         
-        // API ?�패???�모 ?�이???�용
+        // API 실패시 데모 데이터 사용
         allRepresentativeShops = [
             {
                 id: 'rep_shop_001',
-                shop_name: '뷰티�?강남??,
-                state: '?�울?�별??,
-                district: '강남�?,
+                shop_name: '뷰티캣 강남점',
+                state: '서울특별시',
+                district: '강남구',
                 phone: '02-123-4567',
-                representative_treatments: ['?�드�?관�?, '미백 관�?, '모공 축소'],
+                representative_treatments: ['여드름 관리', '미백 관리', '모공 축소'],
                 approved: false,
                 status: 'pending',
                 created_at: '2024-10-15T10:00:00Z'
             },
             {
                 id: 'rep_shop_002', 
-                shop_name: '글로우 ?�킨케??,
-                state: '?�울?�별??,
-                district: '?�초�?,
+                shop_name: '글로우 스킨케어',
+                state: '서울특별시',
+                district: '서초구',
                 phone: '02-987-6543',
-                representative_treatments: ['?�분 관�?, '주름 관�?, '민감??케??],
+                representative_treatments: ['수분 관리', '주름 관리', '민감성 케어'],
                 approved: true,
                 status: 'approved',
                 created_at: '2024-10-15T11:00:00Z'
             },
             {
                 id: 'rep_shop_003',
-                shop_name: '부???�션�??�리??,
-                state: '부?�광??��',
-                district: '?�운?��?,
+                shop_name: '부산 오션뷰 클리닉',
+                state: '부산광역시',
+                district: '해운대구',
                 phone: '051-111-2222',
-                representative_treatments: ['리프??, '바디 케??, '미백 관�?],
+                representative_treatments: ['리프팅', '바디 케어', '미백 관리'],
                 approved: true,
                 status: 'approved',
                 created_at: '2024-10-15T12:00:00Z'
             },
             {
                 id: 'rep_shop_004',
-                shop_name: '?��??�리미엄 ?�리??,
-                state: '?�구광??��',
-                district: '?�성�?,
+                shop_name: '대구 프리미엄 클리닉',
+                state: '대구광역시',
+                district: '수성구',
                 phone: '053-333-4444',
-                representative_treatments: ['?�드�?관�?, '?�소침착 개선'],
+                representative_treatments: ['여드름 관리', '색소침착 개선'],
                 approved: false,
                 status: 'rejected',
                 created_at: '2024-10-15T13:00:00Z'
@@ -1326,16 +1328,16 @@ function displayRepresentativeShops(shops) {
     const tableBody = document.getElementById('representative-shops-table');
     
     if (shops.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">?�록???�?�샵???�습?�다.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">등록된 대표샵이 없습니다.</td></tr>';
         return;
     }
     
     tableBody.innerHTML = shops.map(shop => {
         const status = shop.status || (shop.approved ? 'approved' : 'pending');
         const statusLabels = {
-            'approved': '?�인??,
-            'pending': '?�인?��?,
-            'rejected': '거�???
+            'approved': '승인됨',
+            'pending': '승인대기',
+            'rejected': '거부됨'
         };
         const statusColors = {
             'approved': 'text-green-600 bg-green-100',
@@ -1350,11 +1352,11 @@ function displayRepresentativeShops(shops) {
         return `
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">${shop.name || '?�체�??�음'}</div>
+                    <div class="text-sm font-medium text-gray-900">${shop.name || '업체명 없음'}</div>
                     <div class="text-sm text-gray-500">ID: ${shop.id}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${shop.state} ${shop.district}
+                    ${shop.state} ${shop.district}${shop.town ? ' ' + shop.town : ''}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${shop.phone}
@@ -1375,10 +1377,10 @@ function displayRepresentativeShops(shops) {
                     </button>
                     ${status === 'pending' ? `
                         <button onclick="approveRepresentativeShop('${shop.id}')" class="text-green-600 hover:text-green-900 mr-2">
-                            ?�인
+                            승인
                         </button>
                         <button onclick="rejectRepresentativeShop('${shop.id}')" class="text-red-600 hover:text-red-900 mr-2">
-                            거�?
+                            거부
                         </button>
                     ` : status === 'approved' ? `
                         <button onclick="revokeRepresentativeShop('${shop.id}')" class="text-orange-600 hover:text-orange-900 mr-2">
@@ -1386,9 +1388,10 @@ function displayRepresentativeShops(shops) {
                         </button>
                     ` : `
                         <button onclick="approveRepresentativeShop('${shop.id}')" class="text-green-600 hover:text-green-900 mr-2">
-                            ?�승??                        </button>
+                            재승인
+                        </button>
                     `}
-                    <button onclick="deleteRepresentativeShop('${shop.id}')" class="text-red-600 hover:text-red-900" title="??��">
+                    <button onclick="deleteRepresentativeShop('${shop.id}')" class="text-red-600 hover:text-red-900" title="삭제">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -1406,19 +1409,20 @@ function updateRepresentativeShopStats() {
     document.getElementById('approved-rep-shops').textContent = approved;
     document.getElementById('pending-rep-shops').textContent = pending;
     document.getElementById('covered-regions').textContent = coveredRegions;
-    document.getElementById('phone-consultations').textContent = '24'; // ?�시 ?�이??}
+    document.getElementById('phone-consultations').textContent = '24'; // 임시 데이터
+}
 
 // Refresh representative shops
 function refreshRepresentativeShops() {
     loadRepresentativeShops(true);
-    showNotification('?�?�샵 목록???�로고침?�습?�다.', 'info');
+    showNotification('대표샵 목록을 새로고침했습니다.', 'info');
 }
 
 // View representative shop details
 function viewRepresentativeShop(shopId) {
     const shop = allRepresentativeShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('?�?�샵 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('대표샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
@@ -1426,21 +1430,21 @@ function viewRepresentativeShop(shopId) {
         shop.representative_treatments.join(', ') : '-';
     
     const details = `
-        ?�� 지?? ${shop.state} ${shop.district}
-        ?�� ?�화: ${shop.phone}
-        ?�� ?�??관�? ${treatments}
-        ?�� ?�록?? ${formatDate(shop.created_at)}
-        ???�태: ${shop.status === 'approved' || shop.approved ? '?�인?? : shop.status === 'rejected' ? '거�??? : '?�인?��?}
+        📍 지역: ${shop.state} ${shop.district}
+        📞 전화: ${shop.phone}
+        💄 대표 관리: ${treatments}
+        📅 등록일: ${formatDate(shop.created_at)}
+        ✅ 상태: ${shop.status === 'approved' || shop.approved ? '승인됨' : shop.status === 'rejected' ? '거부됨' : '승인대기'}
     `;
     
-    alert(`?�� ${shop.shop_name}\n\n${details}`);
+    alert(`🏪 ${shop.shop_name}\n\n${details}`);
 }
 
 // Approve representative shop
 async function approveRepresentativeShop(shopId) {
     const shop = allRepresentativeShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('?�?�샵 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('대표샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
@@ -1465,20 +1469,20 @@ async function approveRepresentativeShop(shopId) {
             displayRepresentativeShops(allRepresentativeShops);
             updateRepresentativeShopStats();
             
-            showNotification(`'${shop.shop_name}'???�?�샵?�로 ?�인?�었?�니??`, 'success');
+            showNotification(`'${shop.shop_name}'이 대표샵으로 승인되었습니다.`, 'success');
         } else {
-            throw new Error('?�인 ?�패');
+            throw new Error('승인 실패');
         }
     } catch (error) {
         console.error('Representative shop approval error:', error);
         
-        // API ?�패??로컬 ?�이???�데?�트
+        // API 실패시 로컬 데이터 업데이트
         shop.approved = true;
         shop.status = 'approved';
         displayRepresentativeShops(allRepresentativeShops);
         updateRepresentativeShopStats();
         
-        showNotification(`'${shop.shop_name}'??로컬?�서 ?�인?�었?�니?? (API ?�결 ?�요)`, 'warning');
+        showNotification(`'${shop.shop_name}'이 로컬에서 승인되었습니다. (API 연결 필요)`, 'warning');
     }
 }
 
@@ -1486,11 +1490,11 @@ async function approveRepresentativeShop(shopId) {
 async function rejectRepresentativeShop(shopId) {
     const shop = allRepresentativeShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('?�?�샵 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('대표샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
-    const reason = prompt(`'${shop.shop_name}' ?�?�샵 ?�청??거�??�시겠습?�까?\n\n거�? ?�유�??�력?�세??(?�택?�항):`);
+    const reason = prompt(`'${shop.shop_name}' 대표샵 신청을 거부하시겠습니까?\n\n거부 사유를 입력하세요 (선택사항):`);
     if (reason === null) return; // 취소
     
     try {
@@ -1515,9 +1519,9 @@ async function rejectRepresentativeShop(shopId) {
             displayRepresentativeShops(allRepresentativeShops);
             updateRepresentativeShopStats();
             
-            showNotification(`'${shop.shop_name}' ?�?�샵 ?�청??거�??�었?�니??`, 'info');
+            showNotification(`'${shop.shop_name}' 대표샵 신청이 거부되었습니다.`, 'info');
         } else {
-            throw new Error('거�? 처리 ?�패');
+            throw new Error('거부 처리 실패');
         }
     } catch (error) {
         console.error('Representative shop rejection error:', error);
@@ -1527,7 +1531,7 @@ async function rejectRepresentativeShop(shopId) {
         displayRepresentativeShops(allRepresentativeShops);
         updateRepresentativeShopStats();
         
-        showNotification(`'${shop.shop_name}' ?�?�샵 ?�청??로컬?�서 거�??�었?�니??`, 'warning');
+        showNotification(`'${shop.shop_name}' 대표샵 신청이 로컬에서 거부되었습니다.`, 'warning');
     }
 }
 
@@ -1535,11 +1539,11 @@ async function rejectRepresentativeShop(shopId) {
 async function revokeRepresentativeShop(shopId) {
     const shop = allRepresentativeShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('?�?�샵 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('대표샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
-    if (!confirm(`'${shop.shop_name}'???�?�샵 ?�인??취소?�시겠습?�까?\n\n?�인 취소 ?�에???�당 지??��???�?�샵 ?�비?��? 중단?�니??`)) {
+    if (!confirm(`'${shop.shop_name}'의 대표샵 승인을 취소하시겠습니까?\n\n승인 취소 후에는 해당 지역에서 대표샵 서비스가 중단됩니다.`)) {
         return;
     }
     
@@ -1563,9 +1567,9 @@ async function revokeRepresentativeShop(shopId) {
             displayRepresentativeShops(allRepresentativeShops);
             updateRepresentativeShopStats();
             
-            showNotification(`'${shop.shop_name}'???�?�샵 ?�인??취소?�었?�니??`, 'info');
+            showNotification(`'${shop.shop_name}'의 대표샵 승인이 취소되었습니다.`, 'info');
         } else {
-            throw new Error('?�인 취소 ?�패');
+            throw new Error('승인 취소 실패');
         }
     } catch (error) {
         console.error('Representative shop revocation error:', error);
@@ -1575,7 +1579,7 @@ async function revokeRepresentativeShop(shopId) {
         displayRepresentativeShops(allRepresentativeShops);
         updateRepresentativeShopStats();
         
-        showNotification(`'${shop.shop_name}'???�?�샵 ?�인??로컬?�서 취소?�었?�니??`, 'warning');
+        showNotification(`'${shop.shop_name}'의 대표샵 승인이 로컬에서 취소되었습니다.`, 'warning');
     }
 }
 
@@ -1583,11 +1587,11 @@ async function revokeRepresentativeShop(shopId) {
 async function deleteRepresentativeShop(shopId) {
     const shop = allRepresentativeShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('?�?�샵 ?�보�?찾을 ???�습?�다.', 'error');
+        showNotification('대표샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
-    const confirmMessage = `?�말�?'${shop.shop_name}' ?�?�샵 ?�록????��?�시겠습?�까?\n\n???�업?� ?�돌�????�습?�다.`;
+    const confirmMessage = `정말로 '${shop.shop_name}' 대표샵 등록을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
     if (!confirm(confirmMessage)) {
         return;
     }
@@ -1606,9 +1610,9 @@ async function deleteRepresentativeShop(shopId) {
             displayRepresentativeShops(allRepresentativeShops);
             updateRepresentativeShopStats();
             
-            showNotification('?�?�샵 ?�록????��?�었?�니??', 'success');
+            showNotification('대표샵 등록이 삭제되었습니다.', 'success');
         } else {
-            throw new Error('??�� ?�패');
+            throw new Error('삭제 실패');
         }
     } catch (error) {
         console.error('Representative shop deletion error:', error);
@@ -1620,7 +1624,7 @@ async function deleteRepresentativeShop(shopId) {
         displayRepresentativeShops(allRepresentativeShops);
         updateRepresentativeShopStats();
         
-        showNotification('?�?�샵 ?�록??로컬?�서 ??��?�었?�니?? (API ?�결 ?�요)', 'warning');
+        showNotification('대표샵 등록이 로컬에서 삭제되었습니다. (API 연결 필요)', 'warning');
     }
 }
 
@@ -1658,13 +1662,13 @@ async function updateProfile(e) {
             Object.assign(currentUser, formData);
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             
-            showNotification('?�로?�이 ?�데?�트?�었?�니??', 'success');
+            showNotification('프로필이 업데이트되었습니다.', 'success');
         } else {
-            throw new Error('?�로???�데?�트 ?�패');
+            throw new Error('프로필 업데이트 실패');
         }
     } catch (error) {
         console.error('Profile update error:', error);
-        showNotification('?�로???�데?�트???�패?�습?�다.', 'error');
+        showNotification('프로필 업데이트에 실패했습니다.', 'error');
     }
 }
 
@@ -1681,12 +1685,12 @@ function updateSettings() {
     };
     
     localStorage.setItem('systemSettings', JSON.stringify(settings));
-    showNotification('?�정???�?�되?�습?�다.', 'success');
+    showNotification('설정이 저장되었습니다.', 'success');
 }
 
 // Clear cache
 function clearCache() {
-    if (confirm('캐시�??�리?�시겠습?�까? ?��? ?�이?��? ?�시 로드?????�습?�다.')) {
+    if (confirm('캐시를 정리하시겠습니까? 일부 데이터가 다시 로드될 수 있습니다.')) {
         // Clear relevant localStorage items
         const keysToKeep = ['currentUser', 'systemSettings'];
         const allKeys = Object.keys(localStorage);
@@ -1697,7 +1701,7 @@ function clearCache() {
             }
         });
         
-        showNotification('캐시가 ?�리?�었?�니??', 'success');
+        showNotification('캐시가 정리되었습니다.', 'success');
     }
 }
 
@@ -1719,12 +1723,12 @@ async function loadAnnouncements(updateTable = true) {
     } catch (error) {
         console.error('Announcements loading error:', error);
         
-        // API ?�패???�모 ?�이???�용
+        // API 실패시 데모 데이터 사용
         allAnnouncements = [
             {
                 id: 'ann_001',
-                title: '?�비???��? ?�내',
-                content: '?�스???�데?�트�??�해 2024??9??20???�벽 2?��???4?�까지 ?�비?��? ?�시 중단?�니??',
+                title: '서비스 점검 안내',
+                content: '시스템 업데이트를 위해 2024년 9월 20일 새벽 2시부터 4시까지 서비스가 일시 중단됩니다.',
                 author_name: '관리자',
                 priority: 'important',
                 target_audience: 'all',
@@ -1735,8 +1739,8 @@ async function loadAnnouncements(updateTable = true) {
             },
             {
                 id: 'ann_002', 
-                title: '?�로???��?관�??�로그램 출시',
-                content: '?�티?�이�??�문 ?�로그램???�롭�?추�??�었?�니?? 지�??�청?�보?�요!',
+                title: '새로운 피부관리 프로그램 출시',
+                content: '안티에이징 전문 프로그램이 새롭게 추가되었습니다. 지금 신청해보세요!',
                 author_name: '관리자',
                 priority: 'normal',
                 target_audience: 'customers',
@@ -1758,7 +1762,7 @@ function displayAnnouncements(announcements) {
     const tableBody = document.getElementById('announcements-table');
     
     if (announcements.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">?�록??공�??�항???�습?�다.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 공지사항이 없습니다.</td></tr>';
         return;
     }
     
@@ -1773,18 +1777,18 @@ function displayAnnouncements(announcements) {
         const priorityLabels = {
             'urgent': '긴급',
             'important': '중요',
-            'normal': '?�반',
-            'low': '??��'
+            'normal': '일반',
+            'low': '낮음'
         };
         
         const targetLabels = {
-            'all': '?�체',
+            'all': '전체',
             'customers': '고객',
-            'shops': '?�체',
+            'shops': '업체',
             'admins': '관리자'
         };
         
-        const status = announcement.is_published ? '게시�? : '?�시?�??;
+        const status = announcement.is_published ? '게시중' : '임시저장';
         const statusColor = announcement.is_published ? 'text-green-600 bg-green-100' : 'text-gray-600 bg-gray-100';
         
         return `
@@ -1815,13 +1819,14 @@ function displayAnnouncements(announcements) {
                     ${formatDate(announcement.created_at)}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${announcement.view_count || 0}??                </td>
+                    ${announcement.view_count || 0}회
+                </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onclick="editAnnouncement('${announcement.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">
-                        ?�정
+                        수정
                     </button>
                     <button onclick="deleteAnnouncement('${announcement.id}')" class="text-red-600 hover:text-red-900">
-                        ??��
+                        삭제
                     </button>
                 </td>
             </tr>
@@ -1856,12 +1861,12 @@ function showAnnouncementModal(announcementId = null) {
     const title = document.getElementById('announcement-modal-title');
     
     if (selectedAnnouncement) {
-        title.textContent = '공�??�항 ?�정';
+        title.textContent = '공지사항 수정';
         fillAnnouncementForm(selectedAnnouncement);
     } else {
-        title.textContent = '??공�??�항 ?�성';
+        title.textContent = '새 공지사항 작성';
         form.reset();
-        // 기본�??�정
+        // 기본값 설정
         document.getElementById('announcement-published').checked = true;
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -1917,7 +1922,7 @@ async function handleAnnouncementSubmit(e) {
     const originalText = submitText.textContent;
     
     submitBtn.disabled = true;
-    submitText.textContent = '?�??�?..';
+    submitText.textContent = '저장 중...';
     
     try {
         const formData = new FormData(e.target);
@@ -1937,7 +1942,7 @@ async function handleAnnouncementSubmit(e) {
         
         let response;
         if (selectedAnnouncement) {
-            // ?�정
+            // 수정
             announcementData.updated_at = new Date().toISOString();
             response = await fetch(`tables/announcements/${selectedAnnouncement.id}`, {
                 method: 'PUT',
@@ -1945,7 +1950,7 @@ async function handleAnnouncementSubmit(e) {
                 body: JSON.stringify(announcementData)
             });
         } else {
-            // ?�로 ?�성
+            // 새로 작성
             announcementData.created_at = new Date().toISOString();
             response = await fetch('tables/announcements', {
                 method: 'POST',
@@ -1955,16 +1960,16 @@ async function handleAnnouncementSubmit(e) {
         }
         
         if (response.ok) {
-            showNotification(selectedAnnouncement ? '공�??�항???�정?�었?�니??' : '공�??�항???�성?�었?�니??', 'success');
+            showNotification(selectedAnnouncement ? '공지사항이 수정되었습니다.' : '공지사항이 작성되었습니다.', 'success');
             closeAnnouncementModal();
             loadAnnouncements();
         } else {
-            throw new Error('?�???�패');
+            throw new Error('저장 실패');
         }
         
     } catch (error) {
         console.error('Announcement save error:', error);
-        showNotification('?�??�??�류가 발생?�습?�다.', 'error');
+        showNotification('저장 중 오류가 발생했습니다.', 'error');
     } finally {
         submitBtn.disabled = false;
         submitText.textContent = originalText;
@@ -1978,7 +1983,7 @@ function editAnnouncement(announcementId) {
 
 // Delete announcement
 async function deleteAnnouncement(announcementId) {
-    if (!confirm('??공�??�항????��?�시겠습?�까?')) {
+    if (!confirm('이 공지사항을 삭제하시겠습니까?')) {
         return;
     }
     
@@ -1988,25 +1993,25 @@ async function deleteAnnouncement(announcementId) {
         });
         
         if (response.ok) {
-            showNotification('공�??�항????��?�었?�니??', 'success');
+            showNotification('공지사항이 삭제되었습니다.', 'success');
             loadAnnouncements();
         } else {
-            throw new Error('??�� ?�패');
+            throw new Error('삭제 실패');
         }
     } catch (error) {
         console.error('Announcement delete error:', error);
-        showNotification('??�� �??�류가 발생?�습?�다.', 'error');
+        showNotification('삭제 중 오류가 발생했습니다.', 'error');
     }
 }
 
 // Export data (placeholder)
 function exportData() {
-    showNotification('?�이???�보?�기 기능?� 준비중?�니??', 'info');
+    showNotification('데이터 내보내기 기능은 준비중입니다.', 'info');
 }
 
 // Logout
 function logout() {
-    if (confirm('로그?�웃 ?�시겠습?�까?')) {
+    if (confirm('로그아웃 하시겠습니까?')) {
         localStorage.removeItem('currentUser');
         window.location.href = 'login.html';
     }
@@ -2022,9 +2027,9 @@ function formatDate(dateString) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays === 1) {
-        return '?�제';
+        return '어제';
     } else if (diffDays < 7) {
-        return `${diffDays}????;
+        return `${diffDays}일 전`;
     } else {
         return date.toLocaleDateString('ko-KR', {
             year: 'numeric',
@@ -2065,7 +2070,7 @@ function showNotification(message, type = 'info') {
 function editShop(shopId) {
     const shop = allShops.find(s => s.id === shopId);
     if (!shop) {
-        alert('???�보�?찾을 ???�습?�다.');
+        alert('샵 정보를 찾을 수 없습니다.');
         return;
     }
     
@@ -2078,8 +2083,11 @@ function editShop(shopId) {
     document.getElementById('edit-business-number').value = shop.business_number || '';
     document.getElementById('edit-state').value = shop.state || '';
     document.getElementById('edit-district').value = shop.district || '';
-    // document.getElementById('edit-status').value = shop.status || 'pending'; // �ʵ� ����
+    // document.getElementById('edit-status').value = shop.status || 'pending'; // 필드 없음
     document.getElementById('edit-address').value = shop.address || '';
+    
+    // 읍면동 목록 업데이트 (v2.7.4 기능 - 임시 비활성화)
+    // updateTownDropdown(shop.state || '', shop.district || '', shop.town || '');
     document.getElementById('edit-price-range').value = shop.price_range || '';
     document.getElementById('edit-description').value = shop.description || '';
     
@@ -2125,6 +2133,7 @@ async function saveShopChanges() {
         business_number: document.getElementById('edit-business-number').value,
         state: document.getElementById('edit-state').value,
         district: document.getElementById('edit-district').value,
+        town: document.getElementById('edit-town')?.value || '',
         address: document.getElementById('edit-address').value,
         treatment_types: selectedTreatments,
         price_range: document.getElementById('edit-price-range').value,
@@ -2142,7 +2151,7 @@ async function saveShopChanges() {
         });
         
         if (response.ok) {
-            alert('???�보가 ?�공?�으�??�정?�었?�니??');
+            alert('샵 정보가 성공적으로 수정되었습니다.');
             closeShopEditModal();
             refreshShops(); // Reload shops table
         } else {
@@ -2151,15 +2160,15 @@ async function saveShopChanges() {
     } catch (error) {
         console.error('Shop update error:', error);
         
-        // 로컬 ?�이???�데?�트 (API ?�패??
+        // 로컬 데이터 업데이트 (API 실패시)
         const shopIndex = allShops.findIndex(s => s.id === shopId);
         if (shopIndex !== -1) {
             allShops[shopIndex] = { ...allShops[shopIndex], ...updatedData };
             displayShops(allShops);
             closeShopEditModal();
-            alert('???�보가 로컬?�서 ?�데?�트?�었?�니?? (API ?�결 ?�요)');
+            alert('샵 정보가 로컬에서 업데이트되었습니다. (API 연결 필요)');
         } else {
-            alert('???�보 ?�정???�패?�습?�다.');
+            alert('샵 정보 수정에 실패했습니다.');
         }
     }
 }
@@ -2168,11 +2177,12 @@ async function saveShopChanges() {
 async function deleteShop(shopId) {
     const shop = allShops.find(s => s.id === shopId);
     if (!shop) {
-        showNotification('???�보�?찾을 ???�습?�다.', 'error');
+        showNotification('샵 정보를 찾을 수 없습니다.', 'error');
         return;
     }
     
-    // ?�인 ?�?�상??    const confirmMessage = `?�말�?'${shop.shop_name}' ?�을 ??��?�시겠습?�까?\n\n???�업?� ?�돌�????�습?�다.`;
+    // 확인 대화상자
+    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
     if (!confirm(confirmMessage)) {
         return;
     }
@@ -2186,7 +2196,7 @@ async function deleteShop(shopId) {
         });
         
         if (response.ok || response.status === 204) {
-            showNotification('?�이 ?�공?�으�???��?�었?�니??', 'success');
+            showNotification('샵이 성공적으로 삭제되었습니다.', 'success');
             refreshShops(); // Reload shops table
         } else {
             throw new Error(`HTTP ${response.status}`);
@@ -2194,14 +2204,14 @@ async function deleteShop(shopId) {
     } catch (error) {
         console.error('Shop deletion error:', error);
         
-        // API ?�패??로컬 ?�이?�에???�거
+        // API 실패시 로컬 데이터에서 제거
         const shopIndex = allShops.findIndex(s => s.id === shopId);
         if (shopIndex !== -1) {
             allShops.splice(shopIndex, 1);
             displayShops(allShops);
-            showNotification('?�이 로컬?�서 ??��?�었?�니?? (API ?�결 ?�요)', 'warning');
+            showNotification('샵이 로컬에서 삭제되었습니다. (API 연결 필요)', 'warning');
         } else {
-            showNotification('????��???�패?�습?�다.', 'error');
+            showNotification('샵 삭제에 실패했습니다.', 'error');
         }
     }
 }
@@ -2270,7 +2280,7 @@ function updateShopFilterResults(filtered, total) {
         const counter = document.createElement('div');
         counter.id = 'shop-filter-results';
         counter.className = 'mb-3 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded px-3 py-2';
-        counter.innerHTML = `<i class="fas fa-filter mr-2"></i>검??결과: ${filtered}�?(?�체 ${total}�?�?`;
+        counter.innerHTML = `<i class="fas fa-filter mr-2"></i>검색 결과: ${filtered}개 (전체 ${total}개 중)`;
         
         const table = shopsSection.querySelector('.unni-card');
         shopsSection.insertBefore(counter, table);
@@ -2296,30 +2306,31 @@ function clearShopFilters() {
 // Toggle representative shop status
 async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
     try {
-        // ???�보 찾기
+        // 샵 정보 찾기
         const shop = allShops.find(s => s.id === shopId);
         if (!shop) {
-            alert('???�보�?찾을 ???�습?�다.');
+            alert('샵 정보를 찾을 수 없습니다.');
             return;
         }
         
-        // 지???�보 ?�인
+        // 지역 정보 확인
         const state = shop.state;
         const district = shop.district;
         
         if (!state || !district) {
-            alert('?�의 지???�보가 ?�습?�다. ???�보�?먼�? ?�정?�주?�요.');
+            alert('샵의 지역 정보가 없습니다. 샵 정보를 먼저 수정해주세요.');
             return;
         }
         
         if (setAsRepresentative) {
-            // ?�?�샵?�로 지??            const confirmMsg = `${shop.name}??�? ${state} ${district}???�?�샵?�로 지?�하?�겠?�니�?\n\n?�?�샵?�로 지?�되�?\n- ?�당 지??메인 ?�이지?�서 ?�화?�담 버튼?�로 ?�출?�니??n- 고객??바로 ?�화 ?�담?????�습?�다`;
+            // 대표샵으로 지정
+            const confirmMsg = `${shop.name}을(를) ${state} ${district}의 대표샵으로 지정하시겠습니까?\n\n대표샵으로 지정되면:\n- 해당 지역 메인 페이지에서 전화상담 버튼으로 노출됩니다\n- 고객이 바로 전화 상담할 수 있습니다`;
             
             if (!confirm(confirmMsg)) {
                 return;
             }
             
-            // ?�당 지??�� ?��? ?�?�샵???�는지 ?�인
+            // 해당 지역에 이미 대표샵이 있는지 확인
             const existingRep = allShops.find(s => 
                 s.state === state && 
                 s.district === district && 
@@ -2328,31 +2339,32 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             );
             
             if (existingRep) {
-                if (!confirm(`${state} ${district}?�는 ?��? ?�?�샵 "${existingRep.name}"??가) ?�습?�다.\n기존 ?�?�샵???�제?�고 ?�로 지?�하?�겠?�니�?`)) {
+                if (!confirm(`${state} ${district}에는 이미 대표샵 "${existingRep.name}"이(가) 있습니다.\n기존 대표샵을 해제하고 새로 지정하시겠습니까?`)) {
                     return;
                 }
                 
-                // 기존 ?�?�샵 ?�제
+                // 기존 대표샵 해제
                 await updateShopRepresentativeStatus(existingRep.id, false);
             }
             
-            // ?�로???�?�샵 지??            await updateShopRepresentativeStatus(shopId, true);
+            // 새로운 대표샵 지정
+            await updateShopRepresentativeStatus(shopId, true);
             
         } else {
-            // ?�?�샵 ?�제
-            if (!confirm(`${shop.name}???�?�샵 지?�을 ?�제?�시겠습?�까?`)) {
+            // 대표샵 해제
+            if (!confirm(`${shop.name}의 대표샵 지정을 해제하시겠습니까?`)) {
                 return;
             }
             
             await updateShopRepresentativeStatus(shopId, false);
         }
         
-        // 목록 ?�로고침
+        // 목록 새로고침
         await refreshShops();
         
     } catch (error) {
         console.error('Representative status toggle error:', error);
-        alert('?�?�샵 ?�태 변�?�??�류가 발생?�습?�다.');
+        alert('대표샵 상태 변경 중 오류가 발생했습니다.');
     }
 }
 
@@ -2380,24 +2392,24 @@ async function updateShopRepresentativeStatus(shopId, isRepresentative) {
         const result = await response.json();
         console.log('Representative status updated:', result);
         
-        // 로컬 ?�이???�데?�트
+        // 로컬 데이터 업데이트
         const shopIndex = allShops.findIndex(s => s.id === shopId);
         if (shopIndex !== -1) {
             allShops[shopIndex] = { ...allShops[shopIndex], ...updateData };
         }
         
-        alert(isRepresentative ? '?�?�샵?�로 지?�되?�습?�다.' : '?�?�샵 지?�이 ?�제?�었?�니??');
+        alert(isRepresentative ? '대표샵으로 지정되었습니다.' : '대표샵 지정이 해제되었습니다.');
         
     } catch (error) {
         console.error('Representative status update error:', error);
         
-        // API ?�패 ??로컬 ?�데?�트
+        // API 실패 시 로컬 업데이트
         const shopIndex = allShops.findIndex(s => s.id === shopId);
         if (shopIndex !== -1) {
             allShops[shopIndex].is_representative = isRepresentative;
             allShops[shopIndex].representative_status = isRepresentative ? 'approved' : 'none';
             displayShops(allShops);
-            alert(isRepresentative ? '?�?�샵?�로 지?�되?�습?�다 (로컬).' : '?�?�샵 지?�이 ?�제?�었?�니??(로컬).');
+            alert(isRepresentative ? '대표샵으로 지정되었습니다 (로컬).' : '대표샵 지정이 해제되었습니다 (로컬).');
         } else {
             throw error;
         }
@@ -2459,12 +2471,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Validation
                 if (!shopName || !ownerName || !phone || !email || !password || !state || !district || !address || !businessNumber) {
-                    alert('?�수 ??��??모두 ?�력?�주?�요.');
+                    alert('필수 항목을 모두 입력해주세요.');
                     return;
                 }
                 
                 if (password.length < 8) {
-                    alert('비�?번호??최소 8???�상?�어???�니??');
+                    alert('비밀번호는 최소 8자 이상이어야 합니다.');
                     return;
                 }
                 
@@ -2472,7 +2484,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalBtnText = submitBtn.innerHTML;
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>?�록 �?..';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>등록 중...';
                 
                 console.log('Creating new shop account...');
                 
@@ -2493,7 +2505,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (!userResponse.ok) {
                     const errorText = await userResponse.text();
-                    throw new Error(`?�용??계정 ?�성 ?�패: ${errorText}`);
+                    throw new Error(`사용자 계정 생성 실패: ${errorText}`);
                 }
                 
                 const newUser = await userResponse.json();
@@ -2524,7 +2536,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (!shopResponse.ok) {
                     const errorText = await shopResponse.text();
-                    throw new Error(`?�체 ?�록 ?�패: ${errorText}`);
+                    throw new Error(`업체 등록 실패: ${errorText}`);
                 }
                 
                 const newShop = await shopResponse.json();
@@ -2544,7 +2556,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Shop registration completed successfully');
                 
                 // Success!
-                alert(`?�체 ?�록???�료?�었?�니??\n\n?�체�? ${shopName}\n?�메?? ${email}\n?�인 ?�태: ?�기중`);
+                alert(`업체 등록이 완료되었습니다!\n\n업체명: ${shopName}\n이메일: ${email}\n승인 상태: 대기중`);
                 
                 // Close modal
                 closeNewShopModal();
@@ -2554,11 +2566,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 await loadShops();
                 
                 // Show notification
-                showNotification('???�체가 ?�록?�었?�니??', 'success');
+                showNotification('새 업체가 등록되었습니다.', 'success');
                 
             } catch (error) {
                 console.error('Shop registration error:', error);
-                alert('?�체 ?�록 �??�류가 발생?�습?�다:\n' + error.message);
+                alert('업체 등록 중 오류가 발생했습니다:\n' + error.message);
                 
                 // Restore button
                 const submitBtn = form.querySelector('button[type="submit"]');
@@ -2630,7 +2642,7 @@ async function loadRecentMembers() {
             // Show empty state
             const container = document.getElementById('recent-members');
             if (container) {
-                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가?�자가 ?�습?�다.</p>';
+                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가입자가 없습니다.</p>';
             }
         }
     }
@@ -2642,14 +2654,14 @@ function displayRecentMembers(users) {
     if (!container) return;
     
     if (users.length === 0) {
-        container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가?�자가 ?�습?�다.</p>';
+        container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가입자가 없습니다.</p>';
         return;
     }
     
     container.innerHTML = users.map(user => {
         const userTypeLabels = {
             'customer': '고객',
-            'shop': '?�체',
+            'shop': '업체',
             'admin': '관리자'
         };
         
@@ -2662,7 +2674,7 @@ function displayRecentMembers(users) {
         const userType = user.user_type || 'customer';
         const userName = user.name || user.email || 'Unknown';
         const userEmail = user.email || '';
-        const createdDate = user.created_at ? new Date(user.created_at).toLocaleDateString('ko-KR') : '?�짜 미상';
+        const createdDate = user.created_at ? new Date(user.created_at).toLocaleDateString('ko-KR') : '날짜 미상';
         
         return `
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="showSection('users')">
@@ -2680,8 +2692,3 @@ function displayRecentMembers(users) {
         `;
     }).join('');
 }
-
-
-
-
-
