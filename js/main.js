@@ -1,5 +1,6 @@
 // 전역 변수
 let uploadedImageUrl = null;
+let uploadedSkinPhotos = []; // 피부 사진 업로드용 배열
 
 // 지역 데이터
 const regionData = {
@@ -239,6 +240,104 @@ function removeUploadedImage() {
     showNotification('이미지가 제거되었습니다.', 'info');
 }
 
+// 🆕 피부 사진 업로드 처리 (다중 파일)
+function handleSkinPhotoUpload(input) {
+    if (!input.files || input.files.length === 0) return;
+    
+    const files = Array.from(input.files);
+    const maxFiles = 5;
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    
+    // 파일 개수 체크
+    if (files.length > maxFiles) {
+        alert(`최대 ${maxFiles}개의 사진만 업로드할 수 있습니다.`);
+        return;
+    }
+    
+    // 각 파일 처리
+    const promises = files.map(file => {
+        return new Promise((resolve, reject) => {
+            // 파일 크기 체크
+            if (file.size > maxSize) {
+                reject(new Error(`${file.name}: 파일 크기는 5MB 이하여야 합니다.`));
+                return;
+            }
+            
+            // 이미지 파일 체크
+            if (!file.type.startsWith('image/')) {
+                reject(new Error(`${file.name}: 이미지 파일만 업로드할 수 있습니다.`));
+                return;
+            }
+            
+            // 파일을 Data URL로 변환
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error(`${file.name}: 파일 읽기 실패`));
+            reader.readAsDataURL(file);
+        });
+    });
+    
+    Promise.all(promises)
+        .then(dataUrls => {
+            uploadedSkinPhotos = dataUrls;
+            displaySkinPhotoPreview(dataUrls);
+            console.log(`✅ 피부 사진 ${dataUrls.length}개 업로드 완료`);
+        })
+        .catch(error => {
+            console.error('피부 사진 업로드 오류:', error);
+            alert(error.message);
+        });
+}
+
+// 🆕 피부 사진 미리보기 표시
+function displaySkinPhotoPreview(dataUrls) {
+    const previewContainer = document.getElementById('photo-preview');
+    if (!previewContainer) return;
+    
+    previewContainer.innerHTML = `
+        <div class="grid grid-cols-3 gap-2 mt-3">
+            ${dataUrls.map((url, index) => `
+                <div class="relative">
+                    <img src="${url}" alt="피부 사진 ${index + 1}" class="w-full h-24 object-cover rounded-lg border border-gray-200">
+                    <button type="button" onclick="removeSkinPhoto(${index})" 
+                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('')}
+        </div>
+        <p class="text-sm text-gray-500 mt-2">${dataUrls.length}개 사진 업로드됨</p>
+    `;
+    previewContainer.classList.remove('hidden');
+}
+
+// 🆕 특정 피부 사진 제거
+function removeSkinPhoto(index) {
+    uploadedSkinPhotos.splice(index, 1);
+    
+    if (uploadedSkinPhotos.length > 0) {
+        displaySkinPhotoPreview(uploadedSkinPhotos);
+    } else {
+        const previewContainer = document.getElementById('photo-preview');
+        if (previewContainer) {
+            previewContainer.classList.add('hidden');
+            previewContainer.innerHTML = '';
+        }
+        
+        // 파일 인풋 초기화
+        const fileInput = document.getElementById('skinPhotos');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    }
+    
+    console.log(`🗑️ 사진 ${index + 1} 제거됨. 남은 사진: ${uploadedSkinPhotos.length}개`);
+}
+
+// 전역 함수로 노출
+window.handleSkinPhotoUpload = handleSkinPhotoUpload;
+window.removeSkinPhoto = removeSkinPhoto;
+
 // 지역 선택 2단계 설정
 function setupRegionSelection() {
     // 기존 지역 선택 처리
@@ -391,7 +490,7 @@ async function submitConsultationForm() {
         const formData = {
             customer_name: document.getElementById('customerName').value,
             customer_email: document.getElementById('customerEmail').value,
-            // customer_phone 제거 - 개인정보 보호를 위해 업체에게 노출하지 않음
+            customer_phone: document.getElementById('customerPhone') ? document.getElementById('customerPhone').value : '',
             state: stateElement ? stateElement.value : '',
             district: districtElement ? districtElement.value : '',
             treatment_types: Array.from(document.querySelectorAll('input[name="treatment_type"]:checked')).map(cb => cb.value),
@@ -400,6 +499,8 @@ async function submitConsultationForm() {
             budget_range: document.getElementById('budgetRange') ? document.getElementById('budgetRange').value : '',
             preferred_schedule: document.getElementById('preferredSchedule') ? document.getElementById('preferredSchedule').value : '',
             additional_notes: document.getElementById('additionalNotes') ? document.getElementById('additionalNotes').value : '',
+            skin_photos: uploadedSkinPhotos.length > 0 ? JSON.stringify(uploadedSkinPhotos) : '',
+            image_urls: uploadedSkinPhotos.length > 0 ? JSON.stringify(uploadedSkinPhotos) : '',
             status: 'pending',
             submission_date: new Date().toISOString()
         };
