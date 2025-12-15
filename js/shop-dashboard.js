@@ -569,6 +569,8 @@ function displayConsultationsList() {
                             <div><strong class="text-gray-900">🗓️ 선호 일정:</strong> ${consultation.preferred_schedule || '미설정'}</div>
                             <div><strong class="text-gray-900">💰 예산:</strong> ${consultation.budget_range || '미설정'}</div>
                             <div><strong class="text-gray-900">👤 나이대:</strong> ${consultation.age_range || '미설정'}</div>
+                            ${consultation.customer_phone ? `<div><strong class="text-gray-900">📞 연락처:</strong> ${consultation.customer_phone}</div>` : ''}
+                            ${consultation.customer_email ? `<div><strong class="text-gray-900">📧 이메일:</strong> ${consultation.customer_email}</div>` : ''}
                         </div>
                         ${consultation.treatment_types ? `
                         <div class="bg-purple-50 p-3 rounded-lg">
@@ -580,6 +582,18 @@ function displayConsultationsList() {
                         <div class="bg-pink-50 p-3 rounded-lg">
                             <strong class="text-pink-900">😟 피부 고민:</strong>
                             <span class="text-pink-700">${safeJSONParse(consultation.skin_concerns).join(', ')}</span>
+                        </div>
+                        ` : ''}
+                        ${consultation.skin_photos || consultation.image_urls ? `
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <strong class="text-green-900">📸 업로드 사진:</strong><br>
+                            <div class="mt-2 grid grid-cols-2 md:grid-cols-4 gap-2">
+                                ${safeJSONParse(consultation.skin_photos || consultation.image_urls || '[]').map(url => `
+                                    <a href="${url}" target="_blank" class="block">
+                                        <img src="${url}" alt="피부 사진" class="w-full h-24 object-cover rounded border border-green-200 hover:border-green-400 transition-all cursor-pointer">
+                                    </a>
+                                `).join('')}
+                            </div>
                         </div>
                         ` : ''}
                         ${consultation.additional_notes ? `
