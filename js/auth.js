@@ -101,6 +101,9 @@ async function checkExistingSession() {
                 const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
                 currentUser = userData;
                 
+                // ===== v2.8.13: 로그인 상태 표시 업데이트 =====
+                updateLoginStatusDisplay();
+                
                 // 이미 로그인된 상태에서 로그인/회원가입 페이지 접근 시 대시보드로 리다이렉트
                 const pathname = window.location.pathname;
                 if (pathname.includes('login.html') || pathname.includes('register.html')) {
@@ -109,11 +112,17 @@ async function checkExistingSession() {
             } else {
                 // 무효한 세션 정리
                 clearSession();
+                // 로그인 상태 표시 업데이트
+                updateLoginStatusDisplay();
             }
+        } else {
+            // 로그인 상태 표시 업데이트
+            updateLoginStatusDisplay();
         }
     } catch (error) {
         console.error('세션 확인 오류:', error);
         clearSession();
+        updateLoginStatusDisplay();
     }
 }
 
@@ -1025,24 +1034,56 @@ function logout() {
 
 // 대시보드로 리다이렉트
 function redirectToDashboard(userType) {
-    // 사용자 의도 확인 (견적상담/전화상담 버튼 클릭)
-    const redirectIntent = localStorage.getItem('redirectIntent');
+    // ===== v2.8.13: 로그인 플로우 개선 =====
+    
+    // 1. 사용자 의도 확인 (견적상담/전화상담 버튼 클릭)
+    const userIntent = JSON.parse(localStorage.getItem('user_intent') || '{}');
+    const redirectIntent = localStorage.getItem('redirectIntent'); // 기존 호환성
+    const returnUrl = sessionStorage.getItem('return_url'); // 이전 페이지
+    
+    // 2. 로그인 성공 팝업 표시
+    showLoginSuccessPopup();
+    
+    // 3. 우선순위: user_intent > redirectIntent > return_url > 기본 대시보드
+    if (userIntent.action && userType === 'customer') {
+        // v2.8.13 신규: 상세한 의도 처리
+        localStorage.removeItem('user_intent');
+        
+        if (userIntent.action === 'consultation') {
+            // 견적 신청으로 이동 후 해당 섹션으로 스크롤
+            window.location.href = 'index.html#consultation-form';
+        } else if (userIntent.action === 'phone') {
+            // 전화 상담으로 이동
+            window.location.href = 'index.html#representative-shop';
+        } else {
+            // 기타 액션
+            window.location.href = userIntent.redirect || 'customer-dashboard.html';
+        }
+        return;
+    }
     
     if (redirectIntent && userType === 'customer') {
-        // 의도 정보 삭제
+        // 기존 로직 유지 (호환성)
         localStorage.removeItem('redirectIntent');
         
-        // index.html로 리다이렉트하고 해당 섹션 표시
         if (redirectIntent === 'consultation') {
-            window.location.href = 'index.html?action=consultation';
+            window.location.href = 'index.html?action=consultation#consultation-form';
         } else if (redirectIntent === 'phone') {
-            window.location.href = 'index.html?action=phone';
+            window.location.href = 'index.html?action=phone#representative-shop';
         } else {
             window.location.href = 'customer-dashboard.html';
         }
         return;
     }
     
+    if (returnUrl) {
+        // 이전 페이지로 복귀
+        sessionStorage.removeItem('return_url');
+        window.location.href = returnUrl;
+        return;
+    }
+    
+    // 4. 기본 대시보드로 이동
     const redirectMap = {
         'customer': 'customer-dashboard.html',
         'shop': 'shop-dashboard.html',
@@ -1051,6 +1092,72 @@ function redirectToDashboard(userType) {
     
     const targetPage = redirectMap[userType] || 'index.html';
     window.location.href = targetPage;
+}
+
+// ===== v2.8.13: 로그인 성공 팝업 =====
+function showLoginSuccessPopup() {
+    const user = getCurrentUser();
+    if (!user) return;
+    
+    // 팝업 생성
+    const popup = document.createElement('div');
+    popup.className = 'login-success-popup';
+    popup.innerHTML = `
+        <div class="popup-content">
+            <i class="fas fa-check-circle text-green-500 text-4xl mb-2"></i>
+            <h3 class="text-lg font-bold mb-1">로그인 완료!</h3>
+            <p class="text-sm text-gray-600">${user.name}님, 환영합니다</p>
+        </div>
+    `;
+    
+    // 스타일 추가
+    if (!document.getElementById('login-success-styles')) {
+        const style = document.createElement('style');
+        style.id = 'login-success-styles';
+        style.textContent = `
+            .login-success-popup {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease-out;
+            }
+            .login-success-popup .popup-content {
+                background: white;
+                padding: 20px 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                text-align: center;
+                border: 2px solid #10b981;
+            }
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @media (max-width: 768px) {
+                .login-success-popup {
+                    top: 10px;
+                    right: 10px;
+                    left: 10px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(popup);
+    
+    // 1.5초 후 제거
+    setTimeout(() => {
+        popup.style.animation = 'slideInRight 0.3s ease-out reverse';
+        setTimeout(() => popup.remove(), 300);
+    }, 1500);
 }
 
 // 세션 토큰 생성
@@ -1735,6 +1842,122 @@ async function getUserByEmail(email) {
     }
 }
 
+// ===== v2.8.13: 로그인 상태 표시 업데이트 함수 =====
+function updateLoginStatusDisplay() {
+    const user = getCurrentUser();
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const loggedInMenu = document.getElementById('loggedInMenu');
+    
+    if (user && user.email) {
+        // 로그인 상태
+        if (loginBtn) loginBtn.classList.add('hidden');
+        if (registerBtn) registerBtn.classList.add('hidden');
+        if (loggedInMenu) {
+            loggedInMenu.classList.remove('hidden');
+            loggedInMenu.classList.add('flex');
+        }
+        
+        // 사용자 이름 표시 (있는 경우)
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        if (userNameDisplay) {
+            userNameDisplay.textContent = user.name || '회원';
+        }
+        
+        // 상단 로그인 상태 배지 추가 (없으면 생성)
+        addLoginStatusBadge(user);
+        
+    } else {
+        // 비로그인 상태
+        if (loginBtn) loginBtn.classList.remove('hidden');
+        if (registerBtn) registerBtn.classList.remove('hidden');
+        if (loggedInMenu) {
+            loggedInMenu.classList.add('hidden');
+            loggedInMenu.classList.remove('flex');
+        }
+        
+        // 로그인 상태 배지 제거
+        removeLoginStatusBadge();
+    }
+}
+
+// 로그인 상태 배지 추가
+function addLoginStatusBadge(user) {
+    // 기존 배지 제거
+    removeLoginStatusBadge();
+    
+    const header = document.querySelector('.simple-header');
+    if (!header) return;
+    
+    const badge = document.createElement('div');
+    badge.id = 'login-status-badge';
+    badge.className = 'login-status-badge';
+    badge.innerHTML = `
+        <i class="fas fa-circle text-green-500"></i>
+        <span class="hidden sm:inline">${user.name || '회원'}님</span>
+    `;
+    
+    // 스타일 추가
+    if (!document.getElementById('login-status-badge-styles')) {
+        const style = document.createElement('style');
+        style.id = 'login-status-badge-styles';
+        style.textContent = `
+            .login-status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.375rem 0.75rem;
+                background: linear-gradient(135deg, #10b98120, #10b98110);
+                border-radius: 1.5rem;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #059669;
+                border: 1px solid #10b98140;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                animation: fadeIn 0.3s ease-out;
+            }
+            .login-status-badge i {
+                font-size: 0.5rem;
+                animation: pulse 2s infinite;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+            }
+            @media (max-width: 640px) {
+                .login-status-badge {
+                    top: 0.5rem;
+                    left: 0.5rem;
+                    padding: 0.25rem 0.5rem;
+                    font-size: 0.75rem;
+                }
+                .login-status-badge span {
+                    max-width: 60px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(badge);
+}
+
+// 로그인 상태 배지 제거
+function removeLoginStatusBadge() {
+    const badge = document.getElementById('login-status-badge');
+    if (badge) badge.remove();
+}
+
 // 전역 함수들
 window.togglePassword = togglePassword;
 window.toggleRegisterPassword = toggleRegisterPassword;
@@ -1745,3 +1968,4 @@ window.fillDemoAccount = fillDemoAccount;
 window.getCurrentUser = getCurrentUser;
 window.isLoggedIn = isLoggedIn;
 window.hasPermission = hasPermission;
+window.updateLoginStatusDisplay = updateLoginStatusDisplay; // v2.8.13 추가
