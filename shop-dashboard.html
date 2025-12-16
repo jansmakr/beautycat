@@ -1735,69 +1735,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- 🔥 긴급 핫픽스: PATCH → PUT 변경 + null 값 필터링 -->
-<script>
-console.log('🔥 HOTFIX: PATCH → PUT 메서드 변경 + null 필터링 적용');
 
-// handleShopInfoUpdate 함수 오버라이드
-if (typeof handleShopInfoUpdate !== 'undefined') {
-    const originalHandler = handleShopInfoUpdate;
-    window.handleShopInfoUpdate = async function(event) {
-        event.preventDefault();
-        
-        const formData = new FormData(event.target);
-        
-        // null 값 필터링: 값이 있는 필드만 포함
-        const updateData = {};
-        const fieldNames = ['shop_name', 'owner_name', 'phone', 'address', 'services', 'business_number', 'description'];
-        
-        fieldNames.forEach(field => {
-            const value = formData.get(field);
-            if (value !== null && value !== undefined && value !== '') {
-                // shop_name → name으로 변환
-                const apiFieldName = field === 'shop_name' ? 'name' : field;
-                updateData[apiFieldName] = value;
-            }
-        });
-        
-        console.log('업체 정보 업데이트 (필터링 후):', updateData);
-        
-        // 업데이트할 데이터가 없는 경우
-        if (Object.keys(updateData).length === 0) {
-            alert('변경된 정보가 없습니다.');
-            return;
-        }
-        
-        try {
-            if (currentShop && currentShop.id) {
-                // ✅ PUT으로 변경 (PATCH 대신)
-                const response = await fetch(`tables/skincare_shops/${currentShop.id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updateData)
-                });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('API 에러 응답:', errorText);
-                    throw new Error(`업데이트 실패: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                console.log('업데이트 성공:', result);
-                
-                alert('업체 정보가 성공적으로 업데이트되었습니다!');
-                location.reload();
-            } else {
-                throw new Error('현재 샵 정보를 찾을 수 없습니다.');
-            }
-        } catch (error) {
-            console.error('업데이트 오류:', error);
-            alert('업데이트 중 오류가 발생했습니다: ' + error.message);
-        }
-    };
-    console.log('✅ handleShopInfoUpdate 함수 오버라이드 완료 (null 필터링 포함)');
-}
-</script>
 </body>
 </html>

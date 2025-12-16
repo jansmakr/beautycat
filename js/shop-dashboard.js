@@ -1119,7 +1119,13 @@ function updateShopInfoForm() {
 
 // 업체 정보 업데이트 처리
 async function handleShopInfoUpdate(e) {
-    e.preventDefault();
+    // 폼 기본 동작 강제 차단
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    console.log('💾 [Shop Info] 저장 시작...');
     
     // 🔥 1. 지역 정보 필수 검증 (최우선)
     const stateValue = document.getElementById('shop-state')?.value || '';
@@ -1138,7 +1144,7 @@ async function handleShopInfoUpdate(e) {
         // 지역 선택 필드로 스크롤
         document.getElementById('shop-state')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         document.getElementById('shop-state')?.focus();
-        return; // 저장 중단
+        return false; // 저장 중단
     }
     
     const formData = new FormData(e.target);
@@ -1254,6 +1260,8 @@ async function handleShopInfoUpdate(e) {
         console.error('업체 정보 업데이트 오류:', error);
         showNotification('업체 정보 저장 중 오류가 발생했습니다.', 'error');
     }
+    
+    return false; // 폼 제출 차단
 }
 
 // 섹션 표시
