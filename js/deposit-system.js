@@ -417,15 +417,15 @@ ${deposit.memo ? `📝 메모: ${deposit.memo}` : ''}
         }
         
         try {
-            // 기존 결제 정보 확인
-            const checkResponse = await fetch(`/tables/shop_payment_methods?shop_id=${this.currentShopId}`);
+            // 기존 결제 정보 확인 (v2.8.13.1: 절대경로 → 상대경로)
+            const checkResponse = await fetch(`tables/shop_payment_methods?shop_id=${this.currentShopId}`);
             const checkData = await checkResponse.json();
             
             let response;
             if (checkData.data && checkData.data.length > 0) {
                 // 업데이트
                 const existingId = checkData.data[0].id;
-                response = await fetch(`/tables/shop_payment_methods/${existingId}`, {
+                response = await fetch(`tables/shop_payment_methods/${existingId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -434,7 +434,7 @@ ${deposit.memo ? `📝 메모: ${deposit.memo}` : ''}
                 });
             } else {
                 // 새로 생성
-                response = await fetch('/tables/shop_payment_methods', {
+                response = await fetch('tables/shop_payment_methods', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
