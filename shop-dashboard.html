@@ -325,6 +325,100 @@
                         </div>
                     </div>
 
+                    <!-- 빠른 액션 아이콘 그리드 -->
+                    <div class="mb-8">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">빠른 액션</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <!-- 신규 상담 -->
+                            <button onclick="showSection('consultations')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
+                                        <i class="fas fa-inbox text-blue-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">신규 상담</span>
+                                    <span id="quick-new-count" class="text-xs text-blue-600 font-semibold mt-1">0건</span>
+                                </div>
+                            </button>
+
+                            <!-- 견적 작성 -->
+                            <button onclick="showSection('quotes')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-green-200 transition-colors">
+                                        <i class="fas fa-file-invoice text-green-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">견적 관리</span>
+                                    <span id="quick-quote-count" class="text-xs text-green-600 font-semibold mt-1">0건</span>
+                                </div>
+                            </button>
+
+                            <!-- 샵 정보 -->
+                            <button onclick="showSection('shop-info')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-purple-200 transition-colors">
+                                        <i class="fas fa-store text-purple-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">샵 정보</span>
+                                    <span class="text-xs text-gray-500 mt-1">관리</span>
+                                </div>
+                            </button>
+
+                            <!-- 공지사항 -->
+                            <button onclick="showSection('announcements')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-orange-200 transition-colors">
+                                        <i class="fas fa-bullhorn text-orange-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">공지사항</span>
+                                    <span id="quick-announcement-count" class="text-xs text-orange-600 font-semibold mt-1">0건</span>
+                                </div>
+                            </button>
+
+                            <!-- 리뷰 관리 -->
+                            <button onclick="showSection('reviews')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-yellow-200 transition-colors">
+                                        <i class="fas fa-star text-yellow-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">리뷰 관리</span>
+                                    <span class="text-xs text-gray-500 mt-1">관리</span>
+                                </div>
+                            </button>
+
+                            <!-- 통계 -->
+                            <button onclick="alert('통계 기능 준비 중입니다')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-indigo-200 transition-colors">
+                                        <i class="fas fa-chart-line text-indigo-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">통계</span>
+                                    <span class="text-xs text-gray-500 mt-1">분석</span>
+                                </div>
+                            </button>
+
+                            <!-- 긴급 예약 -->
+                            <button onclick="filterConsultations(); showSection('consultations')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-red-200 transition-colors">
+                                        <i class="fas fa-bolt text-red-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">긴급 예약</span>
+                                    <span class="text-xs text-red-600 font-semibold mt-1">확인</span>
+                                </div>
+                            </button>
+
+                            <!-- 설정 -->
+                            <button onclick="showSection('settings')" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md group">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-gray-200 transition-colors">
+                                        <i class="fas fa-cog text-gray-600 text-2xl"></i>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-700">설정</span>
+                                    <span class="text-xs text-gray-500 mt-1">관리</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- 통계 카드 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <div class="unni-card p-6">
