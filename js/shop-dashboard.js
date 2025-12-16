@@ -331,15 +331,7 @@ async function loadConsultationRequests() {
                 
                 const isMatch = stateMatch && districtMatch;
                 
-                // 매칭된 견적 요청만 로그 출력
-                if (isMatch) {
-                    console.log(`✅ 견적 요청 매칭:`, {
-                        customer: consultation.customer_name,
-                        region: `${consultState} ${consultDistrict}`,
-                        status: consultation.status,
-                        date: consultation.submission_date
-                    });
-                }
+                // v2.8.13.1: 과다한 console.log 제거 (프로덕션 최적화)
                 
                 if (isMatch) {
                 } else {
@@ -668,9 +660,14 @@ function displayQuotesList() {
                         <button onclick="openChat('${quote.consultation_id}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
                             <i class="fas fa-comments mr-1"></i>채팅
                         </button>
-                        ${quote.status === 'sent' ? `
+                        ${quote.status !== 'confirmed' && quote.status !== 'cancelled' ? `
                             <button onclick="editQuote('${quote.id}')" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
                                 <i class="fas fa-edit mr-1"></i>수정
+                            </button>
+                        ` : ''}
+                        ${quote.status === 'accepted' ? `
+                            <button onclick="confirmQuote('${quote.id}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+                                <i class="fas fa-check mr-1"></i>확정
                             </button>
                         ` : ''}
                     </div>
