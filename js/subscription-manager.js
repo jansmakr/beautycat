@@ -93,7 +93,7 @@ class SubscriptionManager {
         };
         
         try {
-            const response = await fetch('/tables/subscriptions', {
+            const response = await fetch('tables/subscriptions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(freeSubscription)
@@ -468,7 +468,7 @@ class SubscriptionManager {
     // 구독 통계 조회
     async getSubscriptionStats() {
         try {
-            const response = await fetch('/tables/subscriptions?analytics=true');
+            const response = await fetch('tables/subscriptions?analytics=true');
             const data = await response.json();
             
             return {

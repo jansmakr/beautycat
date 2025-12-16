@@ -2342,7 +2342,7 @@ async function loadShopAnnouncements() {
     try {
         console.log('Loading shop announcements...');
         
-        const response = await fetch('/tables/announcements?limit=100&sort=-created_at');
+        const response = await fetch('tables/announcements?limit=100&sort=-created_at');
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
@@ -2496,7 +2496,7 @@ async function incrementAnnouncementViews(announcementId) {
         const newViews = (announcement.views || 0) + 1;
         
         // API 호출 (에러가 나도 무시)
-        await fetch(`/tables/announcements/${announcementId}`, {
+        await fetch(`tables/announcements/${announcementId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ views: newViews })
@@ -2976,7 +2976,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Sending announcement data:', announcementData);
                 
                 // API 호출
-                const response = await fetch('/tables/shop_announcements', {
+                const response = await fetch('tables/shop_announcements', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(announcementData)
