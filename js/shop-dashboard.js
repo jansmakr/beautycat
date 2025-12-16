@@ -1155,8 +1155,7 @@ async function handleShopInfoUpdate(e) {
     
     // 업체 정보 데이터 수집 (다양한 필드명 지원)
     const updateData = {
-        shop_name: formData.get('shop-name') || document.getElementById('shop-name')?.value || '',
-        name: formData.get('owner-name') || document.getElementById('owner-name')?.value || currentUser.name || '',
+        name: formData.get('shop-name') || document.getElementById('shop-name')?.value || currentShop?.name || '',
         owner_name: formData.get('owner-name') || document.getElementById('owner-name')?.value || currentUser.name || '',
         business_number: document.getElementById('business-number')?.value || '',
         business_license_number: document.getElementById('business-license-number')?.value || '',
@@ -1208,13 +1207,23 @@ async function handleShopInfoUpdate(e) {
         let response;
         
         if (currentShop && currentShop.id) {
-            // 기존 업체 정보 업데이트 (PUT 사용 - PATCH는 Workers에서 지원 필요)
+            // 기존 샵 데이터와 병합 (PUT은 전체 데이터 필요)
+            const mergedData = {
+                ...currentShop,  // 기존 데이터 유지
+                ...updateData,   // 새 데이터로 덮어쓰기
+                id: currentShop.id,  // ID는 변경 불가
+                created_at: currentShop.created_at  // 생성일 유지
+            };
+            
+            console.log('💾 [병합된 데이터]', mergedData);
+            
+            // 기존 업체 정보 업데이트 (PUT 사용)
             response = await fetch(`tables/skincare_shops/${currentShop.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(updateData)
+                body: JSON.stringify(mergedData)
             });
         } else {
             // 새 업체 정보 생성
