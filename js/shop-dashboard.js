@@ -832,8 +832,41 @@ function createQuote(consultationId) {
     // 템플릿 버튼 추가 (v2.8.13.3)
     addTemplateButtons();
     
+    // v2.8.13.6: 샵 정보 자동 입력
+    autoFillShopInfo();
+    
     // 모달 열기
     modal.classList.remove('hidden');
+}
+
+// 샵 정보 자동 입력 (v2.8.13.6)
+function autoFillShopInfo() {
+    try {
+        // currentShop 또는 currentUser에서 샵 정보 가져오기
+        const shopInfo = currentShop || currentUser;
+        
+        if (!shopInfo) {
+            console.log('ℹ️ [견적서] 샵 정보 없음 - 자동 입력 건너뛰기');
+            return;
+        }
+        
+        // 관리 내용 필드에 샵 소개 자동 입력
+        const treatmentDetailsField = document.getElementById('treatment-details');
+        if (treatmentDetailsField && currentShop?.description) {
+            // 기존 값이 없을 때만 자동 입력
+            if (!treatmentDetailsField.value || treatmentDetailsField.value.trim() === '') {
+                treatmentDetailsField.value = currentShop.description;
+                console.log('✅ [견적서] 샵 소개 자동 입력:', currentShop.description.substring(0, 50) + '...');
+            }
+        }
+        
+        // 추가 사항 필드는 비워두기 (고객별로 다르게 작성)
+        // 원장 소개는 템플릿 시스템을 활용하여 저장/불러오기
+        
+        console.log('✅ [견적서] 샵 정보 자동 입력 완료');
+    } catch (error) {
+        console.error('❌ [견적서] 샵 정보 자동 입력 실패:', error);
+    }
 }
 
 // 템플릿 버튼 동적 추가 (v2.8.13.3)
