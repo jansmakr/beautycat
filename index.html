@@ -4437,5 +4437,28 @@
             setInterval(showActivityNotification, 20000);
         }, 15000);
     </script>
+
+    <!-- ============================================ -->
+    <!-- KAKAO SDK - v2.8.12.5 HOTFIX -->
+    <!-- ============================================ -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" 
+            integrity="sha384-TiCUE00h+gjFLkO5uzHbN6eF7hC8OQRb3r1YM/pPqZDXqRhMoJZLV5n3p7RmFp5E" 
+            crossorigin="anonymous"></script>
+    
+    <script>
+        // Kakao SDK 초기화
+        if (window.Kakao && !Kakao.isInitialized()) {
+            try {
+                // Kakao JavaScript Key (개발자 콘솔에서 확인 필요)
+                Kakao.init('YOUR_KAKAO_JAVASCRIPT_KEY');
+                console.log('✅ Kakao SDK 초기화 완료:', Kakao.isInitialized());
+            } catch (error) {
+                console.error('❌ Kakao SDK 초기화 실패:', error);
+            }
+        } else if (!window.Kakao) {
+            console.error('❌ Kakao SDK 로드 실패 - 스크립트를 확인하세요');
+        }
+    </script>
+
 </body>
 </html>
