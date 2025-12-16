@@ -4420,6 +4420,9 @@
             return true;
         }
         
+        // 전역 함수로 등록 (window 객체에 명시적으로 추가)
+        window.handlePhoneIntent = handlePhoneIntent;
+        
         // 견적 신청 폼으로 스크롤
         function scrollToConsultationForm() {
             const formSection = document.getElementById('consultation-form');
