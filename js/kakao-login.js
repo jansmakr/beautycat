@@ -148,8 +148,8 @@ async function checkExistingUser(email) {
     try {
         console.log('🔍 [Kakao] 기존 회원 확인:', email);
 
-        // API 호출 - 이메일로 사용자 검색 (정확한 검색) (v2.8.13.5: 상대 경로)
-        const response = await fetch(`tables/users?search=${encodeURIComponent(email)}&limit=10`);
+        // 방법 1: 전체 사용자 조회 후 필터링 (정확한 매칭)
+        const response = await fetch(`tables/users?limit=1000`);
         
         if (!response.ok) {
             console.log('ℹ️ [Kakao] 기존 회원 없음 (API 오류 또는 신규 회원)');
@@ -157,7 +157,7 @@ async function checkExistingUser(email) {
         }
 
         const result = await response.json();
-        console.log('📊 [Kakao] 검색 결과:', result);
+        console.log('📊 [Kakao] 전체 사용자 조회 완료:', result.total, '명');
         
         if (result.data && result.data.length > 0) {
             // 이메일 정확히 일치하는지 확인 (대소문자 무시)
@@ -166,7 +166,7 @@ async function checkExistingUser(email) {
                 console.log('✅ [Kakao] 기존 회원 발견:', user.email);
                 return user;
             } else {
-                console.log(`ℹ️ [Kakao] 검색 결과 ${result.data.length}개 중 정확히 일치하는 이메일 없음`);
+                console.log(`ℹ️ [Kakao] ${result.data.length}명 중 정확히 일치하는 이메일 없음`);
             }
         }
 
