@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.9
+- **현재 버전**: v2.8.13.6.10
 - **마지막 업데이트**: 2025-12-16
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,18 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.9)
+## 🚀 최근 업데이트 (v2.8.13.6.10)
+
+### 2025-12-16 핫픽스 (v2.8.13.6.10)
+**샵 정보 저장 DB 스키마 완전 매칭**:
+- **모든 필드명** DB 스키마에 맞게 수정
+- `business_license_number` → `business_license`
+- `business_hours` → `operating_hours`
+- `shop_features` → `description`
+- `representative_service` → `representative_treatments`
+- `service_price` → `price_range`
+- 존재하지 않는 필드 제거 (director_profile, director_experience 등)
+- Console 테스트 200 성공 확인
 
 ### 2025-12-16 핫픽스 (v2.8.13.6.9)
 **샵 정보 저장 DB 스키마 호환성 수정**:

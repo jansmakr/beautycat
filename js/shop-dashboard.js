@@ -1157,8 +1157,8 @@ async function handleShopInfoUpdate(e) {
     const updateData = {
         name: formData.get('shop-name') || document.getElementById('shop-name')?.value || currentShop?.name || '',
         owner_name: formData.get('owner-name') || document.getElementById('owner-name')?.value || currentUser.name || '',
-        business_number: document.getElementById('business-number')?.value || '',
-        business_license_number: document.getElementById('business-license-number')?.value || '',
+        business_number: document.getElementById('business-number')?.value || null,
+        business_license: document.getElementById('business-license-number')?.value || null,
         phone: formData.get('shop-phone') || document.getElementById('shop-phone')?.value || currentUser.phone || '',
         email: currentUser.email,
         user_type: 'shop',
@@ -1172,33 +1172,26 @@ async function handleShopInfoUpdate(e) {
         address: formData.get('shop-address') || document.getElementById('shop-address')?.value || '',
         shop_address: formData.get('shop-address') || document.getElementById('shop-address')?.value || '',
         
-        business_hours: formData.get('business-hours') || document.getElementById('business-hours')?.value || '',
+        operating_hours: formData.get('business-hours') || document.getElementById('business-hours')?.value || null,
         
-        // 샵 소개 필드들
-        representative_service: document.getElementById('representative-service')?.value || '',
-        service_price: document.getElementById('service-price')?.value || '',
-        cosmetic_brands: document.getElementById('cosmetic-brands')?.value || '',
-        beauty_equipment: document.getElementById('beauty-equipment')?.value || '',
-        shop_features: document.getElementById('shop-features')?.value || '',
-        shop_size: document.getElementById('shop-size')?.value || '',
-        bed_count: document.getElementById('bed-count')?.value || '',
-        staff_count: document.getElementById('staff-count')?.value || '',
+        // 샵 소개 필드들 (description으로 통합)
+        description: document.getElementById('shop-features')?.value || currentShop?.description || '',
         
-        // 원장 소개 필드들
-        director_profile: document.getElementById('director-profile')?.value || '',
-        director_experience: document.getElementById('director-experience')?.value || '',
+        // DB 스키마에 맞는 필드들
+        representative_treatments: document.getElementById('representative-service')?.value || null,
+        price_range: document.getElementById('service-price')?.value || null,
+        services: specialties.length > 0 ? specialties : (currentShop?.services || []),
         
-        treatment_types: specialties,
-        services: specialties, // 호환성
-        
-        // 기본 정보
-        status: 'approved',
-        is_active: true,
-        verified: false,
-        rating: currentShop?.rating || 0,
-        review_count: currentShop?.review_count || 0,
-        images: currentShop?.images || [],
-        updated_at: new Date().toISOString()
+        // 기본 정보 (기존 데이터 유지)
+        status: currentShop?.status || 'active',
+        show_payment_info: currentShop?.show_payment_info !== undefined ? currentShop.show_payment_info : 1,
+        payment_link: currentShop?.payment_link || null,
+        bank_name: currentShop?.bank_name || null,
+        account_number: currentShop?.account_number || null,
+        account_holder: currentShop?.account_holder || null,
+        town: currentShop?.town || null,
+        deleted: 0,
+        updated_at: Date.now()
     };
     
     console.log('💾 업체 정보 저장 데이터:', updateData);
