@@ -576,14 +576,20 @@ function displayConsultationsList() {
                             <span class="text-pink-700">${safeJSONParse(consultation.skin_concerns).join(', ')}</span>
                         </div>
                         ` : ''}
+                        ${consultation.skin_condition ? `
+                        <div class="bg-orange-50 p-3 rounded-lg">
+                            <strong class="text-orange-900">🩺 현재 피부 상태:</strong><br>
+                            <span class="text-orange-700">${consultation.skin_condition}</span>
+                        </div>
+                        ` : ''}
                         ${consultation.skin_photos || consultation.image_urls ? `
                         <div class="bg-green-50 p-3 rounded-lg">
                             <strong class="text-green-900">📸 업로드 사진:</strong><br>
                             <div class="mt-2 grid grid-cols-2 md:grid-cols-4 gap-2">
                                 ${safeJSONParse(consultation.skin_photos || consultation.image_urls || '[]').map(url => `
-                                    <a href="${url}" target="_blank" class="block">
-                                        <img src="${url}" alt="피부 사진" class="w-full h-24 object-cover rounded border border-green-200 hover:border-green-400 transition-all cursor-pointer">
-                                    </a>
+                                    <div class="block cursor-pointer" onclick="openImageModal('${url}')">
+                                        <img src="${url}" alt="피부 사진" class="w-full h-24 object-cover rounded border border-green-200 hover:border-green-400 hover:scale-105 transition-all">
+                                    </div>
                                 `).join('')}
                             </div>
                         </div>
@@ -823,8 +829,44 @@ function createQuote(consultationId) {
     // 폼 초기화
     document.getElementById('quote-form').reset();
     
+    // 템플릿 버튼 추가 (v2.8.13.3)
+    addTemplateButtons();
+    
     // 모달 열기
     modal.classList.remove('hidden');
+}
+
+// 템플릿 버튼 동적 추가 (v2.8.13.3)
+function addTemplateButtons() {
+    // 이미 버튼이 있으면 추가하지 않음
+    if (document.getElementById('template-buttons-container')) {
+        return;
+    }
+    
+    const form = document.getElementById('quote-form');
+    if (!form) return;
+    
+    // 버튼 컨테이너 생성
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'template-buttons-container';
+    buttonContainer.className = 'flex gap-2 mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200';
+    buttonContainer.innerHTML = `
+        <button type="button" onclick="openLoadTemplateDialog()" 
+                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <i class="fas fa-file-import mr-1"></i>템플릿 불러오기
+        </button>
+        <button type="button" onclick="openSaveTemplateDialog()" 
+                class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <i class="fas fa-save mr-1"></i>템플릿 저장
+        </button>
+        <button type="button" onclick="openDeleteTemplateDialog()" 
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            <i class="fas fa-trash mr-1"></i>삭제
+        </button>
+    `;
+    
+    // 폼 맨 위에 추가
+    form.insertBefore(buttonContainer, form.firstChild);
 }
 
 // 견적서 작성 모달 닫기
@@ -2546,6 +2588,264 @@ window.loadShopAnnouncements = loadShopAnnouncements;
 window.viewShopAnnouncement = viewShopAnnouncement;
 window.closeAnnouncementDetailModal = closeAnnouncementDetailModal;
 window.filterShopAnnouncements = filterShopAnnouncements;
+
+// ========================================
+// 📋 견적서 템플릿 관리 시스템 (v2.8.13.3)
+// ========================================
+
+const QuoteTemplateManager = {
+    STORAGE_KEY: 'beautycat_quote_templates',
+    
+    // 템플릿 저장
+    saveTemplate(name, data) {
+        try {
+            const templates = this.getAllTemplates();
+            const template = {
+                id: Date.now().toString(),
+                name: name,
+                treatmentDetails: data.treatmentDetails || '',
+                price: data.price || '',
+                duration: data.duration || '',
+                availableDates: data.availableDates || '',
+                additionalNotes: data.additionalNotes || '',
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+            
+            templates.push(template);
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(templates));
+            console.log('✅ 템플릿 저장 완료:', name);
+            return template;
+        } catch (error) {
+            console.error('❌ 템플릿 저장 실패:', error);
+            return null;
+        }
+    },
+    
+    // 모든 템플릿 가져오기
+    getAllTemplates() {
+        try {
+            const data = localStorage.getItem(this.STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        } catch (error) {
+            console.error('❌ 템플릿 로드 실패:', error);
+            return [];
+        }
+    },
+    
+    // 템플릿 삭제
+    deleteTemplate(templateId) {
+        try {
+            const templates = this.getAllTemplates();
+            const filtered = templates.filter(t => t.id !== templateId);
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filtered));
+            console.log('✅ 템플릿 삭제 완료:', templateId);
+            return true;
+        } catch (error) {
+            console.error('❌ 템플릿 삭제 실패:', error);
+            return false;
+        }
+    },
+    
+    // 템플릿 불러오기 (폼에 자동 입력)
+    loadTemplate(templateId) {
+        try {
+            const templates = this.getAllTemplates();
+            const template = templates.find(t => t.id === templateId);
+            
+            if (!template) {
+                alert('템플릿을 찾을 수 없습니다.');
+                return false;
+            }
+            
+            // 폼 필드에 자동 입력
+            document.getElementById('treatment-details').value = template.treatmentDetails || '';
+            document.getElementById('quote-price').value = template.price || '';
+            document.getElementById('duration').value = template.duration || '';
+            document.getElementById('available-dates').value = template.availableDates || '';
+            document.getElementById('additional-notes').value = template.additionalNotes || '';
+            
+            console.log('✅ 템플릿 불러오기 완료:', template.name);
+            return true;
+        } catch (error) {
+            console.error('❌ 템플릿 불러오기 실패:', error);
+            return false;
+        }
+    }
+};
+
+// 템플릿 저장 다이얼로그 열기
+function openSaveTemplateDialog() {
+    const templateName = prompt('템플릿 이름을 입력하세요:', '기본 견적서');
+    
+    if (!templateName || templateName.trim() === '') {
+        return;
+    }
+    
+    const templateData = {
+        treatmentDetails: document.getElementById('treatment-details').value,
+        price: document.getElementById('quote-price').value,
+        duration: document.getElementById('duration').value,
+        availableDates: document.getElementById('available-dates').value,
+        additionalNotes: document.getElementById('additional-notes').value
+    };
+    
+    const template = QuoteTemplateManager.saveTemplate(templateName.trim(), templateData);
+    
+    if (template) {
+        alert(`✅ 템플릿 "${templateName}"이(가) 저장되었습니다!`);
+        updateTemplateList();
+    } else {
+        alert('❌ 템플릿 저장에 실패했습니다.');
+    }
+}
+
+// 템플릿 불러오기 다이얼로그 열기
+function openLoadTemplateDialog() {
+    const templates = QuoteTemplateManager.getAllTemplates();
+    
+    if (templates.length === 0) {
+        alert('저장된 템플릿이 없습니다.');
+        return;
+    }
+    
+    // 템플릿 선택 리스트 생성
+    let message = '불러올 템플릿을 선택하세요:\n\n';
+    templates.forEach((template, index) => {
+        message += `${index + 1}. ${template.name}\n`;
+    });
+    
+    const choice = prompt(message + '\n번호를 입력하세요:');
+    
+    if (!choice) return;
+    
+    const index = parseInt(choice) - 1;
+    if (index >= 0 && index < templates.length) {
+        const template = templates[index];
+        QuoteTemplateManager.loadTemplate(template.id);
+        alert(`✅ 템플릿 "${template.name}"을(를) 불러왔습니다!`);
+    } else {
+        alert('❌ 잘못된 번호입니다.');
+    }
+}
+
+// 템플릿 삭제 다이얼로그 열기
+function openDeleteTemplateDialog() {
+    const templates = QuoteTemplateManager.getAllTemplates();
+    
+    if (templates.length === 0) {
+        alert('저장된 템플릿이 없습니다.');
+        return;
+    }
+    
+    // 템플릿 선택 리스트 생성
+    let message = '삭제할 템플릿을 선택하세요:\n\n';
+    templates.forEach((template, index) => {
+        message += `${index + 1}. ${template.name}\n`;
+    });
+    
+    const choice = prompt(message + '\n번호를 입력하세요:');
+    
+    if (!choice) return;
+    
+    const index = parseInt(choice) - 1;
+    if (index >= 0 && index < templates.length) {
+        const template = templates[index];
+        if (confirm(`"${template.name}" 템플릿을 삭제하시겠습니까?`)) {
+            QuoteTemplateManager.deleteTemplate(template.id);
+            alert(`✅ 템플릿 "${template.name}"이(가) 삭제되었습니다.`);
+            updateTemplateList();
+        }
+    } else {
+        alert('❌ 잘못된 번호입니다.');
+    }
+}
+
+// 템플릿 리스트 업데이트
+function updateTemplateList() {
+    const templates = QuoteTemplateManager.getAllTemplates();
+    console.log(`📋 저장된 템플릿 개수: ${templates.length}`);
+}
+
+// 전역 함수 등록
+window.QuoteTemplateManager = QuoteTemplateManager;
+window.openSaveTemplateDialog = openSaveTemplateDialog;
+window.openLoadTemplateDialog = openLoadTemplateDialog;
+window.openDeleteTemplateDialog = openDeleteTemplateDialog;
+
+console.log('✅ 견적서 템플릿 관리 시스템 로드 완료 (v2.8.13.3)');
+
+// ========================================
+// 🖼️ 이미지 확대 모달 시스템 (v2.8.13.3)
+// ========================================
+
+// 이미지 모달 열기
+function openImageModal(imageUrl) {
+    // 기존 모달 제거
+    const existingModal = document.getElementById('image-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // 새 모달 생성
+    const modal = document.createElement('div');
+    modal.id = 'image-modal';
+    modal.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-90 p-4';
+    modal.onclick = closeImageModal;
+    
+    modal.innerHTML = `
+        <div class="relative max-w-7xl max-h-screen" onclick="event.stopPropagation()">
+            <!-- 닫기 버튼 -->
+            <button onclick="closeImageModal()" 
+                    class="absolute -top-12 right-0 text-white hover:text-red-500 text-3xl font-bold transition-colors z-10">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            
+            <!-- 이미지 -->
+            <img src="${imageUrl}" 
+                 alt="피부 사진 확대" 
+                 class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                 onclick="event.stopPropagation()">
+            
+            <!-- 하단 버튼 -->
+            <div class="absolute -bottom-16 left-0 right-0 flex justify-center gap-4">
+                <a href="${imageUrl}" download target="_blank" 
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-download mr-2"></i>다운로드
+                </a>
+                <button onclick="closeImageModal()" 
+                        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transition-colors">
+                    <i class="fas fa-times mr-2"></i>닫기
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden'; // 스크롤 방지
+}
+
+// 이미지 모달 닫기
+function closeImageModal() {
+    const modal = document.getElementById('image-modal');
+    if (modal) {
+        modal.remove();
+    }
+    document.body.style.overflow = ''; // 스크롤 복원
+}
+
+// ESC 키로 모달 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeImageModal();
+    }
+});
+
+// 전역 함수 등록
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
+
+console.log('✅ 이미지 확대 모달 시스템 로드 완료 (v2.8.13.3)');
 
 // 초기 로드 시 공지사항 배지 업데이트 (대시보드 진입 시)
 if (document.readyState === 'loading') {
