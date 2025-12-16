@@ -1147,40 +1147,29 @@ async function handleShopInfoUpdate(e) {
         return false; // 저장 중단
     }
     
-    const formData = new FormData(e.target);
-    const specialties = [];
-    document.querySelectorAll('input[name="specialties"]:checked').forEach(checkbox => {
-        specialties.push(checkbox.value);
-    });
-    
-    // 업체 정보 데이터 수집 (다양한 필드명 지원)
+    // 업체 정보 데이터 수집 (getElementById로 직접 수집)
     const updateData = {
-        name: formData.get('shop-name') || document.getElementById('shop-name')?.value || currentShop?.name || '',
-        owner_name: formData.get('owner-name') || document.getElementById('owner-name')?.value || currentUser.name || '',
+        name: document.getElementById('shop-name')?.value || currentShop?.name || '',
+        owner_name: document.getElementById('owner-name')?.value || currentUser.name || '',
         business_number: document.getElementById('business-number')?.value || null,
         business_license: document.getElementById('business-license-number')?.value || null,
-        phone: formData.get('shop-phone') || document.getElementById('shop-phone')?.value || currentUser.phone || '',
+        phone: document.getElementById('shop-phone')?.value || currentUser.phone || '',
         email: currentUser.email,
-        user_type: 'shop',
         
-        // 지역 정보 (다중 필드 지원) - 이미 검증 완료
+        // 지역 정보 - 이미 검증 완료
         state: stateValue,
         district: districtValue,
-        shop_state: stateValue,
-        shop_district: districtValue,
         
-        address: formData.get('shop-address') || document.getElementById('shop-address')?.value || '',
-        shop_address: formData.get('shop-address') || document.getElementById('shop-address')?.value || '',
+        address: document.getElementById('shop-address')?.value || '',
+        operating_hours: document.getElementById('business-hours')?.value || null,
         
-        operating_hours: formData.get('business-hours') || document.getElementById('business-hours')?.value || null,
-        
-        // 샵 소개 필드들 (description으로 통합)
+        // 샵 소개 필드들
         description: document.getElementById('shop-features')?.value || currentShop?.description || '',
-        
-        // DB 스키마에 맞는 필드들
         representative_treatments: document.getElementById('representative-service')?.value || null,
         price_range: document.getElementById('service-price')?.value || null,
-        services: specialties.length > 0 ? specialties : (currentShop?.services || []),
+        
+        // services 배열 수집
+        services: currentShop?.services || [],
         
         // 기본 정보 (기존 데이터 유지)
         status: currentShop?.status || 'active',
