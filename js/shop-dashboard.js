@@ -1040,18 +1040,18 @@ function updateShopInfoForm() {
         if (fields.shopName) fields.shopName.value = currentShop.shop_name || currentShop.name || '';
         if (fields.ownerName) fields.ownerName.value = currentShop.owner_name || currentShop.name || currentUser?.name || '';
         if (fields.businessNumber) fields.businessNumber.value = currentShop.business_number || '';
-        if (fields.businessLicenseNumber) fields.businessLicenseNumber.value = currentShop.business_license_number || '';
+        if (fields.businessLicenseNumber) fields.businessLicenseNumber.value = currentShop.business_license || '';
         if (fields.shopPhone) fields.shopPhone.value = currentShop.phone || currentUser?.phone || '';
         if (fields.shopEmail) fields.shopEmail.value = currentShop.email || currentUser?.email || '';
         if (fields.shopAddress) fields.shopAddress.value = currentShop.address || currentShop.shop_address || '';
-        if (fields.businessHours) fields.businessHours.value = currentShop.business_hours || '';
+        if (fields.businessHours) fields.businessHours.value = currentShop.operating_hours || '';
         
         // 샵 소개 필드들
-        if (fields.representativeService) fields.representativeService.value = currentShop.representative_service || '';
-        if (fields.servicePrice) fields.servicePrice.value = currentShop.service_price || '';
+        if (fields.representativeService) fields.representativeService.value = currentShop.representative_treatments || '';
+        if (fields.servicePrice) fields.servicePrice.value = currentShop.price_range || '';
         if (fields.cosmeticBrands) fields.cosmeticBrands.value = currentShop.cosmetic_brands || '';
         if (fields.beautyEquipment) fields.beautyEquipment.value = currentShop.beauty_equipment || '';
-        if (fields.shopFeatures) fields.shopFeatures.value = currentShop.shop_features || '';
+        if (fields.shopFeatures) fields.shopFeatures.value = currentShop.description || '';
         if (fields.shopSize) fields.shopSize.value = currentShop.shop_size || '';
         if (fields.bedCount) fields.bedCount.value = currentShop.bed_count || '';
         if (fields.staffCount) fields.staffCount.value = currentShop.staff_count || '';

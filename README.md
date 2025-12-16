@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.11
+- **현재 버전**: v2.8.13.6.12
 - **마지막 업데이트**: 2025-12-16
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,14 +37,29 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.11)
+## 🚀 최근 업데이트 (v2.8.13.6.12)
 
-### 2025-12-16 핫픽스 (v2.8.13.6.11)
+### 2025-12-16 핫픽스 (v2.8.13.6.12) ✅ **완전 해결**
+**샵 정보 폼 로딩 DB 필드명 매칭 수정**:
+- **문제**: 저장은 되지만 폼에 다시 표시되지 않음 (DB 필드명 불일치)
+- **원인**: `updateShopInfoForm()`에서 구 필드명 사용 중
+  - `business_license_number` → `business_license`
+  - `business_hours` → `operating_hours`
+  - `representative_service` → `representative_treatments`
+  - `service_price` → `price_range`
+  - `shop_features` → `description`
+- **해결**: 모든 필드명을 DB 스키마에 맞게 수정
+- **영향**: 저장 후 페이지 새로고침 시 모든 필드 정상 표시
+
+### 2025-12-16 핫픽스 (v2.8.13.6.11) ✅ **검증 완료**
 **샵 정보 저장 FormData 제거 - 모든 필드 저장 보장**:
 - **문제**: HTML input에 `name` 속성 없음 → FormData.get() 항상 null 반환
 - **해결**: FormData 제거, getElementById로 모든 필드 직접 수집
 - 사업자등록번호, 영업신고증, 전화번호, 주소, 영업시간 등 모든 필드 저장 보장
 - 일부 필드만 저장되던 문제 완전 해결
+- **검증**: Console 테스트 성공 ✅
+  - PUT 요청 200 OK
+  - 전체 필드 DB 저장 확인 (business_number, business_license, operating_hours, representative_treatments, price_range, description)
 
 ### 2025-12-16 핫픽스 (v2.8.13.6.10)
 **샵 정보 저장 DB 스키마 완전 매칭**:
