@@ -33,7 +33,7 @@ async function loadAdminAnnouncements() {
     try {
         console.log('Loading admin announcements...');
         
-        const response = await fetch('/tables/announcements?limit=100&sort=-created_at');
+        const response = await fetch('tables/announcements?limit=100&sort=-created_at');
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
@@ -78,7 +78,7 @@ async function loadShopAnnouncements() {
     try {
         console.log('Loading shop announcements...');
         
-        const response = await fetch('/tables/shop_announcements?limit=100&sort=-created_at');
+        const response = await fetch('tables/shop_announcements?limit=100&sort=-created_at');
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);

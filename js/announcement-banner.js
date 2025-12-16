@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function loadAnnouncementBanner() {
     try {
         // 최신 긴급/중요 공지 1개만 가져오기
-        const response = await fetch('/tables/announcements?limit=10&sort=-created_at');
+        const response = await fetch('tables/announcements?limit=10&sort=-created_at');
         
         if (!response.ok) return;
         
