@@ -28,6 +28,7 @@
     
     <!-- 네이버 사이트 소유 확인 -->
     <meta name="naver-site-verification" content="ecbb75ac901ff3f51ff1b93e6238b027fb82089c" />
+    <meta name="naver-site-verification" content="296f90ae14a2bec575c384fc64c85e27e50941b5" />
     
     <!-- 네이버 검색 최적화 추가 메타태그 -->
     <meta name="NaverBot" content="All">
@@ -3387,7 +3388,18 @@
         
         // 대시보드로 이동 (전역 함수로 노출)
         window.goToDashboard = function() {
-            const userType = localStorage.getItem('user_type');
+            // user_type 우선, 없으면 currentUser에서 가져오기
+            let userType = localStorage.getItem('user_type');
+            
+            if (!userType) {
+                // user_type이 없으면 currentUser 또는 user_data에서 가져오기
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user_data') || 'null');
+                if (currentUser && currentUser.user_type) {
+                    userType = currentUser.user_type;
+                    // user_type을 localStorage에 저장 (다음번을 위해)
+                    localStorage.setItem('user_type', userType);
+                }
+            }
             
             if (!userType) {
                 alert('로그인이 필요합니다.');
@@ -3695,9 +3707,9 @@
         function showPhoneForm() {
             console.log('📞 [전화상담] 버튼 클릭됨');
             
-            // 로그인 확인
-            const user = JSON.parse(localStorage.getItem('user_data') || 'null');
-            const isLoggedIn = user && localStorage.getItem('session_token');
+            // 로그인 확인 (currentUser 또는 user_data)
+            const user = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user_data') || 'null');
+            const isLoggedIn = user && user.email;
             
             if (!isLoggedIn) {
                 // 미로그인 시 authModal 표시
@@ -4399,7 +4411,8 @@
         
         // 전화 상담 버튼 처리
         function handlePhoneIntent() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            // currentUser 또는 user_data에서 사용자 정보 가져오기
+            const user = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user_data') || '{}');
             
             if (!user.email) {
                 // 비로그인 상태: 의도 저장 후 로그인 페이지로
