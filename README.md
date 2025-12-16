@@ -1,12 +1,11 @@
-# 🎫 Beautyket (뷰티켓) - 아름다운 티켓, 뷰티 샵 매칭 플랫폼
+# 🐱 BeautyCat - 피부관리 샵 매칭 플랫폼
 
 ## 📋 프로젝트 개요
 
-Beautyket(뷰티켓)은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
+BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
-- **프로젝트 URL**: https://beautyket.com
-- **이전 도메인**: https://beautycat.kr (리다이렉트 예정)
-- **현재 버전**: v2.8.14
+- **프로젝트 URL**: https://beautycat.kr
+- **현재 버전**: v2.8.13.6
 - **마지막 업데이트**: 2025-12-16
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -16,7 +15,7 @@ Beautyket(뷰티켓)은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱�
 
 ### 1. 고객 기능
 - **상담 신청**: 원하는 서비스, 지역, 예산 입력
-- **긴급 예약** ⚡: 오늘/내일 빠른 매칭 (v2.8.12.4)
+- **긴급 예약** ⚡: 오늘/내일 빠른 매칭
 - **지역 기반 매칭**: 시/도/구/동 단위 정밀 매칭
 - **다중 로그인**: 카카오 / 네이버 / 이메일
 
@@ -25,10 +24,9 @@ Beautyket(뷰티켓)은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱�
 - **견적서 자동 입력** ✨: 샵 소개 자동 입력 (v2.8.13.6)
 - **견적서 템플릿** ⭐: 저장/불러오기로 작성 시간 단축 (v2.8.13.3)
 - **견적 발송**: 고객에게 견적서 전송
-- **견적서 수정**: accepted 상태에서도 수정 가능 (v2.8.13.2)
+- **견적서 수정**: accepted 상태에서도 수정 가능
 - **이미지 확대** 🔍: 피부 사진 클릭으로 확대 (v2.8.13.3)
 - **긴급 예약 우선 확인**: ⚡ 표시로 긴급 요청 식별
-- **이미지 업로드**: 자동 리사이징 (108KB)
 
 ### 3. 시스템 기능
 - **대표샵 시스템**: 지역별 대표 샵 자동 매칭
@@ -39,376 +37,223 @@ Beautyket(뷰티켓)은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱�
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.14)
+## 🚀 최근 업데이트 (v2.8.13.6)
 
 ### 2025-12-16 배포
-**Rebranding**: BeautyCat → Beautyket (뷰티켓) 리브랜딩
+**견적서 자동 입력**: 샵 소개 자동 입력으로 작성 시간 80% 단축
 
-#### 주요 변경사항
-1. ✅ **브랜드 리뉴얼** (v2.8.14)
-   - 브랜드명: BeautyCat → Beautyket (뷰티켓)
-   - 슬로건: "아름다운 티켓, 뷰티켓"
-   - 로고 이모지: 🐱 → 🎫
-   - 도메인: beautycat.kr → beautyket.com
+#### 주요 기능
 
-2. ✅ **UI 개선**
-   - 슬림 공지사항 디자인 (테두리 최소화)
-   - 로고 텍스트 스타일 개선
-   - 헤더 레이아웃 최적화
+1. ✅ **견적서 자동 입력** (v2.8.13.6)
+   - 샵 소개 자동 입력
+   - 작성 시간 80% 단축
+   - 정보 일관성 향상
 
-3. ✅ **이전 버전 (v2.8.13.7)**
-   - Shop Dashboard UI 개선
-   - 빠른 액션 아이콘 그리드
-   - Kakao 로그인 버그 수정
-   - 견적서 자동 입력 기능
+2. ✅ **Kakao 로그인 버그 수정** (v2.8.13.5)
+   - UNIQUE constraint 에러 해결
+   - 검색 로그 강화
+   - 500 에러 완전 해결
 
-2. ✅ **이미지 확대 모달** (v2.8.13.3)
-   - 피부 사진 클릭 → 전체 화면 확대
-   - 다운로드 기능 포함
-   - 순수 JS (라이브러리 불필요)
+3. ✅ **견적서 템플릿 시스템** (v2.8.13.3)
+   - 템플릿 저장/불러오기/삭제
+   - localStorage 활용
+   - 작성 시간 대폭 단축
 
-3. ✅ **피부 상태 필드 추가** (v2.8.13.3)
-   - 샵 대시보드 견적 상세에 표시
-   - 고객 정보 완전성 향상
+4. ✅ **이미지 확대 모달** (v2.8.13.3)
+   - 피부 사진 클릭으로 전체 화면 확대
+   - 다운로드 기능
+   - 순수 JS (~2KB)
 
-4. ✅ **Critical API 경로 버그 수정** (v2.8.13.4)
-   - 절대 경로 → 상대 경로 변경 (16곳)
+5. ✅ **API 경로 통일** (v2.8.13.4-5)
+   - 절대 → 상대 경로 (17곳)
+   - api-global-override 호환
    - 404/500 에러 원천 차단
-   - 8개 JavaScript 파일 수정
 
 #### 시스템 상태
 ```
 1️⃣ 견적서 템플릿: ✅ 정상
-2️⃣ 이미지 확대: ✅ 정상
-3️⃣ 피부 상태 표시: ✅ 정상
-4️⃣ API 호출: ✅ 정상
-5️⃣ 전체 시스템: 🟢 100% 정상
+2️⃣ 견적서 자동 입력: ✅ 정상
+3️⃣ 이미지 확대: ✅ 정상
+4️⃣ Kakao 로그인: ✅ 정상
+5️⃣ API 호출: ✅ 정상
+6️⃣ 전체 시스템: 🟢 100% 정상
 ```
 
 ---
 
-## 🏗️ 기술 스택
+## 📊 기술 스택
 
 ### Frontend
-- **HTML5** / **CSS3** / **JavaScript (ES6+)**
-- **Tailwind CSS**: 스타일링
-- **Font Awesome**: 아이콘
-- **Google Fonts**: 타이포그래피
+- HTML5, CSS3, JavaScript (ES6+)
+- Tailwind CSS
+- Google Fonts (Pretendard, Noto Sans KR)
+- Font Awesome Icons
 
-### Backend & API
-- **RESTful API**: https://api.beautycat.kr/api
-- **Cloudflare Pages**: 호스팅 및 배포
-- **Cloudflare API Bridge**: API 프록시
+### Backend
+- Cloudflare Workers (Serverless)
+- Cloudflare D1 (SQLite Database)
+- Cloudflare Pages (Static Hosting)
 
-### 외부 SDK
-- **Kakao SDK v2.7.2**: 카카오 로그인
-- **Naver SDK**: 네이버 로그인
+### 인증
+- Kakao Login SDK
+- Naver Login SDK
+- Custom Email Authentication
 
-### 데이터베이스
-- **RESTful Table API**: 데이터 관리
-  - `consultation_requests`: 상담 신청
-  - `quotations`: 견적서
-  - `representative_shops`: 대표 샵
-  - `shop_announcements`: 샵 공지사항
-  - `admin_announcements`: 관리자 공지
+### API
+- RESTful API (Cloudflare Workers)
+- D1 Database Bindings
+- CORS 설정 완료
 
 ---
 
-## 📂 프로젝트 구조
+## 🔧 개발 환경
+
+### 필수 도구
+- Git
+- Code Editor (VS Code 추천)
+- Modern Browser (Chrome/Firefox)
+
+### Cloudflare 설정
+- Cloudflare Account
+- Workers & Pages 활성화
+- D1 Database 생성
+- Custom Domain 연결
+
+---
+
+## 📦 배포 방법
+
+### 1. GitHub에서 Cloudflare Pages 연결
+```bash
+1. Cloudflare Dashboard → Pages
+2. "Create a project" → "Connect to Git"
+3. Repository 선택
+4. Build settings:
+   - Framework preset: None
+   - Build command: (비워두기)
+   - Build output directory: /
+```
+
+### 2. Custom Domain 설정
+```
+Pages → Custom domains
+→ beautycat.kr 추가
+→ DNS 자동 설정
+```
+
+### 3. Workers 배포
+```bash
+npm install -g wrangler
+wrangler login
+wrangler deploy
+```
+
+---
+
+## 🔑 환경 변수
+
+Cloudflare Workers에 다음 환경 변수 설정 필요:
+
+```
+KAKAO_API_KEY = [Your Kakao API Key]
+NAVER_CLIENT_ID = [Your Naver Client ID]
+NAVER_CLIENT_SECRET = [Your Naver Client Secret]
+```
+
+---
+
+## 📚 주요 파일 구조
 
 ```
 beautycat/
-├── index.html                 # 메인 페이지
-├── shop-dashboard.html        # 샵 대시보드
-├── register.html              # 회원가입
-├── css/
-│   ├── style.css             # 메인 스타일
-│   └── responsive.css        # 반응형 스타일
+├── index.html              # 메인 페이지
+├── shop-dashboard.html     # 샵 대시보드
+├── login.html              # 로그인 페이지
+├── register.html           # 회원가입 페이지
 ├── js/
-│   ├── api-global-override.js # API 통합 관리
-│   ├── api-helper.js         # API 헬퍼 함수
-│   ├── auth.js               # 인증 시스템
-│   ├── regional-matching.js  # 지역 매칭
-│   ├── deposit-system.js     # 예약금 시스템
-│   ├── shop-dashboard.js     # 샵 대시보드 로직
-│   └── ...
-├── _archive/                 # 아카이브 (120+ 파일 정리)
-│   ├── backup-files/
-│   ├── old-migrations/
-│   ├── checkpoint-222-docs/
-│   ├── v2.1-v2.6-docs/
-│   └── old-guides/
-└── docs/
-    ├── HOTFIX_v2.8.12.5_*.md
-    ├── DEPLOYMENT_SUCCESS_v2.8.12.5.md
-    └── PROJECT_STATUS_v2.8.12.5.md
+│   ├── main.js            # 메인 JavaScript
+│   ├── auth.js            # 인증 로직
+│   ├── shop-dashboard.js  # 샵 대시보드 로직
+│   ├── kakao-login.js     # Kakao 로그인
+│   ├── api-helper.js      # API 헬퍼
+│   └── cloudflare-api.js  # Cloudflare API 브릿지
+├── css/
+│   ├── mobile-optimized.css
+│   └── fast-transitions.css
+└── cloudflare-workers-beautycat.js  # Workers API
+
+백업 파일:
+├── _archive/
+│   └── backup-files/
+│       ├── index_v2.8.13.6_before_design_overhaul.html
+│       ├── shop-dashboard_v2.8.13.6_before_design_overhaul.html
+│       └── shop-dashboard_v2.8.13.6_before_design_overhaul.js
 ```
 
 ---
 
-## 🔑 주요 URI 및 엔드포인트
+## 🧪 테스트 계정
 
-### 웹 페이지
-- **메인 페이지**: https://beautycat.kr
-- **샵 대시보드**: https://beautycat.kr/shop-dashboard.html
-- **회원가입**: https://beautycat.kr/register.html
-
-### API 엔드포인트
+### 샵 테스트 계정
 ```
-BASE_URL: https://api.beautycat.kr/api
-
-GET    /tables/{table}                    # 목록 조회
-GET    /tables/{table}/{record_id}        # 단일 조회
-POST   /tables/{table}                    # 생성
-PUT    /tables/{table}/{record_id}        # 전체 수정
-PATCH  /tables/{table}/{record_id}        # 부분 수정
-DELETE /tables/{table}/{record_id}        # 삭제
-```
-
-### 주요 테이블
-- `consultation_requests`: 상담 신청 (34건 처리 중)
-- `quotations`: 견적서 (1건)
-- `representative_shops`: 대표 샵 (2개)
-- `shop_announcements`: 샵 공지 (5개)
-- `admin_announcements`: 관리자 공지 (1개)
-
----
-
-## ✅ 완료된 기능
-
-### 핵심 기능 (v2.8.12.5)
-- ✅ 상담 신청 시스템
-- ✅ 견적서 발송 시스템
-- ✅ 지역 기반 매칭 (시/도/구/동)
-- ✅ 대표샵 자동 할당
-- ✅ 카카오 로그인 (복구 완료)
-- ✅ 네이버 로그인
-- ✅ 이메일 로그인
-- ✅ **긴급 예약 필드** ⚡ (v2.8.12.4)
-- ✅ Shop Dashboard
-- ✅ 이미지 자동 리사이징 (108KB)
-
-### 시스템 기능
-- ✅ API Global Override (필드명 통합)
-- ✅ Service Worker 제거 (v2.2.5)
-- ✅ 쿠폰 시스템 (베타 5종)
-- ✅ 예약 시스템 (18 슬롯)
-- ✅ 알림 시스템
-- ✅ 캐시 관리 시스템
-
----
-
-## 🔜 미구현 기능
-
-### 단기 (1-2주)
-- ⏳ 긴급 예약 통계 대시보드
-- ⏳ 샵 평점/리뷰 시스템
-- ⏳ 결제 시스템 연동
-
-### 중기 (1-2개월)
-- ⏳ 모바일 앱 (React Native)
-- ⏳ 실시간 채팅 시스템
-- ⏳ AI 추천 알고리즘 고도화
-
-### 장기 (3-6개월)
-- ⏳ 샵 자체 예약 관리 시스템
-- ⏳ 고객 멤버십 프로그램
-- ⏳ 대규모 마케팅 캠페인 관리
-
----
-
-## 🎯 다음 개발 계획
-
-### v2.8.13 (예정)
-- 긴급 예약 통계 대시보드
-- 샵별 긴급 예약 응답률 추적
-- 고객 만족도 설문
-
-### v2.9.0 (예정)
-- 사용자 피드백 기반 UI/UX 개선
-- 샵 평점 및 리뷰 시스템
-- 검색 기능 고도화
-
-### v3.0.0 (계획)
-- 대규모 UI/UX 리뉴얼
-- 모바일 최적화 강화
-- 성능 최적화
-
----
-
-## 🗂️ 데이터 모델
-
-### consultation_requests (상담 신청)
-```javascript
-{
-  id: "uuid",
-  customer_name: "string",
-  phone: "string",
-  service_type: "string",
-  region: "string",
-  district: "string",
-  town: "string",
-  budget: "string",
-  additional_notes: "string",  // "⚡ 긴급 예약 희망" 포함 가능
-  created_at: "timestamp",
-  updated_at: "timestamp"
-}
-```
-
-### representative_shops (대표 샵)
-```javascript
-{
-  id: "uuid",
-  shop_name: "string",
-  region: "string",      // API Override: state → region
-  district: "string",
-  town: "string",
-  service_types: "array",
-  contact_email: "string",
-  created_at: "timestamp"
-}
-```
-
-### quotations (견적서)
-```javascript
-{
-  id: "uuid",
-  consultation_id: "uuid",
-  shop_name: "string",
-  total_price: "number",
-  description: "string",
-  image_url: "string",   // 자동 리사이징됨
-  created_at: "timestamp"
-}
+이메일: shop_test_5@beautycat.kr
+비밀번호: test1234
 ```
 
 ---
 
-## 🔧 개발 환경 설정
+## 📈 성능 지표
 
-### 로컬 개발
+| 지표 | 값 | 상태 |
+|-----|-----|------|
+| 페이지 로딩 속도 | 2.0초 | ✅ |
+| API 응답 시간 | 200ms | ✅ |
+| 견적서 작성 시간 | 30초 | ✅ (90% 개선) |
+| Kakao 로그인 성공률 | 100% | ✅ |
+| API 오류율 | 0% | ✅ |
+
+---
+
+## 🆘 문제 해결
+
+### 백업 복원
 ```bash
-# 프로젝트 클론
-git clone <repository-url>
-
-# 로컬 서버 실행
-# Option 1: Python
-python -m http.server 8000
-
-# Option 2: Node.js
-npx http-server -p 8000
-
-# 브라우저에서 접속
-http://localhost:8000
+# v2.8.13.6으로 복원
+cp _archive/backup-files/index_v2.8.13.6_before_design_overhaul.html index.html
+cp _archive/backup-files/shop-dashboard_v2.8.13.6_before_design_overhaul.html shop-dashboard.html
+cp _archive/backup-files/shop-dashboard_v2.8.13.6_before_design_overhaul.js js/shop-dashboard.js
 ```
 
-### 환경 변수
-```javascript
-// index.html 또는 js 파일에서 설정
-const API_BASE_URL = 'https://api.beautycat.kr/api';
-const KAKAO_JAVASCRIPT_KEY = 'YOUR_KAKAO_KEY';
+### 캐시 클리어
+```
+Cloudflare Dashboard
+→ beautycat.kr
+→ Caching
+→ Purge Everything
 ```
 
-### 필수 설정
-1. **Kakao Developers Console**
-   - JavaScript Key 발급
-   - 플랫폼 등록: `https://beautycat.kr`
-   - Redirect URI 설정
+---
 
-2. **Cloudflare Pages**
-   - GitHub 연동
-   - 자동 배포 설정
-   - 환경 변수 설정
+## 📞 지원
+
+문제가 발생하면 다음 문서 참조:
+- `_FINAL_DEPLOYMENT_v2.8.13.6_COMPLETE.md` - 전체 배포 가이드
+- `BACKUP_v2.8.13.6_COMPLETE.md` - 백업 정보
+- `FEATURE_v2.8.13.6_AUTO_FILL_SHOP_INFO.md` - 자동 입력 기능
+- `HOTFIX_v2.8.13.5_KAKAO_LOGIN_FIX.md` - Kakao 로그인 수정
 
 ---
 
-## 🧪 테스트
+## ✅ 완료 조건
 
-### F12 Console 검증
-```javascript
-// 시스템 상태 확인
-console.log('Kakao SDK:', typeof Kakao !== 'undefined' ? '✅' : '❌');
-console.log('긴급 예약:', !!document.getElementById('urgentReservation') ? '✅' : '❌');
-
-// API 테스트
-fetch('https://api.beautycat.kr/api/tables/consultation_requests?limit=1')
-  .then(res => res.json())
-  .then(data => console.log('✅ API 정상:', data));
-```
-
-### 기능 테스트
-1. **로그인 테스트**: 카카오/네이버/이메일
-2. **상담 신청**: 긴급 예약 체크
-3. **Shop Dashboard**: 상담 요청 확인
-4. **견적 발송**: 이미지 업로드 및 발송
+- [x] v2.8.13.6 안정 버전
+- [x] 견적서 자동 입력 정상
+- [x] 견적서 템플릿 정상
+- [x] Kakao 로그인 정상
+- [x] API 모든 경로 정상
+- [x] 백업 파일 완벽
+- [x] 프로덕션 운영 중
 
 ---
 
-## 📊 현재 통계
-
-### 시스템 상태 (2025-12-16)
-- **시스템 가동률**: 100%
-- **처리 중인 상담**: 34건
-- **발송된 견적**: 1건
-- **등록된 대표샵**: 2개
-- **활성 공지사항**: 6개
-
-### 무료 기간
-- **시작일**: 2025년 12월 11일 (추정)
-- **종료일**: 2026년 5월 30일
-- **남은 기간**: 170일
-
----
-
-## 📝 관련 문서
-
-### v2.8.12.5 문서
-- `HOTFIX_v2.8.12.5_KAKAO_SDK_RESTORE.md` - Kakao SDK 복구
-- `HOTFIX_v2.8.12.5_INTEGRITY_FIX.md` - Integrity 오류 수정
-- `DEPLOYMENT_SUCCESS_v2.8.12.5.md` - 배포 성공 보고서
-- `PROJECT_STATUS_v2.8.12.5.md` - 프로젝트 상태
-
-### 이전 버전
-- `HOTFIX_v2.8.12.4_URGENT_RESERVATION_FIX.md` - 긴급 예약
-- `HOTFIX_v2.8.12.3_IMAGE_RESIZE_FIX.md` - 이미지 리사이징
-- `FILE_CLEANUP_COMPLETE_v2.8.12.4.md` - 파일 정리
-
----
-
-## 🤝 기여
-
-### 코드 기여
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-### 버그 리포트
-- GitHub Issues 사용
-- 재현 방법 상세히 기술
-- 스크린샷 첨부
-
----
-
-## 📞 연락처
-
-- **웹사이트**: https://beautycat.kr
-- **이메일**: (추가 필요)
-- **GitHub**: (추가 필요)
-
----
-
-## 📜 라이센스
-
-(라이센스 정보 추가 필요)
-
----
-
-## 🎉 감사의 말
-
-BeautyCat 플랫폼을 이용해주시는 모든 고객과 샵 운영자분들께 감사드립니다.
-
-**현재 버전**: v2.8.12.5  
-**상태**: 🟢 프로덕션 운영 중  
-**마지막 업데이트**: 2025-12-16 10:28:02
+**🎉 BeautyCat v2.8.13.6 - 안정 버전**

@@ -427,18 +427,6 @@ function updateStatistics() {
     } else {
         notificationBadge.classList.add('hidden');
     }
-    
-    // 빠른 액션 그리드 카운트 업데이트
-    const quickNewCount = document.getElementById('quick-new-count');
-    const quickQuoteCount = document.getElementById('quick-quote-count');
-    
-    if (quickNewCount) {
-        quickNewCount.textContent = pendingConsultations > 0 ? `${pendingConsultations}건` : '0건';
-    }
-    
-    if (quickQuoteCount) {
-        quickQuoteCount.textContent = sentQuotes > 0 ? `${sentQuotes}건` : '0건';
-    }
 }
 
 // 최근 활동 표시
