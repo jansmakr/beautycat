@@ -777,7 +777,7 @@ async function processRegister(registerData) {
         
         // 사용자 생성
         console.log('👤 사용자 생성 시도:', userData);
-        const response = await fetch('/tables/users', {
+        const response = await fetch('tables/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -813,7 +813,7 @@ async function processRegister(registerData) {
             };
             
             console.log('🏪 피부관리실 생성 시도:', shopData);
-            const shopResponse = await fetch('/tables/skincare_shops', {
+            const shopResponse = await fetch('tables/skincare_shops', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1334,6 +1334,16 @@ async function loadDemoAccounts() {
 // 데모 업체 정보 로드 (지역 정보 포함)
 async function loadDemoShops() {
     try {
+        // 프로덕션 환경에서는 데모 샵 로드 건너뛰기
+        const isProduction = location.hostname === 'beautycat.kr' ||
+                           location.hostname === 'www.beautycat.kr' ||
+                           location.hostname.includes('beautycat.pages.dev');
+        
+        if (isProduction) {
+            console.log('🏭 프로덕션 환경 감지: 데모 샵 로드 건너뛰기');
+            return;
+        }
+        
         const existingShops = await fetch('tables/skincare_shops');
         const shopsData = await existingShops.json();
         
