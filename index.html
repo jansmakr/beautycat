@@ -4267,6 +4267,7 @@
                         age_range: document.getElementById('ageRange') ? document.getElementById('ageRange').value : '',
                         budget_range: document.getElementById('budgetRange') ? document.getElementById('budgetRange').value : '',
                         preferred_schedule: document.getElementById('preferredSchedule') ? document.getElementById('preferredSchedule').value : '',
+                        urgent_reservation: document.getElementById('urgentReservation') ? document.getElementById('urgentReservation').checked : false,
                         customer_type: isLoggedIn ? 'member' : 'guest',
                         customer_email: isLoggedIn ? currentUser.email : null,
                         state: document.getElementById('customerState').value,
@@ -4286,7 +4287,11 @@
                         age_range: additionalInfo.age_range || additionalInfo.budget || '', // budget 필드도 대체 가능
                         budget_range: additionalInfo.budget_range || additionalInfo.budget || '',
                         preferred_schedule: additionalInfo.preferred_schedule || '',
-                        additional_notes: additionalInfo.notes || additionalInfo.skin_condition || '',
+                        additional_notes: [
+                            additionalInfo.notes,
+                            additionalInfo.skin_condition,
+                            additionalInfo.urgent_reservation ? '⚡ 긴급 예약 희망 (오늘/내일)' : ''
+                        ].filter(Boolean).join('\n'),
                         skin_photos: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
                         image_urls: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
                         status: 'pending',
