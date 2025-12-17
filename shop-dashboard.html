@@ -74,8 +74,7 @@
                 <nav class="hidden lg:flex items-center space-x-6">
                     <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">마이 페이지</a>
                     <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공지사항</a>
-                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 요청</a>
-                    <a href="#" onclick="showSection('quotes')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 관리</a>
+                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 요청 관리</a>
                     <a href="#" onclick="showSection('shop-info')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 정보</a>
                     <a href="#" onclick="showSection('reviews')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">리뷰 관리</a>
                 </nav>
@@ -140,11 +139,7 @@
                 </button>
                 <button onclick="showSection('consultations'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-comments mr-3"></i>상담 요청
-                </button>
-                <button onclick="showSection('quotes'); closeMobileMenu()" 
-                        class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
-                    <i class="fas fa-file-invoice mr-3"></i>견적 관리
+                    <i class="fas fa-file-invoice-dollar mr-3"></i>견적 요청 관리
                 </button>
                 <button onclick="showSection('shop-info'); closeMobileMenu()" 
                         class="w-full text-left px-4 py-3 rounded-xl text-gray-700 hover:bg-primary-50 hover:text-primary-500 flex items-center transition-colors">
@@ -222,17 +217,9 @@
                         <a href="#" onclick="showSection('consultations')" 
                            class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
                            data-section="consultations">
-                            <i class="fas fa-comments mr-3 text-primary-500"></i>
-                            상담 요청
-                            <span id="new-consultations-badge" class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 min-w-[24px] flex items-center justify-center hidden">0</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="showSection('quotes')" 
-                           class="sidebar-item flex items-center px-4 py-3 text-gray-700 rounded-lg transition-colors" 
-                           data-section="quotes">
                             <i class="fas fa-file-invoice-dollar mr-3 text-primary-500"></i>
-                            견적 관리
+                            견적 요청 관리
+                            <span id="new-consultations-badge" class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 min-w-[24px] flex items-center justify-center hidden">0</span>
                         </a>
                     </li>
                     <li>
@@ -393,7 +380,7 @@
                         <div class="unni-card p-6">
                             <div class="flex items-center justify-between mb-4">
                                 <h2 class="text-xl font-semibold text-gray-900">견적 현황</h2>
-                                <a href="#" onclick="showSection('quotes')" class="text-primary-500 hover:text-primary-600 text-sm">전체보기</a>
+                                <a href="#" onclick="showSection('consultations'); switchRequestTab('quotes');" class="text-primary-500 hover:text-primary-600 text-sm">전체보기</a>
                             </div>
                             <div id="recent-quotes" class="space-y-4">
                                 <!-- 동적으로 로드됩니다 -->
@@ -402,14 +389,31 @@
                     </div>
                 </div>
 
-                <!-- 상담 요청 섹션 -->
+                <!-- 견적 요청 관리 섹션 (통합) -->
                 <div id="consultations-section" class="content-section hidden p-8">
                     <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">상담 요청 관리</h1>
-                        <p class="text-gray-600">들어온 상담 요청을 확인하고 견적서를 작성하세요</p>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                            <i class="fas fa-file-invoice-dollar text-primary-500 mr-3"></i>견적 요청 관리
+                        </h1>
+                        <p class="text-gray-600">들어온 상담 요청을 확인하고 견적서를 작성/관리하세요</p>
                     </div>
 
-                    <!-- 필터 -->
+                    <!-- 탭 메뉴 (v2.8.13.6.20) -->
+                    <div class="flex border-b border-gray-200 mb-6">
+                        <button id="tab-consultations" onclick="switchRequestTab('consultations')" class="px-6 py-3 font-medium text-primary-500 border-b-2 border-primary-500 transition-colors">
+                            <i class="fas fa-inbox mr-2"></i>상담 요청 (<span id="tab-consultations-count">0</span>)
+                        </button>
+                        <button id="tab-quotes" onclick="switchRequestTab('quotes')" class="px-6 py-3 font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors">
+                            <i class="fas fa-file-invoice mr-2"></i>작성한 견적서 (<span id="tab-quotes-count">0</span>)
+                        </button>
+                        <button onclick="createQuoteTemplate()" class="ml-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors">
+                            <i class="fas fa-plus-circle mr-2"></i>견적서 미리 작성
+                        </button>
+                    </div>
+
+                    <!-- 탭 컨텐츠: 상담 요청 -->
+                    <div id="tab-content-consultations" class="tab-content-item">
+                        <!-- 필터 -->
                     <div class="unni-card p-6 mb-6">
                         <div class="flex flex-wrap gap-4 items-center">
                             <div>
@@ -430,53 +434,54 @@
                         </div>
                     </div>
 
-                    <!-- 상담 요청 목록 -->
-                    <div class="unni-card">
-                        <div class="p-6 border-b border-gray-100">
-                            <h2 class="text-xl font-semibold text-gray-900">상담 요청 목록</h2>
+                        <!-- 상담 요청 목록 -->
+                        <div class="unni-card">
+                            <div class="p-6 border-b border-gray-100">
+                                <h2 class="text-xl font-semibold text-gray-900">상담 요청 목록</h2>
+                            </div>
+                            <div id="consultations-list" class="divide-y divide-gray-100">
+                                <!-- 동적으로 로드됩니다 -->
+                            </div>
                         </div>
-                        <div id="consultations-list" class="divide-y divide-gray-100">
-                            <!-- 동적으로 로드됩니다 -->
+                    </div>
+
+                    <!-- 탭 컨텐츠: 작성한 견적서 -->
+                    <div id="tab-content-quotes" class="tab-content-item hidden">
+                        <!-- 견적서 통계 -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                            <div class="unni-card p-6 text-center">
+                                <div class="text-3xl font-bold text-blue-600 mb-2" id="total-quotes-count">0</div>
+                                <div class="text-gray-600">총 견적서</div>
+                            </div>
+                            <div class="unni-card p-6 text-center">
+                                <div class="text-3xl font-bold text-yellow-600 mb-2" id="pending-quotes-count">0</div>
+                                <div class="text-gray-600">검토 중</div>
+                            </div>
+                            <div class="unni-card p-6 text-center">
+                                <div class="text-3xl font-bold text-green-600 mb-2" id="accepted-quotes-count">0</div>
+                                <div class="text-gray-600">수락됨</div>
+                            </div>
+                            <div class="unni-card p-6 text-center">
+                                <div class="text-3xl font-bold text-red-600 mb-2" id="rejected-quotes-count">0</div>
+                                <div class="text-gray-600">거절됨</div>
+                            </div>
+                        </div>
+
+                        <!-- 견적서 목록 -->
+                        <div class="unni-card">
+                            <div class="p-6 border-b border-gray-100">
+                                <h2 class="text-xl font-semibold text-gray-900">견적서 목록</h2>
+                            </div>
+                            <div id="quotes-list" class="divide-y divide-gray-100">
+                                <!-- 동적으로 로드됩니다 -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 견적 관리 섹션 -->
-                <div id="quotes-section" class="content-section hidden p-8">
-                    <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">견적 관리</h1>
-                        <p class="text-gray-600">작성한 견적서의 현황을 확인하고 관리하세요</p>
-                    </div>
-
-                    <!-- 견적서 통계 -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div class="unni-card p-6 text-center">
-                            <div class="text-3xl font-bold text-blue-600 mb-2" id="total-quotes-count">0</div>
-                            <div class="text-gray-600">총 견적서</div>
-                        </div>
-                        <div class="unni-card p-6 text-center">
-                            <div class="text-3xl font-bold text-yellow-600 mb-2" id="pending-quotes-count">0</div>
-                            <div class="text-gray-600">검토 중</div>
-                        </div>
-                        <div class="unni-card p-6 text-center">
-                            <div class="text-3xl font-bold text-green-600 mb-2" id="accepted-quotes-count">0</div>
-                            <div class="text-gray-600">수락됨</div>
-                        </div>
-                        <div class="unni-card p-6 text-center">
-                            <div class="text-3xl font-bold text-red-600 mb-2" id="rejected-quotes-count">0</div>
-                            <div class="text-gray-600">거절됨</div>
-                        </div>
-                    </div>
-
-                    <!-- 견적서 목록 -->
-                    <div class="unni-card">
-                        <div class="p-6 border-b border-gray-100">
-                            <h2 class="text-xl font-semibold text-gray-900">견적서 목록</h2>
-                        </div>
-                        <div id="quotes-list" class="divide-y divide-gray-100">
-                            <!-- 동적으로 로드됩니다 -->
-                        </div>
-                    </div>
+                <!-- 견적 관리 섹션 (v2.8.13.6.20: 통합으로 인해 숨김 처리, 호환성 유지) -->
+                <div id="quotes-section" class="content-section hidden p-8" style="display: none;">
+                    <!-- 통합됨: consultations-section의 탭으로 이동 -->
                 </div>
 
                 <!-- 공지사항 섹션 -->
