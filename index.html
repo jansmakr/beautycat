@@ -4289,11 +4289,12 @@
                         age_range: additionalInfo.age_range || additionalInfo.budget || '', // budget 필드도 대체 가능
                         budget_range: additionalInfo.budget_range || additionalInfo.budget || '',
                         preferred_schedule: additionalInfo.preferred_schedule || '',
-                        skin_condition: additionalInfo.skin_condition || '', // 피부 상태 별도 저장
+                        // skin_condition: additionalInfo.skin_condition || '', // DB 컬럼 없음 - 주석 처리
                         additional_notes: [
+                            additionalInfo.skin_condition ? `🩺 현재 피부 상태:\n${additionalInfo.skin_condition}` : '',
                             additionalInfo.notes,
                             additionalInfo.urgent_reservation ? '⚡ 긴급 예약 희망 (오늘/내일)' : ''
-                        ].filter(Boolean).join('\n'),
+                        ].filter(Boolean).join('\n\n'),
                         skin_photos: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
                         image_urls: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
                         status: 'pending',
