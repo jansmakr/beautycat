@@ -427,6 +427,9 @@ function updateStatistics() {
     } else {
         notificationBadge.classList.add('hidden');
     }
+    
+    // v2.8.13.6.20: 탭 카운트 업데이트
+    updateTabCounts();
 }
 
 // 최근 활동 표시
@@ -839,7 +842,54 @@ function createQuote(consultationId) {
     modal.classList.remove('hidden');
 }
 
-// 샵 정보 자동 입력 (v2.8.13.6)
+// 견적서 미리 작성 (템플릿용, v2.8.13.6.20)
+function createQuoteTemplate() {
+    const modal = document.getElementById('quote-modal');
+    const form = document.getElementById('quote-form');
+    
+    // 폼 초기화
+    form.reset();
+    document.getElementById('quote-consultation-id').value = 'template'; // 템플릿 모드 표시
+    document.getElementById('quote-id').value = '';
+    
+    // 템플릿 버튼 추가
+    addTemplateButtons();
+    
+    // 샵 정보 자동 입력
+    autoFillShopInfo();
+    
+    // 안내 메시지 변경
+    const infoBox = form.querySelector('.bg-blue-50');
+    if (infoBox) {
+        infoBox.innerHTML = `
+            <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                <div class="text-sm text-blue-800">
+                    <p class="font-semibold mb-1">📝 견적서 템플릿 작성 안내</p>
+                    <ul class="list-disc list-inside space-y-1 text-blue-700">
+                        <li>자주 사용하는 견적서 내용을 미리 작성하고 템플릿으로 저장하세요</li>
+                        <li>상담 요청이 들어오면 템플릿을 불러와 빠르게 견적서를 전송할 수 있습니다</li>
+                        <li>템플릿은 최대 2개까지 저장 가능합니다</li>
+                        <li><strong class="text-blue-900">작성 완료 후 반드시 '템플릿 저장' 버튼을 클릭하세요</strong></li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+    
+    // 전송 버튼을 템플릿 저장 버튼으로 변경
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>템플릿으로 저장';
+        submitBtn.classList.remove('bg-primary-500', 'hover:bg-primary-600');
+        submitBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+    }
+    
+    // 모달 열기
+    modal.classList.remove('hidden');
+}
+
+// 샵 정보 자동 입력 (v2.8.13.6 → v2.8.13.6.20 개선)
 function autoFillShopInfo() {
     try {
         // currentShop 또는 currentUser에서 샵 정보 가져오기
@@ -850,7 +900,7 @@ function autoFillShopInfo() {
             return;
         }
         
-        // 관리 내용 필드에 샵 소개 자동 입력
+        // 1️⃣ 관리 내용 필드에 샵 소개 자동 입력
         const treatmentDetailsField = document.getElementById('treatment-details');
         if (treatmentDetailsField && currentShop?.description) {
             // 기존 값이 없을 때만 자동 입력
@@ -860,8 +910,29 @@ function autoFillShopInfo() {
             }
         }
         
-        // 추가 사항 필드는 비워두기 (고객별로 다르게 작성)
-        // 원장 소개는 템플릿 시스템을 활용하여 저장/불러오기
+        // 2️⃣ 추가 안내사항 필드에 원장 소개 자동 입력 (v2.8.13.6.20)
+        const additionalNotesField = document.getElementById('additional-notes');
+        if (additionalNotesField && currentShop) {
+            // 기존 값이 없을 때만 자동 입력
+            if (!additionalNotesField.value || additionalNotesField.value.trim() === '') {
+                let directorInfo = '';
+                
+                // 원장 프로필
+                if (currentShop.director_profile && currentShop.director_profile.trim() !== '') {
+                    directorInfo += `👨‍⚕️ 원장 소개: ${currentShop.director_profile}\n`;
+                }
+                
+                // 원장 경력
+                if (currentShop.director_experience && currentShop.director_experience.trim() !== '') {
+                    directorInfo += `📋 주요 경력: ${currentShop.director_experience}`;
+                }
+                
+                if (directorInfo) {
+                    additionalNotesField.value = directorInfo.trim();
+                    console.log('✅ [견적서] 원장 소개 자동 입력 완료');
+                }
+            }
+        }
         
         console.log('✅ [견적서] 샵 정보 자동 입력 완료');
     } catch (error) {
@@ -920,6 +991,12 @@ async function handleQuoteSubmit(e) {
     const duration = document.getElementById('duration').value;
     const availableDates = document.getElementById('available-dates').value;
     const additionalNotes = document.getElementById('additional-notes').value;
+    
+    // 🔥 v2.8.13.6.20: 템플릿 모드인 경우 템플릿 저장 다이얼로그 열기
+    if (consultationId === 'template') {
+        openSaveTemplateDialog();
+        return;
+    }
     
     const isEditMode = !!quoteId; // quoteId가 있으면 수정 모드
     
@@ -1295,7 +1372,10 @@ function showSection(sectionName) {
             displayConsultationsList();
             break;
         case 'quotes':
-            displayQuotesList();
+            // v2.8.13.6.20: 호환성 유지 - consultations 섹션의 견적서 탭으로 리다이렉트
+            showSection('consultations');
+            setTimeout(() => switchRequestTab('quotes'), 100);
+            return;
             break;
         case 'dashboard':
             displayRecentActivity();
@@ -2639,10 +2719,17 @@ window.filterShopAnnouncements = filterShopAnnouncements;
 const QuoteTemplateManager = {
     STORAGE_KEY: 'beautycat_quote_templates',
     
-    // 템플릿 저장
+    // 템플릿 저장 (v2.8.13.6.20: 2개 제한)
     saveTemplate(name, data) {
         try {
             const templates = this.getAllTemplates();
+            
+            // 🔥 템플릿 개수 제한 (최대 2개)
+            if (templates.length >= 2) {
+                alert('⚠️ 템플릿은 최대 2개까지만 저장할 수 있습니다.\n\n기존 템플릿을 삭제한 후 다시 시도해주세요.');
+                return null;
+            }
+            
             const template = {
                 id: Date.now().toString(),
                 name: name,
@@ -2657,7 +2744,7 @@ const QuoteTemplateManager = {
             
             templates.push(template);
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(templates));
-            console.log('✅ 템플릿 저장 완료:', name);
+            console.log('✅ 템플릿 저장 완료:', name, `(${templates.length}/2)`);
             return template;
         } catch (error) {
             console.error('❌ 템플릿 저장 실패:', error);
@@ -2889,6 +2976,61 @@ window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
 console.log('✅ 이미지 확대 모달 시스템 로드 완료 (v2.8.13.3)');
+
+// ========================================
+// 📑 견적 요청 관리 탭 전환 시스템 (v2.8.13.6.20)
+// ========================================
+
+function switchRequestTab(tabName) {
+    // 탭 버튼 활성화 상태 변경
+    const consultationsTab = document.getElementById('tab-consultations');
+    const quotesTab = document.getElementById('tab-quotes');
+    
+    // 탭 컨텐츠 표시/숨김
+    const consultationsContent = document.getElementById('tab-content-consultations');
+    const quotesContent = document.getElementById('tab-content-quotes');
+    
+    if (tabName === 'consultations') {
+        // 상담 요청 탭 활성화
+        consultationsTab.className = 'px-6 py-3 font-medium text-primary-500 border-b-2 border-primary-500 transition-colors';
+        quotesTab.className = 'px-6 py-3 font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors';
+        
+        consultationsContent.classList.remove('hidden');
+        quotesContent.classList.add('hidden');
+        
+        console.log('✅ 상담 요청 탭 활성화');
+    } else if (tabName === 'quotes') {
+        // 견적서 탭 활성화
+        consultationsTab.className = 'px-6 py-3 font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors';
+        quotesTab.className = 'px-6 py-3 font-medium text-primary-500 border-b-2 border-primary-500 transition-colors';
+        
+        consultationsContent.classList.add('hidden');
+        quotesContent.classList.remove('hidden');
+        
+        // 견적서 목록 로드
+        displayQuotesList();
+        
+        console.log('✅ 견적서 탭 활성화');
+    }
+}
+
+// 탭 카운트 업데이트
+function updateTabCounts() {
+    const consultationsCount = document.getElementById('tab-consultations-count');
+    const quotesCount = document.getElementById('tab-quotes-count');
+    
+    if (consultationsCount) {
+        consultationsCount.textContent = currentConsultations.length;
+    }
+    if (quotesCount) {
+        quotesCount.textContent = currentQuotes.length;
+    }
+}
+
+// 전역 함수 등록
+window.switchRequestTab = switchRequestTab;
+
+console.log('✅ 견적 요청 관리 탭 시스템 로드 완료 (v2.8.13.6.20)');
 
 // 초기 로드 시 공지사항 배지 업데이트 (대시보드 진입 시)
 if (document.readyState === 'loading') {
