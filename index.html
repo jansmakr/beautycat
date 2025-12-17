@@ -2544,7 +2544,55 @@
                     </div>
                 </div>
 
-                <!-- 4. 예산 -->
+                <!-- 4. 피부 고민 -->
+                <div class="section-card orange">
+                    <div class="question">
+                        <i class="fas fa-face-frown question-icon icon-orange"></i>
+                        <span>피부 고민이 있으신가요? (선택)</span>
+                    </div>
+                    <p class="helper-text mb-4">여러 개 선택 가능해요 (클릭하여 선택)</p>
+                    
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="여드름">
+                            <span>여드름</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="모공">
+                            <span>모공</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="색소침착">
+                            <span>색소침착</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="주름">
+                            <span>주름</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="탄력저하">
+                            <span>탄력저하</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="건조">
+                            <span>건조</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="민감">
+                            <span>민감</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="홍조">
+                            <span>홍조</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="skin_concern" value="기타">
+                            <span>기타</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 5. 예산 -->
                 <div class="section-card green">
                     <div class="question">
                         <i class="fas fa-won-sign question-icon icon-green"></i>
@@ -2561,7 +2609,7 @@
                     </select>
                 </div>
 
-                <!-- 5. 피부 상태 -->
+                <!-- 6. 피부 상태 -->
                 <div class="section-card orange">
                     <div class="question">
                         <i class="fas fa-heart question-icon icon-orange"></i>
@@ -2571,7 +2619,7 @@
                     <textarea id="skinCondition" name="skinCondition" rows="4" class="input-field-new resize-none" placeholder="현재 피부 고민이나 상태를 자세히 적어주세요&#10;예) 이마와 볼에 여드름이 자주 생기고, T존이 기름져요."></textarea>
                 </div>
 
-                <!-- 6. 추가 요청사항 -->
+                <!-- 7. 추가 요청사항 -->
                 <div class="section-card blue">
                     <div class="question">
                         <i class="fas fa-comment-dots question-icon icon-blue"></i>
