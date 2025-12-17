@@ -1168,6 +1168,17 @@ async function handleShopInfoUpdate(e) {
         representative_treatments: document.getElementById('representative-service')?.value || null,
         price_range: document.getElementById('service-price')?.value || null,
         
+        // 샵 상세 정보 필드들 (v2.8.13.6.18 추가)
+        cosmetic_brands: document.getElementById('cosmetic-brands')?.value || null,
+        beauty_equipment: document.getElementById('beauty-equipment')?.value || null,
+        shop_size: document.getElementById('shop-size')?.value || null,
+        bed_count: document.getElementById('bed-count')?.value || null,
+        staff_count: document.getElementById('staff-count')?.value || null,
+        
+        // 원장 소개 필드들 (v2.8.13.6.18 추가)
+        director_profile: document.getElementById('director-profile')?.value || null,
+        director_experience: document.getElementById('director-experience')?.value || null,
+        
         // services 배열 수집
         services: currentShop?.services || [],
         
