@@ -231,8 +231,19 @@ async function handleLogin(e) {
     // 버튼 상태 변경
     if (loginBtn) {
         loginBtn.disabled = true;
+        loginBtn.classList.add('opacity-75', 'cursor-not-allowed');
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>로그인 중...';
     }
+    
+    // 로딩 오버레이 표시
+    const loadingOverlay = document.getElementById('login-loading-overlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+    }
+    console.log('🔐 로그인 처리 중...');
+    
+    // 시작 시간 기록 (최소 표시 시간 보장용)
+    const startTime = Date.now();
     
     try {
         // 폼 데이터 수집
@@ -252,6 +263,13 @@ async function handleLogin(e) {
         // 로그인 처리
         const result = await processLogin(loginData);
         
+        // 최소 표시 시간 보장 (1초)
+        const elapsedTime = Date.now() - startTime;
+        const minDisplayTime = 1000; // 1초
+        if (elapsedTime < minDisplayTime) {
+            await new Promise(resolve => setTimeout(resolve, minDisplayTime - elapsedTime));
+        }
+        
         if (result.success) {
             // 세션 저장 (이미 processLogin에서 저장됨)
             // saveSession(result.user, result.token, loginData.remember_me);
@@ -264,6 +282,12 @@ async function handleLogin(e) {
             localStorage.setItem('currentUser', JSON.stringify(result.user));
             localStorage.setItem('user_data', JSON.stringify(result.user));
             localStorage.setItem('authToken', result.token);
+            
+            // user_type 별도 저장 (goToDashboard 함수에서 사용)
+            if (result.user.user_type) {
+                localStorage.setItem('user_type', result.user.user_type);
+                console.log('✅ user_type 저장:', result.user.user_type);
+            }
             
             console.log('로그인 성공, 리다이렉트:', result.user.user_type);
             
@@ -279,9 +303,16 @@ async function handleLogin(e) {
         console.error('로그인 오류:', error);
         showNotification('로그인 중 오류가 발생했습니다.', 'error');
     } finally {
+        // 로딩 오버레이 숨김
+        const loadingOverlay = document.getElementById('login-loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
+        
         // 버튼 상태 복원
         if (loginBtn) {
             loginBtn.disabled = false;
+            loginBtn.classList.remove('opacity-75', 'cursor-not-allowed');
             loginBtn.innerHTML = originalText;
         }
     }

@@ -4289,9 +4289,9 @@
                         age_range: additionalInfo.age_range || additionalInfo.budget || '', // budget 필드도 대체 가능
                         budget_range: additionalInfo.budget_range || additionalInfo.budget || '',
                         preferred_schedule: additionalInfo.preferred_schedule || '',
+                        skin_condition: additionalInfo.skin_condition || '', // 피부 상태 별도 저장
                         additional_notes: [
                             additionalInfo.notes,
-                            additionalInfo.skin_condition,
                             additionalInfo.urgent_reservation ? '⚡ 긴급 예약 희망 (오늘/내일)' : ''
                         ].filter(Boolean).join('\n'),
                         skin_photos: (typeof uploadedSkinPhotos !== 'undefined' && uploadedSkinPhotos.length > 0) ? JSON.stringify(uploadedSkinPhotos) : '',
