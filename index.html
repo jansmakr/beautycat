@@ -1969,31 +1969,43 @@
                     return isPublished && isTargetCustomer;
                 }).slice(0, 4); // 최신 4개
                 
-                console.log('[공지사항 슬라이더] 로드된 공지:', announcementSlides.length);
+                console.log('[공지사항 슬라이더] 로드된 공지:', announcementSlides.length, announcementSlides);
                 
-                // API 데이터가 없으면 더미 데이터 사용
-                if (announcementSlides.length === 0) {
-                    console.warn('[공지사항 슬라이더] API 데이터 없음 - 더미 데이터 사용');
-                    announcementSlides = [
-                        {
-                            title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
-                            is_pinned: true,
-                            priority: 'important'
-                        },
-                        {
-                            title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
-                            priority: 'normal'
-                        },
-                        {
-                            title: '⭐ 강남·홍대·잠실 인증샵 1분 매칭 서비스 오픈',
-                            priority: 'normal'
-                        },
-                        {
-                            title: '🔥 겨울 스페셜 프로모션 - 피부관리 최대 30% 할인',
-                            priority: 'urgent'
-                        }
-                    ];
+                // v2.8.13.6.26: API 데이터가 4개 미만이면 더미 데이터로 채우기
+                const dummyAnnouncements = [
+                    {
+                        title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
+                        is_pinned: true,
+                        priority: 'important'
+                    },
+                    {
+                        title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
+                        priority: 'normal'
+                    },
+                    {
+                        title: '⭐ 강남·홍대·잠실 인증샵 1분 매칭 서비스 오픈',
+                        priority: 'normal'
+                    },
+                    {
+                        title: '🔥 겨울 스페셜 프로모션 - 피부관리 최대 30% 할인',
+                        priority: 'urgent'
+                    }
+                ];
+                
+                // API 데이터가 4개 미만이면 더미 데이터로 채우기
+                if (announcementSlides.length < 4) {
+                    console.warn(`[공지사항 슬라이더] API 데이터 ${announcementSlides.length}개 → 더미로 4개 채움`);
+                    const neededDummies = 4 - announcementSlides.length;
+                    announcementSlides = [...announcementSlides, ...dummyAnnouncements.slice(0, neededDummies)];
                 }
+                
+                // 🔥 v2.8.13.6.27: 강제로 최소 4개 보장
+                if (announcementSlides.length === 0) {
+                    console.warn('[공지사항 슬라이더] API 데이터 없음 → 더미 4개 사용');
+                    announcementSlides = dummyAnnouncements;
+                }
+                
+                console.log('[공지사항 슬라이더] 최종 표시:', announcementSlides.length, '개', announcementSlides);
                 
                 // 첫 번째 슬라이드 표시
                 showSlide(0);
@@ -2009,7 +2021,7 @@
                 
             } catch (error) {
                 console.error('[공지사항 슬라이더] 로드 실패:', error);
-                // API 실패 시 더미 데이터 표시
+                // API 실패 시 더미 데이터 4개 표시
                 announcementSlides = [
                     {
                         title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
@@ -2030,6 +2042,7 @@
                     }
                 ];
                 
+                console.log('[공지사항 슬라이더] 에러 처리: 더미 데이터 4개 사용');
                 showSlide(0);
                 
                 // 자동 슬라이드 시작 (데스크탑만, 4초마다)
