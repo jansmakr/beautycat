@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.32
+- **현재 버전**: v2.8.13.6.33
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,57 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.32)
+## 🚀 최근 업데이트 (v2.8.13.6.33)
+
+### 2025-12-18 Admin Dashboard priority 옵션 수정 - DB constraint 완전 준수 (v2.8.13.6.33) 🔧
+**"important 옵션 제거로 500 에러 근본 차단" ✅**:
+
+1. **문제 상황** 🚨:
+   - Admin Dashboard에서 공지사항 저장 시 여전히 500 에러
+   - 원인: `admin-dashboard.html`의 priority 선택 옵션에 `important` 여전히 존재
+   - DB: `low`, `medium`, `high`, `urgent`만 허용
+
+2. **Priority 선택 옵션 수정** ✂️:
+   ```html
+   <!-- 이전 (admin-dashboard.html 780-783줄) -->
+   <option value="normal">일반</option>
+   <option value="important">중요</option>  ❌ DB 불허
+   <option value="urgent">긴급</option>
+   <option value="low">낮음</option>
+   
+   <!-- 개선 (v2.8.13.6.33) -->
+   <option value="low">낮음</option>
+   <option value="normal">일반</option>
+   <option value="high">높음</option>  ✅ DB 허용
+   <option value="urgent">긴급</option>
+   ```
+
+3. **변경 사항** 📝:
+   - `important` → `high` (중요 → 높음)
+   - 순서 정리: low → normal → high → urgent
+   - `medium` 옵션 미추가 (실제 사용 안 함)
+
+**최종 결과**:
+- ✅ Admin Dashboard에서 `important` 선택 불가
+- ✅ DB constraint 완전 준수
+- ✅ 공지사항 저장 500 에러 근본 차단
+
+**변경 파일**: `admin-dashboard.html`, `README.md`
+
+**사용자 조치 필요**:
+1. Admin Dashboard → 공지사항 관리
+2. 기존 공지 중 `priority=important`인 항목 찾기
+3. 수정 → Priority를 `high` 또는 `urgent`로 변경
+4. 저장
+
+**DB에 이미 저장된 `important` 값 수정 (Cloudflare D1)**:
+```sql
+UPDATE announcements 
+SET priority = 'high' 
+WHERE priority = 'important';
+```
+
+---
 
 ### 2025-12-18 공지사항 강제 캐시 무효화 - 브라우저 캐시 완전 해결 (v2.8.13.6.32) 🔥
 **"브라우저 캐시로 변경사항 미적용 문제 근본 해결" ✅**:
