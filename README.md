@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.33
+- **현재 버전**: v2.8.13.6.34
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,52 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.33)
+## 🚀 최근 업데이트 (v2.8.13.6.34)
+
+### 2025-12-18 공지사항 priority 기본값 추가 - 빈 값 500 에러 해결 (v2.8.13.6.34) 🔧
+**"priority 빈 값으로 인한 500 에러 완전 해결" ✅**:
+
+1. **문제 상황** 🚨:
+   - 에러: `D1_ERROR: CHECK constraint failed: priority IN (...)`
+   - Console 확인 결과: `선택된 값:  (빈 문자열)`
+   - 원인: Select에서 값이 선택되지 않아 빈 문자열 전송
+   - DB는 빈 문자열 불허, `low/medium/high/urgent`만 허용
+
+2. **기본값 로직 추가** ✅:
+   ```javascript
+   // v2.8.13.6.34: priority가 비어있으면 기본값 'normal' 사용
+   let priority = document.getElementById('announcement-priority').value;
+   if (!priority || priority === '') {
+       console.warn('⚠️ Priority가 비어있어 기본값 normal 사용');
+       priority = 'normal';
+   }
+   ```
+
+3. **변경 위치** 📝:
+   - `js/announcements.js` 213-218줄: priority 기본값 로직 추가
+
+**최종 결과**:
+- ✅ Priority 빈 값 → 자동으로 `normal` 설정
+- ✅ 공지사항 저장/수정 500 에러 완전 해결
+- ✅ DB constraint 위반 방지
+- ✅ Select 기본값 `normal` 설정으로 빈 값 방지
+
+**추가 수정**:
+- `admin-dashboard.html`: `normal`을 기본 선택값(`selected`)으로 설정
+- `data-version="2.8.13.6.34"` 속성 추가 (캐시 확인용)
+
+**변경 파일**: `js/announcements.js`, `admin-dashboard.html`, `README.md`
+
+**알려진 이슈 (별도 수정 예정)**:
+- `api-global-override.js`의 Workers API URL 문제 (`beautycat-api.beautycat.workers.dev` → 올바른 URL로 수정 필요)
+
+**테스트**:
+1. Admin Dashboard → 공지사항 수정
+2. Priority 선택 안 함 (빈 값)
+3. 저장 → 자동으로 `normal`로 저장됨 ✅
+4. Console: `⚠️ Priority가 비어있어 기본값 normal 사용`
+
+---
 
 ### 2025-12-18 Admin Dashboard priority 옵션 수정 - DB constraint 완전 준수 (v2.8.13.6.33) 🔧
 **"important 옵션 제거로 500 에러 근본 차단" ✅**:

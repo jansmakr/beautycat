@@ -210,8 +210,14 @@ function closeAnnouncementModal() {
 async function saveAnnouncement() {
     const id = document.getElementById('announcement-id').value;
     const title = document.getElementById('announcement-title').value;
-    const priority = document.getElementById('announcement-priority').value;
+    let priority = document.getElementById('announcement-priority').value;
     const target = document.getElementById('announcement-target').value;
+    
+    // v2.8.13.6.34: priority가 비어있으면 기본값 'normal' 사용
+    if (!priority || priority === '') {
+        console.warn('⚠️ Priority가 비어있어 기본값 normal 사용');
+        priority = 'normal';
+    }
     const pinned = document.getElementById('announcement-pinned').checked;
     const published = document.getElementById('announcement-published').checked;
     const publishDate = document.getElementById('announcement-publish-date').value;
