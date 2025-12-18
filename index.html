@@ -1628,122 +1628,17 @@
         }
     </style>
     
-    <!-- 로딩 화면 스타일 -->
+    <!-- 로딩 화면 스타일 제거 (v2.8.13.6.21 - 모바일 최적화) -->
     <style>
-        /* 로딩 오버레이 */
-        #loadingScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-        }
-        
-        #loadingScreen.hidden {
+        /* 로딩 화면 제거로 인한 즉시 표시 최적화 */
+        body {
             opacity: 0;
-            visibility: hidden;
+            animation: quickFadeIn 0.3s ease-out forwards;
         }
         
-        /* 로딩 고양이 애니메이션 */
-        .loading-cat {
-            font-size: 4rem;
-            animation: bounce 1s ease-in-out infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0) scale(1);
-            }
-            50% {
-                transform: translateY(-20px) scale(1.1);
-            }
-        }
-        
-        /* 로딩 텍스트 */
-        .loading-text {
-            margin-top: 1.5rem;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #ff2d92;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
+        @keyframes quickFadeIn {
+            to {
                 opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-        
-        /* 프로그레스 바 */
-        .loading-progress {
-            width: 200px;
-            height: 4px;
-            background: rgba(255, 45, 146, 0.2);
-            border-radius: 2px;
-            margin-top: 2rem;
-            overflow: hidden;
-        }
-        
-        .loading-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #ff2d92, #e6297f);
-            border-radius: 2px;
-            animation: progress 2s ease-in-out infinite;
-        }
-        
-        @keyframes progress {
-            0% {
-                width: 0%;
-                transform: translateX(0);
-            }
-            50% {
-                width: 70%;
-            }
-            100% {
-                width: 100%;
-                transform: translateX(0);
-            }
-        }
-        
-        /* 로딩 서브 텍스트 */
-        .loading-subtext {
-            margin-top: 1rem;
-            font-size: 0.875rem;
-            color: #9CA3AF;
-            animation: fadeInOut 2s ease-in-out infinite;
-        }
-        
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0.3;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-        
-        /* 모바일 최적화 */
-        @media (max-width: 640px) {
-            .loading-cat {
-                font-size: 3rem;
-            }
-            
-            .loading-text {
-                font-size: 1rem;
-            }
-            
-            .loading-progress {
-                width: 150px;
             }
         }
         
@@ -1889,26 +1784,15 @@
     </style>
 </head>
 <body style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
-    <!-- 로딩 화면 -->
-    <div id="loadingScreen">
-        <div class="loading-cat">
-            <img src="images/beautycat-cat-emoji.png?v=2025120101" alt="beautycat" style="width: 100px; height: 100px; object-fit: contain;">
-        </div>
-        <div class="loading-text">beautycat</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar"></div>
-        </div>
-        <div class="loading-subtext">피부관리 플랫폼을 준비하고 있어요...</div>
-    </div>
+    <!-- 로딩 화면 제거 (v2.8.13.6.21 - 모바일 최적화) -->
 
     <!-- 심플 헤더 -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-5xl mx-auto px-3 py-3 md:px-4 md:py-2">
             <div class="flex items-center justify-between">
-                <!-- 로고 -->
+                <!-- 로고 (Beautyket 리브랜딩 v2.8.13.6.22) -->
                 <div class="logo-container" style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="images/beautycat-cat-emoji.png?v=2025120101" alt="beautycat" class="mobile-logo-emoji" style="width: 80px; height: 80px; object-fit: contain;">
-                    <img src="images/beautycat-logo-v3.png?v=2.2.5" alt="beautycat 로고" class="mobile-logo-text" style="height: 72px; width: auto;" loading="eager" decoding="async">
+                    <img src="https://www.genspark.ai/api/files/s/cbzJz2uo" alt="Beautyket 로고" class="mobile-logo-text" style="height: 50px; width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;" loading="eager" decoding="async">
                 </div>
                 
                 <!-- 사용자 메뉴 -->
@@ -2012,256 +1896,318 @@
         }
     </style>
 
-    <!-- 메인 콘텐츠 -->
-    <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
-        <!-- 히어로 섹션 (야놀자 스타일) -->
-        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-12 mb-8 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 2; /* 모바일: 2순위 */">
-            <div class="max-w-4xl mx-auto text-center" style="margin-left: auto; margin-right: auto;">
-                <!-- 베타 서비스 배지 -->
-                <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-orange-50 to-pink-50 border border-orange-200 animate-pulse">
-                    <span class="text-lg">🚀</span>
-                    <span class="text-sm font-bold text-orange-600">베타 서비스 운영 중</span>
-                    <span class="text-xs text-orange-500 font-medium">(~2026.03.30 무료)</span>
-                </div>
+    <!-- 샵 공지사항 (슬라이드 형태 중앙 정렬 v2.8.13.6.22) -->
+    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-3 overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4">
+            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: 40px;">
+                <!-- 로딩 중 -->
+                <p class="text-sm text-gray-600">
+                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중...
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <style>
+        .announcement-slide {
+            animation: slideIn 0.5s ease-in-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .announcement-bar {
+            transition: all 0.3s ease;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border: 1px solid #667eea30;
+        }
+        .announcement-bar:hover {
+            background: linear-gradient(135deg, #667eea25, #764ba225);
+            border-color: #667eea50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+    </style>
+    
+    <script>
+        let announcementSlides = [];
+        let currentSlideIndex = 0;
+        let slideInterval = null;
+        
+        // 공지사항 최신 4개 로드 및 슬라이드 표시
+        async function loadAnnouncementSlider() {
+            const container = document.getElementById('announcements-slider');
+            
+            try {
+                console.log('[공지사항 슬라이더] API 호출 시작...');
+                const response = await fetch('tables/announcements?limit=10&sort=-created_at');
                 
-                <!-- 뷰냥이 아이콘 -->
-                <div class="hero-cat-icon inline-block mb-6">
-                    <div class="icon-bg-soft" style="padding: 24px;">
-                        <img src="images/beautycat-cat-emoji.png?v=2025120101" alt="beautycat" style="width: 200px; height: 200px; object-fit: contain;">
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const allAnnouncements = data.data || [];
+                
+                // 게시중이고 고객/전체 대상 공지만 필터링
+                announcementSlides = allAnnouncements.filter(ann => {
+                    const isPublished = ann.is_published === true || ann.is_published === 1;
+                    const isTargetCustomer = ann.target_audience === 'customers' || ann.target_audience === 'all';
+                    return isPublished && isTargetCustomer;
+                }).slice(0, 4); // 최신 4개
+                
+                console.log('[공지사항 슬라이더] 로드된 공지:', announcementSlides.length);
+                
+                // API 데이터가 없으면 더미 데이터 사용
+                if (announcementSlides.length === 0) {
+                    console.warn('[공지사항 슬라이더] API 데이터 없음 - 더미 데이터 사용');
+                    announcementSlides = [
+                        {
+                            title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
+                            is_pinned: true,
+                            priority: 'important'
+                        },
+                        {
+                            title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
+                            priority: 'normal'
+                        },
+                        {
+                            title: '⭐ 강남·홍대·잠실 인증샵 1분 매칭 서비스 오픈',
+                            priority: 'normal'
+                        },
+                        {
+                            title: '🔥 겨울 스페셜 프로모션 - 피부관리 최대 30% 할인',
+                            priority: 'urgent'
+                        }
+                    ];
+                }
+                
+                // 첫 번째 슬라이드 표시
+                showSlide(0);
+                
+                // 자동 슬라이드 시작 (4초마다)
+                if (announcementSlides.length > 1) {
+                    slideInterval = setInterval(() => {
+                        currentSlideIndex = (currentSlideIndex + 1) % announcementSlides.length;
+                        showSlide(currentSlideIndex);
+                    }, 4000);
+                }
+                
+            } catch (error) {
+                console.error('[공지사항 슬라이더] 로드 실패:', error);
+                // API 실패 시 더미 데이터 표시
+                announcementSlides = [
+                    {
+                        title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
+                        is_pinned: true,
+                        priority: 'important'
+                    },
+                    {
+                        title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
+                        priority: 'normal'
+                    },
+                    {
+                        title: '⭐ 강남·홍대·잠실 인증샵 1분 매칭 서비스 오픈',
+                        priority: 'normal'
+                    },
+                    {
+                        title: '🔥 겨울 스페셜 프로모션 - 피부관리 최대 30% 할인',
+                        priority: 'urgent'
+                    }
+                ];
+                
+                showSlide(0);
+                
+                if (announcementSlides.length > 1) {
+                    slideInterval = setInterval(() => {
+                        currentSlideIndex = (currentSlideIndex + 1) % announcementSlides.length;
+                        showSlide(currentSlideIndex);
+                    }, 4000);
+                }
+            }
+        }
+        
+        function showSlide(index) {
+            const container = document.getElementById('announcements-slider');
+            const ann = announcementSlides[index];
+            
+            const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
+            const title = (ann.title || '제목 없음').length > 80 
+                ? (ann.title || '제목 없음').substring(0, 80) + '...' 
+                : (ann.title || '제목 없음');
+            
+            container.innerHTML = `
+                <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center" onclick="window.location.href='announcements.html'">
+                    <div class="flex items-center gap-3 justify-center">
+                        <span class="text-xl">${icon}</span>
+                        <p class="text-sm sm:text-base text-gray-900 font-semibold">${escapeHtml(title)}</p>
+                    </div>
+                    <div>
+                        <a href="announcements.html" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-4 py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
+                            <span>바로가기</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
                     </div>
                 </div>
-                
-                <!-- 타이틀 (SEO 최적화) -->
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                    전국 피부관리실 <span style="color: #FF6B9D;">견적 비교</span> 예약 플랫폼<br class="sm:hidden">
-                    - beautycat
+            `;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // DOM 로드 후 실행
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAnnouncementSlider);
+        } else {
+            loadAnnouncementSlider();
+        }
+        
+        // 페이지 언로드 시 인터벌 정리
+        window.addEventListener('beforeunload', () => {
+            if (slideInterval) clearInterval(slideInterval);
+        });
+    </script>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
+        <!-- 히어로 섹션 (문제 해결 중심 디자인 v2.8.13.6.22) -->
+        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-16 mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 2;">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- 메인 카피 (큰 글씨) -->
+                <h1 class="text-4xl sm:text-6xl font-black text-gray-900 mb-6" style="letter-spacing: -0.03em; line-height: 1.2;">
+                    <span class="block mb-2">나에게 딱 맞는</span>
+                    <span class="block" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        샵은 어디?
+                    </span>
                 </h1>
                 
-                <!-- 서브타이틀 -->
-                <p class="text-lg text-gray-600 mb-2">
-                    강남 · 홍대 · 잠실 피부케어 전문 뷰티샵 매칭
+                <!-- 서브 카피 (중간 글씨) -->
+                <p class="text-lg sm:text-2xl text-gray-700 mb-4 font-bold leading-relaxed" style="letter-spacing: -0.01em;">
+                    동네 전문가들의 <span style="color: #667eea;">맞춤 견적</span>을 한눈에!
                 </p>
                 
-                <div class="flex items-center justify-center gap-2 mb-8 flex-wrap">
-                    <span class="badge-soft">✨ 무료 견적</span>
-                    <span class="badge-soft">⚡ 빠른 매칭</span>
-                    <span class="badge-soft">💯 검증된 뷰티샵</span>
+                <p class="text-sm sm:text-base text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+                    실패 없는 피부관리의 시작,<br class="sm:hidden">
+                    뷰티켓이 검증한 <strong>뷰티샵</strong>을 만나는<br class="sm:hidden">
+                    가장 확실한 티켓을 확인하세요.
+                </p>
+                
+                <!-- 신뢰 배지 (3개) -->
+                <div class="flex items-center justify-center gap-3 flex-wrap">
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md">
+                        <span class="text-xl">✨</span>
+                        <span class="text-xs font-bold text-gray-700">검증된 업체</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md">
+                        <span class="text-xl">⚡</span>
+                        <span class="text-xs font-bold text-gray-700">빠른 매칭</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md">
+                        <span class="text-xl">💯</span>
+                        <span class="text-xs font-bold text-gray-700">무료 상담</span>
+                    </div>
                 </div>
-                
-                <!-- 설명 -->
-                <p class="text-gray-700 mb-8 text-base leading-relaxed">
-                    상담신청만 남기면 우리 동네<br>
-                    <strong class="text-gray-900">피부관리실 견적을 한번에</strong> 비교해드려요!
-                </p>
             </div>
         </section>
 
-        <!-- 상담 방법 선택 (울트라 프리미엄 디자인) -->
+        <!-- CTA 버튼 섹션 (옵션 A: 2개 나란히 배치, 동일 크기 v2.8.13.6.22) -->
         <section class="cta-buttons-section consultation-options-section mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 1; /* 모바일: 1순위 */">
-            <div class="text-center mb-10">
-                <!-- 상단 배지 -->
-                <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border: 1px solid rgba(102, 126, 234, 0.3);">
-                    <span class="text-2xl">✨</span>
-                    <span class="text-sm font-semibold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                        프리미엄 상담 서비스
-                    </span>
-                </div>
-                
-                <h2 class="text-4xl font-black text-gray-900 mb-4" style="letter-spacing: -0.02em;">
-                    어떤 상담이 
-                    <span style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; display: inline-block;">
-                        필요하신가요?
-                        <svg style="position: absolute; bottom: -8px; left: 0; width: 100%; height: 8px;" viewBox="0 0 200 8" preserveAspectRatio="none">
-                            <path d="M0,4 Q50,0 100,4 T200,4" fill="none" stroke="url(#gradient)" stroke-width="3" stroke-linecap="round"/>
-                            <defs>
-                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3" />
-                                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.3" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </span>
-                </h2>
-                <p class="text-gray-600 text-lg font-medium">원하시는 상담 방법을 선택해주세요</p>
-            </div>
+            <div class="text-center mb-6">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto" style="margin-left: auto; margin-right: auto;">
-                <!-- 견적 상담 버튼 (울트라 프리미엄) - v2.8.13: 로그인 체크 추가 -->
-                <div class="premium-card cursor-pointer" 
+            <!-- 2개 버튼 그리드 (옵션 A: 동일 크기) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto" style="margin-left: auto; margin-right: auto;">
+                <!-- 견적 비교 버튼 - v2.8.13: 로그인 체크 추가 -->
+                <button 
                      onclick="handleConsultationIntent() && showConsultationForm()"
-                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 28px; padding: 3px; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);">
+                     class="cta-button-primary group" 
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px; padding: 2.5rem 2rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 30px rgba(102, 126, 234, 0.35); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
                     
-                    <!-- 반짝이는 파티클 효과 -->
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;">
-                        <div style="position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; top: 20%; left: 15%; opacity: 0.6; animation: sparkle 3s infinite;"></div>
-                        <div style="position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; top: 60%; left: 80%; opacity: 0.4; animation: sparkle 4s infinite 1s;"></div>
-                        <div style="position: absolute; width: 5px; height: 5px; background: white; border-radius: 50%; top: 40%; left: 50%; opacity: 0.5; animation: sparkle 5s infinite 2s;"></div>
+                    <!-- 배경 그라데이션 효과 -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
+                    
+                    <!-- 아이콘 -->
+                    <div style="position: relative; z-index: 1; margin-bottom: 1.5rem;">
+                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
+                            <i class="fas fa-clipboard-list text-5xl text-white"></i>
+                        </div>
                     </div>
                     
-                    <!-- 회전하는 빛 효과 -->
-                    <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); pointer-events: none; animation: rotate 20s linear infinite;"></div>
-                    
-                    <div style="background: white; border-radius: 26px; padding: 2rem 1.5rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
-                        <!-- 상단 라벨 -->
-                        <div class="flex justify-center mb-3">
-                            <span style="background: linear-gradient(135deg, #667eea15, #764ba215); color: #667eea; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #667eea20;">
-                                POPULAR CHOICE
-                            </span>
-                        </div>
-                        
-                        <div class="mb-4 flex justify-center">
-                            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4); transform: rotate(45deg); position: relative;">
-                                <!-- 아이콘 주변 링 효과 -->
-                                <div style="position: absolute; inset: -6px; border: 2px solid #667eea30; border-radius: 20px; animation: pulse 2s infinite;"></div>
-                                <i class="fas fa-clipboard-list text-4xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
-                            </div>
-                        </div>
-                        
-                        <h3 class="font-black text-2xl mb-3 text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
-                            견적 상담 신청
+                    <!-- 텍스트 -->
+                    <div style="position: relative; z-index: 1; color: white;">
+                        <h3 class="text-2xl sm:text-3xl font-black mb-2" style="letter-spacing: -0.02em;">
+                            우리 동네 1등 샵<br>견적 비교하기
                         </h3>
-                        
-                        <p class="text-gray-700 leading-relaxed mb-5 text-center text-sm font-medium">
-                            여러 피부관리실 견적을 한번에 비교
+                        <p class="text-sm opacity-90 font-medium">
+                            여러 뷰티샵 견적을 한번에 비교
                         </p>
-                        
-                        <!-- 하단 CTA -->
-                        <div class="text-center">
-                            <div class="inline-flex items-center gap-2 text-xs font-semibold" style="color: #667eea;">
-                                <span>지금 시작하기</span>
-                                <i class="fas fa-arrow-right text-xs" style="animation: slideRight 1.5s infinite;"></i>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                    
+                    <!-- 화살표 -->
+                    <div style="position: relative; z-index: 1; margin-top: 1rem;">
+                        <i class="fas fa-arrow-right text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
+                    </div>
+                </button>
                 
-                <!-- 전화 상담 버튼 (울트라 프리미엄) - v2.8.13: 로그인 체크 추가 -->
-                <div class="premium-card cursor-pointer" 
+                <!-- 전화 상담 버튼 - v2.8.13: 로그인 체크 추가 -->
+                <button 
                      onclick="handlePhoneIntent() && showPhoneForm()"
-                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 28px; padding: 3px; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 10px 40px rgba(245, 87, 108, 0.3);">
+                     class="cta-button-secondary group" 
+                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 20px; padding: 2.5rem 2rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 30px rgba(245, 87, 108, 0.35); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
                     
-                    <!-- 반짝이는 파티클 효과 -->
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;">
-                        <div style="position: absolute; width: 4px; height: 4px; background: white; border-radius: 50%; top: 25%; left: 20%; opacity: 0.6; animation: sparkle 3s infinite 0.5s;"></div>
-                        <div style="position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; top: 65%; left: 75%; opacity: 0.4; animation: sparkle 4s infinite 1.5s;"></div>
-                        <div style="position: absolute; width: 5px; height: 5px; background: white; border-radius: 50%; top: 45%; left: 55%; opacity: 0.5; animation: sparkle 5s infinite 2.5s;"></div>
+                    <!-- 배경 그라데이션 효과 -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
+                    
+                    <!-- 아이콘 -->
+                    <div style="position: relative; z-index: 1; margin-bottom: 1.5rem;">
+                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
+                            <i class="fas fa-phone-alt text-5xl text-white"></i>
+                        </div>
                     </div>
                     
-                    <!-- 회전하는 빛 효과 -->
-                    <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); pointer-events: none; animation: rotate 20s linear infinite;"></div>
-                    
-                    <div style="background: white; border-radius: 26px; padding: 2rem 1.5rem; position: relative; z-index: 1; height: 100%; backdrop-filter: blur(10px);">
-                        <!-- 상단 라벨 -->
-                        <div class="flex justify-center mb-3">
-                            <span style="background: linear-gradient(135deg, #f093fb15, #f5576c15); color: #f5576c; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; border: 1px solid #f5576c20;">
-                                INSTANT CONNECT
-                            </span>
-                        </div>
-                        
-                        <div class="mb-4 flex justify-center">
-                            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4); transform: rotate(45deg); position: relative;">
-                                <!-- 아이콘 주변 링 효과 -->
-                                <div style="position: absolute; inset: -6px; border: 2px solid #f5576c30; border-radius: 20px; animation: pulse 2s infinite;"></div>
-                                <i class="fas fa-phone-alt text-4xl text-white" style="transform: rotate(-45deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></i>
-                            </div>
-                        </div>
-                        
-                        <h3 class="font-black text-2xl mb-3 text-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.02em;">
-                            전화 상담 신청
+                    <!-- 텍스트 -->
+                    <div style="position: relative; z-index: 1; color: white;">
+                        <h3 class="text-2xl sm:text-3xl font-black mb-2" style="letter-spacing: -0.02em;">
+                            지금 바로<br>지역별 대표샵과 상담
                         </h3>
-                        
-                        <p class="text-gray-700 leading-relaxed mb-5 text-center text-sm font-medium">
-                            지역 대표샵과 바로 전화 상담
+                        <p class="text-sm opacity-90 font-medium">
+                            지역 대표샵과 바로 전화 연결
                         </p>
-                        
-                        <!-- 하단 CTA -->
-                        <div class="text-center">
-                            <div class="inline-flex items-center gap-2 text-xs font-semibold" style="color: #f5576c;">
-                                <span>지금 연결하기</span>
-                                <i class="fas fa-arrow-right text-xs" style="animation: slideRight 1.5s infinite;"></i>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                    
+                    <!-- 화살표 -->
+                    <div style="position: relative; z-index: 1; margin-top: 1rem;">
+                        <i class="fas fa-arrow-right text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
+                    </div>
+                </button>
             </div>
             
             <style>
-                @keyframes rotate {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
+                .cta-button-primary:hover,
+                .cta-button-secondary:hover {
+                    transform: translateY(-8px) scale(1.02) !important;
+                    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
                 }
                 
-                @keyframes sparkle {
-                    0%, 100% { 
-                        opacity: 0;
-                        transform: scale(0);
-                    }
-                    50% { 
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                }
-                
-                @keyframes pulse {
-                    0%, 100% {
-                        opacity: 0.3;
-                        transform: scale(1);
-                    }
-                    50% {
-                        opacity: 0.6;
-                        transform: scale(1.05);
-                    }
-                }
-                
-                @keyframes slideRight {
-                    0%, 100% {
-                        transform: translateX(0);
-                    }
-                    50% {
-                        transform: translateX(5px);
-                    }
-                }
-                
-                .premium-card {
-                    will-change: transform, box-shadow;
-                }
-                
-                .premium-card:hover {
-                    transform: translateY(-12px) scale(1.02) !important;
-                    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2) !important;
-                }
-                
-                .premium-card:active {
-                    transform: translateY(-6px) scale(0.98) !important;
-                    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                }
-                
-                .premium-card:hover div[style*="rotate(45deg)"] {
-                    transform: rotate(45deg) scale(1.1);
-                    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                .cta-button-primary:active,
+                .cta-button-secondary:active {
+                    transform: translateY(-4px) scale(0.98) !important;
+                    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
                 }
             </style>
         </section>
 
-        <!-- 🎨 숨겨진 뷰티 샵 발굴 배너 (v2.5.9.4) -->
-        <section class="hidden-spot-banner-section mx-auto my-12 px-4 animate-fade-in" id="hiddenSpotBanner" style="max-width: 100%;">
-            <div class="relative group cursor-pointer" onclick="scrollToConsultationOptions()" style="max-width: 480px; margin: 0 auto;">
-                <img 
-                    src="https://www.genspark.ai/api/files/s/iWCPJIbe" 
-                    alt="숨겨진 뷰티 샵 발굴 - 나만 알고 싶은 동네 뷰티 맛집, 부티캣에서!" 
-                    class="w-full rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02]"
-                    loading="lazy"
-                    style="max-width: 100%; height: auto;"
-                >
-                <!-- 클릭 유도 효과 -->
-                <div class="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <!-- 클릭 유도 아이콘 -->
-                <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm rounded-full p-4 shadow-xl group-hover:bg-pink-500 group-hover:text-white transition-all duration-300 transform group-hover:scale-110">
-                    <i class="fas fa-arrow-down text-xl"></i>
-                </div>
-            </div>
-        </section>
+
 
         <!-- 상담 및 견적 신청 폼 (슬라이드 방식) -->
         <section id="consultation" class="card-soft section-consultation mb-12 animate-fade-in" style="display: none; max-width: 900px; margin-left: auto; margin-right: auto; padding: 40px; order: 10; /* 폼은 항상 아래 */">
@@ -2662,91 +2608,7 @@
             </div>
         </section>
 
-        <!-- 왜 BeautyCat? (야놀자 스타일) -->
-        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 3; /* 모바일: 3순위 */">
-            <h2 class="section-title-soft text-center">왜 BeautyCat을<br class="sm:hidden"> 선택해야 할까요?</h2>
-            <p class="section-subtitle-soft text-center">피부관리를 쉽고 안전하게 시작하세요</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto" style="margin-left: auto; margin-right: auto;">
-                <!-- 지역 기반 매칭 -->
-                <div class="card-soft p-8 text-center">
-                    <div class="icon-bg-soft mb-6 mx-auto w-fit">
-                        <i class="fas fa-map-marker-alt text-4xl" style="color: #FF6B9D;"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-3">지역 기반 매칭</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        우리 동네 피부관리실만<br>
-                        정확하게 추천해드립니다
-                    </p>
-                </div>
-                
-                <!-- 안전한 인증 -->
-                <div class="card-soft p-8 text-center">
-                    <div class="icon-bg-soft mb-6 mx-auto w-fit">
-                        <i class="fas fa-shield-alt text-4xl" style="color: #FF6B9D;"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-3">안전한 인증</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        안전하고 신뢰할 수 있는<br>
-                        회원 인증 시스템
-                    </p>
-                </div>
-                
-                <!-- 실시간 상담 -->
-                <div class="card-soft p-8 text-center">
-                    <div class="icon-bg-soft mb-6 mx-auto w-fit">
-                        <i class="fas fa-comments text-4xl" style="color: #FF6B9D;"></i>
-                    </div>
-                    <h3 class="font-bold text-xl text-gray-900 mb-3">실시간 상담</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        샵과 직접 채팅으로<br>
-                        상담받으세요
-                    </p>
-                </div>
-            </div>
-        </section>
 
-        <!-- 피부관리 고객 후기 및 리뷰 -->
-        <section class="mb-12 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 4; /* 모바일: 4순위 */">
-            <h2 class="section-title-soft text-center">피부관리<br class="sm:hidden"> 고객 후기 및 리뷰</h2>
-            <p class="text-center text-gray-600 mb-8">BeautyCat과 함께한 고객님들의 생생한 이야기</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto" style="margin-left: auto; margin-right: auto;">
-                <!-- 후기 1 -->
-                <div class="card-soft p-8">
-                    <div class="flex items-center justify-center mb-4">
-                        <div class="text-center">
-                            <div class="font-semibold text-gray-900 text-lg mb-1">김○○님</div>
-                            <div class="mb-3">
-                                <span class="text-yellow-400 text-xl">★★★★★</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 text-center leading-relaxed">
-                        "집 근처 샵을<br>
-                        쉽게 찾을 수 있어서<br>
-                        너무 편리해요!"
-                    </p>
-                </div>
-                
-                <!-- 후기 2 -->
-                <div class="card-soft p-8">
-                    <div class="flex items-center justify-center mb-4">
-                        <div class="text-center">
-                            <div class="font-semibold text-gray-900 text-lg mb-1">이○○님</div>
-                            <div class="mb-3">
-                                <span class="text-yellow-400 text-xl">★★★★★</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 text-center leading-relaxed">
-                        "여러 샵 견적을<br>
-                        한 번에 받아볼 수 있어<br>
-                        좋아요!"
-                    </p>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- 모바일 하단 네비게이션 -->
@@ -3355,20 +3217,7 @@
         // 페이지 로드 시 도메인 상태 체크
         window.addEventListener('load', checkDomainStatus);
         
-        // 로딩 화면 제거 (빠른 전환)
-        window.addEventListener('load', function() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            
-            // 최소 로딩 시간 (0.2초) 후 즉시 페이드아웃
-            setTimeout(() => {
-                loadingScreen.classList.add('hidden');
-                
-                // 완전히 제거 (0.3초 후)
-                setTimeout(() => {
-                    loadingScreen.remove();
-                }, 300);
-            }, 200);
-        });
+        // 로딩 화면 제거됨 (v2.8.13.6.21 - 모바일 초기 로딩 속도 개선)
         
         // 이미지 레이지 로딩
         if ('loading' in HTMLImageElement.prototype) {
@@ -3554,20 +3403,14 @@
                 <!-- 회사 정보 (모바일: 간소화, 데스크탑: 전체) -->
                 <div class="text-sm text-gray-600 space-y-2">
                     <!-- 모바일에서만 표시 (간소화) -->
-                    <div class="block md:hidden space-y-1">
-                        <p><strong>상호:</strong> 케이뷰틱스 | <strong>대표:</strong> 박대수</p>
-                        <p><strong>주소:</strong> 서울 강서구 허준로198,<br>가양프라자 4층 406-03호 10호</p>
+                    <div class="block md:hidden text-xs text-gray-600">
+                        <p>상호: 케이뷰틱스 | 대표: 박대수 | 주소: 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
                     </div>
                     <!-- 데스크탑에서만 표시 (전체 정보) -->
-                    <div class="hidden md:block">
-                        <p><strong>상호:</strong> 케이뷰틱스 | <strong>대표:</strong> 박대수</p>
-                        <p><strong>사업자등록번호:</strong> 693-47-00786</p>
-                        <p><strong>통신판매업등록번호:</strong> 제 2025-서울강서-2423호</p>
-                        <p><strong>주소:</strong> 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호</p>
-                        <p><strong>상담센터:</strong> 서울 금천구 디지털로10길 78, 가산테라타워 10층</p>
-                        <p><strong>개인정보처리담당자:</strong> 박지원</p>
-                        <p><strong>TEL:</strong> 070-7004-5902</p>
-                        <p><strong>E-MAIL:</strong> utuber@kakao.com</p>
+                    <div class="hidden md:block text-sm text-gray-600 space-y-2">
+                        <p>상호: 케이뷰틱스 | 대표: 박대수 | 사업자등록번호: 693-47-00786 | 통신판매업등록번호: 제 2025-서울강서-2423호</p>
+                        <p>주소: 서울 강서구 허준로198, 가양프라자 4층 406-03호 10호 | 상담센터: 서울 금천구 디지털로10길 78, 가산테라타워 10층</p>
+                        <p>개인정보처리담당자: 박지원 | TEL: 070-7004-5902 | E-MAIL: utuber@kakao.com</p>
                     </div>
                 </div>
                 
