@@ -5,10 +5,10 @@
 
 console.log('🚀 Cloudflare API 브릿지 활성화');
 
-// Cloudflare API 설정
+// Cloudflare API 설정 (v2.8.13.6.35: 올바른 도메인으로 수정)
 const CLOUDFLARE_API = {
-    baseUrl: 'https://api.beautycat.kr/api',                   // 메인 커스텀 도메인
-    fallbackUrl: 'https://api.beautycat.kr/api',               // 동일하게 유지
+    baseUrl: 'https://api.beautycat.kr/api',                      // 실제 API URL (Primary)
+    fallbackUrl: 'https://api.beautycat.kr/api',                  // Fallback (동일)
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

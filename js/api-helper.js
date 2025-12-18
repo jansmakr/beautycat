@@ -4,7 +4,7 @@
  */
 
 const API = {
-    // Cloudflare Workers API 기본 URL
+    // Cloudflare Workers API 기본 URL (v2.8.13.6.35: 올바른 도메인으로 수정)
     BASE_URL: 'https://api.beautycat.kr/api',
     
     // 공통 헤더
