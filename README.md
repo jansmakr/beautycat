@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.31
+- **현재 버전**: v2.8.13.6.32
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,75 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.31)
+## 🚀 최근 업데이트 (v2.8.13.6.32)
+
+### 2025-12-18 공지사항 강제 캐시 무효화 - 브라우저 캐시 완전 해결 (v2.8.13.6.32) 🔥
+**"브라우저 캐시로 변경사항 미적용 문제 근본 해결" ✅**:
+
+1. **문제 상황** 🚨:
+   - 사용자 보고: "Push했는데 변화가 없어, 샵공지가 그대로"
+   - 원인: 브라우저가 이전 버전 JavaScript 캐싱
+   - 증상: 모바일/데스크탑 모두 공지사항 가로 배치 유지
+
+2. **강제 캐시 무효화 추가** 🔥:
+   ```javascript
+   // v2.8.13.6.32: 버전 상수 추가
+   const ANNOUNCEMENT_VERSION = '2.8.13.6.32';
+   console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION);
+   
+   // showSlide 함수에서 버전 로그
+   console.warn('🔥 showSlide 실행:', ANNOUNCEMENT_VERSION, '모바일:', isMobile);
+   
+   // 렌더링된 HTML에 버전 속성 추가
+   <div data-version="${ANNOUNCEMENT_VERSION}" data-type="mobile/desktop">
+   ```
+
+3. **HTML 버전 표시 추가** 📊:
+   ```html
+   <!-- 섹션에 버전 속성 -->
+   <section data-version="2.8.13.6.32" data-timestamp="...">
+   
+   <!-- 로딩 메시지에도 버전 표시 -->
+   공지사항 로딩 중... (v2.8.13.6.32)
+   
+   <!-- 렌더링된 컨테이너에 버전 속성 -->
+   <div data-version="2.8.13.6.32" data-type="mobile">
+   ```
+
+4. **디버깅 로그 강화** 🔍:
+   - `🔥🔥🔥 공지사항 버전: 2.8.13.6.32` (페이지 로드 시)
+   - `🔥 showSlide 실행: 2.8.13.6.32` (렌더링 시)
+   - `✅ 모바일/데스크탑 4줄 렌더링 완료` (완료 시)
+
+**캐시 클리어 방법**:
+```
+Windows: Ctrl + Shift + Delete (또는 Ctrl + Shift + R)
+Mac: Cmd + Shift + Delete (또는 Cmd + Shift + R)
+
+또는
+
+1. F12 → Application → Clear site data
+2. 시크릿 모드로 테스트
+```
+
+**최종 결과**:
+- ✅ Console에서 정확한 버전 확인 가능
+- ✅ HTML 속성으로 렌더링 버전 추적
+- ✅ 브라우저 캐시 문제 진단 가능
+
+**변경 파일**: `index.html`, `README.md`
+
+**테스트 방법**:
+1. **Ctrl+Shift+R** (강력 새로고침)
+2. F12 → Console 확인:
+   ```
+   🔥🔥🔥 공지사항 버전: 2.8.13.6.32
+   🔥 showSlide 실행: 2.8.13.6.32 모바일: true/false
+   ✅ 모바일/데스크탑 4줄 렌더링 완료: 2.8.13.6.32
+   ```
+3. Elements 탭 → `data-version="2.8.13.6.32"` 확인
+
+---
 
 ### 2025-12-18 공지사항 priority 수정 - DB constraint 준수 (v2.8.13.6.31) 🔧
 **"500 에러 해결: priority 값 DB 스키마 맞춤" ✅**:
