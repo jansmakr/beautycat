@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.34
+- **현재 버전**: v2.7.3.4 (API 캐시 수정)
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,41 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.34)
+## 🚀 최근 업데이트 (v2.7.3.4)
+
+### 2025-12-18 API Global Override 캐시 무효화 (v2.7.3.4) 🔧
+**"ERR_NAME_NOT_RESOLVED 브라우저 캐시 문제 완전 해결" ✅**:
+
+1. **문제 상황** 🚨:
+   - 에러: `GET https://beautycat-api.beautycat.workers.dev/api/tables/... net::ERR_NAME_NOT_RESOLVED`
+   - 원인: HTML 파일들이 구버전 `api-global-override.js?v=2.7.3.3` 로드 중
+   - `api-global-override.js`는 이미 v2.7.3.4로 수정되었으나, 브라우저 캐시로 인해 적용 안 됨
+
+2. **해결 방법** ✅:
+   - 모든 주요 HTML 파일의 스크립트 버전을 `v=2.7.3.4`로 업데이트
+   - 수정 파일:
+     * `index.html`
+     * `admin-dashboard.html`
+     * `shop-dashboard.html`
+     * `announcements.html`
+     * `customer-dashboard.html`
+
+3. **효과** 🎯:
+   - ✅ 브라우저가 새로운 `api-global-override.js` 강제 다운로드
+   - ✅ `ERR_NAME_NOT_RESOLVED` 에러 완전 해결
+   - ✅ 공지사항, 대표샵 등 모든 API 호출 정상화
+
+4. **테스트 확인 사항**:
+   ```javascript
+   // F12 Console에서 확인
+   // ✅ "🚀 API Global Override v2.7.3.4 - 상대 경로 모드"
+   // ✅ "📡 Workers API Base: " (빈 문자열)
+   // ❌ ERR_NAME_NOT_RESOLVED (사라져야 함)
+   ```
+
+---
+
+## 🚀 이전 업데이트 (v2.8.13.6.34)
 
 ### 2025-12-18 공지사항 priority 기본값 추가 - 빈 값 500 에러 해결 (v2.8.13.6.34) 🔧
 **"priority 빈 값으로 인한 500 에러 완전 해결" ✅**:
