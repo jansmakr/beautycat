@@ -1898,8 +1898,8 @@
         }
     </style>
 
-    <!-- 공지사항 (모바일/데스크탑: 5줄 목록 v2.8.13.6.39 - 1번 운영자 고정) -->
-    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3" data-version="2.8.13.6.39" style="min-height: 200px;">
+    <!-- 공지사항 (모바일/데스크탑: 5줄 목록 v2.8.13.6.41 - Inline Style) -->
+    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3" data-version="2.8.13.6.41" style="min-height: 200px;">
         <div class="max-w-5xl mx-auto px-3 sm:px-4">
             <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.39" style="min-height: 170px;">
                 <!-- 로딩 중 v2.8.13.6.39 -->
@@ -1945,9 +1945,9 @@
     </style>
     
     <script>
-        // 🔥 v2.8.13.6.39: 운영자 1번 고정 + 샵 2~5번 최신순 (Git Push 강제)
-        const ANNOUNCEMENT_VERSION = '2.8.13.6.39';
-        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(1번: 운영자 고정, 2~5번: 샵 최신순)');
+        // 🔥 v2.8.13.6.41: Inline Style 적용 (Tailwind 미사용)
+        const ANNOUNCEMENT_VERSION = '2.8.13.6.41';
+        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(1번: 운영자, 2~3번: 샵 최신 2개)');
         
         let announcementSlides = [];
         let currentSlideIndex = 0;
@@ -1958,7 +1958,7 @@
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항] v2.8.13.6.38 - 운영자(1번 고정) + 샵(2~5번 최신순)');
+                console.log('[공지사항] v2.8.13.6.40 - 운영자(1번 고정) + 샵(2~3번 최신 2개)');
                 
                 // 1. 운영자 공지 로드
                 const response1 = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
@@ -1970,9 +1970,9 @@
                 const data2 = response2.ok ? await response2.json() : { data: [] };
                 const shopAnnouncements = data2.data || [];
                 
-                console.log('[공지사항 v2.8.13.6.38] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
+                console.log('[공지사항 v2.8.13.6.40] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
                 
-                // 3. 운영자 공지와 샵 공지 분리 처리 (v2.8.13.6.38: 운영자 1번 고정)
+                // 3. 운영자 공지와 샵 공지 분리 처리 (v2.8.13.6.40: 운영자 1번 고정, 샵 2개)
                 // 3-1. 운영자 공지 필터링
                 const filteredAdminAnnouncements = adminAnnouncements.filter(ann => {
                     const isPublished = ann.is_published === true || ann.is_published === 1;
@@ -1989,15 +1989,15 @@
                 // 4. 운영자 공지: 최신 1개만 선택 (항상 1번 위치 고정)
                 const topAdminAnnouncement = filteredAdminAnnouncements.slice(0, 1);
                 
-                // 5. 샵 공지: 최신 4개만 선택 (2~5번 위치)
-                const topShopAnnouncements = filteredShopAnnouncements.slice(0, 4);
+                // 5. 샵 공지: 최신 2개만 선택 (2~3번 위치)
+                const topShopAnnouncements = filteredShopAnnouncements.slice(0, 2);
                 
-                console.log('[공지사항 v2.8.13.6.38] 필터링 - 운영자:', filteredAdminAnnouncements.length, '개 → 선택:', topAdminAnnouncement.length, '개 / 샵:', filteredShopAnnouncements.length, '개 → 선택:', topShopAnnouncements.length, '개');
+                console.log('[공지사항 v2.8.13.6.40] 필터링 - 운영자:', filteredAdminAnnouncements.length, '개 → 선택:', topAdminAnnouncement.length, '개 / 샵:', filteredShopAnnouncements.length, '개 → 선택:', topShopAnnouncements.length, '개');
                 
-                // 6. 최종 배치: [운영자 1개] + [샵 4개] = 5줄 (v2.8.13.6.38)
+                // 6. 최종 배치: [운영자 1개] + [샵 2개] = 3줄 (v2.8.13.6.40)
                 announcementSlides = [...topAdminAnnouncement, ...topShopAnnouncements];
                 
-                console.log('[공지사항 v2.8.13.6.38] 최종 배치: 1번(운영자) + 2~5번(샵) = 총', announcementSlides.length, '개', announcementSlides);
+                console.log('[공지사항 v2.8.13.6.40] 최종 배치: 1번(운영자) + 2~3번(샵) = 총', announcementSlides.length, '개', announcementSlides);
                 
                 // v2.8.13.6.38: 5개 미만이면 더미 데이터로 채우기
                 const dummyAnnouncements = [
@@ -2108,7 +2108,7 @@
                         <div class="mb-2">
                             <p class="text-xs font-bold text-gray-700 mb-1">공지 내용: <a href="announcements.html" class="text-blue-600 hover:text-blue-800 underline">자세히 보기</a></p>
                         </div>
-                        <div class="flex flex-col" style="gap: 4px; width: 100%;">
+                        <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
                             ${items}
                         </div>
                     </div>
@@ -2138,7 +2138,7 @@
                         <div class="mb-2">
                             <p class="text-sm font-bold text-gray-700">공지 내용: <a href="announcements.html" class="text-blue-600 hover:text-blue-800 underline">자세히 보기</a></p>
                         </div>
-                        <div class="flex flex-col items-center" style="gap: 6px; width: 100%;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%;">
                             ${items}
                         </div>
                     </div>
