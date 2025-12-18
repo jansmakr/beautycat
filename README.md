@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.7.3.4 (API 캐시 수정)
+- **현재 버전**: v2.8.13.6.35 (Beautyket 흔적 완전 제거)
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,49 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.7.3.4)
+## 🚀 최근 업데이트 (v2.8.13.6.35)
+
+### 2025-12-18 Beautyket 흔적 완전 제거 + API URL 통일 (v2.8.13.6.35) 🧹
+**"2025-12-16 Beautyket 리브랜딩 실패 잔여물 완전 청소" ✅**:
+
+1. **문제 상황** 🚨:
+   - 로고 로드 실패: Genspark 임시 URL 사용 중
+   - 코드에 "Beautyket" 브랜딩 혼재 (BeautyCat과 충돌)
+   - 4개 JS 파일이 잘못된 Workers API URL 사용
+   - Console 로그 버전 불일치 (v2.8.13.6.30 vs v2.8.13.6.32)
+
+2. **청소 작업** ✅:
+   - ✅ **index.html** (Line 1795-1797):
+     * Beautyket → BeautyCat 브랜딩 통일
+     * 로고: Genspark 임시 URL → `images/beautycat-logo-v3.png`
+     * 로고 높이: 36px → 40px
+     * Fallback 로고 추가 (에러 시 자동 전환)
+   
+   - ✅ **API URL 통일** (4개 파일):
+     * `js/api-helper.js` (Line 8)
+     * `js/cloudflare-api.js` (Line 10)
+     * `js/coupon-system.js` (Line 8)
+     * `js/booking-system.js` (Line 8)
+     * 변경: `https://beautycat-api.beautycat.workers.dev/api` (❌ 존재하지 않음)
+     * → `https://api.beautycat.kr/api` (✅ 실제 API 서버)
+   
+   - ✅ **Console 로그 버전 통일**:
+     * v2.8.13.6.30 → v2.8.13.6.35 (3곳)
+
+3. **효과** 🎯:
+   - ✅ 로고 정상 표시 (모바일 포함)
+   - ✅ 브랜드 일관성 확보 (BeautyCat 통일)
+   - ✅ API URL 근본적 수정 (Fallback 의존 제거)
+   - ✅ 개발/프로덕션 환경 모두 안정화
+
+4. **배경**:
+   - 2025-12-16 Beautyket 리브랜딩 시도 → API 503 오류 → v2.8.13.6 Rollback
+   - 하지만 일부 Beautyket 흔적이 코드에 남아있어 혼란 유발
+   - 이번 업데이트로 완전히 BeautyCat으로 통일
+
+---
+
+## 🚀 이전 업데이트 (v2.7.3.4)
 
 ### 2025-12-18 API Global Override 캐시 무효화 (v2.7.3.4) 🔧
 **"ERR_NAME_NOT_RESOLVED 브라우저 캐시 문제 완전 해결" ✅**:

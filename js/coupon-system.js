@@ -5,7 +5,7 @@
 
 class CouponSystem {
     constructor() {
-        this.apiUrl = window.CLOUDFLARE_API?.baseUrl || 'https://api.beautycat.kr/api';
+        this.apiUrl = window.CLOUDFLARE_API?.baseUrl || 'https://api.beautycat.kr/api';  // v2.8.13.6.35
         this.coupons = new Map();
         this.userCoupons = [];
         this.init();

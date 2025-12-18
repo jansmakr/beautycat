@@ -1792,9 +1792,9 @@
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-5xl mx-auto px-3 py-2 md:px-4 md:py-2">
             <div class="flex items-center justify-between">
-                <!-- 로고 (Beautyket 리브랜딩 v2.8.13.6.23) -->
+                <!-- 로고 (BeautyCat v2.8.13.6.35) -->
                 <div class="logo-container" style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="https://www.genspark.ai/api/files/s/cbzJz2uo" alt="Beautyket 로고" class="mobile-logo-text" style="height: 36px; width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; object-fit: contain;" loading="eager" decoding="async" onerror="this.style.display='none'; console.error('Logo failed to load')">
+                    <img src="images/beautycat-logo-v3.png" alt="BeautyCat 로고" class="mobile-logo-text" style="height: 40px; width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; object-fit: contain;" loading="eager" decoding="async" onerror="console.error('Logo failed to load'); this.src='images/beautycat-logo.png';">
                 </div>
                 
                 <!-- 사용자 메뉴 -->
@@ -1958,7 +1958,7 @@
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항] v2.8.13.6.30 - 4줄 텍스트 표시');
+                console.log('[공지사항] v2.8.13.6.35 - 4줄 텍스트 표시');
                 const response = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
                 
                 if (!response.ok) {
@@ -1975,7 +1975,7 @@
                     return isPublished && isTargetCustomer;
                 }).slice(0, 4); // 최신 4개
                 
-                console.log('[공지사항 v2.8.13.6.30] 로드된 공지:', announcementSlides.length, announcementSlides);
+                console.log('[공지사항 v2.8.13.6.35] 로드된 공지:', announcementSlides.length, announcementSlides);
                 
                 // v2.8.13.6.26: API 데이터가 4개 미만이면 더미 데이터로 채우기
                 const dummyAnnouncements = [
@@ -2011,7 +2011,7 @@
                     announcementSlides = dummyAnnouncements;
                 }
                 
-                console.log('[공지사항 v2.8.13.6.30] 최종 표시:', announcementSlides.length, '개 (모바일/데스크탑 4줄 텍스트)', announcementSlides);
+                console.log('[공지사항 v2.8.13.6.35] 최종 표시:', announcementSlides.length, '개 (모바일/데스크탑 4줄 텍스트)', announcementSlides);
                 
                 // v2.8.13.6.28: 모바일/데스크탑 모두 4줄 텍스트 표시 (슬라이드 제거)
                 showSlide(0);
