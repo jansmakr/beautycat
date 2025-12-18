@@ -1975,9 +1975,17 @@
                 // 3. 두 테이블 합치기
                 const allAnnouncements = [...adminAnnouncements, ...shopAnnouncements];
                 
-                // 4. 게시중이고 고객/전체 대상 공지만 필터링
+                // 4. 게시중 공지 필터링 (v2.8.13.6.36: 샵 공지 특별 처리)
                 const filteredAnnouncements = allAnnouncements.filter(ann => {
                     const isPublished = ann.is_published === true || ann.is_published === 1;
+                    
+                    // 샵 공지는 target_audience 체크 안 함 (필드가 없을 수 있음)
+                    const isShopAnnouncement = ann.gs_table_name === 'shop_announcements';
+                    if (isShopAnnouncement) {
+                        return isPublished;  // 샵 공지는 게시 중이면 모두 표시
+                    }
+                    
+                    // 운영자 공지는 target_audience 체크
                     const isTargetCustomer = ann.target_audience === 'customers' || ann.target_audience === 'all';
                     return isPublished && isTargetCustomer;
                 });
