@@ -1898,13 +1898,13 @@
         }
     </style>
 
-    <!-- 샵 공지사항 (모바일/데스크탑: 4줄 텍스트 v2.8.13.6.30) -->
-    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3">
+    <!-- 샵 공지사항 (모바일/데스크탑: 4줄 텍스트 v2.8.13.6.32 - CACHE FIX) -->
+    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3" data-version="2.8.13.6.32" data-timestamp="<?php echo time(); ?>">
         <div class="max-w-5xl mx-auto px-3 sm:px-4">
-            <div id="announcements-slider" class="w-full">
-                <!-- 로딩 중 -->
+            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.32">
+                <!-- 로딩 중 v2.8.13.6.32 -->
                 <p class="text-xs sm:text-sm text-gray-600 text-center">
-                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중...
+                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.32)
                 </p>
             </div>
         </div>
@@ -1945,11 +1945,15 @@
     </style>
     
     <script>
+        // 🔥 v2.8.13.6.32: 강제 캐시 무효화
+        const ANNOUNCEMENT_VERSION = '2.8.13.6.32';
+        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION);
+        
         let announcementSlides = [];
         let currentSlideIndex = 0;
         let slideInterval = null;
         
-        // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.30)
+        // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.32 - CACHE FIX)
         async function loadAnnouncementSlider() {
             const container = document.getElementById('announcements-slider');
             
@@ -2043,10 +2047,11 @@
         }
         
         function showSlide(index) {
+            console.warn('🔥 showSlide 실행:', ANNOUNCEMENT_VERSION, '모바일:', window.innerWidth < 640);
             const container = document.getElementById('announcements-slider');
             const isMobile = window.innerWidth < 640;
             
-            // v2.8.13.6.30: 모바일/데스크탑 모두 4줄 텍스트 (슬라이드 제거)
+            // v2.8.13.6.32: 모바일/데스크탑 모두 4줄 텍스트 (슬라이드 제거) - CACHE FIX
             if (isMobile) {
                 // 모바일: 4개 공지를 세로로 나열 (한 줄에 표시 가능한 글자만, 끝에 ~ 추가)
                 const items = announcementSlides.slice(0, 4).map(ann => {
@@ -2066,7 +2071,7 @@
                 }).join('');
                 
                 container.innerHTML = `
-                    <div class="w-full">
+                    <div class="w-full" data-version="${ANNOUNCEMENT_VERSION}" data-type="mobile">
                         <div class="flex flex-col" style="gap: 4px;">
                             ${items}
                         </div>
@@ -2077,6 +2082,7 @@
                         </div>
                     </div>
                 `;
+                console.warn('✅ 모바일 4줄 렌더링 완료:', ANNOUNCEMENT_VERSION);
             } else {
                 // 데스크탑: 모바일과 동일하게 4줄 텍스트 표시 (v2.8.13.6.28)
                 const items = announcementSlides.slice(0, 4).map(ann => {
@@ -2096,7 +2102,7 @@
                 }).join('');
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-4xl mx-auto">
+                    <div class="w-full max-w-4xl mx-auto" data-version="${ANNOUNCEMENT_VERSION}" data-type="desktop">
                         <div class="flex flex-col" style="gap: 6px;">
                             ${items}
                         </div>
@@ -2107,6 +2113,7 @@
                         </div>
                     </div>
                 `;
+                console.warn('✅ 데스크탑 4줄 렌더링 완료:', ANNOUNCEMENT_VERSION);
             }
         }
         
