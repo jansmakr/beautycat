@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.23
+- **현재 버전**: v2.8.13.6.24
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,59 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.23)
+## 🚀 최근 업데이트 (v2.8.13.6.24)
+
+### 2025-12-18 로그인 플로우 개선 - 견적신청 후 정상 리다이렉트 (v2.8.13.6.24) 🔧
+**"로그인 후 견적신청 페이지로 정확히 이동" ✅**:
+
+1. **localStorage 키 통일화** 🔑:
+   - `handleConsultationIntent()`: `currentUser` OR `user_data` 둘 다 체크
+   - `handlePhoneIntent()`: `currentUser` OR `user_data` 둘 다 체크
+   - `showConsultationForm()`: `currentUser` OR `user_data` 둘 다 체크
+   - `showPhoneForm()`: `currentUser` OR `user_data` 둘 다 체크
+   - ✅ auth.js와 index.html 간 로그인 상태 감지 일관성 확보
+
+2. **로그인 체크 건너뛰기 파라미터 추가** 🚀:
+   - `showConsultationForm(skipLoginCheck = false)` 파라미터 추가
+   - `showPhoneForm(skipLoginCheck = false)` 파라미터 추가
+   - 로그인 후 리다이렉트 시 `skipLoginCheck = true`로 호출
+   - ✅ 로그인 체크 무한 루프 방지
+
+3. **URL 해시 처리 개선** #️⃣:
+   - auth.js: `index.html#consultation-form` 리다이렉트
+   - index.html DOMContentLoaded: `hash === 'consultation-form'` 감지
+   - `showConsultationForm(true)` 호출 (로그인 체크 건너뛰기)
+   - ✅ 해시 리다이렉트 정상 작동
+
+4. **중복 코드 제거** 🧹:
+   - DOMContentLoaded 이벤트 리스너 통합 (4395번 줄)
+   - URL 파라미터/해시 처리 코드 단일화
+   - 디버그 로그 추가 (`console.log` 출력)
+
+5. **샵 공지사항 UI 개선** 🔔:
+   - '바로가기' 버튼에서 화살표 아이콘 제거
+   - 더 깔끔한 디자인
+
+**문제 해결**:
+- ❌ 이전: 견적신청 클릭 → 로그인 → 마이페이지로 이동
+- ✅ 개선 후: 견적신청 클릭 → 로그인 → **견적신청 폼으로 정확히 이동**
+- ❌ 이전: 마이페이지 → 홈 → 견적신청 → 로그인 팝업 (로그아웃된 것처럼 보임)
+- ✅ 개선 후: localStorage 키 통일로 **로그인 상태 정확히 감지**
+
+**기술적 개선**:
+- auth.js와 index.html 간 데이터 일관성 확보
+- 로그인 후 리다이렉트 시나리오 완벽 처리
+- 해시/파라미터 둘 다 지원
+- 무한 루프 방지 로직 추가
+
+**영향**:
+- 사용자 경험 대폭 개선 (로그인 플로우 직관적)
+- 전환율 향상 예상 (견적신청까지 도달률 증가)
+- 로그인 관련 버그 완전 해결
+
+**변경 파일**: `index.html`, `README.md`
+
+---
 
 ### 2025-12-18 모바일 UX 최적화 - 샵 공지 + CTA 버튼 + 텍스트 가독성 (v2.8.13.6.23) 📱
 **"모바일 우선 디자인으로 전면 개선" ✅**:

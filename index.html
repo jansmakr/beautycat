@@ -1788,20 +1788,20 @@
 
     <!-- 심플 헤더 -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <div class="max-w-5xl mx-auto px-3 py-3 md:px-4 md:py-2">
+        <div class="max-w-5xl mx-auto px-3 py-2 md:px-4 md:py-2">
             <div class="flex items-center justify-between">
-                <!-- 로고 (Beautyket 리브랜딩 v2.8.13.6.22) -->
+                <!-- 로고 (Beautyket 리브랜딩 v2.8.13.6.23) -->
                 <div class="logo-container" style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="https://www.genspark.ai/api/files/s/cbzJz2uo" alt="Beautyket 로고" class="mobile-logo-text" style="height: 50px; width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;" loading="eager" decoding="async">
+                    <img src="https://www.genspark.ai/api/files/s/cbzJz2uo" alt="Beautyket 로고" class="mobile-logo-text" style="height: 36px; width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; object-fit: contain;" loading="eager" decoding="async" onerror="this.style.display='none'; console.error('Logo failed to load')">
                 </div>
                 
                 <!-- 사용자 메뉴 -->
                 <div id="userMenu" class="flex items-center gap-2" style="position: relative; z-index: 1001 !important;">
                     <!-- 로그인 전 -->
-                    <button id="registerBtn" class="btn-primary touch-feedback mobile-auth-btn" onclick="location.href='register.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.625rem 1.25rem; font-size: 0.9375rem; font-weight: 600; border-radius: 1.75rem; border: none; position: relative; z-index: 1002 !important; min-width: 75px; height: 42px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); transition: all 0.2s;">
+                    <button id="registerBtn" class="btn-primary touch-feedback mobile-auth-btn" onclick="location.href='register.html'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: 1.5rem; border: none; position: relative; z-index: 1002 !important; min-width: 65px; height: 36px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); transition: all 0.2s;">
                         가입
                     </button>
-                    <button id="loginBtn" class="btn-secondary touch-feedback mobile-auth-btn" onclick="location.href='login.html'" style="background: white; color: #374151; border: 2px solid #667eea !important; padding: 0.625rem 1.25rem; font-size: 0.9375rem; font-weight: 600; border-radius: 1.75rem; position: relative; z-index: 1002 !important; min-width: 75px; height: 42px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                    <button id="loginBtn" class="btn-secondary touch-feedback mobile-auth-btn" onclick="location.href='login.html'" style="background: white; color: #374151; border: 2px solid #667eea !important; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; border-radius: 1.5rem; position: relative; z-index: 1002 !important; min-width: 65px; height: 36px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
                         로그인
                     </button>
                     
@@ -1896,10 +1896,10 @@
         }
     </style>
 
-    <!-- 샵 공지사항 (슬라이드 형태 중앙 정렬 v2.8.13.6.22) -->
+    <!-- 샵 공지사항 (슬라이드 형태 중앙 정렬 v2.8.13.6.23) -->
     <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3 overflow-hidden">
         <div class="max-w-5xl mx-auto px-3 sm:px-4">
-            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: 60px;">
+            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: 48px;">
                 <!-- 로딩 중 -->
                 <p class="text-xs sm:text-sm text-gray-600">
                     <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중...
@@ -1924,7 +1924,7 @@
         }
         .announcement-bar {
             transition: all 0.3s ease;
-            padding: 0.625rem 0.75rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 0.75rem;
             background: linear-gradient(135deg, #667eea15, #764ba215);
             border: 1px solid #667eea30;
@@ -2054,15 +2054,14 @@
                 : (ann.title || '제목 없음');
             
             container.innerHTML = `
-                <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-2 sm:gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center py-2 sm:py-3 px-3 sm:px-6" onclick="window.location.href='announcements.html'">
+                <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-1.5 sm:gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center py-1.5 sm:py-3 px-3 sm:px-6" onclick="window.location.href='announcements.html'">
                     <div class="flex items-center gap-1.5 sm:gap-2 justify-center w-full">
-                        <span class="text-lg sm:text-xl flex-shrink-0">${icon}</span>
+                        <span class="text-base sm:text-xl flex-shrink-0">${icon}</span>
                         <p class="text-xs sm:text-base text-gray-900 font-semibold line-clamp-1 sm:line-clamp-2 break-words leading-tight">${escapeHtml(title)}</p>
                     </div>
                     <div>
-                        <a href="announcements.html" class="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
+                        <a href="announcements.html" class="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-2.5 py-1 sm:px-4 sm:py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
                             <span>바로가기</span>
-                            <i class="fas fa-arrow-right text-xs sm:text-sm"></i>
                         </a>
                     </div>
                 </div>
@@ -2089,7 +2088,7 @@
     </script>
 
     <!-- 메인 콘텐츠 -->
-    <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
+    <main class="main-content-wrapper max-w-5xl mx-auto px-4 pt-3 pb-4 space-y-4 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
         <!-- 히어로 섹션 (문제 해결 중심 디자인 v2.8.13.6.22) -->
         <section class="hero-section gradient-soft-pink rounded-3xl p-6 sm:p-16 mb-4 sm:mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 1;">
             <div class="max-w-4xl mx-auto text-center">
@@ -2661,7 +2660,7 @@
     <script src="js/main.js?v=2.8.12" defer></script>
     <script src="js/auth.js?v=2.5.4" defer></script>
     <script src="js/regional-matching.js?v=2.5.4" defer></script>
-    <script src="js/announcement-sidebar.js?v=2.5.10" defer></script>
+    <!-- announcement-sidebar.js 제거 (v2.8.13.6.23 - 인라인 슬라이더로 대체) -->
     
     <script>
         // 🚀 모바일 성능 최적화 스크립트
@@ -3576,21 +3575,28 @@
         });
         
         // 야놀자 스타일: 상담 폼 표시/숨김
-        function showConsultationForm() {
+        function showConsultationForm(skipLoginCheck = false) {
             // v2.8.13: 바로 최종 폼으로 이동 (중간 단계 생략)
+            // v2.8.13.6.24: skipLoginCheck 파라미터 추가 (로그인 후 리다이렉트 시 사용)
             
-            // 로그인 확인
-            const user = JSON.parse(localStorage.getItem('user_data') || 'null');
-            const isLoggedIn = user && localStorage.getItem('session_token');
-            
-            if (!isLoggedIn) {
-                // 미로그인 시 authModal 표시
-                const authModal = document.getElementById('authModal');
-                if (authModal) {
-                    authModal.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
+            // 로그인 확인 (skipLoginCheck가 true면 건너뛰기)
+            if (!skipLoginCheck) {
+                const user = JSON.parse(
+                    localStorage.getItem('currentUser') || 
+                    localStorage.getItem('user_data') || 
+                    'null'
+                );
+                const isLoggedIn = user && localStorage.getItem('session_token');
+                
+                if (!isLoggedIn) {
+                    // 미로그인 시 authModal 표시
+                    const authModal = document.getElementById('authModal');
+                    if (authModal) {
+                        authModal.style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                    }
+                    return;
                 }
-                return;
             }
             
             // 로그인된 경우 바로 상세 폼 표시 (simpleForm 건너뛰기)
@@ -3616,21 +3622,28 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        function showPhoneForm() {
+        function showPhoneForm(skipLoginCheck = false) {
             console.log('📞 [전화상담] 버튼 클릭됨');
+            // v2.8.13.6.24: skipLoginCheck 파라미터 추가
             
-            // 로그인 확인 (currentUser 또는 user_data)
-            const user = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user_data') || 'null');
-            const isLoggedIn = user && user.email;
-            
-            if (!isLoggedIn) {
-                // 미로그인 시 authModal 표시
-                const authModal = document.getElementById('authModal');
-                if (authModal) {
-                    authModal.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
+            // 로그인 확인 (skipLoginCheck가 true면 건너뛰기)
+            if (!skipLoginCheck) {
+                const user = JSON.parse(
+                    localStorage.getItem('currentUser') || 
+                    localStorage.getItem('user_data') || 
+                    'null'
+                );
+                const isLoggedIn = user && user.email;
+                
+                if (!isLoggedIn) {
+                    // 미로그인 시 authModal 표시
+                    const authModal = document.getElementById('authModal');
+                    if (authModal) {
+                        authModal.style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                    }
+                    return;
                 }
-                return;
             }
             
             try {
@@ -3951,20 +3964,24 @@
         // 페이지 로드 후 실행
         document.addEventListener('DOMContentLoaded', function() {
             
-            // URL 파라미터 확인 (로그인/회원가입 후 리다이렉트)
+            // URL 파라미터 및 해시 확인 (로그인/회원가입 후 리다이렉트)
             const urlParams = new URLSearchParams(window.location.search);
             const action = urlParams.get('action');
+            const hash = window.location.hash.substring(1); // '#' 제거
             
-            if (action) {
+            // v2.8.13.6.24: 파라미터 또는 해시 둘 다 확인
+            if (action || hash) {
                 // URL 파라미터 제거 (히스토리에 남지 않도록)
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
                 // 약간의 딜레이 후 해당 액션 실행
                 setTimeout(() => {
-                    if (action === 'consultation') {
-                        showConsultationForm();
-                    } else if (action === 'phone') {
-                        showPhoneForm();
+                    if (action === 'consultation' || hash === 'consultation-form') {
+                        console.log('✅ [리다이렉트] 견적 신청 폼 표시 (로그인 체크 건너뛰기)');
+                        showConsultationForm(true); // 로그인 체크 건너뛰기
+                    } else if (action === 'phone' || hash === 'representative-shop') {
+                        console.log('✅ [리다이렉트] 전화 상담 폼 표시 (로그인 체크 건너뛰기)');
+                        showPhoneForm(true); // 로그인 체크 건너뛰기
                     }
                 }, 500);
             }
@@ -4300,7 +4317,12 @@
         
         // 견적 신청 버튼 처리
         function handleConsultationIntent() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            // v2.8.13.6.24: currentUser와 user_data 둘 다 체크 (로그인 상태 정확히 감지)
+            const user = JSON.parse(
+                localStorage.getItem('currentUser') || 
+                localStorage.getItem('user_data') || 
+                '{}'
+            );
             
             if (!user.email) {
                 // 비로그인 상태: 의도 저장 후 로그인 페이지로
@@ -4324,8 +4346,12 @@
         
         // 전화 상담 버튼 처리
         function handlePhoneIntent() {
-            // currentUser 또는 user_data에서 사용자 정보 가져오기
-            const user = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user_data') || '{}');
+            // v2.8.13.6.24: currentUser 또는 user_data에서 사용자 정보 가져오기
+            const user = JSON.parse(
+                localStorage.getItem('currentUser') || 
+                localStorage.getItem('user_data') || 
+                '{}'
+            );
             
             if (!user.email) {
                 // 비로그인 상태: 의도 저장 후 로그인 페이지로
@@ -4367,16 +4393,8 @@
         
         // 페이지 로드 시 의도 처리 (로그인 후 복귀)
         document.addEventListener('DOMContentLoaded', function() {
-            // URL 파라미터 체크 (auth.js에서 리다이렉트한 경우)
-            const urlParams = new URLSearchParams(window.location.search);
-            const action = urlParams.get('action');
-            const hash = window.location.hash.substring(1);
-            
-            if (action === 'consultation' || hash === 'consultation-form') {
-                setTimeout(() => scrollToConsultationForm(), 500);
-            } else if (action === 'phone' || hash === 'representative-shop') {
-                setTimeout(() => scrollToRepresentativeShop(), 500);
-            }
+            // v2.8.13.6.24: 중복 코드 제거 (위의 DOMContentLoaded에서 이미 처리함)
+            // URL 파라미터/해시 처리는 3952번 줄의 DOMContentLoaded에서 통합 처리
             
             // 로그인 버튼 onclick 이벤트 수정
             const loginButtons = document.querySelectorAll('[onclick*="login.html"]');
