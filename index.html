@@ -1896,10 +1896,10 @@
         }
     </style>
 
-    <!-- 샵 공지사항 (슬라이드 형태 중앙 정렬 v2.8.13.6.23) -->
+    <!-- 샵 공지사항 (모바일: 4줄 텍스트 / 데스크탑: 슬라이드 v2.8.13.6.25) -->
     <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3 overflow-hidden">
         <div class="max-w-5xl mx-auto px-3 sm:px-4">
-            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: 48px;">
+            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: auto;">
                 <!-- 로딩 중 -->
                 <p class="text-xs sm:text-sm text-gray-600">
                     <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중...
@@ -1998,8 +1998,9 @@
                 // 첫 번째 슬라이드 표시
                 showSlide(0);
                 
-                // 자동 슬라이드 시작 (4초마다)
-                if (announcementSlides.length > 1) {
+                // 자동 슬라이드 시작 (데스크탑만, 4초마다)
+                const isMobile = window.innerWidth < 640;
+                if (!isMobile && announcementSlides.length > 1) {
                     slideInterval = setInterval(() => {
                         currentSlideIndex = (currentSlideIndex + 1) % announcementSlides.length;
                         showSlide(currentSlideIndex);
@@ -2031,7 +2032,9 @@
                 
                 showSlide(0);
                 
-                if (announcementSlides.length > 1) {
+                // 자동 슬라이드 시작 (데스크탑만, 4초마다)
+                const isMobile = window.innerWidth < 640;
+                if (!isMobile && announcementSlides.length > 1) {
                     slideInterval = setInterval(() => {
                         currentSlideIndex = (currentSlideIndex + 1) % announcementSlides.length;
                         showSlide(currentSlideIndex);
@@ -2042,30 +2045,61 @@
         
         function showSlide(index) {
             const container = document.getElementById('announcements-slider');
-            const ann = announcementSlides[index];
-            
-            const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
-            
-            // 모바일/데스크탑별 제목 길이 조정
             const isMobile = window.innerWidth < 640;
-            const maxLength = isMobile ? 35 : 80;
-            const title = (ann.title || '제목 없음').length > maxLength 
-                ? (ann.title || '제목 없음').substring(0, maxLength) + '...' 
-                : (ann.title || '제목 없음');
             
-            container.innerHTML = `
-                <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-1.5 sm:gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center py-1.5 sm:py-3 px-3 sm:px-6" onclick="window.location.href='announcements.html'">
-                    <div class="flex items-center gap-1.5 sm:gap-2 justify-center w-full">
-                        <span class="text-base sm:text-xl flex-shrink-0">${icon}</span>
-                        <p class="text-xs sm:text-base text-gray-900 font-semibold line-clamp-1 sm:line-clamp-2 break-words leading-tight">${escapeHtml(title)}</p>
+            // v2.8.13.6.25: 모바일은 4줄 텍스트, 데스크탑은 슬라이드
+            if (isMobile) {
+                // 모바일: 4개 공지를 세로로 나열
+                const items = announcementSlides.slice(0, 4).map(ann => {
+                    const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
+                    const maxLength = 35;
+                    const title = (ann.title || '제목 없음').length > maxLength 
+                        ? (ann.title || '제목 없음').substring(0, maxLength) + '...' 
+                        : (ann.title || '제목 없음');
+                    
+                    return `
+                        <div class="flex items-center gap-1.5 py-1 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'">
+                            <span class="text-sm flex-shrink-0">${icon}</span>
+                            <p class="text-xs text-gray-900 font-medium truncate leading-tight">${escapeHtml(title)}</p>
+                        </div>
+                    `;
+                }).join('');
+                
+                container.innerHTML = `
+                    <div class="w-full max-w-4xl mx-auto">
+                        <div class="flex flex-col gap-0.5">
+                            ${items}
+                        </div>
+                        <div class="text-center mt-2">
+                            <a href="announcements.html" class="inline-flex items-center text-xs font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-3 py-1 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all">
+                                <span>전체보기</span>
+                            </a>
+                        </div>
                     </div>
-                    <div>
-                        <a href="announcements.html" class="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-2.5 py-1 sm:px-4 sm:py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
-                            <span>바로가기</span>
-                        </a>
+                `;
+            } else {
+                // 데스크탑: 슬라이드 (기존 방식)
+                const ann = announcementSlides[index];
+                const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
+                const maxLength = 80;
+                const title = (ann.title || '제목 없음').length > maxLength 
+                    ? (ann.title || '제목 없음').substring(0, maxLength) + '...' 
+                    : (ann.title || '제목 없음');
+                
+                container.innerHTML = `
+                    <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center py-3 px-6" onclick="window.location.href='announcements.html'">
+                        <div class="flex items-center gap-2 justify-center w-full">
+                            <span class="text-xl flex-shrink-0">${icon}</span>
+                            <p class="text-base text-gray-900 font-semibold line-clamp-2 break-words leading-tight">${escapeHtml(title)}</p>
+                        </div>
+                        <div>
+                            <a href="announcements.html" class="inline-flex items-center gap-1.5 text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-4 py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
+                                <span>바로가기</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
         
         function escapeHtml(text) {
@@ -2084,6 +2118,41 @@
         // 페이지 언로드 시 인터벌 정리
         window.addEventListener('beforeunload', () => {
             if (slideInterval) clearInterval(slideInterval);
+        });
+        
+        // 윈도우 리사이즈 시 재렌더링 (모바일 ↔ 데스크탑 전환)
+        let resizeTimer;
+        let lastScreenSize = window.innerWidth < 640 ? 'mobile' : 'desktop';
+        
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                const currentScreenSize = window.innerWidth < 640 ? 'mobile' : 'desktop';
+                
+                // 모바일 ↔ 데스크탑 전환 시에만 재렌더링
+                if (lastScreenSize !== currentScreenSize && announcementSlides.length > 0) {
+                    console.log(`[공지사항 슬라이더] 화면 전환: ${lastScreenSize} → ${currentScreenSize}`);
+                    lastScreenSize = currentScreenSize;
+                    
+                    // 기존 인터벌 정리
+                    if (slideInterval) {
+                        clearInterval(slideInterval);
+                        slideInterval = null;
+                    }
+                    
+                    // 재렌더링
+                    currentSlideIndex = 0;
+                    showSlide(0);
+                    
+                    // 데스크탑이면 슬라이드 시작
+                    if (currentScreenSize === 'desktop' && announcementSlides.length > 1) {
+                        slideInterval = setInterval(() => {
+                            currentSlideIndex = (currentSlideIndex + 1) % announcementSlides.length;
+                            showSlide(currentSlideIndex);
+                        }, 4000);
+                    }
+                }
+            }, 300); // 300ms 디바운스
         });
     </script>
 
