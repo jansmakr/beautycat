@@ -1898,11 +1898,11 @@
         }
     </style>
 
-    <!-- 공지사항 (모바일/데스크탑: 5줄 목록 v2.8.13.6.43 - 완전 밀착) -->
-    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-1 sm:py-2" data-version="2.8.13.6.43" style="min-height: 100px;">
+    <!-- 공지사항 (모바일/데스크탑: 5줄 목록 v2.8.13.6.44 - 줄간격 0) -->
+    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-1 sm:py-2" data-version="2.8.13.6.44" style="min-height: 80px;">
         <div class="max-w-5xl mx-auto px-3 sm:px-4">
-            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.43" style="min-height: 80px;">
-                <!-- 로딩 중 v2.8.13.6.43 -->
+            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.44" style="min-height: 70px;">
+                <!-- 로딩 중 v2.8.13.6.44 -->
                 <p class="text-xs sm:text-sm text-gray-600 text-center">
                     <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.39)
                 </p>
@@ -1945,8 +1945,8 @@
     </style>
     
     <script>
-        // 🔥 v2.8.13.6.43: 헤더 여백도 0으로
-        const ANNOUNCEMENT_VERSION = '2.8.13.6.43';
+        // 🔥 v2.8.13.6.44: line-height 1 + padding/margin 0
+        const ANNOUNCEMENT_VERSION = '2.8.13.6.44';
         console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(1번: 운영자, 2~3번: 샵 최신 2개)');
         
         let announcementSlides = [];
@@ -2095,16 +2095,16 @@
                         : rawTitle;
                     
                     return `
-                        <div class="flex items-start gap-2 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'" style="width: 100%; padding: 2px 0;">
-                            <span class="flex-shrink-0 text-gray-700" style="font-size: 13px; font-weight: 500;">${index + 1}.</span>
-                            <span class="flex-shrink-0" style="font-size: 13px;">${icon}</span>
-                            <p class="text-xs text-gray-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis" style="flex: 1; line-height: 1.4;">${escapeHtml(title)}</p>
+                        <div class="flex items-start gap-2 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'" style="width: 100%; padding: 0; margin: 0;">
+                            <span class="flex-shrink-0 text-gray-700" style="font-size: 13px; font-weight: 500; line-height: 1;">${index + 1}.</span>
+                            <span class="flex-shrink-0" style="font-size: 13px; line-height: 1;">${icon}</span>
+                            <p class="text-xs text-gray-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis" style="flex: 1; line-height: 1; margin: 0; padding: 0;">${escapeHtml(title)}</p>
                         </div>
                     `;
                 }).join('');
                 
                 container.innerHTML = `
-                    <div class="w-full px-3" data-version="v2.8.13.6.43" data-type="mobile">
+                    <div class="w-full px-3" data-version="v2.8.13.6.44" data-type="mobile">
                         <div style="margin-bottom: 0;">
                             <p class="text-xs font-bold text-gray-700" style="margin-bottom: 0;">공지 내용: <a href="announcements.html" class="text-blue-600 hover:text-blue-800 underline">자세히 보기</a></p>
                         </div>
@@ -2125,16 +2125,16 @@
                         : rawTitle;
                     
                     return `
-                        <div class="flex items-start gap-2 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'" style="width: 100%; max-width: 600px; padding: 2px 0;">
-                            <span class="flex-shrink-0 text-gray-700" style="font-size: 14px; font-weight: 500;">${index + 1}.</span>
-                            <span class="flex-shrink-0" style="font-size: 15px;">${icon}</span>
-                            <p class="text-sm text-gray-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis" style="flex: 1; line-height: 1.5;">${escapeHtml(title)}</p>
+                        <div class="flex items-start gap-2 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'" style="width: 100%; max-width: 600px; padding: 0; margin: 0;">
+                            <span class="flex-shrink-0 text-gray-700" style="font-size: 14px; font-weight: 500; line-height: 1;">${index + 1}.</span>
+                            <span class="flex-shrink-0" style="font-size: 15px; line-height: 1;">${icon}</span>
+                            <p class="text-sm text-gray-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis" style="flex: 1; line-height: 1; margin: 0; padding: 0;">${escapeHtml(title)}</p>
                         </div>
                     `;
                 }).join('');
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-3xl mx-auto text-center" data-version="v2.8.13.6.43" data-type="desktop" style="min-height: 100px;">
+                    <div class="w-full max-w-3xl mx-auto text-center" data-version="v2.8.13.6.44" data-type="desktop" style="min-height: 80px;">
                         <div style="margin-bottom: 0;">
                             <p class="text-sm font-bold text-gray-700" style="margin-bottom: 0;">공지 내용: <a href="announcements.html" class="text-blue-600 hover:text-blue-800 underline">자세히 보기</a></p>
                         </div>
