@@ -21,7 +21,7 @@ async function loadAnnouncements(updateTable = true) {
                 id: 'ann_001',
                 title: '서비스 오픈 안내',
                 content: 'BeautyCat 피부관리 플랫폼이 정식으로 오픈하였습니다!',
-                priority: 'important',
+                priority: 'high',  // v2.8.13.6.30: important → high (DB constraint)
                 target_audience: 'all',
                 is_pinned: true,
                 is_published: true,
@@ -65,7 +65,8 @@ function displayAnnouncements(announcements) {
     
     const priorityLabels = {
         'urgent': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">긴급</span>',
-        'important': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">중요</span>',
+        'high': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">높음</span>',  // v2.8.13.6.30: important → high
+        'medium': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">중간</span>',  // v2.8.13.6.30: DB constraint 준수
         'normal': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">일반</span>',
         'low': '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">낮음</span>'
     };

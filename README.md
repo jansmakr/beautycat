@@ -5,7 +5,7 @@
 BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 연결하는 AI 기반 매칭 플랫폼입니다.
 
 - **프로젝트 URL**: https://beautycat.kr
-- **현재 버전**: v2.8.13.6.29
+- **현재 버전**: v2.8.13.6.31
 - **마지막 업데이트**: 2025-12-18
 - **상태**: 🟢 프로덕션 운영 중
 
@@ -37,7 +37,104 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
 
 ---
 
-## 🚀 최근 업데이트 (v2.8.13.6.29)
+## 🚀 최근 업데이트 (v2.8.13.6.31)
+
+### 2025-12-18 공지사항 priority 수정 - DB constraint 준수 (v2.8.13.6.31) 🔧
+**"500 에러 해결: priority 값 DB 스키마 맞춤" ✅**:
+
+1. **문제 상황** 🚨:
+   - 에러: `D1_ERROR: CHECK constraint failed: priority IN ('low', 'medium', 'high', 'urgent')`
+   - 원인: 코드에서 `priority: 'important'` 사용, DB는 `low/medium/high/urgent`만 허용
+   - 영향: 공지사항 저장/수정 시 500 에러
+
+2. **priority 값 수정** ✂️:
+   ```javascript
+   // 이전
+   priority: 'important'  // ❌ DB constraint 위반
+   
+   // 개선 (v2.8.13.6.31)
+   priority: 'high'       // ✅ DB constraint 준수
+   ```
+
+3. **변경 위치** 📝:
+   - `index.html`: 더미 데이터 2개소 (1981, 2022 라인)
+   - `js/announcements.js`: 더미 데이터 1개소 (24 라인)
+   - `js/announcements.js`: priority 라벨 추가 (68-69 라인)
+
+4. **priority 라벨 업데이트** 🏷️:
+   ```javascript
+   const priorityLabels = {
+       'urgent': '긴급',    // 빨강
+       'high': '높음',      // 주황 (이전: important → 중요)
+       'medium': '중간',    // 노랑 (새로 추가)
+       'normal': '일반',    // 파랑
+       'low': '낮음'        // 회색
+   };
+   ```
+
+**최종 결과**:
+- ✅ 공지사항 저장/수정 500 에러 해결
+- ✅ DB constraint 완전 준수
+- ✅ priority 4단계: urgent/high/medium/low
+
+**변경 파일**: `index.html`, `js/announcements.js`, `README.md`
+
+**DB 스키마 (Cloudflare D1)**:
+```sql
+priority TEXT CHECK(priority IN ('low', 'medium', 'high', 'urgent'))
+```
+
+---
+
+### 2025-12-18 모바일 로고 & 캐시 버스팅 - 공지사항 확실히 적용 (v2.8.13.6.30) 🎯
+**"브라우저 캐시 문제 해결 + 모바일 로고 강화" ✅**:
+
+1. **문제 상황** 🚨:
+   - 사용자 보고: "공지사항이 여전히 가로로 나열"
+   - 추가 요청: "모바일 좌측 상단에 로고 추가"
+   - 원인: 브라우저 캐시로 이전 버전 JS 실행 + 로고 크기 너무 작음
+
+2. **캐시 버스팅 추가** 🔄:
+   ```javascript
+   // 이전
+   fetch('tables/announcements?limit=10&sort=-created_at')
+   
+   // 개선 (v2.8.13.6.30)
+   fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now())
+   ```
+
+3. **모바일 로고 크기 증가** 📱:
+   ```css
+   /* 이전 */
+   .mobile-logo-text { height: 30px !important; }
+   
+   /* 개선 (v2.8.13.6.30) */
+   .mobile-logo-text {
+       height: 40px !important;
+       display: block !important;
+       visibility: visible !important;
+   }
+   ```
+
+4. **버전 로그 강화** 📊:
+   - `[공지사항 v2.8.13.6.30]` 로그로 버전 확인 가능
+   - 콘솔에서 "4줄 텍스트" 명시
+
+**최종 결과**:
+- ✅ 브라우저 캐시 무시 (타임스탬프 추가)
+- ✅ 모바일 로고 40px (이전: 30px, 33% 증가)
+- ✅ 로고 강제 표시 (display/visibility)
+- ✅ 버전 확인 가능 (console.log)
+
+**변경 파일**: `index.html`, `README.md`
+
+**테스트**:
+1. **Ctrl+Shift+R** (강력 새로고침)
+2. F12 → Console → `[공지사항 v2.8.13.6.30]` 확인
+3. 모바일 좌측 상단 로고 40px 확인
+4. 공지사항 4줄 세로 배치 확인
+
+---
 
 ### 2025-12-18 공지사항 DB 에러 해결 - views 필드 제거 (v2.8.13.6.29) 🔧
 **"500 에러 근본 해결: views 컬럼 없음 문제" ✅**:

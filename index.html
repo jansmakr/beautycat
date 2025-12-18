@@ -1281,7 +1281,9 @@
             }
             
             .mobile-logo-text {
-                height: 30px !important;
+                height: 40px !important;
+                display: block !important;
+                visibility: visible !important;
             }
             
             /* 모바일 인증 버튼 최적화 */
@@ -1896,7 +1898,7 @@
         }
     </style>
 
-    <!-- 샵 공지사항 (모바일: 4줄 텍스트 / 데스크탑: 슬라이드 v2.8.13.6.27) -->
+    <!-- 샵 공지사항 (모바일/데스크탑: 4줄 텍스트 v2.8.13.6.30) -->
     <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3">
         <div class="max-w-5xl mx-auto px-3 sm:px-4">
             <div id="announcements-slider" class="w-full">
@@ -1947,13 +1949,13 @@
         let currentSlideIndex = 0;
         let slideInterval = null;
         
-        // 공지사항 최신 4개 로드 및 슬라이드 표시
+        // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.30)
         async function loadAnnouncementSlider() {
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항 슬라이더] API 호출 시작...');
-                const response = await fetch('tables/announcements?limit=10&sort=-created_at');
+                console.log('[공지사항] v2.8.13.6.30 - 4줄 텍스트 표시');
+                const response = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
@@ -1969,14 +1971,14 @@
                     return isPublished && isTargetCustomer;
                 }).slice(0, 4); // 최신 4개
                 
-                console.log('[공지사항 슬라이더] 로드된 공지:', announcementSlides.length, announcementSlides);
+                console.log('[공지사항 v2.8.13.6.30] 로드된 공지:', announcementSlides.length, announcementSlides);
                 
                 // v2.8.13.6.26: API 데이터가 4개 미만이면 더미 데이터로 채우기
                 const dummyAnnouncements = [
                     {
                         title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
                         is_pinned: true,
-                        priority: 'important'
+                        priority: 'high'  // v2.8.13.6.30: important → high (DB constraint)
                     },
                     {
                         title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
@@ -2005,7 +2007,7 @@
                     announcementSlides = dummyAnnouncements;
                 }
                 
-                console.log('[공지사항 슬라이더] 최종 표시:', announcementSlides.length, '개', announcementSlides);
+                console.log('[공지사항 v2.8.13.6.30] 최종 표시:', announcementSlides.length, '개 (모바일/데스크탑 4줄 텍스트)', announcementSlides);
                 
                 // v2.8.13.6.28: 모바일/데스크탑 모두 4줄 텍스트 표시 (슬라이드 제거)
                 showSlide(0);
@@ -2017,7 +2019,7 @@
                     {
                         title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
                         is_pinned: true,
-                        priority: 'important'
+                        priority: 'high'  // v2.8.13.6.30: important → high (DB constraint)
                     },
                     {
                         title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
@@ -2044,7 +2046,7 @@
             const container = document.getElementById('announcements-slider');
             const isMobile = window.innerWidth < 640;
             
-            // v2.8.13.6.27: 모바일은 4줄 텍스트, 데스크탑은 슬라이드
+            // v2.8.13.6.30: 모바일/데스크탑 모두 4줄 텍스트 (슬라이드 제거)
             if (isMobile) {
                 // 모바일: 4개 공지를 세로로 나열 (한 줄에 표시 가능한 글자만, 끝에 ~ 추가)
                 const items = announcementSlides.slice(0, 4).map(ann => {
