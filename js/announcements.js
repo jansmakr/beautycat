@@ -26,8 +26,8 @@ async function loadAnnouncements(updateTable = true) {
                 is_pinned: true,
                 is_published: true,
                 publish_date: '2024-11-16T00:00:00Z',
-                created_at: '2024-11-16T00:00:00Z',
-                views: 125
+                created_at: '2024-11-16T00:00:00Z'
+                // views 필드 제거 (v2.8.13.6.28)
             },
             {
                 id: 'ann_002',
@@ -38,8 +38,8 @@ async function loadAnnouncements(updateTable = true) {
                 is_pinned: true,
                 is_published: true,
                 publish_date: '2024-11-16T00:00:00Z',
-                created_at: '2024-11-16T00:00:00Z',
-                views: 89
+                created_at: '2024-11-16T00:00:00Z'
+                // views 필드 제거 (v2.8.13.6.28)
             }
         ];
         
@@ -59,7 +59,7 @@ function displayAnnouncements(announcements) {
     }
     
     if (announcements.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 공지사항이 없습니다.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">등록된 공지사항이 없습니다.</td></tr>';
         return;
     }
     
@@ -118,9 +118,7 @@ function displayAnnouncements(announcements) {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     ${formatDate(ann.created_at)}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ${ann.views || 0}회
-                </td>
+                <!-- 조회수 컬럼 제거 (v2.8.13.6.28): DB 컬럼 없음 -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onclick="viewAnnouncement('${ann.id}')" class="text-blue-600 hover:text-blue-900 mr-2">
                         <i class="fas fa-eye"></i>
@@ -227,8 +225,8 @@ async function saveAnnouncement() {
         is_pinned: pinned,
         is_published: published,
         publish_date: publishDate ? new Date(publishDate).toISOString() : new Date().toISOString(),
-        expire_date: expireDate ? new Date(expireDate).toISOString() : null,
-        views: id ? currentAdminAnnouncement?.views || 0 : 0
+        expire_date: expireDate ? new Date(expireDate).toISOString() : null
+        // views 필드 제거 (v2.8.13.6.28): DB 컬럼 없음
     };
     
     try {
@@ -272,7 +270,7 @@ function viewAnnouncement(announcementId) {
         return;
     }
     
-    alert(`제목: ${announcement.title}\n\n내용:\n${announcement.content}\n\n우선순위: ${announcement.priority}\n대상: ${announcement.target_audience}\n조회수: ${announcement.views || 0}회`);
+    alert(`제목: ${announcement.title}\n\n내용:\n${announcement.content}\n\n우선순위: ${announcement.priority}\n대상: ${announcement.target_audience}`);
 }
 
 // 공지사항 수정
