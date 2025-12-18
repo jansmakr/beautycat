@@ -1897,11 +1897,11 @@
     </style>
 
     <!-- 샵 공지사항 (슬라이드 형태 중앙 정렬 v2.8.13.6.22) -->
-    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-3 overflow-hidden">
-        <div class="max-w-5xl mx-auto px-4">
-            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: 40px;">
+    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-2 sm:py-3 overflow-hidden">
+        <div class="max-w-5xl mx-auto px-3 sm:px-4">
+            <div id="announcements-slider" class="flex items-center justify-center" style="min-height: 60px;">
                 <!-- 로딩 중 -->
-                <p class="text-sm text-gray-600">
+                <p class="text-xs sm:text-sm text-gray-600">
                     <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중...
                 </p>
             </div>
@@ -1924,10 +1924,15 @@
         }
         .announcement-bar {
             transition: all 0.3s ease;
-            padding: 0.75rem 1rem;
+            padding: 0.625rem 0.75rem;
             border-radius: 0.75rem;
             background: linear-gradient(135deg, #667eea15, #764ba215);
             border: 1px solid #667eea30;
+        }
+        @media (min-width: 640px) {
+            .announcement-bar {
+                padding: 0.75rem 1rem;
+            }
         }
         .announcement-bar:hover {
             background: linear-gradient(135deg, #667eea25, #764ba225);
@@ -2040,20 +2045,24 @@
             const ann = announcementSlides[index];
             
             const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
-            const title = (ann.title || '제목 없음').length > 80 
-                ? (ann.title || '제목 없음').substring(0, 80) + '...' 
+            
+            // 모바일/데스크탑별 제목 길이 조정
+            const isMobile = window.innerWidth < 640;
+            const maxLength = isMobile ? 35 : 80;
+            const title = (ann.title || '제목 없음').length > maxLength 
+                ? (ann.title || '제목 없음').substring(0, maxLength) + '...' 
                 : (ann.title || '제목 없음');
             
             container.innerHTML = `
-                <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center" onclick="window.location.href='announcements.html'">
-                    <div class="flex items-center gap-3 justify-center">
-                        <span class="text-xl">${icon}</span>
-                        <p class="text-sm sm:text-base text-gray-900 font-semibold">${escapeHtml(title)}</p>
+                <div class="announcement-slide announcement-bar flex flex-col items-center justify-center gap-2 sm:gap-3 w-full max-w-4xl mx-auto cursor-pointer text-center py-2 sm:py-3 px-3 sm:px-6" onclick="window.location.href='announcements.html'">
+                    <div class="flex items-center gap-1.5 sm:gap-2 justify-center w-full">
+                        <span class="text-lg sm:text-xl flex-shrink-0">${icon}</span>
+                        <p class="text-xs sm:text-base text-gray-900 font-semibold line-clamp-1 sm:line-clamp-2 break-words leading-tight">${escapeHtml(title)}</p>
                     </div>
                     <div>
-                        <a href="announcements.html" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-4 py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
+                        <a href="announcements.html" class="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-bold text-gray-900 bg-gradient-to-r from-yellow-300 to-orange-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:from-yellow-400 hover:to-orange-400 hover:shadow-lg transition-all whitespace-nowrap" onclick="event.stopPropagation()">
                             <span>바로가기</span>
-                            <i class="fas fa-arrow-right text-xs"></i>
+                            <i class="fas fa-arrow-right text-xs sm:text-sm"></i>
                         </a>
                     </div>
                 </div>
@@ -2082,47 +2091,48 @@
     <!-- 메인 콘텐츠 -->
     <main class="main-content-wrapper max-w-5xl mx-auto px-4 py-4 space-y-5 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
         <!-- 히어로 섹션 (문제 해결 중심 디자인 v2.8.13.6.22) -->
-        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-16 mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 2;">
+        <section class="hero-section gradient-soft-pink rounded-3xl p-6 sm:p-16 mb-4 sm:mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 1;">
             <div class="max-w-4xl mx-auto text-center">
                 <!-- 메인 카피 (큰 글씨) -->
-                <h1 class="text-4xl sm:text-6xl font-black text-gray-900 mb-6" style="letter-spacing: -0.03em; line-height: 1.2;">
-                    <span class="block mb-2">나에게 딱 맞는</span>
+                <h1 class="text-3xl sm:text-6xl font-black text-gray-900 mb-4 sm:mb-6" style="letter-spacing: -0.03em; line-height: 1.3;">
+                    <span class="block mb-1 sm:mb-2">나에게 딱 맞는</span>
                     <span class="block" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
                         샵은 어디?
                     </span>
                 </h1>
                 
                 <!-- 서브 카피 (중간 글씨) -->
-                <p class="text-lg sm:text-2xl text-gray-700 mb-4 font-bold leading-relaxed" style="letter-spacing: -0.01em;">
-                    동네 전문가들의 <span style="color: #667eea;">맞춤 견적</span>을 한눈에!
+                <p class="text-base sm:text-2xl text-gray-700 mb-3 sm:mb-4 font-bold leading-snug" style="letter-spacing: -0.01em;">
+                    동네 전문가들의<br class="sm:hidden">
+                    <span style="color: #667eea;">맞춤 견적</span>을 한눈에!
                 </p>
                 
-                <p class="text-sm sm:text-base text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-                    실패 없는 피부관리의 시작,<br class="sm:hidden">
-                    뷰티켓이 검증한 <strong>뷰티샵</strong>을 만나는<br class="sm:hidden">
+                <p class="text-xs sm:text-base text-gray-600 mb-5 sm:mb-8 leading-relaxed max-w-2xl mx-auto">
+                    실패 없는 피부관리의 시작,<br>
+                    뷰티켓이 검증한 <strong>뷰티샵</strong>을<br class="sm:hidden"> 만나는<br class="hidden sm:block">
                     가장 확실한 티켓을 확인하세요.
                 </p>
                 
                 <!-- 신뢰 배지 (3개) -->
-                <div class="flex items-center justify-center gap-3 flex-wrap">
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md">
-                        <span class="text-xl">✨</span>
-                        <span class="text-xs font-bold text-gray-700">검증된 업체</span>
+                <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+                    <div class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white shadow-md">
+                        <span class="text-lg sm:text-xl">✨</span>
+                        <span class="text-xs font-bold text-gray-700 whitespace-nowrap">검증된 업체</span>
                     </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md">
-                        <span class="text-xl">⚡</span>
-                        <span class="text-xs font-bold text-gray-700">빠른 매칭</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white shadow-md">
+                        <span class="text-lg sm:text-xl">⚡</span>
+                        <span class="text-xs font-bold text-gray-700 whitespace-nowrap">빠른 매칭</span>
                     </div>
-                    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md">
-                        <span class="text-xl">💯</span>
-                        <span class="text-xs font-bold text-gray-700">무료 상담</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white shadow-md">
+                        <span class="text-lg sm:text-xl">💯</span>
+                        <span class="text-xs font-bold text-gray-700 whitespace-nowrap">무료 상담</span>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- CTA 버튼 섹션 (옵션 A: 2개 나란히 배치, 동일 크기 v2.8.13.6.22) -->
-        <section class="cta-buttons-section consultation-options-section mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 1; /* 모바일: 1순위 */">
+        <section class="cta-buttons-section consultation-options-section mb-8 sm:mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 2;">
             <div class="text-center mb-6">
             
             <!-- 2개 버튼 그리드 (옵션 A: 동일 크기) -->
@@ -2131,31 +2141,31 @@
                 <button 
                      onclick="handleConsultationIntent() && showConsultationForm()"
                      class="cta-button-primary group" 
-                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px; padding: 2.5rem 2rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 30px rgba(102, 126, 234, 0.35); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 16px; padding: 1.5rem 1.25rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
                     
                     <!-- 배경 그라데이션 효과 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
                     
                     <!-- 아이콘 -->
-                    <div style="position: relative; z-index: 1; margin-bottom: 1.5rem;">
-                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
-                            <i class="fas fa-clipboard-list text-5xl text-white"></i>
+                    <div style="position: relative; z-index: 1; margin-bottom: 0.75rem;">
+                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,0.12);">
+                            <i class="fas fa-clipboard-list text-3xl text-white"></i>
                         </div>
                     </div>
                     
                     <!-- 텍스트 -->
                     <div style="position: relative; z-index: 1; color: white;">
-                        <h3 class="text-2xl sm:text-3xl font-black mb-2" style="letter-spacing: -0.02em;">
+                        <h3 class="text-base sm:text-3xl font-black mb-1 sm:mb-2 leading-tight" style="letter-spacing: -0.02em;">
                             우리 동네 1등 샵<br>견적 비교하기
                         </h3>
-                        <p class="text-sm opacity-90 font-medium">
-                            여러 뷰티샵 견적을 한번에 비교
+                        <p class="text-xs sm:text-sm opacity-90 font-medium leading-snug">
+                            여러 뷰티샵 견적을<br class="sm:hidden"> 한번에 비교
                         </p>
                     </div>
                     
                     <!-- 화살표 -->
-                    <div style="position: relative; z-index: 1; margin-top: 1rem;">
-                        <i class="fas fa-arrow-right text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
+                    <div style="position: relative; z-index: 1; margin-top: 0.5rem;">
+                        <i class="fas fa-arrow-right text-base sm:text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
                     </div>
                 </button>
                 
@@ -2163,40 +2173,51 @@
                 <button 
                      onclick="handlePhoneIntent() && showPhoneForm()"
                      class="cta-button-secondary group" 
-                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 20px; padding: 2.5rem 2rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 30px rgba(245, 87, 108, 0.35); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 16px; padding: 1.5rem 1.25rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 6px 20px rgba(245, 87, 108, 0.3); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
                     
                     <!-- 배경 그라데이션 효과 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
                     
                     <!-- 아이콘 -->
-                    <div style="position: relative; z-index: 1; margin-bottom: 1.5rem;">
-                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
-                            <i class="fas fa-phone-alt text-5xl text-white"></i>
+                    <div style="position: relative; z-index: 1; margin-bottom: 0.75rem;">
+                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,0.12);">
+                            <i class="fas fa-phone-alt text-3xl text-white"></i>
                         </div>
                     </div>
                     
                     <!-- 텍스트 -->
                     <div style="position: relative; z-index: 1; color: white;">
-                        <h3 class="text-2xl sm:text-3xl font-black mb-2" style="letter-spacing: -0.02em;">
+                        <h3 class="text-base sm:text-3xl font-black mb-1 sm:mb-2 leading-tight" style="letter-spacing: -0.02em;">
                             지금 바로<br>지역별 대표샵과 상담
                         </h3>
-                        <p class="text-sm opacity-90 font-medium">
-                            지역 대표샵과 바로 전화 연결
+                        <p class="text-xs sm:text-sm opacity-90 font-medium leading-snug">
+                            지역 대표샵과<br class="sm:hidden"> 바로 전화 연결
                         </p>
                     </div>
                     
                     <!-- 화살표 -->
-                    <div style="position: relative; z-index: 1; margin-top: 1rem;">
-                        <i class="fas fa-arrow-right text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
+                    <div style="position: relative; z-index: 1; margin-top: 0.5rem;">
+                        <i class="fas fa-arrow-right text-base sm:text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
                     </div>
                 </button>
             </div>
             
             <style>
-                .cta-button-primary:hover,
-                .cta-button-secondary:hover {
-                    transform: translateY(-8px) scale(1.02) !important;
-                    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
+                /* 데스크탑 호버 효과 */
+                @media (min-width: 768px) {
+                    .cta-button-primary:hover,
+                    .cta-button-secondary:hover {
+                        transform: translateY(-8px) scale(1.02) !important;
+                        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25) !important;
+                    }
+                }
+                /* 모바일 호버 효과 */
+                @media (max-width: 767px) {
+                    .cta-button-primary:hover,
+                    .cta-button-secondary:hover {
+                        transform: translateY(-4px) scale(1.01) !important;
+                        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+                    }
                 }
                 
                 .cta-button-primary:active,
