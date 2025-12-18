@@ -1953,29 +1953,46 @@
         let currentSlideIndex = 0;
         let slideInterval = null;
         
-        // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.32 - CACHE FIX)
+        // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.36 - 운영자+샵 공지 통합)
         async function loadAnnouncementSlider() {
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항] v2.8.13.6.35 - 4줄 텍스트 표시');
-                const response = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
+                console.log('[공지사항] v2.8.13.6.36 - 운영자+샵 공지 통합 표시');
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
+                // 1. 운영자 공지 로드
+                const response1 = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
+                const data1 = response1.ok ? await response1.json() : { data: [] };
+                const adminAnnouncements = data1.data || [];
                 
-                const data = await response.json();
-                const allAnnouncements = data.data || [];
+                // 2. 샵 공지 로드
+                const response2 = await fetch('tables/shop_announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
+                const data2 = response2.ok ? await response2.json() : { data: [] };
+                const shopAnnouncements = data2.data || [];
                 
-                // 게시중이고 고객/전체 대상 공지만 필터링
-                announcementSlides = allAnnouncements.filter(ann => {
+                console.log('[공지사항 v2.8.13.6.36] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
+                
+                // 3. 두 테이블 합치기
+                const allAnnouncements = [...adminAnnouncements, ...shopAnnouncements];
+                
+                // 4. 게시중이고 고객/전체 대상 공지만 필터링
+                const filteredAnnouncements = allAnnouncements.filter(ann => {
                     const isPublished = ann.is_published === true || ann.is_published === 1;
                     const isTargetCustomer = ann.target_audience === 'customers' || ann.target_audience === 'all';
                     return isPublished && isTargetCustomer;
-                }).slice(0, 4); // 최신 4개
+                });
                 
-                console.log('[공지사항 v2.8.13.6.35] 로드된 공지:', announcementSlides.length, announcementSlides);
+                // 5. 날짜순 정렬 (최신순)
+                filteredAnnouncements.sort((a, b) => {
+                    const timeA = a.created_at || 0;
+                    const timeB = b.created_at || 0;
+                    return timeB - timeA; // 내림차순 (최신이 먼저)
+                });
+                
+                // 6. 최신 4개만 선택
+                announcementSlides = filteredAnnouncements.slice(0, 4);
+                
+                console.log('[공지사항 v2.8.13.6.36] 필터링 후:', filteredAnnouncements.length, '개 / 최종 표시:', announcementSlides.length, '개', announcementSlides);
                 
                 // v2.8.13.6.26: API 데이터가 4개 미만이면 더미 데이터로 채우기
                 const dummyAnnouncements = [
@@ -2011,7 +2028,7 @@
                     announcementSlides = dummyAnnouncements;
                 }
                 
-                console.log('[공지사항 v2.8.13.6.35] 최종 표시:', announcementSlides.length, '개 (모바일/데스크탑 4줄 텍스트)', announcementSlides);
+                console.log('[공지사항 v2.8.13.6.36] 최종 표시:', announcementSlides.length, '개 (모바일/데스크탑 4줄 텍스트)', announcementSlides);
                 
                 // v2.8.13.6.28: 모바일/데스크탑 모두 4줄 텍스트 표시 (슬라이드 제거)
                 showSlide(0);
@@ -2047,7 +2064,7 @@
         }
         
         function showSlide(index) {
-            console.warn('🔥 showSlide 실행:', ANNOUNCEMENT_VERSION, '모바일:', window.innerWidth < 640);
+            console.warn('🔥 showSlide 실행: v2.8.13.6.36 모바일:', window.innerWidth < 640);
             const container = document.getElementById('announcements-slider');
             const isMobile = window.innerWidth < 640;
             
@@ -2082,7 +2099,7 @@
                         </div>
                     </div>
                 `;
-                console.warn('✅ 모바일 4줄 렌더링 완료:', ANNOUNCEMENT_VERSION);
+                console.warn('✅ 모바일 4줄 렌더링 완료: v2.8.13.6.36');
             } else {
                 // 데스크탑: 모바일과 동일하게 4줄 텍스트 표시 (v2.8.13.6.28)
                 const items = announcementSlides.slice(0, 4).map(ann => {
@@ -2113,7 +2130,7 @@
                         </div>
                     </div>
                 `;
-                console.warn('✅ 데스크탑 4줄 렌더링 완료:', ANNOUNCEMENT_VERSION);
+                console.warn('✅ 데스크탑 4줄 렌더링 완료: v2.8.13.6.36');
             }
         }
         
