@@ -55,10 +55,11 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
      * 두 테이블을 병합하여 함께 표시
    
    - ✅ **필터링 & 정렬**:
-     * 게시 중 (`is_published = true`)
-     * 고객/전체 대상 (`target_audience = 'customers' or 'all'`)
+     * **샵 공지**: 게시 중 (`is_published = true`)만 확인
+     * **운영자 공지**: 게시 중 + 고객/전체 대상 (`target_audience = 'customers' or 'all'`)
      * 날짜순 정렬 (최신순)
      * 최신 4개만 선택
+     * 이유: 샵 공지는 `target_audience` 필드가 없을 수 있음 (undefined)
    
    - ✅ **Console 로그**:
      * 운영자 공지 개수 표시
@@ -86,6 +87,7 @@ BeautyCat은 고객과 뷰티샵(피부관리실, 네일샵, 왁싱샵 등)을 �
    - ✅ 가독성 대폭 향상 (간격, 패딩, 호버 효과)
    - ✅ 전체보기 버튼 강조 (패딩 증가)
    - ✅ **샵 공지 정상 표시** (운영자 + 샵 공지 통합)
+   - ✅ **샵 공지 6개 모두 표시 가능** (target_audience undefined 처리)
 
 5. **시각적 개선**:
    ```
