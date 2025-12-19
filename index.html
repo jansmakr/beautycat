@@ -742,6 +742,25 @@
             box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
         }
         
+        /* 🎯 샵 이벤트 배너 중앙 정렬 강제 적용 (v2.8.13.6.58) */
+        .shop-announcements-banner {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 12px 0 !important;
+        }
+        
+        #announcements-slider {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+        }
+        
+        #announcements-slider > div {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        
         .btn-soft-secondary {
             background: linear-gradient(135deg, #E8F4FF 0%, #F5F8FF 100%);
             color: #4A5568;
@@ -2368,8 +2387,8 @@
             </div>
         </section>
         
-        <!-- 🅱️ B. 샵 이벤트 영역 (v2.8.13.6.58 - 중앙 정렬 수정) -->
-        <section class="shop-announcements-banner border-b border-gray-200" data-version="2.8.13.6.58" style="background: transparent; padding: 12px 16px; order: 1; margin-bottom: 1.5rem;">
+        <!-- 🅱️ B. 샵 이벤트 영역 (v2.8.13.6.58 - 중앙 정렬 최종 수정) -->
+        <section class="shop-announcements-banner border-b border-gray-200" data-version="2.8.13.6.58" style="background: transparent; order: 1; margin-bottom: 1.5rem;">
             <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.58">
                 <!-- 로딩 중 v2.8.13.6.58 -->
                 <p class="text-xs sm:text-sm text-gray-600 text-center">
