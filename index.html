@@ -1914,13 +1914,13 @@
         }
     </style>
 
-    <!-- 공지사항 (모바일/데스크탑: 1줄 슬라이더 v2.8.13.6.46 - 중앙 정렬) -->
-    <section class="shop-announcements-banner bg-white border-b border-gray-200" data-version="2.8.13.6.46" style="padding: 0;">
-        <div class="max-w-5xl mx-auto">
-            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.46">
-                <!-- 로딩 중 v2.8.13.6.45 -->
+    <!-- 공지사항 (모바일/데스크탑: 1줄 슬라이더 v2.8.13.6.49 - 중앙 정렬 + 배경색) -->
+    <section class="shop-announcements-banner border-b border-gray-200" data-version="2.8.13.6.49" style="background: #FFF9F0; padding: 12px 0;">
+        <div class="max-w-3xl mx-auto">
+            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.49">
+                <!-- 로딩 중 v2.8.13.6.49 -->
                 <p class="text-xs sm:text-sm text-gray-600 text-center">
-                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.39)
+                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.49)
                 </p>
             </div>
         </div>
@@ -1961,9 +1961,9 @@
     </style>
     
     <script>
-        // 🔥 v2.8.13.6.46: 슬라이더 중앙 정렬
-        const ANNOUNCEMENT_VERSION = '2.8.13.6.46';
-        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(1번: 운영자, 2~3번: 샵 최신 2개)');
+        // 🔥 v2.8.13.6.49: 슬라이더 중앙 정렬 + 배경색
+        const ANNOUNCEMENT_VERSION = '2.8.13.6.49';
+        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(중앙정렬 max-w-3xl + 배경색 #FFF9F0)');
         
         let announcementSlides = [];
         let currentSlideIndex = 0;
@@ -1975,7 +1975,7 @@
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항] v2.8.13.6.45 - 가로 슬라이더 (1줄 표시)');
+                console.log('[공지사항] v2.8.13.6.49 - 가로 슬라이더 (1줄 표시, 중앙정렬)');
                 
                 // 1. 운영자 공지 로드
                 const response1 = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
@@ -1987,7 +1987,7 @@
                 const data2 = response2.ok ? await response2.json() : { data: [] };
                 const shopAnnouncements = data2.data || [];
                 
-                console.log('[공지사항 v2.8.13.6.45] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
+                console.log('[공지사항 v2.8.13.6.49] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
                 
                 // 3. 운영자 공지와 샵 공지 분리 처리 (v2.8.13.6.40: 운영자 1번 고정, 샵 2개)
                 // 3-1. 운영자 공지 필터링
@@ -2096,7 +2096,7 @@
         }
         
         function showSlide(index) {
-            console.warn('🔥 showSlide 실행: v2.8.13.6.48 (중앙정렬 + 점 인디케이터 + 샵 이벤트)');
+            console.warn('🔥 showSlide 실행: v2.8.13.6.49 (중앙정렬 max-w-3xl + 배경색 + 샵 이벤트)');
             const container = document.getElementById('announcements-slider');
             
             // 슬라이드 범위 체크
@@ -2123,7 +2123,7 @@
                     : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-4xl mx-auto" data-version="v2.8.13.6.48" data-type="mobile">
+                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.49" data-type="mobile">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; min-height: 36px;">
                             <span style="font-size: 13px; color: #666; font-weight: 600; flex-shrink: 0;">샵 이벤트:</span>
                             <div onclick="window.location.href='announcements.html'" style="flex: 1; display: flex; align-items: center; gap: 6px; cursor: pointer; overflow: hidden;">
@@ -2141,7 +2141,7 @@
                         </div>
                     </div>
                 `;
-                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.48 (중앙정렬) - ${currentSlideIndex + 1}/${announcementSlides.length}');
+                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.49 (중앙정렬 max-w-3xl) - ${currentSlideIndex + 1}/${announcementSlides.length}');
             } else {
                 // 데스크탑: 더 긴 제목
                 const maxLength = 50;
@@ -2151,7 +2151,7 @@
                     : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-4xl mx-auto" data-version="v2.8.13.6.48" data-type="desktop">
+                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.49" data-type="desktop">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 16px; min-height: 36px;">
                             <span style="font-size: 14px; color: #666; font-weight: 600; flex-shrink: 0;">샵 이벤트:</span>
                             <div onclick="window.location.href='announcements.html'" style="flex: 1; max-width: 600px; display: flex; align-items: center; gap: 8px; cursor: pointer; overflow: hidden;">
@@ -2169,7 +2169,7 @@
                         </div>
                     </div>
                 `;
-                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.48 (중앙정렬) - ${currentSlideIndex + 1}/${announcementSlides.length}');
+                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.49 (중앙정렬 max-w-3xl) - ${currentSlideIndex + 1}/${announcementSlides.length}');
             }
             
             // 자동 슬라이드 재시작
