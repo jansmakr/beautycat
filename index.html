@@ -1280,15 +1280,15 @@
                 height: 34px !important;
             }
             
-            /* 모바일 로고 크기 최적화 (v2.8.13.6.47) */
+            /* 모바일 로고 크기 최적화 (v2.8.13.6.48) */
             .beautycat-logo {
-                height: 60px !important; /* 모바일 전용 큰 크기 */
+                height: 85px !important; /* 모바일: 버튼 크기와 비슷하게 */
                 display: block !important;
                 visibility: visible !important;
             }
             
             .mobile-logo-text {
-                height: 60px !important;
+                height: 85px !important;
                 display: block !important;
                 visibility: visible !important;
             }
@@ -1776,10 +1776,14 @@
 
         /* 모바일 레이아웃 순서 조정 */
         /* 데스크탑 (768px 이상)에서는 원래 순서로 복원 */
-        /* 데스크탑 로고 크기 (v2.8.13.6.47) */
+        /* 로고 크기 (v2.8.13.6.48 - 모바일 최적화) */
+        .beautycat-logo, .mobile-logo-text {
+            height: 85px !important; /* 모바일: 가입/로그인 버튼 수준 */
+        }
+        
         @media (min-width: 768px) {
             .beautycat-logo, .mobile-logo-text {
-                height: 52px !important; /* 데스크탑: 중간 크기 */
+                height: 60px !important; /* 데스크탑: 적당한 크기 */
             }
             
             .hero-section {
@@ -2092,7 +2096,7 @@
         }
         
         function showSlide(index) {
-            console.warn('🔥 showSlide 실행: v2.8.13.6.45 가로 슬라이더');
+            console.warn('🔥 showSlide 실행: v2.8.13.6.48 (중앙정렬 + 점 인디케이터 + 샵 이벤트)');
             const container = document.getElementById('announcements-slider');
             
             // 슬라이드 범위 체크
@@ -2119,22 +2123,25 @@
                     : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full" data-version="v2.8.13.6.46" data-type="mobile">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px;">
-                            <button onclick="prevSlide()" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px;">◀</button>
+                    <div class="w-full max-w-4xl mx-auto" data-version="v2.8.13.6.48" data-type="mobile">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; min-height: 36px;">
+                            <span style="font-size: 13px; color: #666; font-weight: 600; flex-shrink: 0;">샵 이벤트:</span>
                             <div onclick="window.location.href='announcements.html'" style="flex: 1; display: flex; align-items: center; gap: 6px; cursor: pointer; overflow: hidden;">
                                 <span style="font-size: 14px; flex-shrink: 0;">${icon}</span>
                                 <p style="font-size: 13px; font-weight: 500; color: #111; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(title)}</p>
                             </div>
-                            <button onclick="nextSlide()" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px;">▶</button>
                             <a href="announcements.html" style="font-size: 11px; color: #2563eb; text-decoration: none; white-space: nowrap; flex-shrink: 0;">전체보기</a>
                         </div>
-                        <div style="text-align: center; font-size: 10px; color: #999; margin-top: -4px;">
-                            ${currentSlideIndex + 1} / ${announcementSlides.length}
+                        <div style="text-align: center; font-size: 10px; color: #999; margin-top: 2px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                            ${Array.from({length: announcementSlides.length}, (_, i) => 
+                                i === currentSlideIndex 
+                                    ? '<span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2563eb;">●</span>' 
+                                    : '<span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #d1d5db;">○</span>'
+                            ).join('')}
                         </div>
                     </div>
                 `;
-                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.45 - ${currentSlideIndex + 1}/${announcementSlides.length}');
+                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.48 (중앙정렬) - ${currentSlideIndex + 1}/${announcementSlides.length}');
             } else {
                 // 데스크탑: 더 긴 제목
                 const maxLength = 50;
@@ -2144,22 +2151,25 @@
                     : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-4xl mx-auto" data-version="v2.8.13.6.46" data-type="desktop">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 16px;">
-                            <button onclick="prevSlide()" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 12px; color: #666;">◀</button>
+                    <div class="w-full max-w-4xl mx-auto" data-version="v2.8.13.6.48" data-type="desktop">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 16px; min-height: 36px;">
+                            <span style="font-size: 14px; color: #666; font-weight: 600; flex-shrink: 0;">샵 이벤트:</span>
                             <div onclick="window.location.href='announcements.html'" style="flex: 1; max-width: 600px; display: flex; align-items: center; gap: 8px; cursor: pointer; overflow: hidden;">
                                 <span style="font-size: 16px; flex-shrink: 0;">${icon}</span>
                                 <p style="font-size: 15px; font-weight: 500; color: #111; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(title)}</p>
                             </div>
-                            <button onclick="nextSlide()" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 12px; color: #666;">▶</button>
                             <a href="announcements.html" style="font-size: 13px; color: #2563eb; text-decoration: none; white-space: nowrap; flex-shrink: 0;">전체보기</a>
                         </div>
-                        <div style="text-align: center; font-size: 11px; color: #999; margin-top: -4px;">
-                            ${currentSlideIndex + 1} / ${announcementSlides.length}
+                        <div style="text-align: center; font-size: 11px; color: #999; margin-top: 2px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                            ${Array.from({length: announcementSlides.length}, (_, i) => 
+                                i === currentSlideIndex 
+                                    ? '<span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #2563eb;">●</span>' 
+                                    : '<span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #d1d5db;">○</span>'
+                            ).join('')}
                         </div>
                     </div>
                 `;
-                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.45 - ${currentSlideIndex + 1}/${announcementSlides.length}');
+                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.48 (중앙정렬) - ${currentSlideIndex + 1}/${announcementSlides.length}');
             }
             
             // 자동 슬라이드 재시작
