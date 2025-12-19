@@ -2412,66 +2412,66 @@
         <section class="cta-buttons-section consultation-options-section mb-8 sm:mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 2;">
             <!-- 2개 버튼 가로 배치 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 max-w-4xl mx-auto" style="margin-left: auto; margin-right: auto;">
-                <!-- 견적 비교 버튼 - v2.8.13: 로그인 체크 추가 -->
+                <!-- 견적 비교 버튼 - v2.8.13.6.57: 50% 축소 -->
                 <button 
                      onclick="handleConsultationIntent() && showConsultationForm()"
                      class="cta-button-primary group" 
-                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 16px; padding: 1.5rem 1.25rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 12px; padding: 0.75rem 1rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); min-height: 70px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; text-align: left; gap: 0.75rem;">
                     
                     <!-- 배경 그라데이션 효과 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
                     
                     <!-- 아이콘 -->
-                    <div style="position: relative; z-index: 1; margin-bottom: 0.75rem;">
-                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,0.12);">
-                            <i class="fas fa-clipboard-list text-3xl text-white"></i>
+                    <div style="position: relative; z-index: 1; flex-shrink: 0;">
+                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
+                            <i class="fas fa-clipboard-list text-xl text-white"></i>
                         </div>
                     </div>
                     
                     <!-- 텍스트 -->
-                    <div style="position: relative; z-index: 1; color: white;">
-                        <h3 class="text-base sm:text-3xl font-black mb-1 sm:mb-2 leading-tight" style="letter-spacing: -0.02em;">
-                            우리 동네 1등 샵<br>견적 비교하기
+                    <div style="position: relative; z-index: 1; color: white; flex: 1;">
+                        <h3 class="text-sm sm:text-lg font-black mb-0.5 leading-tight" style="letter-spacing: -0.02em;">
+                            우리 동네 1등 샵 견적 비교하기
                         </h3>
-                        <p class="text-xs sm:text-sm opacity-90 font-medium leading-snug">
-                            여러 뷰티샵 견적을<br class="sm:hidden"> 한번에 비교
+                        <p class="text-xs opacity-90 font-medium leading-snug">
+                            여러 뷰티샵 견적을 한번에 비교
                         </p>
                     </div>
                     
                     <!-- 화살표 -->
-                    <div style="position: relative; z-index: 1; margin-top: 0.5rem;">
-                        <i class="fas fa-arrow-right text-base sm:text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
+                    <div style="position: relative; z-index: 1; flex-shrink: 0;">
+                        <i class="fas fa-arrow-right text-sm sm:text-base text-white group-hover:translate-x-2 transition-transform duration-300"></i>
                     </div>
                 </button>
                 
-                <!-- 전화 상담 버튼 - v2.8.13: 로그인 체크 추가 -->
+                <!-- 전화 상담 버튼 - v2.8.13.6.57: 50% 축소 -->
                 <button 
                      onclick="handlePhoneIntent() && showPhoneForm()"
                      class="cta-button-secondary group" 
-                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 16px; padding: 1.5rem 1.25rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 6px 20px rgba(245, 87, 108, 0.3); min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                     style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 12px; padding: 0.75rem 1rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3); min-height: 70px; display: flex; flex-direction: row; align-items: center; justify-content: space-between; text-align: left; gap: 0.75rem;">
                     
                     <!-- 배경 그라데이션 효과 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
                     
                     <!-- 아이콘 -->
-                    <div style="position: relative; z-index: 1; margin-bottom: 0.75rem;">
-                        <div style="width: 56px; height: 56px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,0.12);">
-                            <i class="fas fa-phone-alt text-3xl text-white"></i>
+                    <div style="position: relative; z-index: 1; flex-shrink: 0;">
+                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
+                            <i class="fas fa-phone-alt text-xl text-white"></i>
                         </div>
                     </div>
                     
                     <!-- 텍스트 -->
-                    <div style="position: relative; z-index: 1; color: white;">
-                        <h3 class="text-base sm:text-3xl font-black mb-1 sm:mb-2 leading-tight" style="letter-spacing: -0.02em;">
-                            지금 바로<br>지역별 대표샵과 상담
+                    <div style="position: relative; z-index: 1; color: white; flex: 1;">
+                        <h3 class="text-sm sm:text-lg font-black mb-0.5 leading-tight" style="letter-spacing: -0.02em;">
+                            지금 바로 지역별 대표샵과 상담
                         </h3>
-                        <p class="text-xs sm:text-sm opacity-90 font-medium leading-snug">
-                            지역 대표샵과<br class="sm:hidden"> 바로 전화 연결
+                        <p class="text-xs opacity-90 font-medium leading-snug">
+                            지역 대표샵과 바로 전화 연결
                         </p>
                     </div>
                     
                     <!-- 화살표 -->
-                    <div style="position: relative; z-index: 1; margin-top: 0.5rem;">
+                    <div style="position: relative; z-index: 1; flex-shrink: 0;">
                         <i class="fas fa-arrow-right text-base sm:text-xl text-white group-hover:translate-x-2 transition-transform duration-300"></i>
                     </div>
                 </button>
