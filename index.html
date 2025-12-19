@@ -1781,10 +1781,90 @@
             height: 85px !important; /* 모바일: 가입/로그인 버튼 수준 */
         }
         
+        /* 액션 버튼 반응형 (v2.8.13.6.50) */
         @media (min-width: 768px) {
             .beautycat-logo, .mobile-logo-text {
                 height: 60px !important; /* 데스크탑: 적당한 크기 */
             }
+            
+            /* 강조 버튼 가로 배치 */
+            .beautycat-main-buttons {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 16px !important;
+            }
+            
+            /* 서브 버튼 간격 조정 (야놀자 최소 사이즈) */
+            .beautycat-sub-buttons {
+                gap: 8px !important;
+                margin-bottom: 8px !important;
+            }
+            
+            .beautycat-sub-btn {
+                padding: 14px 10px !important;
+                min-height: 80px !important;
+            }
+            
+            .beautycat-sub-btn div {
+                font-size: 26px !important;
+            }
+            
+            .beautycat-sub-btn span {
+                font-size: 12px !important;
+            }
+        }
+        
+        /* 버튼 터치 피드백 (v2.8.13.6.50) */
+        .beautycat-main-btn:active,
+        .beautycat-sub-btn:active {
+            transform: scale(0.97);
+        }
+        
+        /* 준비 중 툴팁 (v2.8.13.6.54) */
+        .beautycat-sub-btn-disabled::after {
+            content: "준비 중";
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .beautycat-sub-btn-disabled::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(0, 0, 0, 0.85);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .beautycat-sub-btn-disabled:hover::after,
+        .beautycat-sub-btn-disabled:hover::before {
+            opacity: 1;
+        }
+        
+        .beautycat-sub-btn-disabled:hover {
+            background: #F9FAFB !important;
+            transform: translateY(-2px);
+        }
+        
+        @media (min-width: 768px) {
             
             .hero-section {
                 order: 1 !important; /* 데스크탑: 히어로 섹션 1순위 */
@@ -1914,18 +1994,6 @@
         }
     </style>
 
-    <!-- 공지사항 (모바일/데스크탑: 1줄 슬라이더 v2.8.13.6.49 - 중앙 정렬 + 배경색) -->
-    <section class="shop-announcements-banner border-b border-gray-200" data-version="2.8.13.6.49" style="background: #FFF9F0; padding: 12px 0;">
-        <div class="max-w-3xl mx-auto">
-            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.49">
-                <!-- 로딩 중 v2.8.13.6.49 -->
-                <p class="text-xs sm:text-sm text-gray-600 text-center">
-                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.49)
-                </p>
-            </div>
-        </div>
-    </section>
-    
     <style>
         .announcement-slide {
             animation: slideIn 0.5s ease-in-out;
@@ -1961,9 +2029,9 @@
     </style>
     
     <script>
-        // 🔥 v2.8.13.6.49: 슬라이더 중앙 정렬 + 배경색
-        const ANNOUNCEMENT_VERSION = '2.8.13.6.49';
-        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(중앙정렬 max-w-3xl + 배경색 #FFF9F0)');
+        // 🔥 v2.8.13.6.52: 야놀자 최소 사이즈 (70px 버튼 + 강조 버튼 아래 배치)
+        const ANNOUNCEMENT_VERSION = '2.8.13.6.52';
+        console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(야놀자 최소 사이즈 - 70px 버튼)');
         
         let announcementSlides = [];
         let currentSlideIndex = 0;
@@ -1975,7 +2043,7 @@
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항] v2.8.13.6.49 - 가로 슬라이더 (1줄 표시, 중앙정렬)');
+                console.log('[공지사항] v2.8.13.6.50 - 가로 슬라이더 (A+B+C 레이아웃)');
                 
                 // 1. 운영자 공지 로드
                 const response1 = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
@@ -1987,7 +2055,7 @@
                 const data2 = response2.ok ? await response2.json() : { data: [] };
                 const shopAnnouncements = data2.data || [];
                 
-                console.log('[공지사항 v2.8.13.6.49] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
+                console.log('[공지사항 v2.8.13.6.50] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
                 
                 // 3. 운영자 공지와 샵 공지 분리 처리 (v2.8.13.6.40: 운영자 1번 고정, 샵 2개)
                 // 3-1. 운영자 공지 필터링
@@ -2096,7 +2164,7 @@
         }
         
         function showSlide(index) {
-            console.warn('🔥 showSlide 실행: v2.8.13.6.49 (중앙정렬 max-w-3xl + 배경색 + 샵 이벤트)');
+            console.warn('🔥 showSlide 실행: v2.8.13.6.50 (A+B+C 레이아웃 + 야놀자 스타일)');
             const container = document.getElementById('announcements-slider');
             
             // 슬라이드 범위 체크
@@ -2123,7 +2191,7 @@
                     : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.49" data-type="mobile">
+                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.50" data-type="mobile">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; min-height: 36px;">
                             <span style="font-size: 13px; color: #666; font-weight: 600; flex-shrink: 0;">샵 이벤트:</span>
                             <div onclick="window.location.href='announcements.html'" style="flex: 1; display: flex; align-items: center; gap: 6px; cursor: pointer; overflow: hidden;">
@@ -2141,7 +2209,7 @@
                         </div>
                     </div>
                 `;
-                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.49 (중앙정렬 max-w-3xl) - ${currentSlideIndex + 1}/${announcementSlides.length}');
+                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.50 (A+B+C 레이아웃) - ${currentSlideIndex + 1}/${announcementSlides.length}');
             } else {
                 // 데스크탑: 더 긴 제목
                 const maxLength = 50;
@@ -2151,7 +2219,7 @@
                     : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.49" data-type="desktop">
+                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.50" data-type="desktop">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 16px; min-height: 36px;">
                             <span style="font-size: 14px; color: #666; font-weight: 600; flex-shrink: 0;">샵 이벤트:</span>
                             <div onclick="window.location.href='announcements.html'" style="flex: 1; max-width: 600px; display: flex; align-items: center; gap: 8px; cursor: pointer; overflow: hidden;">
@@ -2169,7 +2237,7 @@
                         </div>
                     </div>
                 `;
-                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.49 (중앙정렬 max-w-3xl) - ${currentSlideIndex + 1}/${announcementSlides.length}');
+                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.50 (A+B+C 레이아웃) - ${currentSlideIndex + 1}/${announcementSlides.length}');
             }
             
             // 자동 슬라이드 재시작
@@ -2216,8 +2284,78 @@
 
     <!-- 메인 콘텐츠 -->
     <main class="main-content-wrapper max-w-5xl mx-auto px-4 pt-3 pb-4 space-y-4 sm:py-6 sm:space-y-6" style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column;">
-        <!-- 히어로 섹션 (문제 해결 중심 디자인 v2.8.13.6.22) -->
-        <section class="hero-section gradient-soft-pink rounded-3xl p-6 sm:p-16 mb-4 sm:mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 1;">
+        
+        <!-- 🅰️ A. 메인 액션 버튼 영역 (v2.8.13.6.52 - 야놀자 최소 사이즈) -->
+        <section class="beautycat-actions-section" style="order: 1; margin-bottom: 1.5rem;">
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- 1줄: 강조 버튼 2개 -->
+                <div class="beautycat-main-buttons" style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px;">
+                    <button class="beautycat-main-btn" onclick="handleConsultationIntent() && showConsultationForm()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 20px; padding: 24px 20px; min-height: 140px; cursor: pointer; color: white; text-align: center; box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.2;">견적신청 상담</h3>
+                        <p style="font-size: 14px; opacity: 0.9; margin: 0;">여러 샵 견적 비교</p>
+                    </button>
+                    
+                    <button class="beautycat-main-btn" onclick="handleRepresentativeShopCall()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 20px; padding: 24px 20px; min-height: 140px; cursor: pointer; color: white; text-align: center; box-shadow: 0 6px 20px rgba(245, 87, 108, 0.3); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">⭐</div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin: 0 0 8px 0; line-height: 1.2;">대표샵 상담</h3>
+                        <p style="font-size: 14px; opacity: 0.9; margin: 0;">지역 대표 샵 매칭</p>
+                    </button>
+                </div>
+                
+                <!-- 2줄: 피부진단, 성분분석, 나의컬러 (야놀자 최소 사이즈) -->
+                <div class="beautycat-sub-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px;">
+                    <div class="beautycat-sub-btn beautycat-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                        <div style="font-size: 24px; margin-bottom: 4px;">✨</div>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">피부진단</span>
+                    </div>
+                    
+                    <div class="beautycat-sub-btn beautycat-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                        <div style="font-size: 24px; margin-bottom: 4px;">🧴</div>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">성분분석</span>
+                    </div>
+                    
+                    <div class="beautycat-sub-btn beautycat-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                        <div style="font-size: 24px; margin-bottom: 4px;">💅</div>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">나의컬러</span>
+                    </div>
+                </div>
+                
+                <!-- 3줄: 이너케어, 타임머신, 건강일기 (야놀자 최소 사이즈) -->
+                <div class="beautycat-sub-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                    <div class="beautycat-sub-btn beautycat-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                        <div style="font-size: 24px; margin-bottom: 4px;">🍵</div>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">이너케어</span>
+                    </div>
+                    
+                    <div class="beautycat-sub-btn beautycat-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                        <div style="font-size: 24px; margin-bottom: 4px;">⏳</div>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">타임머신</span>
+                    </div>
+                    
+                    <div class="beautycat-sub-btn beautycat-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                        <div style="font-size: 24px; margin-bottom: 4px;">📝</div>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">건강일기</span>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+        
+        <!-- 🅱️ B. 샵 이벤트 영역 (v2.8.13.6.52 - A 영역 아래로 이동) -->
+        <section class="shop-announcements-banner border-b border-gray-200" data-version="2.8.13.6.52" style="background: #FFF9F0; padding: 12px 0; order: 2; margin-bottom: 1.5rem;">
+            <div class="max-w-3xl mx-auto">
+                <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.52">
+                    <!-- 로딩 중 v2.8.13.6.51 -->
+                    <p class="text-xs sm:text-sm text-gray-600 text-center">
+                        <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.52)
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- 🅲️ C. 가치 제안 배너 (히어로 섹션) (v2.8.13.6.52 - order 3) -->
+        <section class="hero-section gradient-soft-pink rounded-3xl p-6 sm:p-16 mb-4 sm:mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 3;">
             <div class="max-w-4xl mx-auto text-center">
                 <!-- 메인 카피 (큰 글씨) -->
                 <h1 class="text-3xl sm:text-6xl font-black text-gray-900 mb-4 sm:mb-6" style="letter-spacing: -0.03em; line-height: 1.3;">
@@ -2258,7 +2396,7 @@
         </section>
 
         <!-- CTA 버튼 섹션 (옵션 A: 2개 나란히 배치, 동일 크기 v2.8.13.6.22) -->
-        <section class="cta-buttons-section consultation-options-section mb-8 sm:mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 2;">
+        <section class="cta-buttons-section consultation-options-section mb-8 sm:mb-12 animate-fade-in" id="consultationOptions" style="margin-left: auto; margin-right: auto; order: 4;">
             <div class="text-center mb-6">
             
             <!-- 2개 버튼 그리드 (옵션 A: 동일 크기) -->
