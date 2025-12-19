@@ -1280,8 +1280,15 @@
                 height: 34px !important;
             }
             
+            /* 모바일 로고 크기 최적화 (v2.8.13.6.47) */
+            .beautycat-logo {
+                height: 60px !important; /* 모바일 전용 큰 크기 */
+                display: block !important;
+                visibility: visible !important;
+            }
+            
             .mobile-logo-text {
-                height: 40px !important;
+                height: 60px !important;
                 display: block !important;
                 visibility: visible !important;
             }
@@ -1769,7 +1776,12 @@
 
         /* 모바일 레이아웃 순서 조정 */
         /* 데스크탑 (768px 이상)에서는 원래 순서로 복원 */
+        /* 데스크탑 로고 크기 (v2.8.13.6.47) */
         @media (min-width: 768px) {
+            .beautycat-logo, .mobile-logo-text {
+                height: 52px !important; /* 데스크탑: 중간 크기 */
+            }
+            
             .hero-section {
                 order: 1 !important; /* 데스크탑: 히어로 섹션 1순위 */
             }
@@ -1792,9 +1804,9 @@
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-5xl mx-auto px-3 py-2 md:px-4 md:py-2">
             <div class="flex items-center justify-between">
-                <!-- 로고 (BeautyCat v2.8.13.6.35) -->
+                <!-- 로고 (BeautyCat v2.8.13.6.47 - 모바일 최적화) -->
                 <div class="logo-container" style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="images/beautycat-logo-v3.png" alt="BeautyCat 로고" class="mobile-logo-text" style="height: 40px; width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; object-fit: contain;" loading="eager" decoding="async" onerror="console.error('Logo failed to load'); this.src='images/beautycat-logo.png';">
+                    <img src="images/beautycat-logo-v3.png" alt="BeautyCat 로고" class="mobile-logo-text beautycat-logo" style="width: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; object-fit: contain;" loading="eager" decoding="async" onerror="console.error('Logo failed to load'); this.src='images/beautycat-logo.png';">
                 </div>
                 
                 <!-- 사용자 메뉴 -->
@@ -1898,11 +1910,11 @@
         }
     </style>
 
-    <!-- 공지사항 (모바일/데스크탑: 5줄 목록 v2.8.13.6.44 - 줄간격 0) -->
-    <section class="shop-announcements-banner bg-white border-b border-gray-200 py-1 sm:py-2" data-version="2.8.13.6.44" style="min-height: 80px;">
-        <div class="max-w-5xl mx-auto px-3 sm:px-4">
-            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.44" style="min-height: 70px;">
-                <!-- 로딩 중 v2.8.13.6.44 -->
+    <!-- 공지사항 (모바일/데스크탑: 1줄 슬라이더 v2.8.13.6.46 - 중앙 정렬) -->
+    <section class="shop-announcements-banner bg-white border-b border-gray-200" data-version="2.8.13.6.46" style="padding: 0;">
+        <div class="max-w-5xl mx-auto">
+            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.46">
+                <!-- 로딩 중 v2.8.13.6.45 -->
                 <p class="text-xs sm:text-sm text-gray-600 text-center">
                     <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.39)
                 </p>
@@ -1945,20 +1957,21 @@
     </style>
     
     <script>
-        // 🔥 v2.8.13.6.44: line-height 1 + padding/margin 0
-        const ANNOUNCEMENT_VERSION = '2.8.13.6.44';
+        // 🔥 v2.8.13.6.46: 슬라이더 중앙 정렬
+        const ANNOUNCEMENT_VERSION = '2.8.13.6.46';
         console.warn('🔥🔥🔥 공지사항 버전:', ANNOUNCEMENT_VERSION, '(1번: 운영자, 2~3번: 샵 최신 2개)');
         
         let announcementSlides = [];
         let currentSlideIndex = 0;
         let slideInterval = null;
+        let isAutoSliding = true;
         
         // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.36 - 운영자+샵 공지 통합)
         async function loadAnnouncementSlider() {
             const container = document.getElementById('announcements-slider');
             
             try {
-                console.log('[공지사항] v2.8.13.6.40 - 운영자(1번 고정) + 샵(2~3번 최신 2개)');
+                console.log('[공지사항] v2.8.13.6.45 - 가로 슬라이더 (1줄 표시)');
                 
                 // 1. 운영자 공지 로드
                 const response1 = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
@@ -1970,7 +1983,7 @@
                 const data2 = response2.ok ? await response2.json() : { data: [] };
                 const shopAnnouncements = data2.data || [];
                 
-                console.log('[공지사항 v2.8.13.6.40] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
+                console.log('[공지사항 v2.8.13.6.45] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
                 
                 // 3. 운영자 공지와 샵 공지 분리 처리 (v2.8.13.6.40: 운영자 1번 고정, 샵 2개)
                 // 3-1. 운영자 공지 필터링
@@ -2079,72 +2092,102 @@
         }
         
         function showSlide(index) {
-            console.warn('🔥 showSlide 실행: v2.8.13.6.38 모바일:', window.innerWidth < 640);
+            console.warn('🔥 showSlide 실행: v2.8.13.6.45 가로 슬라이더');
             const container = document.getElementById('announcements-slider');
+            
+            // 슬라이드 범위 체크
+            if (index >= announcementSlides.length) {
+                currentSlideIndex = 0;
+            } else if (index < 0) {
+                currentSlideIndex = announcementSlides.length - 1;
+            } else {
+                currentSlideIndex = index;
+            }
+            
+            // 현재 공지 가져오기
+            const ann = announcementSlides[currentSlideIndex];
+            const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
             const isMobile = window.innerWidth < 640;
             
-            // v2.8.13.6.38: 모바일/데스크탑 모두 5줄 번호 목록 표시 (1번: 운영자, 2~5번: 샵)
+            // v2.8.13.6.45: 1줄 가로 슬라이더
             if (isMobile) {
-                // 모바일: 5개 공지를 번호 목록으로 표시 (v2.8.13.6.38)
-                const items = announcementSlides.slice(0, 5).map((ann, index) => {
-                    const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
-                    const maxLength = 15; // 모바일 짧게 (줄바꿈 방지)
-                    const rawTitle = ann.title || '제목 없음';
-                    const title = rawTitle.length > maxLength 
-                        ? rawTitle.substring(0, maxLength) + '~' 
-                        : rawTitle;
-                    
-                    return `
-                        <div class="flex items-start gap-2 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'" style="width: 100%; padding: 0; margin: 0;">
-                            <span class="flex-shrink-0 text-gray-700" style="font-size: 13px; font-weight: 500; line-height: 1;">${index + 1}.</span>
-                            <span class="flex-shrink-0" style="font-size: 13px; line-height: 1;">${icon}</span>
-                            <p class="text-xs text-gray-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis" style="flex: 1; line-height: 1; margin: 0; padding: 0;">${escapeHtml(title)}</p>
-                        </div>
-                    `;
-                }).join('');
+                // 모바일: 짧게
+                const maxLength = 25;
+                const rawTitle = ann.title || '제목 없음';
+                const title = rawTitle.length > maxLength 
+                    ? rawTitle.substring(0, maxLength) + '~' 
+                    : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full px-3" data-version="v2.8.13.6.44" data-type="mobile">
-                        <div style="margin-bottom: 0;">
-                            <p class="text-xs font-bold text-gray-700" style="margin-bottom: 0;">공지 내용: <a href="announcements.html" class="text-blue-600 hover:text-blue-800 underline">자세히 보기</a></p>
+                    <div class="w-full" data-version="v2.8.13.6.46" data-type="mobile">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px;">
+                            <button onclick="prevSlide()" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px;">◀</button>
+                            <div onclick="window.location.href='announcements.html'" style="flex: 1; display: flex; align-items: center; gap: 6px; cursor: pointer; overflow: hidden;">
+                                <span style="font-size: 14px; flex-shrink: 0;">${icon}</span>
+                                <p style="font-size: 13px; font-weight: 500; color: #111; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(title)}</p>
+                            </div>
+                            <button onclick="nextSlide()" style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px 8px;">▶</button>
+                            <a href="announcements.html" style="font-size: 11px; color: #2563eb; text-decoration: none; white-space: nowrap; flex-shrink: 0;">전체보기</a>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 0; width: 100%;">
-                            ${items}
+                        <div style="text-align: center; font-size: 10px; color: #999; margin-top: -4px;">
+                            ${currentSlideIndex + 1} / ${announcementSlides.length}
                         </div>
                     </div>
                 `;
-                console.warn('✅ 모바일 5줄 렌더링 완료: v2.8.13.6.38 - 1번(운영자) + 2~5번(샵) = 총', announcementSlides.length, '개');
+                console.warn('✅ 모바일 슬라이더 렌더링 완료: v2.8.13.6.45 - ${currentSlideIndex + 1}/${announcementSlides.length}');
             } else {
-                // 데스크탑: 모바일과 동일하게 5줄 번호 목록 표시 (v2.8.13.6.38: 1번 운영자 고정)
-                const items = announcementSlides.slice(0, 5).map((ann, index) => {
-                    const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
-                    const maxLength = 30; // 데스크탑 짧게 (줄바꿈 방지)
-                    const rawTitle = ann.title || '제목 없음';
-                    const title = rawTitle.length > maxLength 
-                        ? rawTitle.substring(0, maxLength) + '~' 
-                        : rawTitle;
-                    
-                    return `
-                        <div class="flex items-start gap-2 hover:bg-gray-50 transition-colors cursor-pointer" onclick="window.location.href='announcements.html'" style="width: 100%; max-width: 600px; padding: 0; margin: 0;">
-                            <span class="flex-shrink-0 text-gray-700" style="font-size: 14px; font-weight: 500; line-height: 1;">${index + 1}.</span>
-                            <span class="flex-shrink-0" style="font-size: 15px; line-height: 1;">${icon}</span>
-                            <p class="text-sm text-gray-900 font-medium whitespace-nowrap overflow-hidden text-ellipsis" style="flex: 1; line-height: 1; margin: 0; padding: 0;">${escapeHtml(title)}</p>
-                        </div>
-                    `;
-                }).join('');
+                // 데스크탑: 더 긴 제목
+                const maxLength = 50;
+                const rawTitle = ann.title || '제목 없음';
+                const title = rawTitle.length > maxLength 
+                    ? rawTitle.substring(0, maxLength) + '~' 
+                    : rawTitle;
                 
                 container.innerHTML = `
-                    <div class="w-full max-w-3xl mx-auto text-center" data-version="v2.8.13.6.44" data-type="desktop" style="min-height: 80px;">
-                        <div style="margin-bottom: 0;">
-                            <p class="text-sm font-bold text-gray-700" style="margin-bottom: 0;">공지 내용: <a href="announcements.html" class="text-blue-600 hover:text-blue-800 underline">자세히 보기</a></p>
+                    <div class="w-full max-w-4xl mx-auto" data-version="v2.8.13.6.46" data-type="desktop">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 10px 16px;">
+                            <button onclick="prevSlide()" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 12px; color: #666;">◀</button>
+                            <div onclick="window.location.href='announcements.html'" style="flex: 1; max-width: 600px; display: flex; align-items: center; gap: 8px; cursor: pointer; overflow: hidden;">
+                                <span style="font-size: 16px; flex-shrink: 0;">${icon}</span>
+                                <p style="font-size: 15px; font-weight: 500; color: #111; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(title)}</p>
+                            </div>
+                            <button onclick="nextSlide()" style="background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 12px; color: #666;">▶</button>
+                            <a href="announcements.html" style="font-size: 13px; color: #2563eb; text-decoration: none; white-space: nowrap; flex-shrink: 0;">전체보기</a>
                         </div>
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 0; width: 100%;">
-                            ${items}
+                        <div style="text-align: center; font-size: 11px; color: #999; margin-top: -4px;">
+                            ${currentSlideIndex + 1} / ${announcementSlides.length}
                         </div>
                     </div>
                 `;
-                console.warn('✅ 데스크탑 5줄 렌더링 완료: v2.8.13.6.38 - 1번(운영자) + 2~5번(샵) = 총', announcementSlides.length, '개');
+                console.warn('✅ 데스크탑 슬라이더 렌더링 완료: v2.8.13.6.45 - ${currentSlideIndex + 1}/${announcementSlides.length}');
             }
+            
+            // 자동 슬라이드 재시작
+            startAutoSlide();
+        }
+        
+        // 이전 슬라이드
+        function prevSlide() {
+            isAutoSliding = false;
+            showSlide(currentSlideIndex - 1);
+        }
+        
+        // 다음 슬라이드
+        function nextSlide() {
+            isAutoSliding = false;
+            showSlide(currentSlideIndex + 1);
+        }
+        
+        // 자동 슬라이드 시작
+        function startAutoSlide() {
+            if (slideInterval) {
+                clearInterval(slideInterval);
+            }
+            slideInterval = setInterval(() => {
+                if (isAutoSliding) {
+                    showSlide(currentSlideIndex + 1);
+                }
+            }, 3000); // 3초마다
         }
         
         function escapeHtml(text) {
