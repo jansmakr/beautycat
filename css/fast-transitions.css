@@ -10,6 +10,12 @@
     transition-duration: 0.15s !important;
 }
 
+/* 마퀴 배너는 예외 - 느리게 스크롤 */
+.marquee-content,
+.announcement-marquee .marquee-content {
+    animation-duration: 90s !important; /* 90초로 천천히 */
+}
+
 /* 페이지 전환 속도 향상 */
 body, html {
     transition: opacity 0.1s ease !important;
@@ -156,6 +162,13 @@ button:hover,
         animation-duration: 0.15s !important;
         transition-duration: 0.15s !important;
     }
+    
+    /* 마퀴 배너는 예외 - 항상 느리게 */
+    .marquee-content,
+    .announcement-marquee .marquee-content,
+    #announcement-marquee .marquee-content {
+        animation-duration: 90s !important;
+    }
 }
 
 /* 성능 우선 모드 - 모든 애니메이션 최소화 */
@@ -165,6 +178,13 @@ button:hover,
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+    
+    /* 마퀴 배너는 예외 - 항상 느리게 */
+    .marquee-content,
+    .announcement-marquee .marquee-content,
+    #announcement-marquee .marquee-content {
+        animation-duration: 90s !important;
     }
 }
 

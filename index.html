@@ -2004,21 +2004,21 @@
     </header>
 
     <!-- ========== 상단 띠 배너 (v2.8.13.6.62 - Phase 1: 속도 조정) ========== -->
-    <div class="announcement-marquee" data-version="v2.8.13.6.62" style="background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%); border-bottom: 1px solid #FFD4E5; padding: 10px 0; overflow: hidden;">
+    <div class="announcement-marquee" data-version="v2.8.13.6.62" onclick="window.location.href='announcements.html'" style="background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%); border-bottom: 1px solid #FFD4E5; padding: 10px 0; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
         <div class="marquee-content" style="display: flex; animation: marqueeScroll 60s linear infinite; white-space: nowrap;">
-            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #2D3748;">
                 🎉 신규 회원 첫 시술 20% 할인 이벤트 진행 중!
             </span>
-            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #2D3748;">
                 ✨ 베타 테스트 참여 고객님께 특별 쿠폰 지급
             </span>
-            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #2D3748;">
                 🔥 이번 주 인기 샵 BEST 3 확인하기
             </span>
-            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #2D3748;">
                 🎉 신규 회원 첫 시술 20% 할인 이벤트 진행 중!
             </span>
-            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #2D3748;">
                 ✨ 베타 테스트 참여 고객님께 특별 쿠폰 지급
             </span>
         </div>
@@ -2031,6 +2031,11 @@
         .marquee-content {
             animation-timing-function: linear;
             will-change: transform;
+        }
+        /* 마퀴 배너 호버 효과 */
+        .announcement-marquee:hover {
+            background: linear-gradient(135deg, #FFD4E5 0%, #FFE8F0 100%) !important;
+            box-shadow: 0 2px 8px rgba(255, 20, 147, 0.2);
         }
         @media (max-width: 768px) {
             .announcement-marquee {
@@ -2364,30 +2369,25 @@
                 <button 
                      onclick="handlePhoneIntent() && showPhoneForm()"
                      class="cta-button-phone group" 
-                     style="background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%); border: none; border-radius: 16px; padding: 0.75rem 1rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 32px rgba(255, 20, 147, 0.4); min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.25rem; width: 100%;">
+                     style="background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%); border: none; border-radius: 16px; padding: 0.75rem 1rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 32px rgba(255, 20, 147, 0.4); min-height: 60px; display: flex; flex-direction: row; align-items: center; justify-content: center; text-align: left; gap: 0.75rem; width: 100%;">
                     
                     <!-- 배경 그라데이션 효과 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
                     
                     <!-- 아이콘 -->
                     <div style="position: relative; z-index: 1; flex-shrink: 0;">
-                        <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
-                            <i class="fas fa-clipboard-list text-xl text-white"></i>
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
+                            <i class="fas fa-phone-alt" style="font-size: 1.25rem; color: white;"></i>
                         </div>
                     </div>
-                    <!-- 배경 효과 -->
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
-                    
-                    <!-- 아이콘 -->
-                    <div style="position: relative; z-index: 1; font-size: 1.25rem; margin-bottom: 0.25rem;">☎️</div>
                     
                     <!-- 텍스트 -->
-                    <div style="position: relative; z-index: 1; color: white;">
+                    <div style="position: relative; z-index: 1; color: white; flex: 1;">
                         <h3 class="text-sm sm:text-base font-black mb-0 leading-tight" style="letter-spacing: -0.02em;">
-                            지역별 대표샵 전화상담하기
+                            지역별 대표샵 전화상담
                         </h3>
-                        <p class="text-xs sm:text-xs opacity-95 font-semibold leading-snug hidden sm:block">
-                            우리 동네 1등 샵과 바로 연결
+                        <p class="text-xs opacity-90 font-medium leading-snug" style="margin-top: 2px;">
+                            ⚡ 5분 안에 전문가와 직접 통화
                         </p>
                     </div>
                 </button>
@@ -2396,21 +2396,25 @@
                 <button 
                      onclick="handleConsultationIntent() && showConsultationForm()"
                      class="cta-button-quote group" 
-                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 16px; padding: 0.75rem 1rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4); min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.25rem; width: 100%;">
+                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 16px; padding: 0.75rem 1rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4); min-height: 60px; display: flex; flex-direction: row; align-items: center; justify-content: center; text-align: left; gap: 0.75rem; width: 100%;">
                     
                     <!-- 배경 효과 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
                     
                     <!-- 아이콘 -->
-                    <div style="position: relative; z-index: 1; font-size: 1.25rem; margin-bottom: 0.25rem;">📋</div>
+                    <div style="position: relative; z-index: 1; flex-shrink: 0;">
+                        <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.12);">
+                            <i class="fas fa-clipboard-list" style="font-size: 1.25rem; color: white;"></i>
+                        </div>
+                    </div>
                     
                     <!-- 텍스트 -->
-                    <div style="position: relative; z-index: 1; color: white;">
+                    <div style="position: relative; z-index: 1; color: white; flex: 1;">
                         <h3 class="text-sm sm:text-base font-black mb-0 leading-tight" style="letter-spacing: -0.02em;">
                             여러 뷰티샵 견적 비교
                         </h3>
-                        <p class="text-xs sm:text-xs opacity-95 font-semibold leading-snug hidden sm:block">
-                            3~5곳 견적 받고 선택하기
+                        <p class="text-xs opacity-90 font-medium leading-snug" style="margin-top: 2px;">
+                            💰 3~5곳 비교해서 최저가 찾기
                         </p>
                     </div>
                 </button>
@@ -2445,7 +2449,9 @@
                     .cta-button-phone,
                     .cta-button-quote {
                         padding: 0.75rem 1rem !important;
-                        min-height: 50px !important;
+                        min-height: 70px !important;
+                        flex-direction: column !important;
+                        text-align: center !important;
                     }
                     .cta-button-phone h3,
                     .cta-button-quote h3 {
@@ -2453,7 +2459,8 @@
                     }
                     .cta-button-phone p,
                     .cta-button-quote p {
-                        font-size: 0.625rem !important;
+                        font-size: 0.7rem !important;
+                        display: block !important;
                     }
                 }
             </style>
@@ -2464,11 +2471,8 @@
         <!-- 상담 및 견적 신청 폼 (슬라이드 방식) -->
         <section id="consultation" class="card-soft section-consultation mb-12 animate-fade-in" style="display: none; max-width: 900px; margin-left: auto; margin-right: auto; padding: 40px; order: 10; /* 폼은 항상 아래 */">
             <div class="text-center mb-8">
-                <button onclick="hideConsultationForm()" class="text-gray-500 hover:text-pink-500 mb-6 transition-colors" style="font-size: 14px;">
-                    <i class="fas fa-arrow-left mr-2"></i>다시 선택하기
-                </button>
-                <h2 class="section-title-soft mb-3 hidden sm:block">피부관리실 상담 및<br> 견적 신청</h2>
-                <p class="text-gray-600 text-base hidden sm:block">강남/홍대/잠실 지역별<br class="sm:hidden"> 맞춤 피부케어 견적을<br class="sm:hidden"> 무료로 받아보세요</p>
+                <h2 class="section-title-soft mb-3">피부관리실 상담 및 견적 신청</h2>
+                <p class="text-gray-600 text-base">맞춤 피부케어 견적을 무료로 받아보세요</p>
             </div>
             
             <!-- 지역별 대표샵 전화 상담 전용 섹션 (v2.8.13) -->
@@ -2574,17 +2578,7 @@
             
             <!-- 상세 상담 및 견적 신청 폼 (v2.8.13.6.62 - Phase 5: 간소화) -->
             <div id="detailedForm" class="space-y-6" style="display: none;">
-                <!-- 뒤로 가기 버튼 -->
-                <div class="flex items-center justify-between mb-6">
-                    <button type="button" class="text-gray-500 hover:text-pink-500 touch-feedback transition-colors" onclick="showSimpleForm()">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        간단한 폼으로 돌아가기
-                    </button>
-                    <div class="text-sm text-gray-500">
-                        <i class="fas fa-clock mr-1"></i>
-                        약 1분 소요
-                    </div>
-                </div>
+
                 
             <form id="consultationForm" class="space-y-5 max-w-2xl mx-auto">
                 
@@ -2624,7 +2618,7 @@
                     </div>
                 </div>
                 
-                <!-- 1. 기본 정보 (간소화) -->
+                <!-- 1. 기본 정보 -->
                 <div class="section-card pink">
                     <div class="question">
                         <i class="fas fa-user question-icon icon-pink"></i>
@@ -2633,103 +2627,178 @@
                     
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">이름</label>
-                            <input type="text" id="customerName" name="customerName" class="input-field-new" placeholder="홍길동" required>
+                            <input type="text" id="customerName" name="customerName" class="input-field-new" placeholder="이름" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
-                            <input type="tel" id="customerPhone" name="customerPhone" class="input-field-new" placeholder="010-1234-5678" required>
+                            <input type="tel" id="customerPhone" name="customerPhone" class="input-field-new" placeholder="전화번호 (010-1234-5678)">
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. 관심 관리 (간소화) -->
+                <!-- 📸 피부 사진 (제일 위로 이동) -->
+                <div class="section-card pink">
+                    <div class="question">
+                        <i class="fas fa-camera question-icon icon-pink"></i>
+                        <span>피부 사진 (선택)</span>
+                    </div>
+                    <p class="helper-text mb-4">트러블 부위 사진이 있으면 더 정확한 상담이 가능해요</p>
+                    
+                    <div class="upload-area-new" onclick="document.getElementById('skinPhotos').click()">
+                        <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-600 font-semibold">클릭하여 사진 선택</p>
+                        <p class="text-sm text-gray-500 mt-1">또는 드래그 앤 드롭</p>
+                    </div>
+                    <input type="file" id="skinPhotos" name="skinPhotos" accept="image/*" multiple style="display:none" onchange="handleSkinPhotoUpload(this)">
+                    <div id="photo-preview" class="mt-3 grid grid-cols-2 gap-2 hidden"></div>
+                </div>
+
+                <!-- 2. 지역 -->
                 <div class="section-card blue">
                     <div class="question">
-                        <i class="fas fa-spa question-icon icon-blue"></i>
-                        <span>어떤 관리에 관심이 있으세요?</span>
+                        <i class="fas fa-map-marker-alt question-icon icon-blue"></i>
+                        <span>어느 지역이신가요?</span>
                     </div>
                     
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
-                        <label class="option-card">
-                            <input type="checkbox" name="treatments" value="여드름/트러블 관리" class="hidden">
-                            <div class="option-content">
-                                <i class="fas fa-band-aid text-2xl mb-2"></i>
-                                <span class="text-sm font-medium">여드름/트러블</span>
-                            </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="customerState" name="customerState" class="input-field-new" required>
+                            <option value="">시/도 선택</option>
+                            <option value="서울특별시">서울특별시</option>
+                            <option value="부산광역시">부산광역시</option>
+                            <option value="대구광역시">대구광역시</option>
+                            <option value="인천광역시">인천광역시</option>
+                            <option value="광주광역시">광주광역시</option>
+                            <option value="대전광역시">대전광역시</option>
+                            <option value="울산광역시">울산광역시</option>
+                            <option value="세종특별자치시">세종특별자치시</option>
+                            <option value="경기도">경기도</option>
+                            <option value="강원특별자치도">강원특별자치도</option>
+                            <option value="충청북도">충청북도</option>
+                            <option value="충청남도">충청남도</option>
+                            <option value="전북특별자치도">전북특별자치도</option>
+                            <option value="전라남도">전라남도</option>
+                            <option value="경상북도">경상북도</option>
+                            <option value="경상남도">경상남도</option>
+                            <option value="제주특별자치도">제주특별자치도</option>
+                        </select>
+                        <select id="customerDistrict" name="customerDistrict" class="input-field-new" required disabled>
+                            <option value="">구/군 선택</option>
+                        </select>
+                    </div>
+                    <p class="helper-text mt-2">시/도를 먼저 선택하시면 구/군을 선택하실 수 있습니다</p>
+                </div>
+
+                <!-- 3. 관심 관리 -->
+                <div class="section-card purple">
+                    <div class="question">
+                        <i class="fas fa-spa question-icon icon-purple"></i>
+                        <span>어떤 관리를 받고 싶으세요?</span>
+                    </div>
+                    <p class="helper-text mb-4">여러 개 선택 가능해요 (클릭하여 선택)</p>
+                    
+                    <div class="checkbox-grid">
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="트러블관리">
+                            <span>트러블관리</span>
                         </label>
-                        <label class="option-card">
-                            <input type="checkbox" name="treatments" value="미백/톤업" class="hidden">
-                            <div class="option-content">
-                                <i class="fas fa-sun text-2xl mb-2"></i>
-                                <span class="text-sm font-medium">미백/톤업</span>
-                            </div>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="베이직관리">
+                            <span>베이직관리</span>
                         </label>
-                        <label class="option-card">
-                            <input type="checkbox" name="treatments" value="주름/리프팅" class="hidden">
-                            <div class="option-content">
-                                <i class="fas fa-magic text-2xl mb-2"></i>
-                                <span class="text-sm font-medium">주름/리프팅</span>
-                            </div>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="여드름">
+                            <span>여드름</span>
                         </label>
-                        <label class="option-card">
-                            <input type="checkbox" name="treatments" value="모공/피부결" class="hidden">
-                            <div class="option-content">
-                                <i class="fas fa-leaf text-2xl mb-2"></i>
-                                <span class="text-sm font-medium">모공/피부결</span>
-                            </div>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="미백/톤업">
+                            <span>미백/톤업</span>
                         </label>
-                        <label class="option-card">
-                            <input type="checkbox" name="treatments" value="보습/진정" class="hidden">
-                            <div class="option-content">
-                                <i class="fas fa-tint text-2xl mb-2"></i>
-                                <span class="text-sm font-medium">보습/진정</span>
-                            </div>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="주름개선">
+                            <span>주름개선</span>
                         </label>
-                        <label class="option-card">
-                            <input type="checkbox" name="treatments" value="기타" class="hidden">
-                            <div class="option-content">
-                                <i class="fas fa-ellipsis-h text-2xl mb-2"></i>
-                                <span class="text-sm font-medium">기타</span>
-                            </div>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="모공관리">
+                            <span>모공관리</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="리프팅">
+                            <span>리프팅</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="바디관리">
+                            <span>바디관리</span>
+                        </label>
+                        <label class="checkbox-option" onclick="toggleCheckbox(this)">
+                            <input type="checkbox" name="treatment" value="모름/기타">
+                            <span>모름/기타</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- 3. 지역 선택 (간소화) -->
+                <!-- 4. 예산 -->
                 <div class="section-card green">
                     <div class="question">
-                        <i class="fas fa-map-marker-alt question-icon icon-green"></i>
-                        <span>관리받고 싶은 지역</span>
+                        <i class="fas fa-won-sign question-icon icon-green"></i>
+                        <span>예산은 어느 정도인가요?</span>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">시/도</label>
-                            <select id="state" name="state" class="input-field-new" required>
-                                <option value="">선택하세요</option>
-                                <option value="서울특별시">서울특별시</option>
-                                <option value="부산광역시">부산광역시</option>
-                                <option value="대구광역시">대구광역시</option>
-                                <option value="인천광역시">인천광역시</option>
-                                <option value="경기도">경기도</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">시/군/구</label>
-                            <select id="district" name="district" class="input-field-new" disabled required>
-                                <option value="">먼저 시/도 선택</option>
-                            </select>
+                    <select id="budget" name="budget" class="input-field-new" required>
+                        <option value="">선택하세요</option>
+                        <option value="5만원 이하">5만원 이하</option>
+                        <option value="5-10만원">5-10만원</option>
+                        <option value="10-20만원">10-20만원</option>
+                        <option value="20-30만원">20-30만원</option>
+                        <option value="30만원 이상">30만원 이상</option>
+                    </select>
+                </div>
+
+                <!-- 5. 피부 상태 -->
+                <div class="section-card orange">
+                    <div class="question">
+                        <i class="fas fa-heart question-icon icon-orange"></i>
+                        <span>현재 피부 상태를 알려주세요 (선택)</span>
+                    </div>
+                    
+                    <textarea id="skinCondition" name="skinCondition" rows="4" class="input-field-new resize-none" placeholder="현재 피부 고민이나 상태를 자세히 적어주세요&#10;예) 이마와 볼에 여드름이 자주 생기고, T존이 기름져요."></textarea>
+                </div>
+
+                <!-- 6. 추가 요청사항 -->
+                <div class="section-card blue">
+                    <div class="question">
+                        <i class="fas fa-comment-dots question-icon icon-blue"></i>
+                        <span>추가 요청사항 (선택)</span>
+                    </div>
+                    
+                    <textarea id="importantFactors" name="importantFactors" rows="4" class="input-field-new resize-none" placeholder="특별히 원하는 사항을 자유롭게 적어주세요&#10;예) 금액, 위생, 직원 전문성, 시설, 위치, 후기 등"></textarea>
+                </div>
+
+                <!-- 긴급 예약 옵션 (Phase 1) -->
+                <div class="section-card" style="background: linear-gradient(135deg, #FFF5F7 0%, #FFE5EC 100%); border: 2px solid #FF6B9D;">
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="urgentReservation" name="urgentReservation" 
+                               class="mt-1 w-5 h-5 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                               style="accent-color: #FF2D92;">
+                        <div class="flex-1">
+                            <label for="urgentReservation" class="cursor-pointer">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <i class="fas fa-bolt text-orange-500 text-lg"></i>
+                                    <span class="font-bold text-gray-900 text-base">오늘/내일 긴급 예약 희망</span>
+                                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">빠른 매칭</span>
+                                </div>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    빈 시간이 있는 샵을 우선으로 매칭해드립니다.<br>
+                                    긴급 예약 요청은 <strong class="text-pink-600">샵에서 먼저 확인</strong>하게 됩니다!
+                                </p>
+                            </label>
                         </div>
                     </div>
                 </div>
-                </div>
 
-                <!-- 제출 버튼 (Phase 5: 간소화) -->
+                <!-- 제출 버튼 -->
                 <div class="flex justify-center mt-8">
-                    <button type="submit" class="submit-btn" style="font-size: 18px !important; padding: 18px 48px !important; font-weight: 700 !important; min-width: 240px !important; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px;">
+                    <button type="submit" class="submit-btn" style="font-size: 20px !important; padding: 20px 60px !important; font-weight: 700 !important; min-width: 280px !important;">
                         <i class="fas fa-paper-plane mr-2"></i>
-                        무료 견적 받기
+                        상담 신청하기
                     </button>
                 </div>
             </form>
@@ -3421,21 +3490,36 @@
             // user_type 우선, 없으면 currentUser에서 가져오기
             let userType = localStorage.getItem('user_type');
             
+            // 🔍 디버깅: 저장된 값 확인
+            console.log('🔍 goToDashboard 호출됨');
+            console.log('user_type:', userType);
+            console.log('localStorage 전체:', {
+                session_token: localStorage.getItem('session_token'),
+                user_data: localStorage.getItem('user_data'),
+                currentUser: localStorage.getItem('currentUser'),
+                user_type: localStorage.getItem('user_type')
+            });
+            
             if (!userType) {
                 // user_type이 없으면 currentUser 또는 user_data에서 가져오기
                 const currentUser = JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user_data') || 'null');
+                console.log('currentUser 객체:', currentUser);
                 if (currentUser && currentUser.user_type) {
                     userType = currentUser.user_type;
                     // user_type을 localStorage에 저장 (다음번을 위해)
                     localStorage.setItem('user_type', userType);
+                    console.log('✅ user_type 복구:', userType);
                 }
             }
             
             if (!userType) {
+                console.error('❌ user_type을 찾을 수 없습니다!');
                 alert('로그인이 필요합니다.');
                 location.href = 'login.html';
                 return;
             }
+            
+            console.log('✅ 리다이렉트:', userType, '→', `${userType === 'customer' ? 'customer' : userType === 'shop' || userType === 'shop_owner' ? 'shop' : 'admin'}-dashboard.html`);
             
             // 사용자 타입에 따라 대시보드로 이동
             switch(userType) {
@@ -3443,6 +3527,7 @@
                     location.href = 'customer-dashboard.html';
                     break;
                 case 'shop':
+                case 'shop_owner':
                     location.href = 'shop-dashboard.html';
                     break;
                 case 'admin':
