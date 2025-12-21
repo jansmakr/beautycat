@@ -272,6 +272,9 @@ async function viewAnnouncement(type, announcementId) {
         document.getElementById('modal-shop-name').textContent = announcement.shop_name || '업체명';
         document.getElementById('modal-location').textContent = `${announcement.state || ''} ${announcement.district || ''}`.trim();
         shopInfo.classList.remove('hidden');
+        
+        // v2.8.13.6.63: 카카오톡/전화 상담 버튼 표시
+        showContactButtons(announcement);
     }
     
     // v2.8.13.6.60: 관리자 확인 및 삭제 버튼 표시
@@ -291,10 +294,61 @@ async function viewAnnouncement(type, announcementId) {
     incrementViews(type, announcementId);
 }
 
+// v2.8.13.6.63: 카카오톡/전화 상담 버튼 표시
+function showContactButtons(announcement) {
+    // 기존 버튼 컨테이너가 있으면 제거
+    const existingContainer = document.getElementById('contact-buttons-container');
+    if (existingContainer) {
+        existingContainer.remove();
+    }
+    
+    // 버튼 컨테이너 생성
+    const container = document.createElement('div');
+    container.id = 'contact-buttons-container';
+    container.className = 'mt-6 pt-4 border-t border-gray-200 flex flex-col sm:flex-row gap-3';
+    
+    // 카카오톡 버튼 (URL이 있는 경우만)
+    if (announcement.kakao_channel_url) {
+        const kakaoBtn = document.createElement('a');
+        kakaoBtn.href = announcement.kakao_channel_url;
+        kakaoBtn.target = '_blank';
+        kakaoBtn.className = 'flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold rounded-lg transition-all shadow-md';
+        kakaoBtn.innerHTML = `
+            <span style="font-size: 20px;">💬</span>
+            <span>카카오톡 상담</span>
+        `;
+        container.appendChild(kakaoBtn);
+    }
+    
+    // 전화 버튼 (전화번호가 있는 경우만)
+    if (announcement.shop_phone) {
+        const phoneBtn = document.createElement('a');
+        phoneBtn.href = `tel:${announcement.shop_phone}`;
+        phoneBtn.className = 'flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-lg transition-all shadow-md';
+        phoneBtn.innerHTML = `
+            <span style="font-size: 20px;">📞</span>
+            <span>전화 상담</span>
+        `;
+        container.appendChild(phoneBtn);
+    }
+    
+    // 버튼이 하나라도 있으면 모달 컨텐츠에 추가
+    if (container.children.length > 0) {
+        const modalContent = document.getElementById('modal-content');
+        modalContent.parentElement.insertBefore(container, modalContent.nextSibling);
+    }
+}
+
 // 모달 닫기
 function closeDetailModal() {
     document.getElementById('detail-modal').classList.add('hidden');
     currentAnnouncementForModal = null;
+    
+    // v2.8.13.6.63: 상담 버튼 제거
+    const contactButtons = document.getElementById('contact-buttons-container');
+    if (contactButtons) {
+        contactButtons.remove();
+    }
     
     // v2.8.13.6.60: 삭제 버튼 숨기기
     const deleteBtn = document.getElementById('delete-announcement-btn');
