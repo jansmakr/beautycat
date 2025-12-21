@@ -1980,6 +1980,46 @@
         </div>
     </header>
 
+    <!-- ========== 상단 띠 배너 (v2.8.13.6.62 - Phase 1) ========== -->
+    <div class="announcement-marquee" data-version="v2.8.13.6.62" style="background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%); border-bottom: 1px solid #FFD4E5; padding: 10px 0; overflow: hidden;">
+        <div class="marquee-content" style="display: flex; animation: marqueeScroll 30s linear infinite; white-space: nowrap;">
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+                🎉 신규 회원 첫 시술 20% 할인 이벤트 진행 중!
+            </span>
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+                ✨ 베타 테스트 참여 고객님께 특별 쿠폰 지급
+            </span>
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+                🔥 이번 주 인기 샵 BEST 3 확인하기
+            </span>
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+                🎉 신규 회원 첫 시술 20% 할인 이벤트 진행 중!
+            </span>
+            <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #FF1493;">
+                ✨ 베타 테스트 참여 고객님께 특별 쿠폰 지급
+            </span>
+        </div>
+    </div>
+    <style>
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-content {
+            animation-timing-function: linear;
+            will-change: transform;
+        }
+        @media (max-width: 768px) {
+            .announcement-marquee {
+                padding: 8px 0;
+            }
+            .announcement-marquee span {
+                font-size: 13px !important;
+            }
+        }
+    </style>
+    <!-- ========== 상단 띠 배너 끝 ========== -->
+
     <!-- 로그인/회원가입 선택 모달 -->
     <div id="authModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; align-items: center; justify-content: center;">
         <div style="background: white; border-radius: 24px; padding: 2.5rem; max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); position: relative; animation: modalSlideUp 0.3s ease-out;">
@@ -2093,12 +2133,17 @@
         let slideInterval = null;
         let isAutoSliding = true;
         
-        // 공지사항 최신 4개 로드 및 4줄 텍스트 표시 (v2.8.13.6.36 - 운영자+샵 공지 통합)
+        // 공지사항을 매거진 카드로 표시 (v2.8.13.6.62 - Phase 1)
         async function loadAnnouncementSlider() {
-            const container = document.getElementById('announcements-slider');
+            const container = document.getElementById('magazine-cards');
+            
+            if (!container) {
+                console.warn('[매거진] container not found');
+                return;
+            }
             
             try {
-                console.log('[공지사항] v2.8.13.6.50 - 가로 슬라이더 (A+B+C 레이아웃)');
+                console.log('[매거진 v2.8.13.6.62] 카드 형식으로 변경');
                 
                 // 1. 운영자 공지 로드
                 const response1 = await fetch('tables/announcements?limit=10&sort=-created_at&_nocache=' + Date.now());
@@ -2110,88 +2155,81 @@
                 const data2 = response2.ok ? await response2.json() : { data: [] };
                 const shopAnnouncements = data2.data || [];
                 
-                console.log('[공지사항 v2.8.13.6.50] 운영자 공지:', adminAnnouncements.length, '개 / 샵 공지:', shopAnnouncements.length, '개');
+                console.log('[매거진] 운영자:', adminAnnouncements.length, '/ 샵:', shopAnnouncements.length);
                 
-                // 3. 운영자 공지와 샵 공지 분리 처리 (v2.8.13.6.40: 운영자 1번 고정, 샵 2개)
-                // 3-1. 운영자 공지 필터링
-                const filteredAdminAnnouncements = adminAnnouncements.filter(ann => {
-                    const isPublished = ann.is_published === true || ann.is_published === 1;
-                    const isTargetCustomer = ann.target_audience === 'customers' || ann.target_audience === 'all';
-                    return isPublished && isTargetCustomer;
-                });
+                // 3. 필터링
+                const filteredAdmin = adminAnnouncements.filter(ann => 
+                    (ann.is_published === true || ann.is_published === 1) &&
+                    (ann.target_audience === 'customers' || ann.target_audience === 'all')
+                ).slice(0, 1); // 운영자 1개
                 
-                // 3-2. 샵 공지 필터링 (target_audience 체크 안 함)
-                const filteredShopAnnouncements = shopAnnouncements.filter(ann => {
-                    const isPublished = ann.is_published === true || ann.is_published === 1;
-                    return isPublished;  // 샵 공지는 게시 중이면 모두 표시
-                });
+                const filteredShop = shopAnnouncements.filter(ann => 
+                    ann.is_published === true || ann.is_published === 1
+                ).slice(0, 2); // 샵 2개
                 
-                // 4. 운영자 공지: 최신 1개만 선택 (항상 1번 위치 고정)
-                const topAdminAnnouncement = filteredAdminAnnouncements.slice(0, 1);
+                // 4. 합치기
+                const allAnnouncements = [...filteredAdmin, ...filteredShop];
                 
-                // 5. 샵 공지: 최신 2개만 선택 (2~3번 위치)
-                const topShopAnnouncements = filteredShopAnnouncements.slice(0, 2);
-                
-                console.log('[공지사항 v2.8.13.6.40] 필터링 - 운영자:', filteredAdminAnnouncements.length, '개 → 선택:', topAdminAnnouncement.length, '개 / 샵:', filteredShopAnnouncements.length, '개 → 선택:', topShopAnnouncements.length, '개');
-                
-                // 6. 최종 배치: [운영자 1개] + [샵 2개] = 3줄 (v2.8.13.6.40)
-                announcementSlides = [...topAdminAnnouncement, ...topShopAnnouncements];
-                
-                console.log('[공지사항 v2.8.13.6.40] 최종 배치: 1번(운영자) + 2~3번(샵) = 총', announcementSlides.length, '개', announcementSlides);
-                
-                // v2.8.13.6.38: 5개 미만이면 더미 데이터로 채우기
-                const dummyAnnouncements = [
-                    {
-                        title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
-                        is_pinned: true,
-                        priority: 'high',
-                        target_audience: 'all'  // 운영자 공지 구분용
-                    },
-                    {
-                        title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
-                        priority: 'normal'
-                    },
-                    {
-                        title: '⭐ 강남·홍대·잠실 인증샵 1분 매칭 서비스 오픈',
-                        priority: 'normal'
-                    },
-                    {
-                        title: '🔥 겨울 스페셜 프로모션 - 피부관리 최대 30% 할인',
-                        priority: 'urgent'
-                    },
-                    {
-                        title: '💄 최신 피부관리 트렌드 & 케어 팁',
-                        priority: 'normal'
-                    }
-                ];
-                
-                // 7. 5개 미만이면 더미 데이터로 채우기 (v2.8.13.6.38)
-                if (announcementSlides.length < 5) {
-                    console.warn(`[공지사항 v2.8.13.6.38] 실제 데이터 ${announcementSlides.length}개 → 더미로 5개 채움`);
-                    const neededDummies = 5 - announcementSlides.length;
-                    announcementSlides = [...announcementSlides, ...dummyAnnouncements.slice(0, neededDummies)];
+                // 5. 카드 렌더링
+                if (allAnnouncements.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #9CA3AF;">
+                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p>아직 등록된 소식이 없습니다</p>
+                        </div>
+                    `;
+                    return;
                 }
                 
-                // 🔥 v2.8.13.6.38: 강제로 최소 5개 보장
-                if (announcementSlides.length === 0) {
-                    console.warn('[공지사항 v2.8.13.6.38] API 데이터 없음 → 더미 5개 사용');
-                    announcementSlides = dummyAnnouncements;
-                }
+                container.innerHTML = allAnnouncements.map((ann, index) => {
+                    const isAdmin = ann.target_audience === 'customers' || ann.target_audience === 'all';
+                    const badge = isAdmin ? '운영진' : '샵 소식';
+                    const badgeColor = isAdmin ? '#FF1493' : '#10B981';
+                    const date = ann.created_at ? new Date(ann.created_at).toLocaleDateString('ko-KR') : '최근';
+                    const views = ann.views || 0;
+                    const title = ann.title || '제목 없음';
+                    
+                    return `
+                        <div class="magazine-card" onclick="window.location.href='announcements.html'" data-version="v2.8.13.6.62">
+                            <div class="magazine-card-image" style="display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                                ${isAdmin ? '👑' : '🏪'}
+                            </div>
+                            <div class="magazine-card-badge" style="background: ${badgeColor};">
+                                ${badge}
+                            </div>
+                            <div class="magazine-card-content">
+                                <div class="magazine-card-title">${escapeHtml(title)}</div>
+                                <div class="magazine-card-date">
+                                    <i class="far fa-calendar"></i> ${date}
+                                </div>
+                                <div class="magazine-card-views">
+                                    <i class="far fa-eye"></i> 조회 ${views}회
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
                 
-                console.log('[공지사항 v2.8.13.6.38] ✅ 최종 5줄: 1번(운영자) + 2~5번(샵 최신순)', announcementSlides);
-                
-                // v2.8.13.6.28: 모바일/데스크탑 모두 4줄 텍스트 표시 (슬라이드 제거)
-                showSlide(0);
+                console.log('[매거진 v2.8.13.6.62] ✅ 카드 렌더링 완료:', allAnnouncements.length, '개');
                 
             } catch (error) {
-                console.error('[공지사항 v2.8.13.6.38] 로드 실패:', error);
-                // API 실패 시 더미 데이터 5개 표시 (v2.8.13.6.38)
-                announcementSlides = [
-                    {
-                        title: '🎉 베타 테스트 기간 무료 이용 안내 (~2026.03.30)',
-                        is_pinned: true,
-                        priority: 'high',
-                        target_audience: 'all'
+                console.error('[매거진] 로드 실패:', error);
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #EF4444;">
+                        <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>소식을 불러오는데 실패했습니다</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // HTML 이스케이프 함수
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
                     },
                     {
                         title: '💝 신규 회원 가입 시 10% 할인 쿠폰 제공',
@@ -2218,120 +2256,23 @@
             }
         }
         
+        /* v2.8.13.6.62 - Phase 1: 이하 슬라이드 함수들 사용 안 함 (매거진 카드로 대체)
         function showSlide(index) {
-            console.warn('🔥 showSlide 실행: v2.8.13.6.50 (A+B+C 레이아웃 + 야놀자 스타일)');
-            const container = document.getElementById('announcements-slider');
-            
-            // 슬라이드 범위 체크
-            if (index >= announcementSlides.length) {
-                currentSlideIndex = 0;
-            } else if (index < 0) {
-                currentSlideIndex = announcementSlides.length - 1;
-            } else {
-                currentSlideIndex = index;
-            }
-            
-            // 현재 공지 가져오기
-            const ann = announcementSlides[currentSlideIndex];
-            const icon = ann.is_pinned ? '📌' : (ann.priority === 'urgent' ? '🚨' : '📢');
-            const isMobile = window.innerWidth < 640;
-            
-            // v2.8.13.6.58: 디자인 2 (미니 배너 스타일)
-            if (isMobile) {
-                // 모바일: 짧게
-                const maxLength = 25;
-                const rawTitle = ann.title || '제목 없음';
-                const title = rawTitle.length > maxLength 
-                    ? rawTitle.substring(0, maxLength) + '~' 
-                    : rawTitle;
-                
-                container.innerHTML = `
-                    <div class="w-full max-w-3xl mx-auto" data-version="v2.8.13.6.58" data-type="mobile" style="background: linear-gradient(135deg, #FFF5F7 0%, #FFE6EC 100%); border-radius: 12px; padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <span style="background: white; color: #FF1493; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px;">SHOP EVENT</span>
-                        </div>
-                        <div onclick="window.location.href='announcements.html'" style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
-                            <span style="font-size: 16px; flex-shrink: 0;">${icon}</span>
-                            <p style="font-size: 14px; font-weight: 600; color: #111; margin: 0; word-break: keep-all; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">${escapeHtml(title)}</p>
-                        </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 4px;">
-                                ${Array.from({length: announcementSlides.length}, (_, i) => 
-                                    i === currentSlideIndex 
-                                        ? '<span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #FF1493;">●</span>' 
-                                        : '<span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #FFB6D9;">○</span>'
-                                ).join('')}
-                            </div>
-                            <a href="announcements.html" style="font-size: 11px; color: #FF1493; text-decoration: none; font-weight: 600;">전체보기 →</a>
-                        </div>
-                    </div>
-                `;
-                console.warn('✅ 모바일 배너 렌더링 완료: v2.8.13.6.58 (디자인 2 - 미니 배너) - ${currentSlideIndex + 1}/${announcementSlides.length}');
-            } else {
-                // 데스크탑: 더 긴 제목
-                const maxLength = 50;
-                const rawTitle = ann.title || '제목 없음';
-                const title = rawTitle.length > maxLength 
-                    ? rawTitle.substring(0, maxLength) + '~' 
-                    : rawTitle;
-                
-                container.innerHTML = `
-                    <div class="w-full max-w-md mx-auto" data-version="v2.8.13.6.58" data-type="desktop" style="background: linear-gradient(135deg, #FFF5F7 0%, #FFE6EC 100%); border-radius: 12px; padding: 16px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                            <span style="background: white; color: #FF1493; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 5px; letter-spacing: 0.5px;">SHOP EVENT</span>
-                        </div>
-                        <div onclick="window.location.href='announcements.html'" style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-bottom: 12px;">
-                            <span style="font-size: 18px; flex-shrink: 0;">${icon}</span>
-                            <p style="font-size: 16px; font-weight: 600; color: #111; margin: 0; word-break: keep-all; line-height: 1.5;">${escapeHtml(title)}</p>
-                        </div>
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 5px;">
-                                ${Array.from({length: announcementSlides.length}, (_, i) => 
-                                    i === currentSlideIndex 
-                                        ? '<span style="display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #FF1493;">●</span>' 
-                                        : '<span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #FFB6D9;">○</span>'
-                                ).join('')}
-                            </div>
-                            <a href="announcements.html" style="font-size: 13px; color: #FF1493; text-decoration: none; font-weight: 600;">전체보기 →</a>
-                        </div>
-                    </div>
-                `;
-                console.warn('✅ 데스크탑 배너 렌더링 완료: v2.8.13.6.58 (디자인 2 - 미니 배너) - ${currentSlideIndex + 1}/${announcementSlides.length}');
-            }
-            
-            // 자동 슬라이드 재시작
-            startAutoSlide();
+            // 주석 처리됨
         }
         
-        // 이전 슬라이드
         function prevSlide() {
-            isAutoSliding = false;
-            showSlide(currentSlideIndex - 1);
+            // 주석 처리됨
         }
         
-        // 다음 슬라이드
         function nextSlide() {
-            isAutoSliding = false;
-            showSlide(currentSlideIndex + 1);
+            // 주석 처리됨
         }
         
-        // 자동 슬라이드 시작
         function startAutoSlide() {
-            if (slideInterval) {
-                clearInterval(slideInterval);
-            }
-            slideInterval = setInterval(() => {
-                if (isAutoSliding) {
-                    showSlide(currentSlideIndex + 1);
-                }
-            }, 3000); // 3초마다
+            // 주석 처리됨
         }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        */
         
         // DOM 로드 후 실행
         if (document.readyState === 'loading') {
@@ -2387,15 +2328,95 @@
             </div>
         </section>
         
-        <!-- 🅱️ B. 샵 이벤트 영역 (v2.8.13.6.58 - 중앙 정렬 최종 수정) -->
-        <section class="shop-announcements-banner border-b border-gray-200" data-version="2.8.13.6.58" style="background: transparent; order: 1; margin-bottom: 1.5rem;">
-            <div id="announcements-slider" class="w-full" data-render="v2.8.13.6.58">
-                <!-- 로딩 중 v2.8.13.6.58 -->
-                <p class="text-xs sm:text-sm text-gray-600 text-center">
-                    <i class="fas fa-spinner fa-spin mr-1"></i> 공지사항 로딩 중... (v2.8.13.6.58)
-                </p>
+        <!-- 🅱️ B. 샵 이벤트 영역 (v2.8.13.6.62 - Phase 1: 매거진 스타일) -->
+        <section class="shop-announcements-magazine" data-version="v2.8.13.6.62" style="order: 1; margin-bottom: 2rem;">
+            <div class="max-w-6xl mx-auto px-4">
+                <!-- 섹션 헤더 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1F2937;">
+                        📰 이번 주 뷰티 트렌드
+                    </h2>
+                    <a href="announcements.html" style="font-size: 0.9rem; color: #FF1493; font-weight: 600; text-decoration: none;">
+                        전체보기 →
+                    </a>
+                </div>
+                
+                <!-- 매거진 카드 그리드 -->
+                <div id="magazine-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                    <!-- 로딩 중 -->
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #6B7280;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>최신 소식 불러오는 중...</p>
+                    </div>
+                </div>
             </div>
         </section>
+        <style>
+            /* 매거진 카드 스타일 (v2.8.13.6.62) */
+            .magazine-card {
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                position: relative;
+            }
+            .magazine-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            }
+            .magazine-card-image {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                background: linear-gradient(135deg, #FFF5F7 0%, #FFE6EC 100%);
+            }
+            .magazine-card-content {
+                padding: 1.25rem;
+            }
+            .magazine-card-badge {
+                position: absolute;
+                top: 12px;
+                left: 12px;
+                background: rgba(255, 20, 147, 0.95);
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                box-shadow: 0 2px 8px rgba(255, 20, 147, 0.3);
+            }
+            .magazine-card-title {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: #1F2937;
+                margin-bottom: 0.5rem;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .magazine-card-date {
+                font-size: 0.85rem;
+                color: #9CA3AF;
+                margin-bottom: 0.5rem;
+            }
+            .magazine-card-views {
+                font-size: 0.85rem;
+                color: #6B7280;
+            }
+            @media (max-width: 768px) {
+                #magazine-cards {
+                    grid-template-columns: 1fr !important;
+                }
+                .magazine-card-image {
+                    height: 160px;
+                }
+            }
+        </style>
         <!-- 🅲️ C. 가치 제안 배너 (히어로 섹션) (v2.8.13.6.56 - order 4) -->
         <section class="hero-section gradient-soft-pink rounded-3xl p-6 sm:p-16 mb-4 sm:mb-6 animate-fade-in" style="margin-left: auto; margin-right: auto; order: 4;">
             <div class="max-w-4xl mx-auto text-center">
