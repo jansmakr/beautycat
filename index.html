@@ -1983,19 +1983,25 @@
                     
                     <!-- 로그인 후 (숨김 상태로 시작) -->
                     <div id="loggedInMenu" class="hidden items-center gap-2">
+                        <!-- 로그인 중 표시 (사용자 이름) -->
+                        <div id="userNameDisplay" class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
+                            <span style="font-size: 20px;">👤</span>
+                            <span class="text-sm font-semibold text-gray-800" id="displayName">로그인 중</span>
+                        </div>
+                        
                         <!-- 홈 버튼 -->
-                        <button onclick="location.href='index.html'" class="mobile-menu-btn px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-all" title="홈으로">
-                            <i class="fas fa-home mobile-menu-icon"></i><span class="mobile-menu-text">홈</span>
+                        <button onclick="location.href='index.html'" class="mobile-menu-btn p-2 text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-all" title="홈으로">
+                            <span style="font-size: 22px;">🏠</span>
                         </button>
                         
                         <!-- 마이페이지 버튼 -->
-                        <button id="dashboardBtn" onclick="goToDashboard()" class="mobile-menu-btn px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-all" title="마이페이지">
-                            <i class="fas fa-user mobile-menu-icon"></i><span class="mobile-menu-text">마이페이지</span>
+                        <button id="dashboardBtn" onclick="goToDashboard()" class="mobile-menu-btn p-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:from-pink-600 hover:to-purple-600 rounded-lg transition-all shadow-md" title="마이페이지">
+                            <span style="font-size: 22px;">📋</span>
                         </button>
                         
                         <!-- 로그아웃 버튼 -->
-                        <button onclick="handleLogout()" class="mobile-menu-btn px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="로그아웃">
-                            <i class="fas fa-sign-out-alt mobile-menu-icon"></i><span class="mobile-menu-text">로그아웃</span>
+                        <button onclick="handleLogout()" class="mobile-menu-btn p-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="로그아웃">
+                            <span style="font-size: 22px;">🚪</span>
                         </button>
                     </div>
                 </div>
@@ -3469,12 +3475,27 @@
             
             const loginBtn = document.getElementById('loginBtn');
             const loggedInMenu = document.getElementById('loggedInMenu');
+            const displayNameEl = document.getElementById('displayName');
             
             if (token && userDataStr && userType) {
                 // 로그인 상태
                 loginBtn.classList.add('hidden');
                 loggedInMenu.classList.remove('hidden');
                 loggedInMenu.classList.add('flex');
+                
+                // 사용자 이름 표시
+                try {
+                    const userData = JSON.parse(userDataStr);
+                    const userName = userData.name || userData.email || '사용자';
+                    if (displayNameEl) {
+                        displayNameEl.textContent = userName + ' 님';
+                    }
+                } catch (e) {
+                    console.error('사용자 데이터 파싱 실패:', e);
+                    if (displayNameEl) {
+                        displayNameEl.textContent = '로그인 중';
+                    }
+                }
                 
                 console.log('✅ 로그인 상태:', userType);
             } else {
