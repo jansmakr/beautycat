@@ -33,15 +33,15 @@
 .marquee-content,
 .announcement-marquee .marquee-content,
 #announcement-marquee .marquee-content {
-    animation-duration: 90s !important;  /* 90초로 천천히 */
+    animation-duration: 30s !important;  /* 30초로 빠르게 */
 }
 
 /* @media (prefers-reduced-motion: reduce) */
-/* 마퀴 배너는 예외 - 항상 느리게 */
+/* 마퀴 배너는 예외 - 항상 적당히 */
 .marquee-content,
 .announcement-marquee .marquee-content,
 #announcement-marquee .marquee-content {
-    animation-duration: 90s !important;
+    animation-duration: 30s !important;
 }
 ```
 
@@ -147,7 +147,7 @@ git commit -m "🔧 v2.8.13.6.63: 견적 폼 복원 & 마퀴 속도 & 로그인 
 - 입력 항목 복원: 피부사진📸, 예산, 피부상태, 추가요청사항, 긴급예약
 - 관심 관리: 9가지 체크박스, 지역: 17개 시/도
 
-🐛 샵공지 마퀴 속도 수정 (0.1s → 90s)
+🐛 샵공지 마퀴 속도 수정 (0.1s → 30s)
 
 ✨ 로그인 메뉴 UI 개선
 - 👤 사용자 이름 표시 (핑크/퍼플 그라데이션)
@@ -186,11 +186,11 @@ https://beautycat.kr/?v=20251221_v2.8.13.6.63&nocache=true
 ### 3단계: 기능 검증 체크리스트
 
 #### ✅ 마퀴 배너 속도
-- [ ] 샵공지 배너가 **90초 동안 천천히** 스크롤되는지 확인
+- [ ] 샵공지 배너가 **30초 동안 빠르게** 스크롤되는지 확인
 - [ ] 브라우저 콘솔에서 확인:
 ```javascript
 console.log(window.getComputedStyle(document.querySelector('.marquee-content')).animationDuration);
-// 결과: "90s" (✅ 정상) / "0.15s" (❌ 문제)
+// 결과: "30s" (✅ 정상) / "0.15s" (❌ 문제)
 ```
 - [ ] 샵공지 배너 클릭 시 `announcements.html`로 이동
 

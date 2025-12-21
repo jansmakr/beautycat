@@ -13,7 +13,7 @@
 /* 마퀴 배너는 예외 - 느리게 스크롤 */
 .marquee-content,
 .announcement-marquee .marquee-content {
-    animation-duration: 90s !important; /* 90초로 천천히 */
+    animation-duration: 30s !important; /* 90초로 천천히 */
 }
 
 /* 페이지 전환 속도 향상 */
@@ -167,7 +167,7 @@ button:hover,
     .marquee-content,
     .announcement-marquee .marquee-content,
     #announcement-marquee .marquee-content {
-        animation-duration: 90s !important;
+        animation-duration: 30s !important;
     }
 }
 
@@ -184,7 +184,7 @@ button:hover,
     .marquee-content,
     .announcement-marquee .marquee-content,
     #announcement-marquee .marquee-content {
-        animation-duration: 90s !important;
+        animation-duration: 30s !important;
     }
 }
 
