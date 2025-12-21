@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>조회수 일괄 설정 - BeautyCat</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #FF1493;
+            margin-bottom: 20px;
+        }
+        button {
+            background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .log div {
+            margin: 5px 0;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #007bff; }
+        .warning { color: #ffc107; }
+        .stats {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .stats h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 조회수 일괄 설정 도구</h1>
+        <p>모든 공지사항의 조회수를 400~1000 사이의 랜덤 값으로 설정합니다.</p>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <h3>📈 통계</h3>
+            <p><strong>운영진 공지:</strong> <span id="adminCount">0</span>개</p>
+            <p><strong>업체 소식:</strong> <span id="shopCount">0</span>개</p>
+            <p><strong>총 공지:</strong> <span id="totalCount">0</span>개</p>
+        </div>
+        
+        <button id="loadBtn" onclick="loadAnnouncements()">1. 공지사항 불러오기</button>
+        <button id="updateBtn" onclick="updateViews()" disabled>2. 조회수 일괄 업데이트</button>
+        <button onclick="clearLog()">로그 지우기</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        let adminAnnouncements = [];
+        let shopAnnouncements = [];
+        let usedViews = new Set(); // 중복 방지
+        
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(div);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+        
+        // 중복 없는 랜덤 조회수 생성 (400~1000)
+        function getUniqueRandomViews() {
+            let views;
+            do {
+                views = Math.floor(Math.random() * (1000 - 400 + 1)) + 400;
+            } while (usedViews.has(views));
+            
+            usedViews.add(views);
+            return views;
+        }
+        
+        // 공지사항 불러오기
+        async function loadAnnouncements() {
+            const loadBtn = document.getElementById('loadBtn');
+            loadBtn.disabled = true;
+            loadBtn.textContent = '불러오는 중...';
+            
+            clearLog();
+            log('🚀 공지사항 불러오기 시작', 'info');
+            
+            try {
+                // 운영진 공지
+                log('📋 운영진 공지 조회 중...', 'info');
+                const adminRes = await fetch('tables/announcements?limit=1000');
+                if (adminRes.ok) {
+                    const adminData = await adminRes.json();
+                    adminAnnouncements = adminData.data || [];
+                    log(`✅ 운영진 공지 ${adminAnnouncements.length}개 불러옴`, 'success');
+                } else {
+                    log(`⚠️ 운영진 공지 불러오기 실패: ${adminRes.status}`, 'warning');
+                    adminAnnouncements = [];
+                }
+                
+                // 업체 소식
+                log('🏪 업체 소식 조회 중...', 'info');
+                const shopRes = await fetch('tables/shop_announcements?limit=1000');
+                if (shopRes.ok) {
+                    const shopData = await shopRes.json();
+                    shopAnnouncements = shopData.data || [];
+                    log(`✅ 업체 소식 ${shopAnnouncements.length}개 불러옴`, 'success');
+                } else {
+                    log(`⚠️ 업체 소식 불러오기 실패: ${shopRes.status}`, 'warning');
+                    shopAnnouncements = [];
+                }
+                
+                const total = adminAnnouncements.length + shopAnnouncements.length;
+                
+                // 통계 표시
+                document.getElementById('adminCount').textContent = adminAnnouncements.length;
+                document.getElementById('shopCount').textContent = shopAnnouncements.length;
+                document.getElementById('totalCount').textContent = total;
+                document.getElementById('stats').style.display = 'block';
+                
+                log(`📊 총 ${total}개 공지사항 불러오기 완료`, 'success');
+                
+                // 업데이트 버튼 활성화
+                if (total > 0) {
+                    document.getElementById('updateBtn').disabled = false;
+                    log('✅ "조회수 일괄 업데이트" 버튼 클릭 가능', 'info');
+                } else {
+                    log('⚠️ 공지사항이 없습니다', 'warning');
+                }
+                
+            } catch (error) {
+                log(`❌ 오류 발생: ${error.message}`, 'error');
+            } finally {
+                loadBtn.disabled = false;
+                loadBtn.textContent = '1. 공지사항 불러오기';
+            }
+        }
+        
+        // 조회수 일괄 업데이트
+        async function updateViews() {
+            const updateBtn = document.getElementById('updateBtn');
+            
+            if (!confirm(`총 ${adminAnnouncements.length + shopAnnouncements.length}개의 공지사항 조회수를 업데이트하시겠습니까?\n\n각 공지마다 400~1000 사이의 고유한 랜덤 값이 설정됩니다.`)) {
+                return;
+            }
+            
+            updateBtn.disabled = true;
+            updateBtn.textContent = '업데이트 중...';
+            
+            usedViews.clear(); // 중복 방지 초기화
+            
+            log('🔄 조회수 일괄 업데이트 시작', 'info');
+            log('', 'info');
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            // 운영진 공지 업데이트
+            if (adminAnnouncements.length > 0) {
+                log('📋 운영진 공지 업데이트 중...', 'info');
+                
+                for (const ann of adminAnnouncements) {
+                    try {
+                        const newViews = getUniqueRandomViews();
+                        
+                        const response = await fetch(`tables/announcements/${ann.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                ...ann,
+                                views: newViews
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            log(`✅ [운영진] "${ann.title.substring(0, 30)}..." → ${newViews}회`, 'success');
+                            successCount++;
+                        } else {
+                            log(`❌ [운영진] "${ann.title.substring(0, 30)}..." 실패 (${response.status})`, 'error');
+                            errorCount++;
+                        }
+                        
+                        // API 부하 방지 (50ms 대기)
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                        
+                    } catch (error) {
+                        log(`❌ [운영진] "${ann.title.substring(0, 30)}..." 오류: ${error.message}`, 'error');
+                        errorCount++;
+                    }
+                }
+            }
+            
+            log('', 'info');
+            
+            // 업체 소식 업데이트
+            if (shopAnnouncements.length > 0) {
+                log('🏪 업체 소식 업데이트 중...', 'info');
+                
+                for (const ann of shopAnnouncements) {
+                    try {
+                        const newViews = getUniqueRandomViews();
+                        
+                        const response = await fetch(`tables/shop_announcements/${ann.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                ...ann,
+                                views: newViews
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            log(`✅ [업체] "${ann.title.substring(0, 30)}..." → ${newViews}회`, 'success');
+                            successCount++;
+                        } else {
+                            log(`❌ [업체] "${ann.title.substring(0, 30)}..." 실패 (${response.status})`, 'error');
+                            errorCount++;
+                        }
+                        
+                        // API 부하 방지 (50ms 대기)
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                        
+                    } catch (error) {
+                        log(`❌ [업체] "${ann.title.substring(0, 30)}..." 오류: ${error.message}`, 'error');
+                        errorCount++;
+                    }
+                }
+            }
+            
+            log('', 'info');
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            log(`🎉 조회수 업데이트 완료!`, 'success');
+            log(`✅ 성공: ${successCount}개`, 'success');
+            if (errorCount > 0) {
+                log(`❌ 실패: ${errorCount}개`, 'error');
+            }
+            log(`📊 조회수 범위: 400~1000 (중복 없음)`, 'info');
+            log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+            
+            updateBtn.disabled = false;
+            updateBtn.textContent = '2. 조회수 일괄 업데이트';
+            
+            if (successCount > 0) {
+                alert(`✅ 조회수 업데이트 완료!\n\n성공: ${successCount}개\n실패: ${errorCount}개\n\n공지사항 페이지를 새로고침하여 확인하세요.`);
+            }
+        }
+    </script>
+</body>
+</html>

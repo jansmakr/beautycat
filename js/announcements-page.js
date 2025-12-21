@@ -143,6 +143,7 @@ function displayAdminAnnouncements() {
         'low': { text: '낮음', color: 'bg-gray-100 text-gray-800' }
     };
     
+    // v2.8.13.6.59: 개선된 카드 디자인 (핑크 배경 + 좌측 테두리)
     container.innerHTML = allAdminAnnouncements.map(ann => {
         const priority = priorityLabels[ann.priority] || priorityLabels['normal'];
         const isPinned = ann.is_pinned;
@@ -150,16 +151,17 @@ function displayAdminAnnouncements() {
         const preview = escapeHtml(ann.content).substring(0, 100);
         
         return `
-            <div class="announcement-card bg-white rounded-lg shadow p-6 cursor-pointer ${isPinned ? 'border-2 border-yellow-400' : ''}" 
+            <div class="announcement-card admin-announcement shadow-md p-4 sm:p-6 cursor-pointer ${isPinned ? 'ring-2 ring-yellow-400' : ''}" 
                  onclick="viewAnnouncement('admin', '${ann.id}')">
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            ${isPinned ? '<i class="fas fa-thumbtack text-yellow-600"></i>' : ''}
-                            <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(ann.title)}</h3>
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                            ${isPinned ? '<i class="fas fa-thumbtack text-yellow-600 text-sm"></i>' : ''}
+                            <span class="text-2xl">👑</span>
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900 break-words">${escapeHtml(ann.title)}</h3>
                         </div>
-                        <p class="text-gray-600 mb-3">${preview}${ann.content.length > 100 ? '...' : ''}</p>
-                        <div class="flex items-center text-sm text-gray-500 gap-4">
+                        <p class="text-sm sm:text-base text-gray-600 mb-3 line-clamp-2">${preview}${ann.content.length > 100 ? '...' : ''}</p>
+                        <div class="flex items-center text-xs sm:text-sm text-gray-500 gap-3 sm:gap-4 flex-wrap">
                             <span>
                                 <i class="far fa-calendar mr-1"></i>${createdDate}
                             </span>
@@ -168,7 +170,7 @@ function displayAdminAnnouncements() {
                             </span>
                         </div>
                     </div>
-                    <span class="ml-4 px-3 py-1 text-xs font-semibold rounded-full ${priority.color} whitespace-nowrap">
+                    <span class="px-2 sm:px-3 py-1 text-xs font-semibold rounded-full ${priority.color} whitespace-nowrap flex-shrink-0">
                         ${priority.text}
                     </span>
                 </div>
@@ -191,26 +193,27 @@ function displayShopAnnouncements(announcements) {
         return;
     }
     
+    // v2.8.13.6.59: 개선된 카드 디자인 (그린 배경 + 좌측 테두리)
     container.innerHTML = announcements.map(ann => {
         const createdDate = formatDate(ann.created_at);
         const preview = escapeHtml(ann.content).substring(0, 80);
         const location = `${ann.state || ''} ${ann.district || ''}`.trim();
         
         return `
-            <div class="announcement-card bg-white rounded-lg shadow p-6 cursor-pointer hover:border-green-300 border border-transparent" 
+            <div class="announcement-card shop-announcement shadow-md p-4 sm:p-6 cursor-pointer" 
                  onclick="viewAnnouncement('shop', '${ann.id}')">
-                <div class="flex items-start justify-between">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i class="fas fa-store text-green-500"></i>
-                            <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(ann.title)}</h3>
-                            ${location ? `<span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">${location}</span>` : ''}
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                            <span class="text-2xl">🏪</span>
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900 break-words">${escapeHtml(ann.title)}</h3>
+                            ${location ? `<span class="text-xs px-2 py-1 bg-white text-green-700 rounded-full font-medium">${location}</span>` : ''}
                         </div>
-                        <p class="text-sm text-gray-500 mb-2">
+                        <p class="text-xs sm:text-sm text-gray-600 mb-2">
                             <i class="fas fa-building mr-1"></i>${escapeHtml(ann.shop_name || '업체명')}
                         </p>
-                        <p class="text-gray-600 mb-3">${preview}${ann.content.length > 80 ? '...' : ''}</p>
-                        <div class="flex items-center text-sm text-gray-500 gap-4">
+                        <p class="text-sm sm:text-base text-gray-700 mb-3 line-clamp-2">${preview}${ann.content.length > 80 ? '...' : ''}</p>
+                        <div class="flex items-center text-xs sm:text-sm text-gray-500 gap-3 sm:gap-4 flex-wrap">
                             <span>
                                 <i class="far fa-calendar mr-1"></i>${createdDate}
                             </span>
@@ -271,6 +274,16 @@ async function viewAnnouncement(type, announcementId) {
         shopInfo.classList.remove('hidden');
     }
     
+    // v2.8.13.6.60: 관리자 확인 및 삭제 버튼 표시
+    const deleteBtn = document.getElementById('delete-announcement-btn');
+    if (deleteBtn) {
+        if (isAdmin()) {
+            deleteBtn.classList.remove('hidden');
+        } else {
+            deleteBtn.classList.add('hidden');
+        }
+    }
+    
     // 모달 표시
     document.getElementById('detail-modal').classList.remove('hidden');
     
@@ -282,16 +295,81 @@ async function viewAnnouncement(type, announcementId) {
 function closeDetailModal() {
     document.getElementById('detail-modal').classList.add('hidden');
     currentAnnouncementForModal = null;
+    
+    // v2.8.13.6.60: 삭제 버튼 숨기기
+    const deleteBtn = document.getElementById('delete-announcement-btn');
+    if (deleteBtn) {
+        deleteBtn.classList.add('hidden');
+    }
 }
 
-// 조회수 증가
+// 조회수 증가 (v2.8.13.6.61)
 async function incrementViews(type, announcementId) {
     try {
-        // 조회수 증가 기능은 서버 측에서 구현 예정
-        // (현재 CORS 제약으로 PATCH 요청 비활성화)
-        console.log(`💡 [공지사항] ${type} 공지 조회: ${announcementId}`);
+        // 중복 조회 방지: localStorage 확인
+        const viewKey = `viewed_${type}_${announcementId}`;
+        const alreadyViewed = localStorage.getItem(viewKey);
+        
+        if (alreadyViewed) {
+            console.log(`ℹ️ [조회수] 이미 조회한 공지: ${announcementId}`);
+            return; // 이미 조회한 공지는 증가 안 함
+        }
+        
+        console.log(`💡 [조회수] ${type} 공지 조회수 증가 시도: ${announcementId}`);
+        
+        // 테이블 이름 결정
+        const tableName = type === 'admin' ? 'announcements' : 'shop_announcements';
+        
+        // 1. 현재 공지사항 정보 가져오기
+        const getResponse = await fetch(`tables/${tableName}/${announcementId}`);
+        
+        if (!getResponse.ok) {
+            console.warn(`⚠️ [조회수] 공지 정보 가져오기 실패: ${getResponse.status}`);
+            return;
+        }
+        
+        const announcement = await getResponse.json();
+        const currentViews = announcement.views || 0;
+        const newViews = currentViews + 1;
+        
+        // 2. 조회수 업데이트 (PUT 방식)
+        const updateResponse = await fetch(`tables/${tableName}/${announcementId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...announcement,
+                views: newViews
+            })
+        });
+        
+        if (updateResponse.ok) {
+            console.log(`✅ [조회수] 증가 성공: ${currentViews} → ${newViews}`);
+            
+            // 로컬 배열 업데이트
+            if (type === 'admin') {
+                const index = allAdminAnnouncements.findIndex(a => a.id === announcementId);
+                if (index !== -1) {
+                    allAdminAnnouncements[index].views = newViews;
+                }
+            } else {
+                const index = allShopAnnouncements.findIndex(a => a.id === announcementId);
+                if (index !== -1) {
+                    allShopAnnouncements[index].views = newViews;
+                }
+            }
+            
+            // 중복 방지 마킹 (7일 유효)
+            const expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+            localStorage.setItem(viewKey, expirationTime.toISOString());
+            
+        } else {
+            console.warn(`⚠️ [조회수] 증가 실패: ${updateResponse.status}`);
+        }
+        
     } catch (error) {
-        console.error('조회수 증가 오류:', error);
+        console.error('❌ [조회수] 증가 오류:', error);
     }
 }
 
@@ -351,3 +429,165 @@ document.getElementById('detail-modal')?.addEventListener('click', function(e) {
         closeDetailModal();
     }
 });
+
+// ========================================
+// 🗑️ 관리자 삭제 기능 (v2.8.13.6.60)
+// ========================================
+
+// 관리자 확인 함수
+function isAdmin() {
+    try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        return user.role === 'admin';
+    } catch (error) {
+        console.error('사용자 정보 확인 오류:', error);
+        return false;
+    }
+}
+
+// 현재 모달의 공지사항 삭제
+async function deleteCurrentAnnouncement() {
+    if (!currentAnnouncementForModal) {
+        alert('삭제할 공지사항을 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 관리자 확인
+    if (!isAdmin()) {
+        alert('⛔ 관리자만 삭제할 수 있습니다.');
+        return;
+    }
+    
+    // 확인 다이얼로그
+    const confirmMessage = `정말로 이 공지사항을 삭제하시겠습니까?\n\n제목: ${currentAnnouncementForModal.title}\n\n⚠️ 이 작업은 되돌릴 수 없습니다.`;
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+    
+    const { type, id } = currentAnnouncementForModal;
+    
+    try {
+        // 삭제 버튼 비활성화
+        const deleteBtn = document.getElementById('delete-announcement-btn');
+        if (deleteBtn) {
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>삭제 중...';
+        }
+        
+        await deleteAnnouncement(type, id);
+        
+    } catch (error) {
+        console.error('삭제 실패:', error);
+        alert('❌ 삭제 중 오류가 발생했습니다.');
+        
+        // 버튼 복구
+        const deleteBtn = document.getElementById('delete-announcement-btn');
+        if (deleteBtn) {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = '<i class="fas fa-trash mr-2"></i>삭제';
+        }
+    }
+}
+
+// 공지사항 삭제 API 호출
+async function deleteAnnouncement(type, announcementId) {
+    try {
+        const tableName = type === 'admin' ? 'announcements' : 'shop_announcements';
+        
+        console.log(`🗑️ 삭제 시도: ${tableName}/${announcementId}`);
+        
+        const response = await fetch(`tables/${tableName}/${announcementId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok || response.status === 204) {
+            console.log('✅ 삭제 성공');
+            
+            // 모달 닫기
+            closeDetailModal();
+            
+            // UI에서 해당 카드 부드럽게 제거
+            removeAnnouncementFromUI(type, announcementId);
+            
+            // 성공 메시지
+            showSuccessMessage('✅ 공지사항이 삭제되었습니다.');
+            
+            // 로컬 배열에서도 제거
+            if (type === 'admin') {
+                allAdminAnnouncements = allAdminAnnouncements.filter(a => a.id !== announcementId);
+            } else {
+                allShopAnnouncements = allShopAnnouncements.filter(a => a.id !== announcementId);
+            }
+            
+        } else {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+    } catch (error) {
+        console.error('삭제 API 오류:', error);
+        throw error;
+    }
+}
+
+// UI에서 공지사항 카드 제거 (애니메이션)
+function removeAnnouncementFromUI(type, announcementId) {
+    // 카드 찾기
+    const cards = document.querySelectorAll('.announcement-card');
+    
+    for (const card of cards) {
+        if (card.onclick && card.onclick.toString().includes(announcementId)) {
+            // 페이드아웃 애니메이션
+            card.style.transition = 'all 0.3s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.95)';
+            
+            // 애니메이션 후 제거
+            setTimeout(() => {
+                card.remove();
+                
+                // 카드가 없으면 빈 상태 표시
+                checkEmptyState(type);
+            }, 300);
+            
+            break;
+        }
+    }
+}
+
+// 빈 상태 확인
+function checkEmptyState(type) {
+    const container = type === 'admin' 
+        ? document.getElementById('admin-announcements')
+        : document.getElementById('shop-announcements');
+    
+    const cards = container.querySelectorAll('.announcement-card');
+    
+    if (cards.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-12 bg-white rounded-lg shadow">
+                <i class="fas fa-inbox text-gray-300 text-5xl mb-3"></i>
+                <p class="text-gray-500">등록된 ${type === 'admin' ? '운영진 공지' : '업체 소식'}가 없습니다.</p>
+            </div>
+        `;
+    }
+}
+
+// 성공 메시지 토스트
+function showSuccessMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[100] animate-fadeIn';
+    toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.transition = 'all 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 2000);
+}
