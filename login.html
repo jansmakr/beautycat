@@ -2,481 +2,493 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 - beautycat (뷰티+에티켓)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>로그인 - BeautyCat | 피부관리실 견적비교 플랫폼</title>
     
     <!-- SEO 메타태그 -->
-    <meta name="description" content="beautycat 로그인 페이지. 고객, 피부관리실, 관리자 계정으로 로그인하여 맞춤형 피부관리 서비스를 이용하세요.">
+    <meta name="description" content="BeautyCat 로그인 페이지. 고객, 피부관리실, 관리자 계정으로 로그인하여 맞춤형 피부관리 서비스를 이용하세요.">
     <meta name="robots" content="noindex, follow">
-    <link rel="canonical" href="https://pposhop.kr/login.html">
+    <link rel="canonical" href="https://beautycat.kr/login.html">
     
-    <!-- 🚨 CRITICAL FIX: 최우선 실행 (Service Worker 제거 + API 오버라이드) -->
+    <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
     <script src="api-global-override.js"></script>
-    
-    <!-- 개발 환경 오류 방지 -->
     <script src="js/dev-environment-handler.js"></script>
     
-    <!-- 네이버 로그인 SDK -->
+    <!-- 소셜 로그인 SDK -->
     <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
-    
-    <!-- 카카오 로그인 SDK -->
     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     
-    <!-- Tailwind CSS (Local Production) -->
+    <!-- CSS -->
     <link rel="stylesheet" href="css/tailwind-production.css">
-    
-    <!-- 모바일 최적화 CSS -->
     <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
     <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tailwind Config 주석처리 (로컬 CSS 사용) -->
-    <!--
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': {
-                            50: '#fef2f2',
-                            100: '#fee2e2', 
-                            200: '#fecaca',
-                            300: '#fca5a5',
-                            400: '#f87171',
-                            500: '#ff2d92',
-                            600: '#dc2626',
-                            700: '#b91c1c',
-                            800: '#991b1b',
-                            900: '#7f1d1d',
-                        }
-                    },
-                    fontFamily: {
-                        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
-                        'noto': ['Noto Sans KR', 'system-ui', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         * { 
-            font-family: 'Pretendard', 'Noto Sans KR', system-ui, sans-serif;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
         
         body {
-            background-color: #ffffff;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
         }
 
+        /* 로고 스타일 */
+        /* 로고 호버 애니메이션 */
+        .logo-container:hover .beautycat-simple-logo,
+        .logo-container:hover .beautycat-text-logo {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+            filter: brightness(1.1);
+        }
+
+        /* 카드 스타일 */
+        .card-soft {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(236, 72, 153, 0.15);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 버튼 스타일 */
         .btn-primary {
-            background: linear-gradient(135deg, #ff2d92, #e6297f);
+            background: linear-gradient(135deg, #ec4899, #a855f7);
             color: white;
-            border: 2px solid transparent;
-            border-radius: 8px;
+            border: none;
+            border-radius: 12px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 45, 146, 0.2);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #e6297f, #cc256c);
+            background: linear-gradient(135deg, #db2777, #9333ea);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 45, 146, 0.35);
-            border-color: #ff2d92;
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
         }
         
         .btn-primary:active {
             transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(255, 45, 146, 0.2);
         }
 
-        .unni-input {
+        /* 입력 필드 스타일 */
+        .input-field {
             width: 100%;
-            padding: 16px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.2s ease;
+            padding: 14px 16px;
+            border: 2px solid #f3f4f6;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s ease;
             background: white;
         }
         
-        .unni-input:focus {
+        .input-field:focus {
             outline: none;
-            border-color: #ff2d92;
+            border-color: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
         }
 
-        .unni-card {
-            background: white;
-            border: 1px solid #f0f0f0;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-        
-        /* 사용자 유형 선택 버튼 호버 효과 */
+        /* 사용자 유형 버튼 */
         .user-type-btn {
-            background: white !important;
-            border: 2px solid #000000 !important; /* 검은색 테두리 */
-            border-radius: 0.5rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         
         .user-type-btn:hover {
-            border: 2px solid #000000 !important; /* 호버 시에도 검은색 */
-            background: linear-gradient(135deg, #FFF5F7 0%, #FFF0F5 100%) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-color: #ec4899;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.15);
+        }
+        
+        .user-type-btn.selected {
+            border-color: #ec4899;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fae8ff 100%);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+        }
+
+        /* 소셜 로그인 버튼 */
+        .social-btn {
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .social-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-        
-        /* 선택된 상태도 검은색 테두리 유지 */
-        .user-type-btn.bg-primary-50 {
-            border: 2px solid #000000 !important;
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%) !important;
+
+        .naver-btn {
+            background: #03C75A;
+            color: white;
         }
-        
-        .user-type-btn:hover i.fas {
-            transform: scale(1.1);
+
+        .naver-btn:hover {
+            background: #02b350;
         }
-        
-        .user-type-btn:active {
-            transform: translateY(0);
+
+        .kakao-btn {
+            background: #FEE500;
+            color: #000000;
         }
-        
-        /* 링크 호버 효과 통일 */
-        a.text-primary-500:hover,
-        a.hover\\:text-primary-500:hover {
-            color: #e6297f;
-            text-decoration: underline;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 3px;
+
+        .kakao-btn:hover {
+            background: #fdd835;
         }
-        
-        /* 관리자 로그인 버튼 호버 */
-        button.bg-gray-600:hover {
-            background: linear-gradient(135deg, #4B5563, #374151);
-            box-shadow: 0 2px 8px rgba(75, 85, 99, 0.3);
+
+        /* 네이버 버튼 비활성화 스타일 */
+        .naver-btn-disabled {
+            position: relative;
+            opacity: 0.6;
+            cursor: not-allowed !important;
         }
-        
+
+        .naver-btn-disabled::after {
+            content: '준비중';
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+
+        .naver-btn-disabled::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 2px);
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(0, 0, 0, 0.85);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+
+        .naver-btn-disabled:hover::after,
+        .naver-btn-disabled:hover::before {
+            opacity: 1;
+        }
+
+        .naver-btn-disabled:hover {
+            background: #03C75A !important;
+            transform: translateY(0) !important;
+            box-shadow: 0 4px 12px rgba(3, 199, 90, 0.2) !important;
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
         /* 모바일 최적화 */
         @media (max-width: 640px) {
-            .unni-card {
-                padding: 1.5rem !important;
-                margin-top: 2rem !important;
+            .beautycat-simple-logo {
+                font-size: 36px !important;
             }
-            
+            .beautycat-text-logo {
+                font-size: 18px !important;
+            }
+            .logo-container {
+                gap: 2px !important;
+            }
+
+            .card-soft {
+                border-radius: 20px;
+                padding: 24px !important;
+            }
+
+            .input-field {
+                font-size: 16px;
+                padding: 12px 14px;
+            }
+
+            .user-type-btn {
+                padding: 16px;
+            }
+
             h2 {
                 font-size: 1.5rem !important;
-            }
-            
-            .user-type-btn {
-                padding: 1rem !important;
-                min-height: 80px;
-            }
-            
-            .user-type-btn i {
-                font-size: 1.75rem !important;
-            }
-            
-            .user-type-btn span {
-                font-size: 0.9375rem !important;
-            }
-            
-            .unni-input {
-                font-size: 16px !important;
-                padding: 14px !important;
-                min-height: 52px;
-            }
-            
-            .btn-primary {
-                font-size: 16px !important;
-                padding: 14px 24px !important;
-                min-height: 52px;
-            }
-            
-            .text-sm {
-                font-size: 0.9375rem !important;
-            }
-            
-            .text-xs {
-                font-size: 0.8125rem !important;
             }
         }
     </style>
 </head>
-
-<body class="bg-gray-50">
-    <!-- 로딩 오버레이 -->
-    <div id="login-loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; align-items: center; justify-content: center;">
-        <div style="text-align: center; color: white;">
-            <div style="font-size: 48px; margin-bottom: 20px;">
-                <i class="fas fa-spinner fa-spin"></i>
-            </div>
-            <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">
-                로그인 중...
-            </div>
-            <div style="font-size: 16px; opacity: 0.9;">
-                잠시만 기다려주세요
-            </div>
-        </div>
-    </div>
-    
+<body>
     <!-- 헤더 -->
-    <header class="bg-white border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <!-- 로고 -->
-                <div class="logo-container">
-                    <div class="logo-emoji">🐱</div>
-                    <div class="logo-text">
-                        <span class="logo-title">beautycat</span>
-                        <span class="logo-subtitle">(뷰티+에티켓)</span>
-                    </div>
-                </div>
-                
-                <!-- 뒤로가기 버튼 -->
-                <a href="index.html" class="text-gray-600 hover:text-primary-500 font-medium text-sm">
-                    <i class="fas fa-arrow-left mr-2"></i>홈으로
-                </a>
-            </div>
+    <header class="py-6 px-4">
+        <div class="max-w-lg mx-auto flex items-center justify-between">
+            <a href="index.html" class="logo-container" style="display: flex; align-items: baseline; gap: 3px; text-decoration: none;">
+                <div class="beautycat-simple-logo" style="font-size: 42px; font-weight: 900; background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -1px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1;">B</div>
+                <div class="beautycat-text-logo" style="font-size: 21px; font-weight: 500; background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 0.3px; font-family: 'Dancing Script', 'Pacifico', 'Brush Script MT', cursive, sans-serif; line-height: 1; padding-top: 2px;">eautyket</div>
+            </a>
+            <a href="index.html" class="text-gray-600 hover:text-primary-500 transition-colors">
+                <i class="fas fa-home mr-1"></i>홈으로
+            </a>
         </div>
     </header>
 
-    <!-- 로그인 폼 -->
-    <div class="max-w-md mx-auto mt-16 px-4">
-        <div class="unni-card p-8">
+    <!-- 메인 컨텐츠 -->
+    <main class="max-w-lg mx-auto px-4 pb-12">
+        <div class="card-soft p-8 animate-fade-in-up">
             <!-- 제목 -->
             <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-2">로그인</h2>
-                <p class="text-gray-600">beautycat 계정으로 로그인하세요</p>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">로그인</h2>
+                <p class="text-gray-600">피부관리의 새로운 시작</p>
+            </div>
+
+            <!-- 사용자 유형 선택 -->
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-3">
+                    <i class="fas fa-user-circle mr-1 text-primary-500"></i>
+                    로그인 유형
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" 
+                            class="user-type-btn selected" 
+                            data-type="customer"
+                            onclick="selectUserType('customer', this)">
+                        <div class="text-center">
+                            <i class="fas fa-user text-3xl mb-2" style="color: #ec4899;"></i>
+                            <div class="font-semibold text-gray-900">고객</div>
+                            <div class="text-xs text-gray-500 mt-1">일반 사용자</div>
+                        </div>
+                    </button>
+                    <button type="button" 
+                            class="user-type-btn" 
+                            data-type="shop"
+                            onclick="selectUserType('shop', this)">
+                        <div class="text-center">
+                            <i class="fas fa-store text-3xl mb-2" style="color: #a855f7;"></i>
+                            <div class="font-semibold text-gray-900">피부관리실</div>
+                            <div class="text-xs text-gray-500 mt-1">업체 회원</div>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             <!-- 로그인 폼 -->
-            <form id="loginForm" class="space-y-6">
-                <!-- 사용자 유형 선택 -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">사용자 유형</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label id="customer-label" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative">
-                            <input type="radio" name="userType" value="customer" checked class="sr-only">
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
-                                <i class="fas fa-check text-white text-xs hidden"></i>
-                            </div>
-                            <i class="fas fa-user text-primary-500 text-2xl mb-2 transition-all"></i>
-                            <span class="text-sm font-semibold text-gray-700">고객</span>
-                        </label>
-                        <label id="shop-label" class="user-type-btn flex flex-col items-center p-4 border-2 border-black rounded-lg cursor-pointer transition-all relative">
-                            <input type="radio" name="userType" value="shop" class="sr-only">
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-black flex items-center justify-center transition-all">
-                                <i class="fas fa-check text-white text-xs hidden"></i>
-                            </div>
-                            <i class="fas fa-store text-primary-500 text-2xl mb-2 transition-all"></i>
-                            <span class="text-sm font-semibold text-gray-700">뷰티샵</span>
-                        </label>
-                    </div>
-                </div>
-
+            <form id="loginForm" class="space-y-4 mb-6">
+                <input type="hidden" id="userType" value="customer">
+                
                 <!-- 이메일 -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">이메일</label>
-                    <input type="email" id="email" name="email" required class="unni-input" placeholder="이메일을 입력하세요">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-1 text-primary-500"></i>
+                        이메일
+                    </label>
+                    <input type="email" 
+                           id="loginEmail" 
+                           class="input-field" 
+                           placeholder="example@beautycat.kr" 
+                           required>
                 </div>
 
                 <!-- 비밀번호 -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">비밀번호</label>
-                    <div class="relative">
-                        <input type="password" id="password" name="password" required class="unni-input pr-12" placeholder="비밀번호를 입력하세요">
-                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-eye" id="passwordToggle"></i>
-                        </button>
-                    </div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-1 text-primary-500"></i>
+                        비밀번호
+                    </label>
+                    <input type="password" 
+                           id="loginPassword" 
+                           class="input-field" 
+                           placeholder="비밀번호를 입력하세요" 
+                           required>
                 </div>
 
-
-
-
-
                 <!-- 로그인 버튼 -->
-                <button type="submit" class="w-full btn-primary py-3 text-base font-semibold">
+                <button type="submit" 
+                        class="btn-primary w-full py-4 text-lg font-bold rounded-xl">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
                     로그인
                 </button>
             </form>
 
-            <!-- 소셜 로그인 섹션 -->
-            <div class="mt-6">
-                <!-- 구분선 -->
-                <div class="relative">
+            <!-- 소셜 로그인 -->
+            <div class="mb-6">
+                <div class="relative mb-4">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
+                        <div class="w-full border-t border-gray-200"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">또는 간편 로그인</span>
+                        <span class="px-4 bg-white text-gray-500 font-medium">또는 소셜 로그인</span>
                     </div>
                 </div>
 
-                <!-- 소셜 로그인 버튼 -->
-                <div class="mt-6 space-y-3">
-                    <!-- 네이버 로그인 버튼 (임시 비활성화) -->
-                    <!-- 
-                    <button id="naverLoginBtn" type="button" 
-                            class="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg text-white font-medium transition-all hover:shadow-lg"
-                            style="background-color: #03C75A;">
-                        <svg class="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.3 10.5l-3.8 5.5H4V4h5.5l3.8 5.5z"/>
-                        </svg>
-                        네이버로 3초만에 시작하기
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" 
+                            onclick="event.preventDefault(); return false;" 
+                            class="social-btn naver-btn naver-btn-disabled"
+                            title="준비중">
+                        <i class="fas fa-n mr-2"></i>
+                        네이버
                     </button>
-                    -->
-                    
-                    <!-- 카카오 로그인 버튼 -->
-                    <button id="kakao-login-btn" type="button" 
-                            class="w-full flex items-center justify-center border border-transparent rounded-lg text-gray-900 transition-all hover:shadow-lg"
-                            style="background-color: #FEE500; padding: 12px 16px !important; font-size: 16px !important; font-weight: 600 !important; min-height: 0 !important; height: auto !important;">
-                        <svg style="width: 20px; height: 20px; margin-right: 8px;" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.8 6.7L6 22l4.5-3c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/>
-                        </svg>
-                        카카오로 3초만에 시작하기
+                    <button type="button" 
+                            onclick="loginWithKakao()" 
+                            class="social-btn kakao-btn">
+                        <i class="fas fa-comment mr-2"></i>
+                        카카오
                     </button>
-                    
-                    <!-- 네이버 로그인 위젯 (숨김) -->
-                    <div id="naverIdLogin" style="display: none;"></div>
                 </div>
             </div>
 
-            <!-- 하단 링크 -->
-            <div class="mt-6 text-center space-y-3">
-                <div class="text-sm text-gray-600">
-                    계정이 없으신가요?
-                    <a href="register.html" class="text-primary-500 hover:underline font-medium">회원가입</a>
+            <!-- 링크 -->
+            <div class="text-center space-y-2">
+                <div>
+                    <span class="text-gray-600">계정이 없으신가요?</span>
+                    <a href="register.html" class="text-primary-500 font-semibold hover:underline ml-2">
+                        회원가입
+                    </a>
                 </div>
-                <div class="text-xs text-gray-500">
-                    <a href="#" class="hover:text-primary-500">비밀번호 찾기</a>
-                    <span class="mx-2">|</span>
-                    <a href="contact-inquiry.html" class="hover:text-primary-500">고객센터</a>
+                <div>
+                    <a href="#" onclick="alert('비밀번호 찾기 기능 준비중입니다.'); return false;" 
+                       class="text-sm text-gray-500 hover:text-primary-500">
+                        비밀번호를 잊으셨나요?
+                    </a>
                 </div>
             </div>
-            
+
             <!-- 관리자 로그인 -->
-            <div class="mt-8 pt-6 border-t border-gray-200">
-                <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-2">관리자</p>
-                    <div class="flex justify-center">
-                        <input type="password" id="adminPassword" placeholder="관리자 비밀번호" 
-                               class="px-3 py-1 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-primary-500 w-32"
-                               onkeypress="checkAdminLogin(event)">
-                        <button onclick="adminLogin()" 
-                                class="px-4 py-1 text-sm bg-gray-600 text-white rounded-r-lg hover:bg-gray-700 transition-colors">
-                            로그인
-                        </button>
-                    </div>
-                </div>
+            <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+                <button type="button" 
+                        onclick="selectUserType('admin', null)" 
+                        class="text-sm text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    관리자 로그인
+                </button>
             </div>
         </div>
-    </div>
 
-    <!-- ℹ️ API 오버라이드는 이미 api-global-override.js에서 처리됨 -->
-    <script src="js/api-helper.js"></script>
-    
-    <script src="js/security.js"></script>
-    <script src="js/auth.js"></script>
-    
+        <!-- 하단 텍스트 -->
+        <div class="text-center mt-8 text-sm text-gray-500">
+            <p>로그인하시면 <a href="legal/terms.html" class="text-primary-500 hover:underline">이용약관</a> 및</p>
+            <p><a href="legal/privacy.html" class="text-primary-500 hover:underline">개인정보처리방침</a>에 동의하는 것으로 간주됩니다.</p>
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script src="js/config.js?v=2.5.4"></script>
+    <script src="js/auth.js?v=2.8.13"></script>
+    <script src="js/naver-login.js"></script>
+    <script src="js/kakao-login.js"></script>
+
     <script>
-        // 사용자 유형 선택 시 스타일 변경
-        function updateUserTypeSelection() {
-            const labels = {
-                'customer': document.getElementById('customer-label'),
-                'shop': document.getElementById('shop-label')
-            };
+        // 사용자 유형 선택
+        function selectUserType(type, button) {
+            document.getElementById('userType').value = type;
             
-            // 모든 라벨 초기화 (검은색 테두리 유지)
-            Object.values(labels).forEach(label => {
-                label.classList.remove('bg-primary-50', 'shadow-md');
-                const checkIcon = label.querySelector('.fa-check');
-                const checkCircle = checkIcon.parentElement;
-                checkCircle.classList.remove('bg-black');
-                checkIcon.classList.add('hidden');
+            // 모든 버튼에서 selected 클래스 제거
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('selected');
             });
             
-            // 선택된 항목 강조
-            const selectedValue = document.querySelector('input[name="userType"]:checked').value;
-            const selectedLabel = labels[selectedValue];
-            selectedLabel.classList.add('bg-primary-50', 'shadow-md');
-            const checkIcon = selectedLabel.querySelector('.fa-check');
-            const checkCircle = checkIcon.parentElement;
-            checkCircle.classList.add('bg-black');
-            checkIcon.classList.remove('hidden');
-        }
-        
-        // 라디오 버튼 변경 이벤트
-        document.querySelectorAll('input[name="userType"]').forEach(radio => {
-            radio.addEventListener('change', updateUserTypeSelection);
-        });
+            // 클릭한 버튼에 selected 클래스 추가
+            if (button) {
+                button.classList.add('selected');
+            }
 
-        // 페이지 로드 시 초기 선택 상태 설정
-        document.addEventListener('DOMContentLoaded', updateUserTypeSelection);
-
-        // 비밀번호 표시/숨기기
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const passwordToggle = document.getElementById('passwordToggle');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordToggle.classList.remove('fa-eye');
-                passwordToggle.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                passwordToggle.classList.remove('fa-eye-slash');
-                passwordToggle.classList.add('fa-eye');
+            // 관리자 선택 시 즉시 로그인 폼으로 포커스
+            if (type === 'admin') {
+                document.getElementById('loginEmail').focus();
             }
         }
 
-        // 관리자 로그인 함수
-        function adminLogin() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === '5874') {
-                // 관리자 세션 설정
-                localStorage.setItem('adminAuth', 'true');
-                localStorage.setItem('adminLoginTime', new Date().getTime());
-                alert('관리자로 로그인되었습니다.');
-                window.location.href = 'admin-dashboard.html';
-            } else if (password === '') {
-                alert('비밀번호를 입력하세요.');
-            } else {
-                alert('잘못된 비밀번호입니다.');
-                document.getElementById('adminPassword').value = '';
-            }
-        }
-
-        // 엔터키로 관리자 로그인
-        function checkAdminLogin(event) {
-            if (event.key === 'Enter') {
-                adminLogin();
-            }
-        }
-
-        // 폼 제출 처리
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // 로그인 폼 제출
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const userType = document.getElementById('userType').value;
             
-            // auth.js의 로그인 함수 호출
-            if (typeof handleLogin === 'function') {
-                handleLogin(e);
+            if (!email || !password) {
+                alert('이메일과 비밀번호를 모두 입력해주세요.');
+                return;
+            }
+            
+            try {
+                // 로그인 함수 호출 (auth.js에서 정의됨)
+                await login({
+                    email: email,
+                    password: password,
+                    user_type: userType
+                });
+            } catch (error) {
+                console.error('로그인 오류:', error);
+                alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
+            }
+        });
+
+        // 네이버 로그인
+        function loginWithNaver() {
+            if (typeof initNaverLogin === 'function') {
+                initNaverLogin();
             } else {
-                // 임시 처리
-                alert('로그인 처리 중입니다...');
+                alert('네이버 로그인 기능을 준비 중입니다.');
+            }
+        }
+
+        // 카카오 로그인
+        function loginWithKakao() {
+            if (typeof kakaoLogin === 'function') {
+                kakaoLogin();
+            } else {
+                alert('카카오 로그인 기능을 준비 중입니다.');
+            }
+        }
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 이미 로그인된 경우 리다이렉트
+            const currentUser = localStorage.getItem('user_data');
+            if (currentUser) {
+                const userData = JSON.parse(currentUser);
+                const userType = userData.user_type || 'customer';
+                
+                if (userType === 'customer') {
+                    window.location.href = 'customer-dashboard.html';
+                } else if (userType === 'shop') {
+                    window.location.href = 'shop-dashboard.html';
+                } else if (userType === 'admin') {
+                    window.location.href = 'admin-dashboard.html';
+                }
             }
         });
     </script>
-
-    <!-- 소셜 로그인 -->
-    <!-- <script src="js/naver-login.js?v=1.0"></script> -->
-    <script src="js/kakao-login.js?v=1.0"></script>
 </body>
 </html>
