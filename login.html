@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>로그인 - BeautyCat | 피부관리실 견적비교 플랫폼</title>
+    <!-- v2.8.13.6.69: UI 개선 (로딩 + 에러 처리) -->
     
     <!-- SEO 메타태그 -->
     <meta name="description" content="BeautyCat 로그인 페이지. 고객, 피부관리실, 관리자 계정으로 로그인하여 맞춤형 피부관리 서비스를 이용하세요.">
@@ -215,6 +216,61 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
+        /* 로딩 스피너 */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #ec4899;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 에러 메시지 */
+        .error-message {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
         /* 모바일 최적화 */
         @media (max-width: 640px) {
             .logo-container img {
@@ -293,6 +349,12 @@
                 </div>
             </div>
 
+            <!-- 에러 메시지 -->
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span id="errorText"></span>
+            </div>
+
             <!-- 로그인 폼 -->
             <form id="loginForm" class="space-y-4 mb-6">
                 <input type="hidden" id="userType" value="customer">
@@ -325,6 +387,7 @@
 
                 <!-- 로그인 버튼 -->
                 <button type="submit" 
+                        id="loginBtn"
                         class="btn-primary w-full py-4 text-lg font-bold rounded-xl">
                     <i class="fas fa-sign-in-alt mr-2"></i>
                     로그인
@@ -351,6 +414,7 @@
                         네이버
                     </button>
                     <button type="button" 
+                            id="kakaoLoginBtn"
                             onclick="loginWithKakao()" 
                             class="social-btn kakao-btn">
                         <i class="fas fa-comment mr-2"></i>
@@ -393,6 +457,14 @@
         </div>
     </main>
 
+    <!-- 로딩 오버레이 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="bg-white rounded-lg p-6 text-center">
+            <div class="spinner mx-auto mb-4"></div>
+            <p class="text-gray-700 font-medium">로그인 중...</p>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script src="js/config.js?v=2.5.4"></script>
     <script src="js/auth.js?v=2.8.13"></script>
@@ -420,6 +492,30 @@
             }
         }
 
+        // 에러 메시지 표시 함수 (v2.8.13.6.69)
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.add('active');
+            
+            // 5초 후 자동 숨김
+            setTimeout(() => {
+                errorDiv.classList.remove('active');
+            }, 5000);
+        }
+
+        // 로딩 표시 함수
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+            document.getElementById('loginBtn').disabled = true;
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+            document.getElementById('loginBtn').disabled = false;
+        }
+
         // 로그인 폼 제출
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -429,9 +525,11 @@
             const userType = document.getElementById('userType').value;
             
             if (!email || !password) {
-                alert('이메일과 비밀번호를 모두 입력해주세요.');
+                showError('이메일과 비밀번호를 모두 입력해주세요.');
                 return;
             }
+            
+            showLoading();
             
             try {
                 // 로그인 함수 호출 (auth.js에서 정의됨)
@@ -442,7 +540,8 @@
                 });
             } catch (error) {
                 console.error('로그인 오류:', error);
-                alert('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
+                hideLoading();
+                showError('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
             }
         });
 
@@ -458,9 +557,15 @@
         // 카카오 로그인
         function loginWithKakao() {
             if (typeof startKakaoLogin === 'function') {
-                startKakaoLogin();
+                showLoading();
+                try {
+                    startKakaoLogin();
+                } catch (error) {
+                    hideLoading();
+                    showError('카카오 로그인 중 오류가 발생했습니다.');
+                }
             } else {
-                alert('카카오 로그인 기능을 준비 중입니다.');
+                showError('카카오 로그인 기능을 준비 중입니다.');
             }
         }
 

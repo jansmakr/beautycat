@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>회원가입 - BeautyCat | 피부관리실 견적비교 플랫폼</title>
+    <!-- v2.8.13.6.69: UI 개선 (로딩 + 에러 처리) -->
     
     <!-- SEO -->
     <meta name="description" content="BeautyCat 회원가입. 간편하게 가입하고 맞춤형 피부관리 서비스를 이용하세요.">
@@ -129,6 +130,61 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
+        /* 로딩 스피너 */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #ec4899;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 에러 메시지 */
+        .error-message {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
         /* 모바일 최적화 */
         @media (max-width: 640px) {
             .logo-container img {
@@ -173,9 +229,16 @@
                 <p class="text-gray-600">BeautyCat과 함께 시작하세요</p>
             </div>
 
+            <!-- 에러 메시지 -->
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span id="errorText"></span>
+            </div>
+
             <!-- 카카오 간편가입 -->
             <div class="mb-8">
                 <button type="button" 
+                        id="kakaoRegisterBtn"
                         onclick="registerWithKakao()" 
                         class="social-btn kakao-btn w-full">
                     <i class="fas fa-comment mr-2"></i>
@@ -345,6 +408,7 @@
 
                 <!-- 회원가입 버튼 -->
                 <button type="submit" 
+                        id="registerBtn"
                         class="btn-primary w-full py-4 text-lg font-bold rounded-xl mt-6">
                     <i class="fas fa-user-plus mr-2"></i>
                     회원가입
@@ -360,6 +424,14 @@
             </div>
         </div>
     </main>
+
+    <!-- 로딩 오버레이 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="bg-white rounded-lg p-6 text-center">
+            <div class="spinner mx-auto mb-4"></div>
+            <p class="text-gray-700 font-medium">가입 중...</p>
+        </div>
+    </div>
 
     <!-- JavaScript -->
     <script src="js/config.js?v=2.5.4"></script>
@@ -401,6 +473,36 @@
             });
         });
 
+        // 에러 메시지 표시 함수 (v2.8.13.6.69)
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.add('active');
+            
+            // 5초 후 자동 숨김
+            setTimeout(() => {
+                errorDiv.classList.remove('active');
+            }, 5000);
+        }
+
+        // 로딩 표시 함수
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+            document.getElementById('registerBtn').disabled = true;
+            if (document.getElementById('kakaoRegisterBtn')) {
+                document.getElementById('kakaoRegisterBtn').disabled = true;
+            }
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+            document.getElementById('registerBtn').disabled = false;
+            if (document.getElementById('kakaoRegisterBtn')) {
+                document.getElementById('kakaoRegisterBtn').disabled = false;
+            }
+        }
+
         // 회원가입 폼 제출
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -416,24 +518,26 @@
             
             // 유효성 검사
             if (!name || !email || !password || !phone) {
-                alert('모든 필수 항목을 입력해주세요.');
+                showError('모든 필수 항목을 입력해주세요.');
                 return;
             }
             
             if (password !== passwordConfirm) {
-                alert('비밀번호가 일치하지 않습니다.');
+                showError('비밀번호가 일치하지 않습니다.');
                 return;
             }
             
             if (password.length < 8) {
-                alert('비밀번호는 8자 이상이어야 합니다.');
+                showError('비밀번호는 8자 이상이어야 합니다.');
                 return;
             }
             
             if (!agreeTerms || !agreePrivacy) {
-                alert('필수 약관에 동의해주세요.');
+                showError('필수 약관에 동의해주세요.');
                 return;
             }
+            
+            showLoading();
             
             try {
                 // 회원가입 함수 호출 (auth.js에서 정의됨)
@@ -446,16 +550,23 @@
                 });
             } catch (error) {
                 console.error('회원가입 오류:', error);
-                alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+                hideLoading();
+                showError('회원가입에 실패했습니다. 다시 시도해주세요.');
             }
         });
 
         // 카카오 회원가입
         function registerWithKakao() {
             if (typeof startKakaoLogin === 'function') {
-                startKakaoLogin();
+                showLoading();
+                try {
+                    startKakaoLogin();
+                } catch (error) {
+                    hideLoading();
+                    showError('카카오 간편가입 중 오류가 발생했습니다.');
+                }
             } else {
-                alert('카카오 간편가입 기능을 준비 중입니다.');
+                showError('카카오 간편가입 기능을 준비 중입니다.');
             }
         }
     </script>
