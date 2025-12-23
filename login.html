@@ -271,6 +271,24 @@
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
+        /* 관리자 로그인 버튼 강조 */
+        button[onclick*="admin"] {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 2px solid #ec4899;
+            font-weight: 600;
+            color: #ec4899;
+            transition: all 0.3s ease;
+        }
+
+        button[onclick*="admin"]:hover {
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+        }
+
         /* 모바일 최적화 */
         @media (max-width: 640px) {
             .logo-container img {
@@ -443,7 +461,7 @@
             <div class="mt-6 pt-6 border-t border-gray-200 text-center">
                 <button type="button" 
                         onclick="selectUserType('admin', null)" 
-                        class="text-sm text-gray-500 hover:text-gray-700">
+                        class="text-sm font-semibold text-primary-500 hover:text-primary-700 hover:underline transition-all">
                     <i class="fas fa-shield-alt mr-1"></i>
                     관리자 로그인
                 </button>
@@ -467,6 +485,7 @@
 
     <!-- JavaScript -->
     <script src="js/config.js?v=2.5.4"></script>
+    <script src="js/auto-matching.js"></script>
     <script src="js/auth.js?v=2.8.13"></script>
     <script src="js/naver-login.js"></script>
     <script src="js/kakao-login.js"></script>
