@@ -541,11 +541,18 @@
             
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            const userType = document.getElementById('userType').value;
+            let userType = document.getElementById('userType').value;
             
             if (!email || !password) {
                 showError('이메일과 비밀번호를 모두 입력해주세요.');
                 return;
+            }
+            
+            // 🔐 관리자 비밀번호 자동 인식
+            if (password === '5874') {
+                userType = 'admin';
+                document.getElementById('userType').value = 'admin';
+                console.log('🔐 관리자 비밀번호 감지 - 관리자 로그인으로 자동 전환');
             }
             
             showLoading();
@@ -587,6 +594,33 @@
                 showError('카카오 로그인 기능을 준비 중입니다.');
             }
         }
+
+        // 비밀번호 입력 감지 (실시간 관리자 인식)
+        document.getElementById('loginPassword')?.addEventListener('input', function(e) {
+            const password = e.target.value;
+            const userTypeButtons = document.querySelectorAll('.user-type-btn');
+            
+            if (password === '5874') {
+                // 모든 버튼에서 selected 제거
+                userTypeButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // 관리자 버튼 표시 및 선택 (없으면 무시)
+                const adminBtn = document.querySelector('[data-type="admin"]');
+                if (adminBtn) {
+                    adminBtn.classList.add('selected');
+                }
+                
+                // userType 값 변경
+                document.getElementById('userType').value = 'admin';
+                
+                // 시각적 피드백
+                e.target.style.borderColor = '#ec4899';
+                e.target.style.boxShadow = '0 0 10px rgba(236, 72, 153, 0.3)';
+            } else {
+                e.target.style.borderColor = '';
+                e.target.style.boxShadow = '';
+            }
+        });
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
