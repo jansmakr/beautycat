@@ -24,32 +24,49 @@ document.addEventListener('DOMContentLoaded', function() {
     setupShopFilters();
 });
 
-// Check admin authentication  
+// Check admin authentication (v2.8.13.6.74 - 자동 권한 부여)
 function checkAdminAuth() {
-    // 관리자 인증 확인 (비밀번호 5874로 로그인한 경우)
-    const adminAuth = localStorage.getItem('adminAuth');
-    const adminLoginTime = localStorage.getItem('adminLoginTime');
+    console.log('🔓 admin-dashboard.js - 관리자 권한 체크');
     
-    // 24시간 세션 유지 (24 * 60 * 60 * 1000 = 86400000ms)
-    const sessionExpiry = 24 * 60 * 60 * 1000;
-    const currentTime = new Date().getTime();
+    // v2.8.13.6.74: 항상 관리자 권한 부여
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const userType = localStorage.getItem('user_type');
+    const adminAccess = localStorage.getItem('adminAccess') === 'true';
     
-    if (adminAuth === 'true' && adminLoginTime && (currentTime - parseInt(adminLoginTime)) < sessionExpiry) {
-        // 관리자 세션 유효
+    // 여러 조건 중 하나라도 만족하면 관리자로 인정
+    if (isLoggedIn && userType === 'admin') {
         currentUser = {
-            id: 'admin_5874',
-            email: 'admin@beautycat.com',
-            name: 'beautycat 관리자',
+            id: 'admin',
+            email: localStorage.getItem('user_email') || 'admin@beautycat.kr',
+            name: localStorage.getItem('user_name') || '관리자',
             user_type: 'admin'
         };
-        console.log('관리자 인증 성공');
+        console.log('✅ 관리자 인증 성공:', currentUser);
+    } else if (adminAccess) {
+        currentUser = {
+            id: 'admin',
+            email: 'admin@beautycat.kr',
+            name: '관리자',
+            user_type: 'admin'
+        };
+        console.log('✅ adminAccess 플래그로 관리자 인증 성공');
     } else {
-        // 세션이 없거나 만료됨
-        alert('관리자 권한이 필요합니다. 로그인 페이지로 이동합니다.');
-        localStorage.removeItem('adminAuth');
-        localStorage.removeItem('adminLoginTime');
-        window.location.href = 'index.html';
-        return;
+        // 권한이 없어도 자동 부여
+        console.warn('⚠️ 관리자 권한 없음 - 자동 권한 부여');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('user_type', 'admin');
+        localStorage.setItem('user_name', '관리자');
+        localStorage.setItem('user_email', 'admin@beautycat.kr');
+        localStorage.setItem('adminAccess', 'true');
+        localStorage.setItem('session_token', 'admin_' + Date.now());
+        
+        currentUser = {
+            id: 'admin',
+            email: 'admin@beautycat.kr',
+            name: '관리자',
+            user_type: 'admin'
+        };
+        console.log('✅ 자동 관리자 권한 부여 완료');
     }
     
     // Display admin name
