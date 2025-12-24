@@ -1361,44 +1361,13 @@
         };
     </script>
     
-    <!-- 관리자 권한 체크 (v2.8.13.6.74 - 개선) -->
+    <!-- 관리자 권한 자동 설정 (v2.8.13.6.74) -->
     <script>
-        // 권한 체크 함수
-        function checkAdminAccess() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const userType = localStorage.getItem('user_type');
-            const adminAccess = localStorage.getItem('adminAccess') === 'true';
-            const userName = localStorage.getItem('user_name');
-            const sessionToken = localStorage.getItem('session_token');
+        // 페이지 로드 시 자동으로 관리자 권한 설정
+        (function() {
+            console.log('🔓 관리자 대시보드 - 자동 권한 부여 모드');
             
-            console.log('🔐 관리자 권한 체크:', { 
-                isLoggedIn, 
-                userType, 
-                adminAccess, 
-                userName,
-                hasSessionToken: !!sessionToken 
-            });
-            
-            // 🔧 v2.8.13.6.74: 관대한 권한 체크
-            // 다음 중 하나라도 만족하면 관리자로 인정:
-            const hasAdminSession = sessionToken && sessionToken.startsWith('admin_');
-            const isAdmin = (isLoggedIn && userType === 'admin') || adminAccess || hasAdminSession;
-            
-            if (isAdmin) {
-                // 관리자 권한 확인됨 - user_name 자동 설정
-                if (!userName) {
-                    localStorage.setItem('user_name', '관리자');
-                    localStorage.setItem('user_email', 'admin@beautycat.kr');
-                    console.log('✅ 관리자 이름 자동 설정 완료');
-                }
-                console.log('✅ 관리자 권한 확인 완료');
-                return true;
-            }
-            
-            // 권한 없음 - 하지만 URL에서 직접 접속한 경우 한 번 더 기회
-            console.warn('⚠️ 관리자 권한 미확인 - 자동 권한 부여 시도');
-            
-            // 자동 관리자 권한 부여 (개발/테스트용)
+            // localStorage에 관리자 세션 자동 설정
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('user_type', 'admin');
             localStorage.setItem('user_name', '관리자');
@@ -1419,12 +1388,8 @@
             };
             localStorage.setItem('user_data', JSON.stringify(adminData));
             
-            console.log('✅ 자동 관리자 권한 부여 완료');
-            return true;
-        }
-        
-        // 즉시 실행
-        checkAdminAccess();
+            console.log('✅ 관리자 권한 자동 설정 완료');
+        })();
     </script>
     
     <script src="js/auth.js"></script>
