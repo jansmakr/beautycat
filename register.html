@@ -36,6 +36,28 @@
             transition: transform 0.2s ease;
             filter: brightness(1.1);
         }
+        
+        /* 로그인 아이콘 스타일 */
+        .login-icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+            text-decoration: none;
+        }
+        
+        .login-icon-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.5);
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+        }
 
         .card-soft {
             background: white;
@@ -228,9 +250,9 @@
                 <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 40px; width: auto; object-fit: contain;" loading="eager" decoding="async">
             </a>
             
-            <!-- 오른쪽 로그인 버튼 -->
-            <a href="login.html" class="text-gray-600 hover:text-primary-500 transition-colors">
-                <i class="fas fa-sign-in-alt mr-1"></i>로그인
+            <!-- 오른쪽 로그인 아이콘 -->
+            <a href="login.html" class="login-icon-btn" title="로그인">
+                <i class="fas fa-user-circle"></i>
             </a>
         </div>
     </header>

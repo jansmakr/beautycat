@@ -40,6 +40,29 @@
         }
     </script>
     <style>
+        /* 사용자 메뉴 아이콘 스타일 */
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-menu-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.5);
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+        }
+        
         * {
             font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
@@ -89,14 +112,10 @@
                         <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                     </button>
                     
-                    <!-- 데스크톱 프로필 -->
+                    <!-- 데스크톱 프로필 (v2.8.13.6.73 - 아이콘 스타일) -->
                     <div class="hidden lg:flex relative" id="profile-dropdown">
-                        <button onclick="toggleProfileMenu()" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg">
-                            <div class="w-8 h-8 bg-primary-50 rounded-full flex items-center justify-center mr-2">
-                                <i class="fas fa-user text-primary-500"></i>
-                            </div>
-                            <span id="user-name" class="font-medium">업체님</span>
-                            <i class="fas fa-chevron-down ml-2"></i>
+                        <button onclick="toggleProfileMenu()" class="user-menu-btn">
+                            <i class="fas fa-user"></i>
                         </button>
                         
                         <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
