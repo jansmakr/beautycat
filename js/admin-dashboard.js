@@ -2538,7 +2538,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     user_type: 'shop'
                 };
                 
-                const userResponse = await fetch('/tables/users', {
+                const userResponse = await fetch('tables/users', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData)
@@ -2569,7 +2569,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     user_id: newUser.id
                 };
                 
-                const shopResponse = await fetch('/tables/skincare_shops', {
+                const shopResponse = await fetch('tables/skincare_shops', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(shopData)
@@ -2652,7 +2652,7 @@ async function loadRecentMembers() {
         console.log('Loading recent members...');
         
         // Fetch recent 5 users sorted by creation date
-        const response = await fetch('/tables/users?limit=5&sort=-created_at');
+        const response = await fetch('tables/users?limit=5&sort=-created_at');
         
         if (!response.ok) {
             throw new Error('Failed to fetch recent members');
