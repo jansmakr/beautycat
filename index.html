@@ -1950,15 +1950,26 @@
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-5xl mx-auto px-3 py-2 md:px-4 md:py-2">
             <div class="flex items-center justify-between">
-                <!-- 로고 (v2.8.13.6.67 - 이미지) -->
+                <!-- 로고 (v2.8.13.6.72 - 모바일 수정) -->
                 <div class="logo-container" style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <img src="https://www.genspark.ai/api/files/s/bvA3zk1x" alt="Beautyket" style="height: 50px; width: auto;">
+                    <img src="https://www.genspark.ai/api/files/s/bvA3zk1x" 
+                         alt="BeautyCat" 
+                         style="height: 50px; width: auto; display: block;"
+                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size: 24px; font-weight: bold; color: #ec4899;\'>BeautyCat</span>';">
                 </div>
                 <style>
                     /* 로고 모바일 최적화 */
                     @media (max-width: 768px) {
                         .logo-container img {
                             height: 40px !important;
+                            width: auto !important;
+                            display: block !important;
+                            max-width: 150px;
+                        }
+                        
+                        .logo-container {
+                            display: flex !important;
+                            align-items: center !important;
                         }
                     }
                     

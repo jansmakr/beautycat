@@ -656,9 +656,26 @@
             // 로딩 표시
             showLoading();
             
-            // localStorage에 관리자 세션 저장
+            // localStorage에 관리자 세션 저장 (auth.js 호환)
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userType', 'admin');
+            localStorage.setItem('user_type', 'admin'); // auth.js가 체크하는 키
+            localStorage.setItem('session_token', 'admin_' + Date.now()); // 세션 토큰
+            
+            // 세션 만료 시간 설정 (24시간)
+            const expiresAt = new Date();
+            expiresAt.setHours(expiresAt.getHours() + 24);
+            localStorage.setItem('session_expires', expiresAt.toISOString());
+            
+            // 사용자 데이터 저장
+            const adminData = {
+                id: 'admin',
+                email: 'admin@beautycat.kr',
+                name: '관리자',
+                user_type: 'admin'
+            };
+            localStorage.setItem('user_data', JSON.stringify(adminData));
+            
+            // 추가 플래그 (호환성)
             localStorage.setItem('adminAccess', 'true');
             localStorage.setItem('loginTime', Date.now());
             

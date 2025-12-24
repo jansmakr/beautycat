@@ -70,10 +70,21 @@ localStorage.setItem('loginTime', Date.now());
 - **변경 사항**:
   - `handleAdminLogin()` 함수 완전 재작성
   - 이메일 입력 단계 제거
-  - localStorage 세션 저장 추가
+  - localStorage 세션 저장 추가 (auth.js 호환)
+  - `session_token`, `session_expires`, `user_data` 추가
   - 바로 대시보드 이동 로직 추가
-- **파일 크기**: 22.3 KB
-- **코드 라인**: 약 30줄 수정
+  - 모바일 로고 CSS 강화
+  - 이미지 fallback 추가
+- **파일 크기**: 22.5 KB
+- **코드 라인**: 약 50줄 수정
+
+### 2. index.html
+- **변경 사항**:
+  - 메인 페이지 로고 수정
+  - 모바일 CSS 강화
+  - 이미지 fallback 추가
+- **파일 크기**: ~220 KB
+- **코드 라인**: 약 10줄 수정
 
 ---
 
