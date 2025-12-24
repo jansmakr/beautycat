@@ -63,18 +63,20 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex items-center justify-between px-4 py-3">
                 
-                <!-- 로고 -->
-                <div class="flex items-center">
-                    <a href="index.html" class="logo-container">
-                        <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
-                    </a>
-                </div>
-                
-                <!-- 데스크톱 네비게이션 -->
+                <!-- 왼쪽 네비게이션 (v2.8.13.6.73 - 야놀자 스타일) -->
                 <nav class="hidden lg:flex items-center space-x-6">
                     <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">마이 페이지</a>
                     <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공지사항</a>
                     <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">견적 요청 관리</a>
+                </nav>
+                
+                <!-- 가운데 로고 -->
+                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%);">
+                    <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 35px; width: auto;">
+                </a>
+                
+                <!-- 오른쪽 네비게이션 -->
+                <nav class="hidden lg:flex items-center space-x-6">
                     <a href="#" onclick="showSection('shop-info')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 정보</a>
                     <a href="#" onclick="showSection('reviews')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">리뷰 관리</a>
                 </nav>

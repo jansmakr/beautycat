@@ -188,7 +188,13 @@
         /* 모바일 최적화 */
         @media (max-width: 640px) {
             .logo-container img {
-                height: 40px !important;
+                height: 32px !important;
+            }
+            
+            header .logo-container {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
             }
 
             .card-soft {
@@ -209,11 +215,20 @@
 </head>
 <body>
     <!-- 헤더 -->
-    <header class="py-6 px-4">
-        <div class="max-w-2xl mx-auto flex items-center justify-between">
-            <a href="index.html" class="logo-container" style="display: flex; align-items: center; text-decoration: none;">
-                <img src="https://www.genspark.ai/api/files/s/bvA3zk1x" alt="Beautyket" style="height: 50px; width: auto;">
+    <!-- 헤더 (v2.8.13.6.73 - 야놀자 스타일 가운데 로고) -->
+    <header class="py-6 px-4 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- 왼쪽 홈 버튼 -->
+            <a href="index.html" class="text-gray-600 hover:text-primary-500 transition-colors">
+                <i class="fas fa-home mr-1"></i>홈으로
             </a>
+            
+            <!-- 가운데 로고 -->
+            <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); text-decoration: none;">
+                <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 40px; width: auto; object-fit: contain;" loading="eager" decoding="async">
+            </a>
+            
+            <!-- 오른쪽 로그인 버튼 -->
             <a href="login.html" class="text-gray-600 hover:text-primary-500 transition-colors">
                 <i class="fas fa-sign-in-alt mr-1"></i>로그인
             </a>
@@ -435,6 +450,7 @@
 
     <!-- JavaScript -->
     <script src="js/config.js?v=2.5.4"></script>
+    <script src="js/auto-matching.js"></script>
     <script src="js/auth.js?v=2.8.13"></script>
     <script src="js/kakao-login.js"></script>
 

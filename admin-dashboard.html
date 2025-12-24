@@ -57,24 +57,29 @@
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
+    <!-- 헤더 (v2.8.13.6.73 - 야놀자 스타일 가운데 로고) -->
     <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="logo-container mr-8">
-                        <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
-                    </a>
-                    <nav class="hidden md:flex space-x-6">
-                        <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
-                        <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
-                        <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 입점관리</a>
-                        <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
-                        <a href="#" onclick="showSection('representative-shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대표샵 지정</a>
-                        <a href="import-public-data.html" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공공데이터</a>
-                        <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
-                    </nav>
-                </div>
+                <!-- 왼쪽 네비게이션 -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
+                    <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
+                    <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 입점관리</a>
+                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
+                </nav>
+                
+                <!-- 가운데 로고 -->
+                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%);">
+                    <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 35px; width: auto;">
+                </a>
+                
+                <!-- 오른쪽 네비게이션 -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" onclick="showSection('representative-shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대표샵 지정</a>
+                    <a href="import-public-data.html" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">공공데이터</a>
+                    <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
+                </nav>
 
                 <!-- User Menu -->
                 <div class="relative">

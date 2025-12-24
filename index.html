@@ -1948,36 +1948,33 @@
 
     <!-- 심플 헤더 -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <div class="max-w-5xl mx-auto px-3 py-2 md:px-4 md:py-2">
+        <div class="max-w-7xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
-                <!-- 로고 (v2.8.13.6.72 - 모바일 수정) -->
-                <div class="logo-container" style="display: flex; align-items: center; justify-content: center; flex: 1;">
-                    <img src="https://www.genspark.ai/api/files/s/bvA3zk1x" 
-                         alt="BeautyCat" 
-                         style="height: 50px; width: auto; display: block;"
-                         onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size: 24px; font-weight: bold; color: #ec4899;\'>BeautyCat</span>';">
-                </div>
+                <!-- 왼쪽 공간 (균형을 위한) -->
+                <div style="flex: 1;"></div>
+                
+                <!-- 로고 (v2.8.13.6.73 - 야놀자 스타일 가운데 배치) -->
+                <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 45px; width: auto; object-fit: contain;" loading="eager" decoding="async">
+                </a>
+                
+                <!-- 오른쪽 공간 (균형을 위한) -->
+                <div style="flex: 1;"></div>
+                
                 <style>
                     /* 로고 모바일 최적화 */
                     @media (max-width: 768px) {
                         .logo-container img {
-                            height: 40px !important;
+                            height: 35px !important;
                             width: auto !important;
-                            display: block !important;
-                            max-width: 150px;
-                        }
-                        
-                        .logo-container {
-                            display: flex !important;
-                            align-items: center !important;
                         }
                     }
                     
                     /* 로고 애니메이션 */
                     .logo-container:hover img {
-                        transform: scale(1.05);
+                        transform: scale(1.03);
                         transition: transform 0.2s ease;
-                        filter: brightness(1.1);
+                        filter: brightness(1.05);
                     }
                 </style>
                 
