@@ -40,6 +40,29 @@
         }
     </script>
     <style>
+        /* 사용자 메뉴 아이콘 스타일 */
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-menu-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.5);
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+        }
+        
         * {
             font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
@@ -81,12 +104,10 @@
                     <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
                 </nav>
 
-                <!-- User Menu -->
+                <!-- User Menu (v2.8.13.6.73 - 아이콘 스타일) -->
                 <div class="relative">
-                    <button onclick="toggleUserMenu()" class="flex items-center text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-user-shield mr-2"></i>
-                        <span id="admin-name">관리자</span>
-                        <i class="fas fa-chevron-down ml-2"></i>
+                    <button onclick="toggleUserMenu()" class="user-menu-btn">
+                        <i class="fas fa-user-shield"></i>
                     </button>
                     <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                         <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -1323,6 +1344,54 @@
             localStorage.removeItem('adminLoginTime');
             window.location.href = 'login.html';
         };
+    </script>
+    
+    <!-- 관리자 권한 체크 (v2.8.13.6.73) -->
+    <script>
+        // 즉시 실행되는 권한 체크 함수
+        function checkAdminAccess() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userType = localStorage.getItem('user_type');
+            const adminAccess = localStorage.getItem('adminAccess') === 'true';
+            const userName = localStorage.getItem('user_name');
+            const sessionToken = localStorage.getItem('session_token');
+            
+            console.log('🔐 관리자 권한 체크:', { 
+                isLoggedIn, 
+                userType, 
+                adminAccess, 
+                userName,
+                hasSessionToken: !!sessionToken 
+            });
+            
+            // user_name이 없으면 자동으로 설정 (관리자의 경우)
+            if (!userName && (userType === 'admin' || adminAccess)) {
+                localStorage.setItem('user_name', '관리자');
+                localStorage.setItem('user_email', 'admin@beautycat.kr');
+                console.log('✅ 관리자 이름 자동 설정 완료');
+            }
+            
+            // 로그인 안 되어 있거나, 관리자가 아닌 경우
+            if (!isLoggedIn && !sessionToken) {
+                console.log('❌ 로그인 안 됨 - 로그인 페이지로 이동');
+                alert('관리자 권한이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            if (userType !== 'admin' && !adminAccess) {
+                console.log('❌ 관리자 권한 없음 - 로그인 페이지로 이동');
+                alert('관리자 권한이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            console.log('✅ 관리자 권한 확인 완료');
+            return true;
+        }
+        
+        // 즉시 실행
+        checkAdminAccess();
     </script>
     
     <script src="js/auth.js"></script>
