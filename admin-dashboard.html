@@ -1340,8 +1340,23 @@
         };
         
         window.logout = function() {
+            console.log('🚪 관리자 로그아웃 실행 - localStorage 완전 초기화');
+            
+            // 모든 세션 데이터 제거 (v2.8.13.6.73)
             localStorage.removeItem('adminAuth');
             localStorage.removeItem('adminLoginTime');
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('user_type');
+            localStorage.removeItem('user_data');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('adminAccess');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('session_expires');
+            localStorage.removeItem('loginTime');
+            
+            console.log('✅ localStorage 초기화 완료');
             window.location.href = 'login.html';
         };
     </script>

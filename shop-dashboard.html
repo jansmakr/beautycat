@@ -1761,6 +1761,31 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<!-- 로그아웃 함수 (v2.8.13.6.73 - 완전 초기화) -->
+<script>
+window.logout = function() {
+    if (confirm('로그아웃 하시겠습니까?')) {
+        console.log('🚪 샵 로그아웃 실행 - localStorage 완전 초기화');
+        
+        // 모든 세션 데이터 제거
+        localStorage.removeItem('session_token');
+        localStorage.removeItem('user_type');
+        localStorage.removeItem('user_data');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('adminAccess');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('session_expires');
+        localStorage.removeItem('loginTime');
+        
+        console.log('✅ localStorage 초기화 완료');
+        
+        // 홈페이지로 리디렉션
+        window.location.href = 'index.html';
+    }
+};
+</script>
 
 </body>
 </html>
