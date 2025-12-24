@@ -89,6 +89,15 @@ function initializeRegisterPage() {
 // 기존 세션 확인
 async function checkExistingSession() {
     try {
+        // v2.8.13.6.73: 대시보드 페이지에서는 세션 체크 건너뛰기
+        const pathname = window.location.pathname;
+        if (pathname.includes('admin-dashboard.html') || 
+            pathname.includes('shop-dashboard.html') || 
+            pathname.includes('customer-dashboard.html')) {
+            console.log('📋 대시보드 페이지 - 세션 체크 건너뛰기');
+            return;
+        }
+        
         const token = localStorage.getItem('session_token');
         const userType = localStorage.getItem('user_type');
         
@@ -105,7 +114,6 @@ async function checkExistingSession() {
                 updateLoginStatusDisplay();
                 
                 // 이미 로그인된 상태에서 로그인/회원가입 페이지 접근 시 대시보드로 리다이렉트
-                const pathname = window.location.pathname;
                 if (pathname.includes('login.html') || pathname.includes('register.html')) {
                     redirectToDashboard(userType);
                 }
@@ -872,6 +880,33 @@ async function processRegister(registerData) {
                 
                 if (linkResponse.ok) {
                     console.log('✅ 사용자-샵 연결 성공');
+                    
+                    // 🔍 공공데이터 자동 매칭 시도
+                    try {
+                        console.log('🔍 공공데이터 자동 매칭 시작...');
+                        if (typeof autoMatchPublicDataShop === 'function') {
+                            const matchResult = await autoMatchPublicDataShop({
+                                id: newShop.id,
+                                shop_name: shopData.name,
+                                state: shopData.state,
+                                district: shopData.district,
+                                address: shopData.address,
+                                shop_phone: shopData.phone,
+                                user_id: newUser.id
+                            });
+                            
+                            if (matchResult.matched) {
+                                console.log('✅ 공공데이터 자동 매칭 성공:', matchResult);
+                            } else {
+                                console.log('ℹ️ 공공데이터 매칭 실패:', matchResult.reason);
+                            }
+                        } else {
+                            console.warn('⚠️ 자동 매칭 함수 없음 (auto-matching.js 로드 필요)');
+                        }
+                    } catch (matchError) {
+                        console.error('❌ 자동 매칭 오류:', matchError);
+                        // 매칭 실패해도 회원가입은 진행
+                    }
                 } else {
                     const linkError = await linkResponse.text();
                     console.error('❌ 사용자-샵 연결 실패:', linkError);
