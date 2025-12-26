@@ -401,7 +401,17 @@ function displayQuotesList() {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
                             <div><strong>관련 상담:</strong> ${consultation?.region || (consultation?.state && consultation?.district ? `${consultation.state} ${consultation.district}` : '지역 미설정')} - ${consultation?.treatments || consultation?.treatment_type || consultation?.treatment_types || '미설정'}</div>
                             <div><strong>가격:</strong> <span class="text-lg font-semibold text-pink-600">${quote.price?.toLocaleString()}원</span></div>
-                            <div><strong>소요시간:</strong> ${quote.duration}</div>
+                            <div><strong>소요시간:</strong> ${
+    (() => {
+        const minutes = parseInt(quote.duration);
+        if (isNaN(minutes) || minutes <= 0) return '협의';
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        if (hours > 0 && mins > 0) return `${hours}시간 ${mins}분`;
+        if (hours > 0) return `${hours}시간`;
+        return `${mins}분`;
+    })()
+}</div>
                             <div><strong>받은 날짜:</strong> ${formatDate(quote.created_at)}</div>
                         </div>
                         <div class="bg-gray-50 p-3 rounded-lg text-sm text-gray-700 mb-4">
@@ -661,7 +671,17 @@ function showQuoteDetail(quoteId) {
                 </div>
                 <div>
                     <h4 class="font-semibold text-gray-900 mb-2">소요시간</h4>
-                    <p class="text-gray-700">${quote.duration}</p>
+                    <p class="text-gray-700">${
+    (() => {
+        const minutes = parseInt(quote.duration);
+        if (isNaN(minutes) || minutes <= 0) return '협의';
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        if (hours > 0 && mins > 0) return `${hours}시간 ${mins}분`;
+        if (hours > 0) return `${hours}시간`;
+        return `${mins}분`;
+    })()
+}</p>
                 </div>
             </div>
             <div>
@@ -1224,14 +1244,24 @@ function toggleProfileMenu() {
     }
 }
 
-// 로그아웃 함수
+// 로그아웃 함수 (v2.8.13.6.73 - 완전 초기화)
 function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-        // 세션 데이터 제거
+        console.log('🚪 로그아웃 실행 - localStorage 완전 초기화');
+        
+        // 모든 세션 데이터 제거
         localStorage.removeItem('session_token');
         localStorage.removeItem('user_type');
         localStorage.removeItem('user_data');
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('adminAccess');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('session_expires');
+        localStorage.removeItem('loginTime');
+        
+        console.log('✅ localStorage 초기화 완료');
         
         // 홈페이지로 리디렉션
         window.location.href = 'index.html';

@@ -94,7 +94,7 @@
                 
                 <!-- 가운데 로고 -->
                 <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%);">
-                    <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 35px; width: auto;">
+                    <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 35px; width: auto; background: white; padding: 8px; border-radius: 8px;">
                 </a>
                 
                 <!-- 오른쪽 네비게이션 -->
@@ -1363,32 +1363,51 @@
     
     <!-- 관리자 권한 자동 설정 (v2.8.13.6.74) -->
     <script>
-        // 페이지 로드 시 자동으로 관리자 권한 설정
+        // 페이지 로드 시 관리자 권한 확인 및 설정
         (function() {
-            console.log('🔓 관리자 대시보드 - 자동 권한 부여 모드');
+            console.log('🔓 관리자 대시보드 - 권한 확인 중...');
             
-            // localStorage에 관리자 세션 자동 설정
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('user_type', 'admin');
-            localStorage.setItem('user_name', '관리자');
-            localStorage.setItem('user_email', 'admin@beautycat.kr');
-            localStorage.setItem('adminAccess', 'true');
-            localStorage.setItem('session_token', 'admin_' + Date.now());
+            // 기존 세션 확인
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userType = localStorage.getItem('user_type');
+            const adminAccess = localStorage.getItem('adminAccess') === 'true';
+            const sessionToken = localStorage.getItem('session_token');
             
-            const expiresAt = new Date();
-            expiresAt.setHours(expiresAt.getHours() + 24);
-            localStorage.setItem('session_expires', expiresAt.toISOString());
+            // 관리자 권한 체크
+            const hasAdminAuth = (isLoggedIn && userType === 'admin') || 
+                                 adminAccess || 
+                                 (sessionToken && sessionToken.startsWith('admin_'));
             
-            const adminData = {
-                id: 'admin',
-                email: 'admin@beautycat.kr',
-                name: '관리자',
-                user_type: 'admin',
-                adminAccess: true
-            };
-            localStorage.setItem('user_data', JSON.stringify(adminData));
-            
-            console.log('✅ 관리자 권한 자동 설정 완료');
+            if (hasAdminAuth) {
+                console.log('✅ 기존 관리자 세션 유지');
+                // 세션이 있으면 그대로 유지 (덮어쓰지 않음)
+            } else {
+                console.log('⚠️ 관리자 권한 없음 - 자동 권한 부여');
+                
+                // localStorage에 관리자 세션 자동 설정
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('user_type', 'admin');
+                localStorage.setItem('user_name', '관리자');
+                localStorage.setItem('user_email', 'admin@beautycat.kr');
+                localStorage.setItem('adminAccess', 'true');
+                localStorage.setItem('session_token', 'admin_' + Date.now());
+                localStorage.setItem('loginTime', Date.now().toString());
+                
+                const expiresAt = new Date();
+                expiresAt.setHours(expiresAt.getHours() + 24);
+                localStorage.setItem('session_expires', expiresAt.toISOString());
+                
+                const adminData = {
+                    id: 'admin',
+                    email: 'admin@beautycat.kr',
+                    name: '관리자',
+                    user_type: 'admin',
+                    adminAccess: true
+                };
+                localStorage.setItem('user_data', JSON.stringify(adminData));
+                
+                console.log('✅ 관리자 권한 자동 설정 완료');
+            }
         })();
     </script>
     
