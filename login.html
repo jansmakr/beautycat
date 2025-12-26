@@ -315,12 +315,18 @@
             .logo-container img {
                 height: 32px !important;
                 width: auto !important;
+                background: white;
+                padding: 6px 12px;
+                border-radius: 6px;
             }
             
             header .logo-container {
                 position: absolute;
                 left: 50%;
                 transform: translateX(-50%);
+                background: white;
+                padding: 4px;
+                border-radius: 8px;
             }
 
             .card-soft {
@@ -354,7 +360,7 @@
             
             <!-- 가운데 로고 -->
             <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); text-decoration: none;">
-                <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 40px; width: auto; object-fit: contain;" loading="eager" decoding="async">
+                <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 40px; width: auto; object-fit: contain; background: white; padding: 8px; border-radius: 8px;" loading="eager" decoding="async">
             </a>
             
             <!-- 오른쪽 공간 (균형) -->
@@ -660,11 +666,12 @@
             
             // localStorage에 관리자 세션 저장 (auth.js 호환)
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('user_type', 'admin'); // auth.js가 체크하는 키
-            localStorage.setItem('user_name', '관리자'); // index.html 프로필 표시용
-            localStorage.setItem('user_email', 'admin@beautycat.kr'); // 이메일
-            localStorage.setItem('adminAccess', 'true'); // 관리자 권한 플래그
-            localStorage.setItem('session_token', 'admin_' + Date.now()); // 세션 토큰
+            localStorage.setItem('user_type', 'admin');
+            localStorage.setItem('user_name', '관리자');
+            localStorage.setItem('user_email', 'admin@beautycat.kr');
+            localStorage.setItem('adminAccess', 'true');
+            localStorage.setItem('session_token', 'admin_' + Date.now());
+            localStorage.setItem('loginTime', Date.now().toString());
             
             // 세션 만료 시간 설정 (24시간)
             const expiresAt = new Date();
@@ -681,17 +688,15 @@
             };
             localStorage.setItem('user_data', JSON.stringify(adminData));
             
-            // 추가 플래그 (호환성)
-            localStorage.setItem('adminAccess', 'true');
-            localStorage.setItem('loginTime', Date.now());
-            
             // 관리자 비밀번호 입력 필드 클리어 (보안)
             document.getElementById('adminPasswordInput').value = '';
             
-            // 0.5초 후 관리자 대시보드로 이동
+            console.log('✅ 관리자 세션 설정 완료, 대시보드로 이동 중...');
+            
+            // v2.8.13.6.74: localStorage 동기화를 위해 약간 더 긴 지연
             setTimeout(() => {
                 window.location.href = 'admin-dashboard.html';
-            }, 500);
+            }, 100);
         }
 
         // 관리자 비밀번호 입력 필드에서 Enter 키 처리

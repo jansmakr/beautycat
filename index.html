@@ -1953,9 +1953,9 @@
                 <!-- 왼쪽 공간 (균형을 위한) -->
                 <div style="flex: 1;"></div>
                 
-                <!-- 로고 (v2.8.13.6.73 - 야놀자 스타일 가운데 배치) -->
+                <!-- 로고 (v2.8.13.6.74 - 크기 최적화) -->
                 <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                    <img src="images/beautyket-logo-full.png?v=2025122401" alt="Beautyket" style="height: 45px; width: auto; object-fit: contain;" loading="eager" decoding="async">
+                    <img src="images/beautyket-logo-full.png?v=2025122402" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="background: white; padding: 8px; border-radius: 8px;">
                 </a>
                 
                 <!-- 오른쪽 로그인/프로필 아이콘 (v2.8.13.6.73) -->
@@ -1989,6 +1989,38 @@
                 </div>
                 
                 <style>
+                    /* 로고 크기 (v2.8.13.6.74 - 반응형) */
+                    .beautyket-main-logo {
+                        height: 50px;
+                        width: auto;
+                        object-fit: contain;
+                        /* 로고 주변 배경색 (헤더와 동일) */
+                        background: white;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                    }
+                    
+                    /* 로고 컨테이너 */
+                    .logo-container {
+                        background: white !important;
+                        padding: 4px;
+                        border-radius: 8px;
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .beautyket-main-logo {
+                            height: 42px;
+                            padding: 6px 12px;
+                        }
+                    }
+                    
+                    @media (max-width: 480px) {
+                        .beautyket-main-logo {
+                            height: 38px;
+                            padding: 5px 10px;
+                        }
+                    }
+                    
                     /* 로그인 아이콘 스타일 */
                     .login-icon-btn {
                         display: flex;
@@ -3748,24 +3780,11 @@
             }
         };
         
-        // 로그아웃 처리
-        function handleLogout() {
-            if (confirm('로그아웃하시겠습니까?')) {
-                // 로컬 스토리지 클리어
-                localStorage.removeItem('session_token');
-                localStorage.removeItem('beautycat_token');
-                localStorage.removeItem('user_data');
-                localStorage.removeItem('beautycat_user');
-                localStorage.removeItem('user_type');
-                
-                // 페이지 새로고침
-                alert('로그아웃되었습니다.');
-                location.reload();
-            }
-        }
+        // 로그아웃 처리 - 구버전 제거 (v2.8.13.6.74)
+        // handleLogout()은 line 4863에 신버전으로 정의됨
         
         // 페이지 로드 시 로그인 상태 확인
-        checkLoginStatus();
+        // checkLoginStatus(); // v2.8.13.6.74: 구버전 함수 호출 제거 (신버전은 DOMContentLoaded에서 호출)
     </script>
 
     <!-- 공유 모달 -->
@@ -4840,9 +4859,12 @@
             dropdown.classList.toggle('hidden');
         }
         
-        // 로그아웃 처리
+        // 로그아웃 처리 (v2.8.13.6.74 - 완전 초기화)
         function handleLogout() {
             if (confirm('로그아웃 하시겠습니까?')) {
+                console.log('🚪 로그아웃 실행 - localStorage 완전 초기화');
+                
+                // 모든 세션 데이터 제거
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('user_name');
                 localStorage.removeItem('user_type');
@@ -4850,6 +4872,13 @@
                 localStorage.removeItem('session_token');
                 localStorage.removeItem('session_expires');
                 localStorage.removeItem('user_data');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('adminAccess');
+                localStorage.removeItem('loginTime');
+                localStorage.removeItem('adminAuth');
+                localStorage.removeItem('adminLoginTime');
+                
+                console.log('✅ localStorage 초기화 완료');
                 
                 alert('로그아웃 되었습니다.');
                 window.location.href = 'index.html';
