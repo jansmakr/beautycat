@@ -1,0 +1,66 @@
+/* ============================================
+   로고 모바일 최적화 스타일
+   v2.8.13.6.80 - 2025-12-26
+   ============================================ */
+
+/* 로고 컨테이너 기본 스타일 */
+.logo-container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+/* 메인 로고 이미지 스타일 */
+.beautyket-main-logo {
+    /* 데스크톱 기본 크기 - 크게! */
+    height: 60px;
+    width: auto;
+    
+    /* 배경 없애기 */
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    
+    /* 부드러운 전환 효과 */
+    transition: all 0.3s ease;
+    
+    /* 이미지 로딩 최적화 */
+    object-fit: contain;
+}
+
+/* 태블릿 (768px 이하) */
+@media (max-width: 768px) {
+    .beautyket-main-logo {
+        height: 55px;
+    }
+}
+
+/* 모바일 (640px 이하) */
+@media (max-width: 640px) {
+    .beautyket-main-logo {
+        height: 50px;
+    }
+}
+
+/* 작은 모바일 (480px 이하) */
+@media (max-width: 480px) {
+    .beautyket-main-logo {
+        height: 45px;
+    }
+}
+
+/* 호버 효과 (데스크톱) */
+@media (min-width: 769px) {
+    .beautyket-main-logo:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(255, 45, 146, 0.15);
+    }
+}
+
+/* 로고가 흰색 배경과 자연스럽게 어울리도록 */
+.simple-header {
+    background: white !important;
+}

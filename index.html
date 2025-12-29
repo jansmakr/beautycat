@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -542,14 +542,13 @@
     </script>
 
     <!-- DNS 프리페치 및 성능 최적화 -->
+    <!-- preconnect 최적화 (v2.8.13.6.85 - 필수만 유지) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="//beautycat-api.jansmakr.workers.dev">
-    <link rel="dns-prefetch" href="//api.beautycat.kr">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     
-    <!-- 폰트 최적화 -->
+    <!-- 폰트 최적화 (v2.8.13.6.85 - font-display: swap) -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS (컴파일된 버전 - 미디어 쿼리로 조건부 로딩) -->
@@ -1956,21 +1955,30 @@
                 <!-- 왼쪽 공간 (균형을 위한) -->
                 <div style="flex: 1;"></div>
                 
-                <!-- 로고 (v2.8.13.6.83 - 50% 축소 + 중앙 정렬) -->
-                <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center;">
-                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
-                </a>
+                <!-- 로고 (v2.8.13.6.86 - SEO 최적화: h1 + alt + width/height) -->
+                <h1 style="margin: 0; padding: 0; display: flex;">
+                    <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center;" title="Beautyket 홈으로 이동 - 프리미엄 뷰티 플랫폼">
+                        <img src="images/beautyket-logo-full.png?v=2025122404" 
+                             alt="Beautyket - 피부관리실 견적비교 플랫폼" 
+                             width="120" 
+                             height="40"
+                             class="beautyket-main-logo" 
+                             loading="eager" 
+                             decoding="async" 
+                             style="height: 40px !important; width: auto !important;">
+                    </a>
+                </h1>
                 
-                <!-- 오른쪽 로그인/프로필 아이콘 (v2.8.13.6.73) -->
-                <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
+                <!-- 오른쪽 로그인/프로필 아이콘 (v2.8.13.6.86 - SEO: nav + nofollow) -->
+                <nav style="flex: 1; display: flex; justify-content: flex-end; align-items: center;" role="navigation" aria-label="사용자 메뉴">
                     <!-- 로그인 전 -->
-                    <a href="login.html" id="loginIconBtn" class="login-icon-btn" title="로그인">
+                    <a href="login.html" id="loginIconBtn" class="login-icon-btn" title="로그인" rel="nofollow">
                         <i class="fas fa-user-circle"></i>
                     </a>
                     
                     <!-- 로그인 후 -->
                     <div id="userProfileMenu" class="relative" style="display: none;">
-                        <button onclick="toggleUserProfileDropdown()" class="user-profile-btn" title="마이페이지">
+                        <button onclick="toggleUserProfileDropdown()" class="user-profile-btn" title="마이페이지" aria-label="사용자 메뉴 열기">
                             <i class="fas fa-user-circle"></i>
                             <span class="login-badge">로그인 중</span>
                         </button>
@@ -1981,15 +1989,15 @@
                                 <p class="text-sm text-gray-500">로그인 중</p>
                                 <p class="text-sm font-semibold text-gray-900" id="userNameDisplay">사용자</p>
                             </div>
-                            <a href="#" id="myPageLink" class="dropdown-item">
+                            <a href="#" id="myPageLink" class="dropdown-item" rel="nofollow">
                                 <i class="fas fa-th-large mr-2"></i>마이페이지
                             </a>
-                            <a href="#" onclick="handleLogout(); return false;" class="dropdown-item text-red-600">
+                            <a href="#" onclick="handleLogout(); return false;" class="dropdown-item text-red-600" rel="nofollow">
                                 <i class="fas fa-sign-out-alt mr-2"></i>로그아웃
                             </a>
                         </div>
                     </div>
-                </div>
+                </nav>
                 
                 <style>
                     /* 로고 스타일은 css/logo-mobile-fix.css에서 관리 (v2.8.13.6.80) */
