@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 - BeautyCat | 피부관리실 견적비교 플랫폼</title>
     <!-- v2.8.13.6.72: 관리자 직접 로그인 (이메일 불필요) -->
     
@@ -358,14 +358,23 @@
     <header class="py-6 px-4 border-b border-gray-100">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <!-- 왼쪽 홈 버튼 -->
-            <a href="index.html" class="text-gray-600 hover:text-primary-500 transition-colors">
+            <a href="index.html" class="text-gray-600 hover:text-primary-500 transition-colors" rel="nofollow">
                 <i class="fas fa-home mr-1"></i>홈으로
             </a>
             
-            <!-- 가운데 로고 (v2.8.13.6.83 - 50% 축소 + 중앙 정렬) -->
-            <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center;">
-                <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
-            </a>
+            <!-- 가운데 로고 (v2.8.13.6.86 - SEO: h1 + alt + width/height) -->
+            <h1 style="margin: 0; padding: 0; position: absolute; left: 50%; transform: translateX(-50%);">
+                <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center;" title="Beautyket 홈으로 이동">
+                    <img src="images/beautyket-logo-full.png?v=2025122404" 
+                         alt="Beautyket - 피부관리실 견적비교 플랫폼" 
+                         width="120" 
+                         height="40"
+                         class="beautyket-main-logo" 
+                         loading="eager" 
+                         decoding="async" 
+                         style="height: 40px !important; width: auto !important;">
+                </a>
+            </h1>
             
             <!-- 오른쪽 공간 (균형) -->
             <div></div>
