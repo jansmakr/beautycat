@@ -1403,6 +1403,8 @@ async function loadDemoShops() {
         // 프로덕션 환경에서는 데모 샵 로드 건너뛰기
         const isProduction = location.hostname === 'beautycat.kr' ||
                            location.hostname === 'www.beautycat.kr' ||
+                           location.hostname === 'beautyket.com' ||
+                           location.hostname === 'www.beautyket.com' ||
                            location.hostname.includes('beautycat.pages.dev');
         
         if (isProduction) {
