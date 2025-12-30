@@ -855,9 +855,135 @@ async function toggleUserStatus() {
 }
 
 // Edit user (placeholder)
-function editUser(userId) {
-    showNotification('사용자 편집 기능은 준비중입니다.', 'info');
+// Edit user
+async function editUser(userId) {
+    try {
+        console.log('📝 사용자 편집 시작:', userId);
+        
+        // 사용자 정보 가져오기
+        const response = await fetch(`tables/users/${userId}`);
+        if (!response.ok) {
+            throw new Error('사용자 정보를 가져올 수 없습니다.');
+        }
+        
+        const user = await response.json();
+        console.log('✅ 사용자 정보 로드:', user);
+        
+        // 폼에 데이터 채우기
+        document.getElementById('edit-user-name').value = user.name || '';
+        document.getElementById('edit-user-email').value = user.email || '';
+        document.getElementById('edit-user-phone').value = user.phone || '';
+        document.getElementById('edit-user-type').value = user.user_type || 'customer';
+        
+        // 모달에 사용자 ID 저장
+        document.getElementById('user-edit-modal').setAttribute('data-user-id', userId);
+        
+        // 경고 메시지 표시
+        document.getElementById('user-type-warning').classList.remove('hidden');
+        
+        // 모달 열기
+        const modal = document.getElementById('user-edit-modal');
+        modal.style.display = 'flex';
+        modal.classList.remove('hidden');
+        
+    } catch (error) {
+        console.error('사용자 편집 오류:', error);
+        showNotification('사용자 정보를 불러올 수 없습니다.', 'error');
+    }
 }
+
+// Close user edit modal
+function closeUserEditModal() {
+    const modal = document.getElementById('user-edit-modal');
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+    
+    // 폼 초기화
+    document.getElementById('user-edit-form').reset();
+    document.getElementById('user-type-warning').classList.add('hidden');
+}
+
+// Make functions globally accessible
+window.editUser = editUser;
+window.closeUserEditModal = closeUserEditModal;
+
+// User edit form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const userEditForm = document.getElementById('user-edit-form');
+    if (userEditForm) {
+        userEditForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const modal = document.getElementById('user-edit-modal');
+            const userId = modal.getAttribute('data-user-id');
+            
+            if (!userId) {
+                showNotification('사용자 ID를 찾을 수 없습니다.', 'error');
+                return;
+            }
+            
+            // 폼 데이터 수집
+            const name = document.getElementById('edit-user-name').value.trim();
+            const phone = document.getElementById('edit-user-phone').value.trim();
+            const userType = document.getElementById('edit-user-type').value;
+            
+            if (!name) {
+                showNotification('이름을 입력해주세요.', 'error');
+                return;
+            }
+            
+            // 로딩 버튼
+            const submitBtn = userEditForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>저장 중...';
+            
+            try {
+                console.log('💾 사용자 정보 업데이트 중...', {userId, name, phone, userType});
+                
+                // 사용자 정보 업데이트
+                const updateData = {
+                    name: name,
+                    phone: phone,
+                    user_type: userType
+                };
+                
+                const response = await fetch(`tables/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`업데이트 실패: ${errorText}`);
+                }
+                
+                const updatedUser = await response.json();
+                console.log('✅ 사용자 정보 업데이트 완료:', updatedUser);
+                
+                // 성공 알림
+                showNotification(`${name}님의 정보가 업데이트되었습니다.`, 'success');
+                
+                // 모달 닫기
+                closeUserEditModal();
+                
+                // 대시보드 데이터 새로고침
+                await loadDashboardData();
+                
+            } catch (error) {
+                console.error('사용자 업데이트 오류:', error);
+                showNotification('사용자 정보 업데이트 중 오류가 발생했습니다:\n' + error.message, 'error');
+            } finally {
+                // 버튼 복원
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    }
+});
 
 // View shop (placeholder)
 function viewShop(shopId) {
