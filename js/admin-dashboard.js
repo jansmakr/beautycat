@@ -2745,13 +2745,17 @@ async function saveShopChanges() {
     };
     
     console.log('📤 전송 데이터:', updatedData);
+    console.log('📤 업체명 필드 상세 확인:');
+    console.log('  - edit-shop-name 요소:', document.getElementById('edit-shop-name'));
+    console.log('  - edit-shop-name 값:', document.getElementById('edit-shop-name')?.value);
+    console.log('  - updatedData.name:', updatedData.name);
     console.log('📤 전송 URL:', `tables/skincare_shops/${shopId}`);
     console.log('📤 전송 Method:', 'PUT');
     console.log('📤 전송 필드 수:', Object.keys(updatedData).length);
     
     try {
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PUT',  // ✅ 수정: PATCH → PUT (전체 업데이트)
+            method: 'PATCH',  // ✅ 수정: PATCH 사용 (부분 업데이트)
             headers: {
                 'Content-Type': 'application/json',
             },

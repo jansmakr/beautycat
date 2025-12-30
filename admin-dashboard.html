@@ -1514,7 +1514,7 @@
     
     <script src="js/auth.js"></script>
     <script src="js/korea-town-data.js"></script>
-    <script src="js/admin-dashboard.js?v=2.8.13.6.105"></script>
+    <script src="js/admin-dashboard.js?v=2.8.13.6.107"></script>
 
 <!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
 <script>
@@ -1903,10 +1903,88 @@ document.getElementById('consultation-view-modal').addEventListener('click', fun
 <!-- 공지사항 관리 시스템 -->
 <script src="js/announcements.js"></script>
 
-<!-- 🔥 PATCH 자동 변환 비활성화 (v2.8.13.6.104) -->
-<!-- 이유: saveShopChanges()에서 직접 PUT을 사용하므로 자동 변환 불필요 -->
+<!-- 🔥 HOTFIX: PATCH → PUT 자동 변환 (v2.8.13.6.106) -->
 <script>
-console.log('✅ PATCH 자동 변환 비활성화 (직접 PUT 사용)');
+console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환 (필수 필드만)');
+
+// 원본 fetch 저장
+const originalFetch = window.fetch;
+
+// fetch 오버라이드
+window.fetch = async function(url, options = {}) {
+    // PATCH 요청을 감지
+    if (options.method === 'PATCH' || options.method === 'patch') {
+        console.log(`🔄 PATCH 감지: ${url} → GET + PUT로 변환`);
+        
+        try {
+            // 1. 먼저 기존 데이터 가져오기 (GET)
+            const getResponse = await originalFetch(url, {
+                method: 'GET',
+                headers: options.headers
+            });
+            
+            if (!getResponse.ok) {
+                console.error('GET 실패:', url);
+                return getResponse;
+            }
+            
+            const existingData = await getResponse.json();
+            
+            // 2. PATCH 데이터 파싱
+            let patchData = {};
+            if (options.body) {
+                try {
+                    patchData = JSON.parse(options.body);
+                } catch (e) {
+                    patchData = options.body;
+                }
+            }
+            
+            // 3. ✅ 필수 필드만 병합 (시스템 필드 제외)
+            const allowedFields = [
+                'name', 'owner_name', 'phone', 'email', 'business_number',
+                'state', 'district', 'town', 'address', 
+                'representative_treatments', 'price_range', 'description',
+                'status', 'services', 'operating_hours', 'business_license'
+            ];
+            
+            const mergedData = {};
+            
+            // 기존 데이터에서 허용된 필드만 복사
+            for (const field of allowedFields) {
+                if (existingData.hasOwnProperty(field)) {
+                    mergedData[field] = existingData[field];
+                }
+            }
+            
+            // PATCH 데이터로 덮어쓰기
+            for (const field of allowedFields) {
+                if (patchData.hasOwnProperty(field)) {
+                    mergedData[field] = patchData[field];
+                }
+            }
+            
+            console.log('📦 병합된 데이터 (필수 필드만):', mergedData);
+            
+            // 4. PUT 요청으로 전송
+            return await originalFetch(url, {
+                ...options,
+                method: 'PUT',
+                body: JSON.stringify(mergedData)
+            });
+            
+        } catch (error) {
+            console.error('PATCH → PUT 변환 오류:', error);
+            // 실패 시 원본 요청 그대로 전송
+            return await originalFetch(url, options);
+        }
+    }
+    
+    // PATCH가 아니면 그대로 전송
+    return await originalFetch(url, options);
+};
+
+console.log('✅ PATCH 자동 변환 활성화 완료 (필수 필드만 병합)');
 </script>
 
 <!-- 업체 신규 등록 모달 -->
