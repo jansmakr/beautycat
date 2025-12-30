@@ -2648,6 +2648,13 @@ function updateTowns() {
 async function saveShopChanges() {
     const shopId = document.getElementById('edit-shop-id').value;
     
+    if (!shopId) {
+        alert('샵 ID를 찾을 수 없습니다.');
+        return;
+    }
+    
+    console.log('💾 샵 정보 저장 시작:', shopId);
+    
     // Collect treatment types
     const selectedTreatments = [];
     document.querySelectorAll('.edit-treatment-checkbox:checked').forEach(checkbox => {
@@ -2655,7 +2662,7 @@ async function saveShopChanges() {
     });
     
     const updatedData = {
-        shop_name: document.getElementById('edit-shop-name').value,
+        name: document.getElementById('edit-shop-name').value,  // ✅ 수정: shop_name → name
         owner_name: document.getElementById('edit-owner-name').value,
         phone: document.getElementById('edit-phone').value,
         email: document.getElementById('edit-email').value,
@@ -2664,41 +2671,39 @@ async function saveShopChanges() {
         district: document.getElementById('edit-district').value,
         town: document.getElementById('edit-town')?.value || '',
         address: document.getElementById('edit-address').value,
-        treatment_types: selectedTreatments,
+        representative_treatments: selectedTreatments,  // ✅ 수정: treatment_types → representative_treatments
         price_range: document.getElementById('edit-price-range').value,
-        description: document.getElementById('edit-description').value,
-        updated_at: new Date().toISOString()
+        description: document.getElementById('edit-description').value
     };
+    
+    console.log('📤 전송 데이터:', updatedData);
     
     try {
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PATCH',
+            method: 'PUT',  // ✅ 수정: PATCH → PUT (전체 업데이트)
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedData)
         });
         
+        console.log('📡 응답 상태:', response.status);
+        
         if (response.ok) {
-            alert('샵 정보가 성공적으로 수정되었습니다.');
+            const updatedShop = await response.json();
+            console.log('✅ 샵 정보 업데이트 완료:', updatedShop);
+            
+            showNotification('샵 정보가 성공적으로 수정되었습니다.', 'success');
             closeShopEditModal();
-            refreshShops(); // Reload shops table
+            await loadShops(); // Reload shops table
         } else {
-            throw new Error(`HTTP ${response.status}`);
+            const errorText = await response.text();
+            console.error('❌ 업데이트 실패:', response.status, errorText);
+            throw new Error(`업데이트 실패 (${response.status}): ${errorText}`);
         }
     } catch (error) {
-        console.error('Shop update error:', error);
-        
-        // 로컬 데이터 업데이트 (API 실패시)
-        const shopIndex = allShops.findIndex(s => s.id === shopId);
-        if (shopIndex !== -1) {
-            allShops[shopIndex] = { ...allShops[shopIndex], ...updatedData };
-            displayShops(allShops);
-            closeShopEditModal();
-            alert('샵 정보가 로컬에서 업데이트되었습니다. (API 연결 필요)');
-        } else {
-            alert('샵 정보 수정에 실패했습니다.');
-        }
+        console.error('❌ Shop update error:', error);
+        showNotification('샵 정보 수정 중 오류가 발생했습니다: ' + error.message, 'error');
     }
 }
 
