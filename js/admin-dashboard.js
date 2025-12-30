@@ -985,16 +985,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (existingShop) {
                         console.log('✅ 기존 업체 레코드 존재:', existingShop.id);
                     } else {
-                        // 새 업체 레코드 생성
+                        // 새 업체 레코드 생성 (NOT NULL 필드에 기본값 제공)
                         const shopData = {
                             name: name + ' 업체',
                             owner_name: name,
                             email: updatedUser.email,
-                            phone: phone || '',
-                            state: '',
-                            district: '',
-                            address: '',
-                            business_number: '',
+                            phone: phone || '정보 없음',
+                            state: '서울',
+                            district: '강남구',
+                            address: '주소 미등록',
+                            business_number: '정보 없음',
                             status: 'pending',
                             approved: false,
                             user_id: userId
@@ -1012,7 +1012,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             const newShop = await shopResponse.json();
                             console.log('✅ 업체 레코드 생성 완료:', newShop.id);
                         } else {
-                            console.warn('⚠️ 업체 레코드 생성 실패 (계속 진행)');
+                            const errorText = await shopResponse.text();
+                            console.error('❌ 업체 레코드 생성 실패:', shopResponse.status, errorText);
+                            console.error('전송한 데이터:', shopData);
                         }
                     }
                 }
