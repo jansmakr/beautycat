@@ -2957,7 +2957,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     address: address,
                     business_number: businessNumber,
                     business_license: licenseNumber || null,
-                    naver_cafe_id: naverCafeId || null,
                     status: 'pending'
                 };
                 
