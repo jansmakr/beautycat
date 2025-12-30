@@ -2677,6 +2677,9 @@ async function saveShopChanges() {
     };
     
     console.log('📤 전송 데이터:', updatedData);
+    console.log('📤 전송 URL:', `tables/skincare_shops/${shopId}`);
+    console.log('📤 전송 Method:', 'PUT');
+    console.log('📤 전송 필드 수:', Object.keys(updatedData).length);
     
     try {
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
@@ -2688,14 +2691,23 @@ async function saveShopChanges() {
         });
         
         console.log('📡 응답 상태:', response.status);
+        console.log('📡 응답 헤더:', [...response.headers.entries()]);
         
         if (response.ok) {
             const updatedShop = await response.json();
             console.log('✅ 샵 정보 업데이트 완료:', updatedShop);
+            console.log('✅ 업데이트된 필드 확인:');
+            console.log('  - name:', updatedShop.name);
+            console.log('  - owner_name:', updatedShop.owner_name);
+            console.log('  - phone:', updatedShop.phone);
+            console.log('  - updated_at:', updatedShop.updated_at);
             
             showNotification('샵 정보가 성공적으로 수정되었습니다.', 'success');
             closeShopEditModal();
+            
+            console.log('🔄 샵 목록 새로고침 시작...');
             await loadShops(); // Reload shops table
+            console.log('✅ 샵 목록 새로고침 완료');
         } else {
             const errorText = await response.text();
             console.error('❌ 업데이트 실패:', response.status, errorText);
