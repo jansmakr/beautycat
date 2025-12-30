@@ -941,6 +941,13 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 console.log('💾 사용자 정보 업데이트 중...', {userId, name, phone, userType});
                 
+                // 기존 사용자 정보 가져오기 (타입 변경 감지용)
+                const currentUserResponse = await fetch(`tables/users/${userId}`);
+                const currentUser = await currentUserResponse.json();
+                const oldUserType = currentUser.user_type;
+                
+                console.log('🔄 사용자 타입 변경:', oldUserType, '→', userType);
+                
                 // 사용자 정보 업데이트
                 const updateData = {
                     name: name,
@@ -964,8 +971,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 const updatedUser = await response.json();
                 console.log('✅ 사용자 정보 업데이트 완료:', updatedUser);
                 
+                // 🏪 customer → shop 변경 시 skincare_shops 레코드 생성
+                if (oldUserType !== 'shop' && userType === 'shop') {
+                    console.log('🏪 업체 레코드 생성 중...');
+                    
+                    // 기존 업체 레코드 확인
+                    const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
+                    const shopsData = await shopsResponse.json();
+                    const existingShop = shopsData.data.find(s => 
+                        s.email && s.email.toLowerCase() === updatedUser.email.toLowerCase()
+                    );
+                    
+                    if (existingShop) {
+                        console.log('✅ 기존 업체 레코드 존재:', existingShop.id);
+                    } else {
+                        // 새 업체 레코드 생성
+                        const shopData = {
+                            name: name + ' 업체',
+                            owner_name: name,
+                            email: updatedUser.email,
+                            phone: phone || '',
+                            state: '',
+                            district: '',
+                            address: '',
+                            business_number: '',
+                            status: 'pending',
+                            approved: false,
+                            user_id: userId
+                        };
+                        
+                        const shopResponse = await fetch('tables/skincare_shops', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(shopData)
+                        });
+                        
+                        if (shopResponse.ok) {
+                            const newShop = await shopResponse.json();
+                            console.log('✅ 업체 레코드 생성 완료:', newShop.id);
+                        } else {
+                            console.warn('⚠️ 업체 레코드 생성 실패 (계속 진행)');
+                        }
+                    }
+                }
+                
                 // 성공 알림
-                showNotification(`${name}님의 정보가 업데이트되었습니다.`, 'success');
+                let successMessage = `${name}님의 정보가 업데이트되었습니다.`;
+                if (oldUserType !== 'shop' && userType === 'shop') {
+                    successMessage += '\n\n업체 레코드가 생성되었습니다. 추가 정보를 입력하려면 "샵 입점 관리"에서 해당 업체를 편집하세요.';
+                }
+                showNotification(successMessage, 'success', 7000);
                 
                 // 모달 닫기
                 closeUserEditModal();
