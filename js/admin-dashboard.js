@@ -2546,32 +2546,40 @@ function editShop(shopId) {
         });
     }
     
-    // 읍/면/동 업데이트 및 기존 값 설정
-    updateTowns();
-    if (shop.town) {
-        // 드롭다운 옵션이 로드된 후 값 설정
+    // 구/군 및 읍/면/동 업데이트
+    updateDistricts();
+    if (shop.district) {
         setTimeout(() => {
-            const townSelect = document.getElementById('edit-town');
-            if (townSelect) {
-                townSelect.value = shop.town;
+            const districtSelect = document.getElementById('edit-district');
+            if (districtSelect) {
+                districtSelect.value = shop.district;
+                updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
+                
+                if (shop.town) {
+                    setTimeout(() => {
+                        const townSelect = document.getElementById('edit-town');
+                        if (townSelect) {
+                            townSelect.value = shop.town;
+                        }
+                    }, 100);
+                }
             }
         }, 100);
     }
     
     // 이벤트 리스너 추가 (중복 방지)
     const stateSelect = document.getElementById('edit-state');
-    const districtInput = document.getElementById('edit-district');
+    const districtSelect = document.getElementById('edit-district');
     
     if (stateSelect && !stateSelect.dataset.listenerAdded) {
-        stateSelect.addEventListener('change', updateTowns);
+        stateSelect.addEventListener('change', updateDistricts);
         stateSelect.dataset.listenerAdded = 'true';
         console.log('✅ 시/도 변경 이벤트 리스너 추가');
     }
     
-    if (districtInput && !districtInput.dataset.listenerAdded) {
-        districtInput.addEventListener('input', updateTowns);
-        districtInput.addEventListener('change', updateTowns);
-        districtInput.dataset.listenerAdded = 'true';
+    if (districtSelect && !districtSelect.dataset.listenerAdded) {
+        districtSelect.addEventListener('change', updateTowns);
+        districtSelect.dataset.listenerAdded = 'true';
         console.log('✅ 구/군 변경 이벤트 리스너 추가');
     }
     
@@ -2583,19 +2591,79 @@ function closeShopEditModal() {
     document.getElementById('shop-edit-modal').classList.add('hidden');
 }
 
+// 구/군 드롭다운 업데이트 함수
+function updateDistricts() {
+    const stateSelect = document.getElementById('edit-state');
+    const districtSelect = document.getElementById('edit-district');
+    const townSelect = document.getElementById('edit-town');
+    
+    if (!stateSelect || !districtSelect) {
+        console.warn('⚠️ 구/군 업데이트: 필수 요소를 찾을 수 없습니다');
+        return;
+    }
+    
+    const state = stateSelect.value;
+    
+    console.log('🏙️ 구/군 업데이트:', { state });
+    
+    // 구/군 초기화
+    districtSelect.innerHTML = '<option value="">선택하세요</option>';
+    
+    // 읍/면/동 초기화 및 비활성화
+    if (townSelect) {
+        townSelect.innerHTML = '<option value="">선택하세요</option>';
+        townSelect.disabled = true;
+    }
+    
+    // 시/도가 비어있으면 비활성화
+    if (!state) {
+        districtSelect.disabled = true;
+        console.log('⚠️ 시/도가 비어있어 구/군 비활성화');
+        return;
+    }
+    
+    // KOREA_TOWN_DATA가 로드되었는지 확인
+    if (typeof KOREA_TOWN_DATA === 'undefined') {
+        console.error('❌ KOREA_TOWN_DATA가 로드되지 않았습니다');
+        districtSelect.disabled = true;
+        return;
+    }
+    
+    // 해당 시/도의 구/군 데이터 가져오기
+    const stateData = KOREA_TOWN_DATA[state];
+    if (!stateData) {
+        console.warn('⚠️ 해당 시/도의 데이터가 없습니다:', state);
+        districtSelect.disabled = true;
+        return;
+    }
+    
+    // 구/군 옵션 추가
+    const districts = Object.keys(stateData);
+    districts.forEach(district => {
+        const option = document.createElement('option');
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+    });
+    
+    // 드롭다운 활성화
+    districtSelect.disabled = false;
+    console.log(`✅ ${state}의 구/군 ${districts.length}개 로드 완료`);
+}
+
 // 읍/면/동 드롭다운 업데이트 함수
 function updateTowns() {
     const stateSelect = document.getElementById('edit-state');
-    const districtInput = document.getElementById('edit-district');
+    const districtSelect = document.getElementById('edit-district');
     const townSelect = document.getElementById('edit-town');
     
-    if (!stateSelect || !districtInput || !townSelect) {
+    if (!stateSelect || !districtSelect || !townSelect) {
         console.warn('⚠️ 읍/면/동 업데이트: 필수 요소를 찾을 수 없습니다');
         return;
     }
     
     const state = stateSelect.value;
-    const district = districtInput.value.trim();
+    const district = districtSelect.value;  // ✅ 수정: .value.trim() → .value (select는 trim 불필요)
     
     console.log('🏘️ 읍/면/동 업데이트:', { state, district });
     
@@ -2662,18 +2730,18 @@ async function saveShopChanges() {
     });
     
     const updatedData = {
-        name: document.getElementById('edit-shop-name').value,  // ✅ 수정: shop_name → name
-        owner_name: document.getElementById('edit-owner-name').value,
-        phone: document.getElementById('edit-phone').value,
-        email: document.getElementById('edit-email').value,
-        business_number: document.getElementById('edit-business-number').value,
-        state: document.getElementById('edit-state').value,
-        district: document.getElementById('edit-district').value,
+        name: document.getElementById('edit-shop-name').value || '',
+        owner_name: document.getElementById('edit-owner-name').value || '',
+        phone: document.getElementById('edit-phone').value || '',
+        email: document.getElementById('edit-email').value || '',
+        business_number: document.getElementById('edit-business-number').value || '',
+        state: document.getElementById('edit-state').value || '',
+        district: document.getElementById('edit-district').value || '',
         town: document.getElementById('edit-town')?.value || '',
-        address: document.getElementById('edit-address').value,
-        representative_treatments: selectedTreatments,  // ✅ 수정: treatment_types → representative_treatments
-        price_range: document.getElementById('edit-price-range').value,
-        description: document.getElementById('edit-description').value
+        address: document.getElementById('edit-address').value || '',
+        representative_treatments: selectedTreatments.join(','),  // ✅ 배열을 문자열로 변환
+        price_range: document.getElementById('edit-price-range').value || '',
+        description: document.getElementById('edit-description').value || ''
     };
     
     console.log('📤 전송 데이터:', updatedData);
