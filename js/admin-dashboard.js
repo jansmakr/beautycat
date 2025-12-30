@@ -403,8 +403,11 @@ function displayUsers(users) {
                     <button onclick="viewUser('${user.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">
                         보기
                     </button>
-                    <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900">
+                    <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900 mr-2">
                         수정
+                    </button>
+                    <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900" title="사용자 삭제">
+                        삭제
                     </button>
                 </td>
             </tr>
@@ -515,12 +518,17 @@ async function loadShops(updateTable = true) {
 // Display shops in table
 function displayShops(shops) {
     console.log('📊 displayShops 호출됨, 업체 수:', shops.length);
+    console.log('📋 shops 데이터:', shops);
+    
     const tableBody = document.getElementById('shops-table');
     
     if (!tableBody) {
         console.error('❌ shops-table 요소를 찾을 수 없습니다!');
+        console.log('🔍 DOM 확인:', document.body.innerHTML.substring(0, 500));
         return;
     }
+    
+    console.log('✅ shops-table 요소 발견:', tableBody);
     
     if (shops.length === 0) {
         console.log('⚠️ 표시할 업체가 없습니다');
@@ -529,6 +537,8 @@ function displayShops(shops) {
     }
     
     console.log('✅ 업체 테이블 렌더링 중...');
+    console.log('🔍 첫 번째 업체:', shops[0]);
+    
     tableBody.innerHTML = shops.map(shop => {
         const status = shop.status || 'active';
         const statusColors = {
@@ -868,6 +878,67 @@ async function toggleUserStatus() {
     }
 }
 
+// Delete user
+async function deleteUser(userId) {
+    // Find user to get their info for confirmation
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) {
+        showNotification('사용자를 찾을 수 없습니다.', 'error');
+        return;
+    }
+    
+    // Admin cannot be deleted
+    if (user.user_type === 'admin') {
+        showNotification('관리자 계정은 삭제할 수 없습니다.', 'error');
+        return;
+    }
+    
+    // Confirmation
+    const confirmMessage = `정말로 이 사용자를 삭제하시겠습니까?\n\n` +
+                          `이름: ${user.name}\n` +
+                          `이메일: ${user.email}\n` +
+                          `타입: ${user.user_type}\n\n` +
+                          `⚠️ 이 작업은 되돌릴 수 없습니다.`;
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+    
+    try {
+        console.log('🗑️ 사용자 삭제 시작:', userId);
+        
+        // If user is a shop, delete the shop record first
+        if (user.user_type === 'shop' && user.shop_id) {
+            console.log('🏪 연결된 업체 레코드 삭제:', user.shop_id);
+            const shopDeleteResponse = await fetch(`tables/skincare_shops/${user.shop_id}`, {
+                method: 'DELETE'
+            });
+            
+            if (!shopDeleteResponse.ok) {
+                console.warn('⚠️ 업체 레코드 삭제 실패 (계속 진행)');
+            } else {
+                console.log('✅ 업체 레코드 삭제 완료');
+            }
+        }
+        
+        // Delete user
+        const response = await fetch(`tables/users/${userId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            console.log('✅ 사용자 삭제 완료:', userId);
+            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다.`, 'success');
+            await loadUsers(); // Refresh users list
+        } else {
+            throw new Error('사용자 삭제 실패');
+        }
+    } catch (error) {
+        console.error('❌ User delete error:', error);
+        showNotification('사용자 삭제에 실패했습니다: ' + error.message, 'error');
+    }
+}
+
 // Edit user (placeholder)
 // Edit user
 async function editUser(userId) {
@@ -920,6 +991,90 @@ function closeUserEditModal() {
 // Make functions globally accessible
 window.editUser = editUser;
 window.closeUserEditModal = closeUserEditModal;
+
+// Delete user
+async function deleteUser(userId) {
+    // Find user to get their info for confirmation
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) {
+        showNotification('사용자를 찾을 수 없습니다.', 'error');
+        return;
+    }
+    
+    // Admin cannot be deleted
+    if (user.user_type === 'admin') {
+        showNotification('관리자 계정은 삭제할 수 없습니다.', 'error');
+        return;
+    }
+    
+    // Confirmation with user details
+    const confirmMessage = `정말로 이 사용자를 삭제하시겠습니까?\n\n` +
+                          `이름: ${user.name}\n` +
+                          `이메일: ${user.email}\n` +
+                          `타입: ${user.user_type}\n\n` +
+                          `⚠️ 이 작업은 되돌릴 수 없습니다.`;
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+    
+    try {
+        console.log('🗑️ 사용자 삭제 시작:', userId);
+        
+        // If user is a shop, try to find and delete the shop record first
+        if (user.user_type === 'shop') {
+            try {
+                // Try to find shop by email
+                const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
+                if (shopsResponse.ok) {
+                    const shopsData = await shopsResponse.json();
+                    const userShop = shopsData.data.find(s => 
+                        s.email && user.email && 
+                        s.email.toLowerCase() === user.email.toLowerCase()
+                    );
+                    
+                    if (userShop) {
+                        console.log('🏪 연결된 업체 레코드 삭제:', userShop.id);
+                        const shopDeleteResponse = await fetch(`tables/skincare_shops/${userShop.id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if (shopDeleteResponse.ok) {
+                            console.log('✅ 업체 레코드 삭제 완료');
+                        } else {
+                            console.warn('⚠️ 업체 레코드 삭제 실패 (계속 진행)');
+                        }
+                    }
+                }
+            } catch (shopError) {
+                console.warn('⚠️ 업체 레코드 삭제 중 오류 (계속 진행):', shopError);
+            }
+        }
+        
+        // Delete user
+        const response = await fetch(`tables/users/${userId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            console.log('✅ 사용자 삭제 완료:', userId);
+            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다.`, 'success');
+            await loadUsers(); // Refresh users list
+            
+            // Refresh shops list if it was a shop
+            if (user.user_type === 'shop') {
+                await loadShops();
+            }
+        } else {
+            throw new Error('사용자 삭제 실패');
+        }
+    } catch (error) {
+        console.error('❌ 사용자 삭제 오류:', error);
+        showNotification('사용자 삭제 중 오류가 발생했습니다: ' + error.message, 'error');
+    }
+}
+
+window.deleteUser = deleteUser;
 
 // User edit form submission
 document.addEventListener('DOMContentLoaded', function() {
@@ -1010,8 +1165,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             address: '주소 미등록',
                             business_number: '정보 없음',
                             business_license: '정보 없음',
-                            status: 'pending',
-                            user_id: userId
+                            status: 'pending'
                         };
                         
                         const shopResponse = await fetch('tables/skincare_shops', {
@@ -2804,8 +2958,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     business_number: businessNumber,
                     business_license: licenseNumber || null,
                     naver_cafe_id: naverCafeId || null,
-                    status: 'pending',
-                    user_id: newUser.id
+                    status: 'pending'
                 };
                 
                 const shopResponse = await fetch('tables/skincare_shops', {
