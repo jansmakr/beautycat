@@ -462,15 +462,21 @@ function copyPassword(userId) {
 // Load shops
 async function loadShops(updateTable = true) {
     try {
+        console.log('🏪 업체 목록 로딩 시작...');
         const response = await fetch('tables/skincare_shops?limit=1000&sort=created_at');
         const data = await response.json();
         allShops = data.data || [];
         
+        console.log('📊 업체 수:', allShops.length);
+        console.log('📋 업체 목록:', allShops);
+        
         if (updateTable) {
+            console.log('🖼️ 테이블 렌더링 시작...');
             displayShops(allShops);
+            console.log('✅ 테이블 렌더링 완료');
         }
     } catch (error) {
-        console.error('Shops loading error:', error);
+        console.error('❌ Shops loading error:', error);
         
         // API 실패시 데모 데이터 사용
         allShops = [
@@ -508,13 +514,21 @@ async function loadShops(updateTable = true) {
 
 // Display shops in table
 function displayShops(shops) {
+    console.log('📊 displayShops 호출됨, 업체 수:', shops.length);
     const tableBody = document.getElementById('shops-table');
     
+    if (!tableBody) {
+        console.error('❌ shops-table 요소를 찾을 수 없습니다!');
+        return;
+    }
+    
     if (shops.length === 0) {
+        console.log('⚠️ 표시할 업체가 없습니다');
         tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
         return;
     }
     
+    console.log('✅ 업체 테이블 렌더링 중...');
     tableBody.innerHTML = shops.map(shop => {
         const status = shop.status || 'active';
         const statusColors = {
@@ -995,8 +1009,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             district: '강남구',
                             address: '주소 미등록',
                             business_number: '정보 없음',
+                            business_license: '정보 없음',
                             status: 'pending',
-                            approved: false,
                             user_id: userId
                         };
                         
@@ -1058,7 +1072,7 @@ function viewShop(shopId) {
     document.getElementById('view-phone').textContent = shop.phone || '-';
     document.getElementById('view-email').textContent = shop.email || '-';
     document.getElementById('view-business-number').textContent = shop.business_number || '-';
-    document.getElementById('view-license-number').textContent = shop.business_license_number || '-';
+    document.getElementById('view-license-number').textContent = shop.business_license || '-';
     document.getElementById('view-state').textContent = shop.state || shop.shop_state || '-';
     document.getElementById('view-district').textContent = shop.district || shop.shop_district || '-';
     document.getElementById('view-address').textContent = shop.address || shop.shop_address || '-';
@@ -2788,10 +2802,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     district: district,
                     address: address,
                     business_number: businessNumber,
-                    business_license_number: licenseNumber || null,
+                    business_license: licenseNumber || null,
                     naver_cafe_id: naverCafeId || null,
                     status: 'pending',
-                    approved: false,
                     user_id: newUser.id
                 };
                 
@@ -2820,7 +2833,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.warn('User-shop linking failed, but registration completed');
                 }
                 
-                console.log('Shop registration completed successfully');
+                console.log('✅ Shop registration completed successfully');
                 
                 // Success!
                 alert(`업체 등록이 완료되었습니다!\n\n업체명: ${shopName}\n이메일: ${email}\n승인 상태: 대기중`);
@@ -2829,14 +2842,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeNewShopModal();
                 
                 // Reload dashboard data
-                await loadDashboardData();
-                await loadShops();
+                try {
+                    console.log('📊 대시보드 데이터 새로고침 중...');
+                    await loadDashboardData();
+                    console.log('✅ 대시보드 데이터 새로고침 완료');
+                } catch (loadError) {
+                    console.error('❌ 대시보드 데이터 로드 실패:', loadError);
+                }
+                
+                try {
+                    console.log('🏪 업체 목록 새로고침 중...');
+                    await loadShops();
+                    console.log('✅ 업체 목록 새로고침 완료');
+                } catch (shopsError) {
+                    console.error('❌ 업체 목록 로드 실패:', shopsError);
+                }
                 
                 // Show notification
                 showNotification('새 업체가 등록되었습니다.', 'success');
                 
             } catch (error) {
-                console.error('Shop registration error:', error);
+                console.error('❌ Shop registration error:', error);
+                console.error('❌ Error stack:', error.stack);
                 alert('업체 등록 중 오류가 발생했습니다:\n' + error.message);
                 
                 // Restore button
