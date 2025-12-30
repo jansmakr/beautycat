@@ -1164,6 +1164,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 const updatedUser = await response.json();
                 console.log('✅ 사용자 정보 업데이트 완료:', updatedUser);
                 
+                // 🔄 사용자 이름이 변경되었고 shop 타입이면 → 샵 이름도 동기화
+                if (userType === 'shop' && name !== currentUser.name) {
+                    console.log('🔄 사용자 이름 변경 감지 → 샵 이름 동기화 시작');
+                    
+                    // 기존 샵 레코드 찾기
+                    const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
+                    const shopsData = await shopsResponse.json();
+                    const existingShop = shopsData.data.find(s => 
+                        s.email && s.email.toLowerCase() === updatedUser.email.toLowerCase()
+                    );
+                    
+                    if (existingShop) {
+                        console.log('🔄 샵 이름 업데이트:', existingShop.name, '→', name);
+                        
+                        // 샵 이름 업데이트
+                        const shopUpdateResponse = await fetch(`tables/skincare_shops/${existingShop.id}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                name: name,
+                                owner_name: name
+                            })
+                        });
+                        
+                        if (shopUpdateResponse.ok) {
+                            console.log('✅ 샵 이름 동기화 완료');
+                        } else {
+                            console.error('❌ 샵 이름 동기화 실패:', await shopUpdateResponse.text());
+                        }
+                    }
+                }
+                
                 // 🏪 customer → shop 변경 시 skincare_shops 레코드 생성
                 if (oldUserType !== 'shop' && userType === 'shop') {
                     console.log('🏪 업체 레코드 생성 중...');
@@ -1180,7 +1214,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else {
                         // 새 업체 레코드 생성 (NOT NULL 필드에 기본값 제공)
                         const shopData = {
-                            name: name + ' 업체',
+                            name: name,  // ✅ 수정: " 업체" 접미사 제거
                             owner_name: name,
                             email: updatedUser.email,
                             phone: phone || '정보 없음',
