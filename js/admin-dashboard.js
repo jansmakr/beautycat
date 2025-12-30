@@ -2694,11 +2694,15 @@ function updateDistricts() {
     
     const selectedState = stateSelect.value;
     
+    console.log('🗺️ updateDistricts 호출:', selectedState);
+    
     // 구/군 초기화
     districtSelect.innerHTML = '<option value="">선택하세요</option>';
     
     if (selectedState && districtsByState[selectedState]) {
         const districts = districtsByState[selectedState];
+        console.log(`✅ ${selectedState} 구/군 ${districts.length}개 로드`);
+        
         districts.forEach(district => {
             const option = document.createElement('option');
             option.value = district;
@@ -2707,6 +2711,7 @@ function updateDistricts() {
         });
         districtSelect.disabled = false;
     } else {
+        console.log('⚠️ 시/도가 선택되지 않음 또는 데이터 없음');
         districtSelect.disabled = true;
     }
 }
