@@ -2518,18 +2518,14 @@ function editShop(shopId) {
     
     // Fill form with shop data
     document.getElementById('edit-shop-id').value = shop.id;
-    document.getElementById('edit-shop-name').value = shop.shop_name || '';
+    document.getElementById('edit-shop-name').value = shop.shop_name || shop.name || '';
     document.getElementById('edit-owner-name').value = shop.owner_name || '';
     document.getElementById('edit-phone').value = shop.phone || '';
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
     document.getElementById('edit-state').value = shop.state || '';
     document.getElementById('edit-district').value = shop.district || '';
-    // document.getElementById('edit-status').value = shop.status || 'pending'; // 필드 없음
     document.getElementById('edit-address').value = shop.address || '';
-    
-    // 읍면동 목록 업데이트 (v2.7.4 기능 - 임시 비활성화)
-    // updateTownDropdown(shop.state || '', shop.district || '', shop.town || '');
     document.getElementById('edit-price-range').value = shop.price_range || '';
     document.getElementById('edit-description').value = shop.description || '';
     
@@ -2550,12 +2546,103 @@ function editShop(shopId) {
         });
     }
     
+    // 읍/면/동 업데이트 및 기존 값 설정
+    updateTowns();
+    if (shop.town) {
+        // 드롭다운 옵션이 로드된 후 값 설정
+        setTimeout(() => {
+            const townSelect = document.getElementById('edit-town');
+            if (townSelect) {
+                townSelect.value = shop.town;
+            }
+        }, 100);
+    }
+    
+    // 이벤트 리스너 추가 (중복 방지)
+    const stateSelect = document.getElementById('edit-state');
+    const districtInput = document.getElementById('edit-district');
+    
+    if (stateSelect && !stateSelect.dataset.listenerAdded) {
+        stateSelect.addEventListener('change', updateTowns);
+        stateSelect.dataset.listenerAdded = 'true';
+        console.log('✅ 시/도 변경 이벤트 리스너 추가');
+    }
+    
+    if (districtInput && !districtInput.dataset.listenerAdded) {
+        districtInput.addEventListener('input', updateTowns);
+        districtInput.addEventListener('change', updateTowns);
+        districtInput.dataset.listenerAdded = 'true';
+        console.log('✅ 구/군 변경 이벤트 리스너 추가');
+    }
+    
     // Show modal
     document.getElementById('shop-edit-modal').classList.remove('hidden');
 }
 
 function closeShopEditModal() {
     document.getElementById('shop-edit-modal').classList.add('hidden');
+}
+
+// 읍/면/동 드롭다운 업데이트 함수
+function updateTowns() {
+    const stateSelect = document.getElementById('edit-state');
+    const districtInput = document.getElementById('edit-district');
+    const townSelect = document.getElementById('edit-town');
+    
+    if (!stateSelect || !districtInput || !townSelect) {
+        console.warn('⚠️ 읍/면/동 업데이트: 필수 요소를 찾을 수 없습니다');
+        return;
+    }
+    
+    const state = stateSelect.value;
+    const district = districtInput.value.trim();
+    
+    console.log('🏘️ 읍/면/동 업데이트:', { state, district });
+    
+    // 초기화
+    townSelect.innerHTML = '<option value="">선택하세요</option>';
+    
+    // 시/도 또는 구/군이 비어있으면 비활성화
+    if (!state || !district) {
+        townSelect.disabled = true;
+        console.log('⚠️ 시/도 또는 구/군이 비어있어 읍/면/동 비활성화');
+        return;
+    }
+    
+    // KOREA_TOWN_DATA가 로드되었는지 확인
+    if (typeof KOREA_TOWN_DATA === 'undefined') {
+        console.error('❌ KOREA_TOWN_DATA가 로드되지 않았습니다');
+        townSelect.disabled = true;
+        return;
+    }
+    
+    // 해당 시/도의 읍/면/동 데이터 가져오기
+    const stateData = KOREA_TOWN_DATA[state];
+    if (!stateData) {
+        console.warn('⚠️ 해당 시/도의 데이터가 없습니다:', state);
+        townSelect.disabled = true;
+        return;
+    }
+    
+    // 해당 구/군의 읍/면/동 데이터 가져오기
+    const towns = stateData[district];
+    if (!towns || towns.length === 0) {
+        console.warn('⚠️ 해당 구/군의 읍/면/동 데이터가 없습니다:', district);
+        townSelect.disabled = true;
+        return;
+    }
+    
+    // 읍/면/동 옵션 추가
+    towns.forEach(town => {
+        const option = document.createElement('option');
+        option.value = town;
+        option.textContent = town;
+        townSelect.appendChild(option);
+    });
+    
+    // 드롭다운 활성화
+    townSelect.disabled = false;
+    console.log(`✅ ${district}의 읍/면/동 ${towns.length}개 로드 완료`);
 }
 
 async function saveShopChanges() {
