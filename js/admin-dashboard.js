@@ -101,8 +101,11 @@ function setupEventListeners() {
 
 // Show section
 function showSection(sectionName) {
+    console.log('🔄 섹션 전환 시작:', sectionName);
+    
     // Hide all sections
     const sections = document.querySelectorAll('.section');
+    console.log('📦 전체 섹션 수:', sections.length);
     sections.forEach(section => section.classList.add('hidden'));
     
     // Show selected section - try both with and without '-section' suffix
@@ -112,16 +115,22 @@ function showSection(sectionName) {
     }
     
     if (targetSection) {
+        console.log('✅ 대상 섹션 발견:', targetSection.id);
         targetSection.classList.remove('hidden');
         currentSection = sectionName;
+    } else {
+        console.error('❌ 섹션을 찾을 수 없습니다:', sectionName);
+        console.log('🔍 시도한 ID:', sectionName + '-section', 'and', sectionName);
     }
     
     // Load section-specific data
+    console.log('📊 섹션 데이터 로딩:', sectionName);
     switch(sectionName) {
         case 'users':
             loadUsers();
             break;
         case 'shops':
+            console.log('🏪 loadShops() 호출');
             loadShops();
             break;
         case 'consultations':
@@ -139,7 +148,10 @@ function showSection(sectionName) {
         case 'test':
             // Test section doesn't need data loading
             break;
+        default:
+            console.warn('⚠️ 알 수 없는 섹션:', sectionName);
     }
+    console.log('✅ showSection 완료:', sectionName);
 }
 
 // Toggle user menu
@@ -475,6 +487,18 @@ async function loadShops(updateTable = true) {
         
         if (updateTable) {
             console.log('🖼️ 테이블 렌더링 시작...');
+            
+            // 필터 초기화 (캐시된 값 제거)
+            const searchInput = document.getElementById('shop-search');
+            const regionFilter = document.getElementById('shop-region-filter');
+            const statusFilter = document.getElementById('shop-status-filter');
+            
+            if (searchInput) searchInput.value = '';
+            if (regionFilter) regionFilter.value = '';
+            if (statusFilter) statusFilter.value = '';
+            
+            console.log('🔄 필터 초기화 완료');
+            
             displayShops(allShops);
             console.log('✅ 테이블 렌더링 완료');
         }
