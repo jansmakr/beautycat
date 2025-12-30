@@ -1514,7 +1514,7 @@
     
     <script src="js/auth.js"></script>
     <script src="js/korea-town-data.js"></script>
-    <script src="js/admin-dashboard.js?v=2.8.13.6.110"></script>
+    <script src="js/admin-dashboard.js?v=2.8.13.6.111"></script>
 
 <!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
 <script>
@@ -1698,6 +1698,44 @@ window.saveShopChanges = async function() {
         });
         
         if (response.ok) {
+            const updatedShop = await response.json();
+            
+            // 🔄 샵 이름이 변경되었으면 → 사용자 이름도 동기화
+            const shop = allShops.find(s => s.id === shopId);
+            if (shop && shop.name !== updatedData.name) {
+                console.log('🔄 샵 이름 변경 감지 → 사용자 이름 동기화 시작');
+                
+                // 해당 이메일의 사용자 찾기
+                const usersResponse = await fetch('tables/users?limit=1000');
+                const usersData = await usersResponse.json();
+                const user = usersData.data.find(u => 
+                    u.email && u.email.toLowerCase() === updatedShop.email.toLowerCase()
+                );
+                
+                if (user && user.user_type === 'shop') {
+                    console.log('🔄 사용자 이름 업데이트:', user.name, '→', updatedData.name);
+                    
+                    // 사용자 이름 업데이트
+                    const userUpdateResponse = await fetch(`tables/users/${user.id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: updatedData.name
+                        })
+                    });
+                    
+                    if (userUpdateResponse.ok) {
+                        console.log('✅ 사용자 이름 동기화 완료');
+                    } else {
+                        console.error('❌ 사용자 이름 동기화 실패:', await userUpdateResponse.text());
+                    }
+                } else if (!user) {
+                    console.log('⚠️ 해당 이메일의 사용자가 없음:', updatedShop.email);
+                }
+            }
+            
             alert('샵 정보가 성공적으로 수정되었습니다.');
             closeShopEditModal();
             
