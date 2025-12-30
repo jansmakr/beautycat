@@ -509,6 +509,61 @@
                     <!-- 통합됨: consultations-section의 탭으로 이동 -->
                 </div>
 
+                <!-- ⚙️ 설정 섹션 (v2.8.13.6.111 - 신규 추가) -->
+                <div id="settings-section" class="content-section hidden p-8">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">⚙️ 설정</h1>
+                        <p class="text-gray-600">계정 및 서비스 설정을 관리하세요</p>
+                    </div>
+
+                    <!-- 계정 정보 -->
+                    <div class="unni-card p-6 mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                            <i class="fas fa-user-circle mr-2 text-primary-500"></i>계정 정보
+                        </h2>
+                        <div class="space-y-3 text-gray-700">
+                            <div class="flex items-center">
+                                <span class="w-24 text-gray-500">이메일</span>
+                                <span id="settings-email" class="font-medium">-</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-24 text-gray-500">업체명</span>
+                                <span id="settings-shop-name" class="font-medium">-</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="w-24 text-gray-500">가입일</span>
+                                <span id="settings-join-date" class="font-medium">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 위험 구역 -->
+                    <div class="unni-card p-6 border-2 border-red-200 bg-red-50">
+                        <h2 class="text-xl font-semibold text-red-600 mb-2">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>위험 구역
+                        </h2>
+                        <p class="text-gray-600 mb-4">
+                            계정을 삭제하면 <strong>모든 데이터가 영구 삭제</strong>되며 복구할 수 없습니다.
+                        </p>
+                        
+                        <div class="bg-white p-4 rounded-lg mb-4">
+                            <h3 class="font-semibold text-gray-900 mb-2">삭제 시 영향:</h3>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li><i class="fas fa-times-circle text-red-500 mr-2"></i>샵 정보 및 프로필</li>
+                                <li><i class="fas fa-times-circle text-red-500 mr-2"></i>견적 요청 내역</li>
+                                <li><i class="fas fa-times-circle text-red-500 mr-2"></i>리뷰 및 평점</li>
+                                <li><i class="fas fa-times-circle text-red-500 mr-2"></i>결제 정보 및 구독 내역</li>
+                                <li><i class="fas fa-times-circle text-red-500 mr-2"></i>고객 매칭 기록</li>
+                            </ul>
+                        </div>
+
+                        <button onclick="confirmDeleteAccount()" 
+                                class="w-full bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash-alt mr-2"></i>계정 삭제하기
+                        </button>
+                    </div>
+                </div>
+
                 <!-- 공지사항 섹션 -->
                 <div id="announcements-section" class="content-section hidden p-8">
                     <div class="mb-8">
@@ -1763,6 +1818,129 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+</script>
+
+<!-- 로그아웃 함수 (v2.8.13.6.73 - 완전 초기화) -->
+<script>
+// ⚙️ 설정 섹션 계정 정보 로드 (v2.8.13.6.111)
+function loadSettingsInfo() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    
+    // 이메일
+    document.getElementById('settings-email').textContent = currentUser.email || '-';
+    
+    // 업체명 (shopName 또는 name)
+    const shopName = localStorage.getItem('shopName') || currentUser.name || '-';
+    document.getElementById('settings-shop-name').textContent = shopName;
+    
+    // 가입일
+    if (currentUser.created_at) {
+        const joinDate = new Date(currentUser.created_at).toLocaleDateString('ko-KR');
+        document.getElementById('settings-join-date').textContent = joinDate;
+    } else {
+        document.getElementById('settings-join-date').textContent = '-';
+    }
+}
+
+// 🗑️ 계정 삭제 확인 (v2.8.13.6.111)
+async function confirmDeleteAccount() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const shopName = localStorage.getItem('shopName') || currentUser.name || '업체';
+    
+    // 1차 확인
+    const confirmed = confirm(
+        `⚠️ 정말로 계정을 삭제하시겠습니까?\n\n` +
+        `업체: ${shopName}\n` +
+        `이메일: ${currentUser.email}\n\n` +
+        `모든 데이터가 영구 삭제되며 복구할 수 없습니다.`
+    );
+    
+    if (!confirmed) return;
+    
+    // 2차 확인 (이메일 입력)
+    const emailCheck = prompt(
+        `삭제를 진행하려면 이메일을 입력하세요:\n\n` +
+        `${currentUser.email}`
+    );
+    
+    if (emailCheck !== currentUser.email) {
+        alert('❌ 이메일이 일치하지 않습니다.');
+        return;
+    }
+    
+    // 3차 최종 확인
+    const finalConfirm = confirm(
+        `🚨 최종 확인\n\n` +
+        `정말로 삭제하시겠습니까?\n` +
+        `이 작업은 되돌릴 수 없습니다.`
+    );
+    
+    if (!finalConfirm) return;
+    
+    try {
+        console.log('🗑️ 계정 삭제 시작:', currentUser.id);
+        
+        // 1) 샵 레코드 삭제
+        const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
+        const shopsData = await shopsResponse.json();
+        const shop = shopsData.data.find(s => 
+            s.email && s.email.toLowerCase() === currentUser.email.toLowerCase()
+        );
+        
+        if (shop) {
+            console.log('🗑️ 샵 레코드 삭제:', shop.id);
+            const deleteShopResponse = await fetch(`tables/skincare_shops/${shop.id}`, {
+                method: 'DELETE'
+            });
+            
+            if (!deleteShopResponse.ok) {
+                throw new Error('샵 삭제 실패');
+            }
+            console.log('✅ 샵 레코드 삭제 완료');
+        }
+        
+        // 2) 사용자 레코드 삭제
+        console.log('🗑️ 사용자 레코드 삭제:', currentUser.id);
+        const deleteUserResponse = await fetch(`tables/users/${currentUser.id}`, {
+            method: 'DELETE'
+        });
+        
+        if (!deleteUserResponse.ok) {
+            throw new Error('사용자 삭제 실패');
+        }
+        console.log('✅ 사용자 레코드 삭제 완료');
+        
+        // 3) 로컬 스토리지 초기화
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('userSession');
+        localStorage.removeItem('shopId');
+        localStorage.removeItem('shopName');
+        sessionStorage.clear();
+        
+        alert('✅ 계정이 성공적으로 삭제되었습니다.\n\n그동안 이용해 주셔서 감사합니다.');
+        
+        // 4) 홈페이지로 이동
+        window.location.href = 'index.html';
+        
+    } catch (error) {
+        console.error('❌ 계정 삭제 오류:', error);
+        alert(`❌ 계정 삭제 중 오류가 발생했습니다.\n\n${error.message}\n\n관리자에게 문의해주세요.`);
+    }
+}
+
+// 📝 showSection 함수 확장 (설정 섹션 지원)
+const originalShowSection = window.showSection;
+window.showSection = function(sectionName) {
+    // 기존 함수 실행
+    if (originalShowSection) {
+        originalShowSection(sectionName);
+    }
+    
+    // 설정 섹션이면 정보 로드
+    if (sectionName === 'settings') {
+        loadSettingsInfo();
+    }
+};
 </script>
 
 <!-- 로그아웃 함수 (v2.8.13.6.73 - 완전 초기화) -->
