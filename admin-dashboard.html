@@ -1514,7 +1514,7 @@
     
     <script src="js/auth.js"></script>
     <script src="js/korea-town-data.js"></script>
-    <script src="js/admin-dashboard.js?v=2.8.13.6.107"></script>
+    <script src="js/admin-dashboard.js?v=2.8.13.6.110"></script>
 
 <!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
 <script>
@@ -1670,7 +1670,7 @@ window.saveShopChanges = async function() {
     });
     
     const updatedData = {
-        shop_name: document.getElementById('edit-shop-name').value,
+        name: document.getElementById('edit-shop-name').value,  // ✅ 수정: shop_name → name
         owner_name: document.getElementById('edit-owner-name').value,
         phone: document.getElementById('edit-phone').value,
         email: document.getElementById('edit-email').value,
@@ -1678,14 +1678,15 @@ window.saveShopChanges = async function() {
         state: document.getElementById('edit-state').value,
         district: document.getElementById('edit-district').value,
         address: document.getElementById('edit-address').value,
-        treatment_types: selectedTreatments,
+        representative_treatments: selectedTreatments.join(','),  // ✅ 수정: treatment_types → representative_treatments + 문자열 변환
         price_range: document.getElementById('edit-price-range').value,
         description: document.getElementById('edit-description').value,
         youtube_url: document.getElementById('edit-youtube-url').value || null,
         shop_image: uploadedImageDataUrl || null,
-        shop_image_name: uploadedImageFile ? uploadedImageFile.name : null,
-        updated_at: new Date().toISOString()
+        shop_image_name: uploadedImageFile ? uploadedImageFile.name : null
     };
+    
+    console.log('📤 HTML 오버라이드 함수 - 전송 데이터:', updatedData);
     
     try {
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
@@ -1957,12 +1958,20 @@ window.fetch = async function(url, options = {}) {
                 }
             }
             
-            // PATCH 데이터로 덮어쓰기
+            console.log('🔍 기존 데이터 복사 후:', JSON.parse(JSON.stringify(mergedData)));
+            console.log('📥 PATCH 데이터:', JSON.parse(JSON.stringify(patchData)));
+            
+            // PATCH 데이터로 덮어쓰기 (변경된 필드만)
             for (const field of allowedFields) {
                 if (patchData.hasOwnProperty(field)) {
+                    console.log(`  ✏️ ${field}: "${mergedData[field]}" → "${patchData[field]}"`);
                     mergedData[field] = patchData[field];
                 }
             }
+            
+            // ✅ 잘못된 필드 명시적으로 제거
+            delete mergedData.shop_name;  // DB에는 name만 있음
+            delete mergedData.region;     // DB에는 state만 있음
             
             console.log('📦 병합된 데이터 (필수 필드만):', mergedData);
             
