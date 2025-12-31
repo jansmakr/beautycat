@@ -1,0 +1,87 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /test/
+Disallow: /*.json$
+Disallow: /*?debug=*
+Disallow: /*?test=*
+Disallow: /api/
+Disallow: /functions/
+Disallow: /_archive/
+Disallow: /_NEW_FILES/
+Disallow: /*.md$
+Disallow: /*.sql$
+
+# 검색엔진 최적화를 위한 명시적 허용
+Allow: /index.html
+Allow: /login.html
+Allow: /register.html
+Allow: /announcements.html
+Allow: /customer-dashboard.html
+Allow: /shop-dashboard.html
+Allow: /shop-registration.html
+Allow: /chat.html
+Allow: /css/
+Allow: /js/
+Allow: /icons/
+Allow: /images/
+Allow: /legal/
+Allow: /region/
+Allow: /shop/
+
+# 네이버 검색봇 (최우선 최적화)
+User-agent: Yeti
+User-agent: NaverBot
+Allow: /
+Disallow: /admin/
+Disallow: /test/
+
+# 다음 검색봇
+User-agent: Daumoa
+User-agent: DaumBot
+Allow: /
+Disallow: /admin/
+Disallow: /test/
+
+# 구글 검색봇
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Googlebot-Mobile
+Allow: /
+Disallow: /admin/
+Disallow: /test/
+
+# 빙 검색봇
+User-agent: Bingbot
+User-agent: MSNBot
+Allow: /
+Disallow: /admin/
+Disallow: /test/
+
+# 소셜 미디어 크롤러
+User-agent: facebookexternalhit
+User-agent: facebookcatalog
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: KakaoBot
+User-agent: Kakaotalk-Scrap
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# 사이트맵 위치 (네이버/구글 웹마스터 도구 필수)
+Sitemap: https://beautyket.com/sitemap-beautyket.xml
+Sitemap: https://beautyket.com/rss-beautyket.xml
+
+# Canonical Domain (네이버 검색 중복 방지)
+Host: beautyket.com
