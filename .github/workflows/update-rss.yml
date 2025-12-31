@@ -1,0 +1,113 @@
+name: Update RSS Feed
+
+# RSS 피드 자동 갱신 워크플로우
+# 매일 오전 9시(KST)에 최신 샵 정보로 RSS 업데이트
+
+on:
+  schedule:
+    # 매일 오전 9시 (UTC 0시 = KST 9시)
+    - cron: '0 0 * * *'
+  
+  # 수동 실행 가능
+  workflow_dispatch:
+
+jobs:
+  update-rss:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Generate RSS Feed
+        run: |
+          echo "📡 RSS 피드 생성 시작..."
+          
+          # RSS XML 생성 (Node.js 없이 bash로 직접 생성)
+          cat > rss.xml << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+            <channel>
+              <title>BeautyCat - 전국 피부관리실 정보</title>
+              <link>https://beautycat.kr/</link>
+              <description>전국 피부관리실 정보, 견적 비교, 예약 서비스. 강남, 홍대, 부산, 대구 등 전국 30,000개 피부관리실 데이터베이스</description>
+              <language>ko</language>
+              <lastBuildDate>$(date -R)</lastBuildDate>
+              <atom:link href="https://beautycat.kr/rss.xml" rel="self" type="application/rss+xml" />
+              <image>
+                <url>https://beautycat.kr/images/beautycat-logo-v3.png</url>
+                <title>BeautyCat</title>
+                <link>https://beautycat.kr/</link>
+              </image>
+
+              <!-- 최신 업데이트 -->
+              <item>
+                <title>BeautyCat 일일 업데이트 - $(date +%Y년\ %m월\ %d일)</title>
+                <link>https://beautycat.kr/</link>
+                <description>전국 피부관리실 데이터베이스 최신 업데이트. 신규 등록 샵 정보 및 서비스 개선 사항.</description>
+                <pubDate>$(date -R)</pubDate>
+                <guid>https://beautycat.kr/#update-$(date +%Y-%m-%d)</guid>
+              </item>
+
+              <!-- 서비스 소개 -->
+              <item>
+                <title>BeautyCat - 전국 피부관리실 견적 비교 서비스</title>
+                <link>https://beautycat.kr/</link>
+                <description>피부관리실 찾기가 쉬워집니다. 지역별 피부관리실 정보, 실시간 견적 비교, 고객 리뷰 확인.</description>
+                <pubDate>$(date -R)</pubDate>
+                <guid>https://beautycat.kr/#service-intro</guid>
+              </item>
+
+              <!-- 샵 등록 안내 -->
+              <item>
+                <title>피부관리실 업주님께 - 무료 샵 등록 혜택</title>
+                <link>https://beautycat.kr/shop-registration.html</link>
+                <description>BeautyCat에 샵을 무료로 등록하고 지역 고객에게 노출하세요. 견적 신청 자동 매칭, 고객 관리 대시보드 제공.</description>
+                <pubDate>$(date -R)</pubDate>
+                <guid>https://beautycat.kr/shop-registration.html</guid>
+              </item>
+
+            </channel>
+          </rss>
+          EOF
+          
+          echo "✅ RSS 피드 생성 완료"
+          ls -lh rss.xml
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet rss.xml || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and Push
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add rss.xml
+          git commit -m "🔄 Auto-update RSS feed - $(date +%Y-%m-%d)"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Summary
+        run: |
+          echo "## 📡 RSS Feed Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 🕐 Update Time: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- 📄 File Size: $(du -h rss.xml | cut -f1)" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔗 RSS URL: https://beautycat.kr/rss.xml" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.check_changes.outputs.changed }}" == "true" ]; then
+            echo "✅ RSS feed updated and pushed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ No changes detected" >> $GITHUB_STEP_SUMMARY
+          fi
