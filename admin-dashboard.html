@@ -1626,6 +1626,9 @@
 <!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 대시보드 통계 로드
+    loadDashboardStats();
+    
     // 사업자등록번호 필드 자동 하이픈 추가
     const businessNumberInputs = [
         document.getElementById('edit-business-number'),
@@ -1653,6 +1656,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// 대시보드 통계 로드 함수
+async function loadDashboardStats() {
+    try {
+        // 전체 사용자 수
+        const usersResponse = await fetch('/api/users?limit=1');
+        if (usersResponse.ok) {
+            const usersData = await usersResponse.json();
+            document.getElementById('total-users').textContent = usersData.total || 0;
+        }
+        
+        // 등록 샵 수 (기존 shops 테이블)
+        const shopsResponse = await fetch('/api/skincare_shops?limit=1');
+        if (shopsResponse.ok) {
+            const shopsData = await shopsResponse.json();
+            const registeredShops = shopsData.total || 0;
+            
+            // 공공 데이터 샵 수 (public_skincare_data 테이블)
+            const publicShopsResponse = await fetch('/tables/public_skincare_data?limit=1');
+            if (publicShopsResponse.ok) {
+                const publicShopsData = await publicShopsResponse.json();
+                const publicShops = publicShopsData.total || 0;
+                
+                // 총합 표시
+                document.getElementById('total-shops').textContent = 
+                    `${(registeredShops + publicShops).toLocaleString()} (등록: ${registeredShops.toLocaleString()} + 공공: ${publicShops.toLocaleString()})`;
+            } else {
+                document.getElementById('total-shops').textContent = registeredShops.toLocaleString();
+            }
+        }
+        
+        // 상담 요청 수
+        const consultationsResponse = await fetch('/api/consultations?limit=1');
+        if (consultationsResponse.ok) {
+            const consultationsData = await consultationsResponse.json();
+            document.getElementById('total-consultations').textContent = consultationsData.total || 0;
+        }
+        
+        console.log('✅ 대시보드 통계 로드 완료');
+    } catch (error) {
+        console.error('❌ 대시보드 통계 로드 오류:', error);
+        // 오류 발생 시 기본값 유지 ("-")
+    }
+}
 </script>
 
 <!-- 샵 정보 수정 폼 확장 기능 -->
