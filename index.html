@@ -541,29 +541,31 @@
     }
     </script>
 
-    <!-- DNS 프리페치 및 성능 최적화 -->
-    <!-- preconnect 최적화 (v2.8.13.6.85 - 필수만 유지) -->
+    <!-- DNS 프리페치 및 성능 최적화 (v2.8.13.6.116) -->
+    <!-- preconnect 최적화 - 필수 오리진만 유지 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
     
-    <!-- 폰트 최적화 (v2.8.13.6.85 - font-display: swap) -->
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <!-- 폰트 최적화 (비동기 로딩 + font-display: swap + 필수 웨이트만) -->
+    <!-- Pretendard: 400(regular), 600(semibold), 700(bold)만 사용 (300, 500, 800 제거) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
     
-    <!-- Tailwind CSS (컴파일된 버전 - 미디어 쿼리로 조건부 로딩) -->
+    <!-- Tailwind CSS (비동기 로딩 - 렌더 차단 제거) -->
     <link rel="preload" href="css/tailwind-compiled.css?v=2.6.1.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/tailwind-compiled.css?v=2.6.1.3"></noscript>
     
-    <!-- 모바일 최적화 CSS (캐시 버스팅 + 빠른 로딩) -->
-    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.6.1.3" media="print" onload="this.media='all'">
+    <!-- 모바일 최적화 CSS (비동기 로딩) -->
+    <link rel="preload" href="css/mobile-optimized.css?v=2.6.1.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/mobile-optimized.css?v=2.6.1.3"></noscript>
     
-    <!-- 🚀 고속 전환 최적화 CSS -->
-    <link rel="stylesheet" href="css/fast-transitions.css?v=2.6.1.3">
+    <!-- 🚀 고속 전환 최적화 CSS (비동기) -->
+    <link rel="preload" href="css/fast-transitions.css?v=2.6.1.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/fast-transitions.css?v=2.6.1.3"></noscript>
     
-    <!-- 🎨 로고 모바일 최적화 CSS (v2.8.13.6.80) -->
-    <link rel="stylesheet" href="css/logo-mobile-fix.css?v=2.8.13.6.80">
+    <!-- 🎨 로고 모바일 최적화 CSS (비동기) -->
+    <link rel="preload" href="css/logo-mobile-fix.css?v=2.8.13.6.80" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/logo-mobile-fix.css?v=2.8.13.6.80"></noscript>
     
     <!-- 🚨 Workbox Service Worker 즉시 제거 (최우선 실행) -->
     <script>
@@ -694,17 +696,41 @@
         })();
     </script>
     <!-- Font Awesome (비동기 로딩) -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
-    <!-- 폰트 최적화 -->
+    <!-- 🚀 Critical CSS (인라인) - 즉시 렌더링 -->
     <style>
         /* 시스템 폰트 우선 사용 (빠른 렌더링) */
         @font-face {
             font-family: 'Pretendard';
             font-display: swap;
             src: local('Pretendard'), local('Pretendard Variable');
+        }
+        
+        /* Critical Above-the-Fold Styles */
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);
+        }
+        
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .cta-button-phone, .cta-button-quote {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
     </style>
     
