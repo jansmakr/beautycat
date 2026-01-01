@@ -537,7 +537,7 @@ async function handleRegister(e) {
             user_type: document.querySelector('input[name="userType"]:checked')?.value || 'customer',
             shop_name: formData.get('shop_name') || '',
             business_number: formData.get('business_number') || '',
-            business_license_number: formData.get('business_license_number') || '',
+            business_license: formData.get('business_license') || '',
             naver_cafe_id: formData.get('naver_cafe_id') || '',
             shop_state: formData.get('shop_state') || '',
             shop_district: formData.get('shop_district') || '',
@@ -686,13 +686,13 @@ function validateRegisterData(data) {
             return false;
         }
         
-        if (!data.business_license_number || !data.business_license_number.trim()) {
+        if (!data.business_license || !data.business_license.trim()) {
             showNotification('영업신고증 번호를 입력해주세요.', 'error');
             return false;
         }
         
         // 영업신고증 번호 기본 검증
-        if (data.business_license_number.length < 5) {
+        if (data.business_license.length < 5) {
             showNotification('영업신고증 번호를 정확히 입력해주세요.', 'error');
             return false;
         }
@@ -881,32 +881,12 @@ async function processRegister(registerData) {
                 if (linkResponse.ok) {
                     console.log('✅ 사용자-샵 연결 성공');
                     
-                    // 🔍 공공데이터 자동 매칭 시도
-                    try {
-                        console.log('🔍 공공데이터 자동 매칭 시작...');
-                        if (typeof autoMatchPublicDataShop === 'function') {
-                            const matchResult = await autoMatchPublicDataShop({
-                                id: newShop.id,
-                                shop_name: shopData.name,
-                                state: shopData.state,
-                                district: shopData.district,
-                                address: shopData.address,
-                                shop_phone: shopData.phone,
-                                user_id: newUser.id
-                            });
-                            
-                            if (matchResult.matched) {
-                                console.log('✅ 공공데이터 자동 매칭 성공:', matchResult);
-                            } else {
-                                console.log('ℹ️ 공공데이터 매칭 실패:', matchResult.reason);
-                            }
-                        } else {
-                            console.warn('⚠️ 자동 매칭 함수 없음 (auto-matching.js 로드 필요)');
-                        }
-                    } catch (matchError) {
-                        console.error('❌ 자동 매칭 오류:', matchError);
-                        // 매칭 실패해도 회원가입은 진행
-                    }
+                    // 💡 자동 매칭은 관리자 승인 시에만 수행됨 (admin-dashboard.js의 approveShop 함수)
+                    // 이유: 
+                    // 1. 샵 정보가 완전하지 않을 수 있음 (pending 상태)
+                    // 2. 관리자가 샵 정보를 검증한 후 매칭하는 것이 더 정확
+                    // 3. 중복 매칭 방지
+                    console.log('ℹ️ 자동 매칭은 관리자 승인 시 수행됩니다.');
                 } else {
                     const linkError = await linkResponse.text();
                     console.error('❌ 사용자-샵 연결 실패:', linkError);

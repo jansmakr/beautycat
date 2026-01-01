@@ -193,6 +193,7 @@ CREATE TABLE shop_announcements (
 CREATE TABLE reviews (
     id TEXT PRIMARY KEY,
     consultation_id TEXT NOT NULL,
+    quote_id TEXT, -- 견적서 ID (추가: 2025-12-31)
     shop_id TEXT NOT NULL,
     customer_id TEXT NOT NULL,
     customer_name TEXT NOT NULL,
@@ -210,6 +211,7 @@ CREATE TABLE reviews (
     updated_at INTEGER NOT NULL,
     deleted INTEGER DEFAULT 0,
     FOREIGN KEY (consultation_id) REFERENCES consultations(id),
+    FOREIGN KEY (quote_id) REFERENCES quotes(id),
     FOREIGN KEY (shop_id) REFERENCES skincare_shops(id),
     FOREIGN KEY (customer_id) REFERENCES users(id)
 );
@@ -247,6 +249,7 @@ CREATE INDEX idx_announcements_published ON announcements(is_published, created_
 CREATE INDEX idx_shop_announcements_shop ON shop_announcements(shop_id);
 CREATE INDEX idx_shop_announcements_published ON shop_announcements(is_published, created_at);
 CREATE INDEX idx_reviews_shop ON reviews(shop_id);
+CREATE INDEX idx_reviews_quote ON reviews(quote_id);
 CREATE INDEX idx_sessions_token ON user_sessions(session_token);
 CREATE INDEX idx_sessions_user ON user_sessions(user_id);
 

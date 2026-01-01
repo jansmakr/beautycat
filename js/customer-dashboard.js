@@ -2,6 +2,33 @@
 let currentConsultations = [];
 let currentQuotes = [];
 
+/**
+ * XSS 방어: HTML 특수 문자 이스케이프
+ * @param {string} text - 이스케이프할 텍스트
+ * @returns {string} - 이스케이프된 텍스트
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+/**
+ * XSS 방어: onclick 속성용 작은따옴표 이스케이프
+ * @param {string} text - 이스케이프할 텍스트
+ * @returns {string} - 이스케이프된 텍스트
+ */
+function escapeSingleQuote(text) {
+    if (!text) return '';
+    return String(text).replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
 // DOM 로드 완료 후 초기화
 document.addEventListener('DOMContentLoaded', function() {
     initializeCustomerDashboard();
@@ -970,39 +997,77 @@ function loadReviewsSection() {
     setupStarRating();
 }
 
-// 리뷰 작성 대기 목록 로드
+// 리뷰 작성 대기 목록 로드 (수정: 견적서 기반)
 async function loadPendingReviews() {
     try {
-        // 완료된 상담 중 리뷰를 작성하지 않은 것들
-        const completedConsultations = currentConsultations.filter(consultation => 
-            consultation.status === 'completed' || consultation.status === 'accepted'
+        // 수락된 견적서만 리뷰 작성 가능
+        const acceptedQuotes = currentQuotes.filter(quote => 
+            quote.status === 'accepted'
         );
         
         const pendingReviewsContainer = document.getElementById('pending-reviews-list');
         
-        if (completedConsultations.length === 0) {
+        if (acceptedQuotes.length === 0) {
             pendingReviewsContainer.innerHTML = `
                 <div class="p-6 text-center text-gray-500">
                     <i class="fas fa-clipboard-list text-3xl mb-2"></i>
-                    <p>리뷰 작성 가능한 상담이 없습니다.</p>
+                    <p>리뷰 작성 가능한 견적서가 없습니다.</p>
+                    <p class="text-sm mt-2">견적서를 수락한 후 리뷰를 작성할 수 있습니다.</p>
                 </div>
             `;
             return;
         }
         
-        pendingReviewsContainer.innerHTML = completedConsultations.map(consultation => `
-            <div class="p-6 flex items-center justify-between">
-                <div class="flex-1">
-                    <h4 class="font-medium text-gray-900">${consultation.shop_name || '샵명 미확인'}</h4>
-                    <p class="text-sm text-gray-600 mt-1">${consultation.treatment_type}</p>
-                    <p class="text-xs text-gray-500 mt-1">${formatDate(consultation.created_at)}</p>
+        // 이미 리뷰 작성한 견적서 제외
+        if (!currentUser || !currentUser.id) {
+            console.error('❌ currentUser가 정의되지 않았습니다.');
+            return;
+        }
+        
+        const response = await fetch(`tables/reviews?limit=1000`);
+        if (!response.ok) {
+            console.error('❌ 리뷰 목록 조회 실패:', response.status);
+            throw new Error(`리뷰 조회 실패: ${response.status}`);
+        }
+        
+        const reviewsData = await response.json();
+        // customer_id로 필터링
+        const myReviews = (reviewsData.data || []).filter(r => r.customer_id === currentUser.id);
+        const existingReviewQuoteIds = myReviews.map(r => r.quote_id).filter(Boolean);
+        
+        console.log('✅ 내 리뷰:', myReviews.length, '개');
+        console.log('✅ 작성 완료 견적서 ID:', existingReviewQuoteIds);
+        
+        const pendingQuotes = acceptedQuotes.filter(quote => !existingReviewQuoteIds.includes(quote.id));
+        
+        if (pendingQuotes.length === 0) {
+            pendingReviewsContainer.innerHTML = `
+                <div class="p-6 text-center text-gray-500">
+                    <i class="fas fa-check-circle text-3xl mb-2 text-green-500"></i>
+                    <p>모든 견적서에 대한 리뷰를 작성하셨습니다!</p>
                 </div>
-                <button onclick="showReviewModal('${consultation.id}', '${consultation.shop_id}', '${consultation.shop_name}', '${consultation.treatment_type}')" 
+            `;
+            return;
+        }
+        
+        pendingReviewsContainer.innerHTML = pendingQuotes.map(quote => {
+            // 전역 escapeHtml 함수 사용 (파일 상단에 정의)
+            const escapeSingleQuote = (text) => (text || '').replace(/'/g, "\\'");
+            
+            return `
+            <div class="p-6 flex items-center justify-between border-b last:border-b-0">
+                <div class="flex-1">
+                    <h4 class="font-medium text-gray-900">${escapeHtml(quote.shop_name || '샵명 미확인')}</h4>
+                    <p class="text-sm text-gray-600 mt-1">가격: ${quote.price ? quote.price.toLocaleString() + '원' : '미정'}</p>
+                    <p class="text-xs text-gray-500 mt-1">${formatDate(quote.created_at)}</p>
+                </div>
+                <button onclick="showReviewModal('${escapeSingleQuote(quote.consultation_id)}', '${escapeSingleQuote(quote.shop_id)}', '${escapeSingleQuote(quote.shop_name)}', '${escapeSingleQuote(quote.id)}')" 
                         class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm">
                     리뷰 작성
                 </button>
             </div>
-        `).join('');
+            `;
+        }).join('');
         
     } catch (error) {
         console.error('리뷰 대기 목록 로드 오류:', error);
@@ -1012,9 +1077,22 @@ async function loadPendingReviews() {
 // 내가 작성한 리뷰 목록 로드
 async function loadMyReviews() {
     try {
-        const response = await fetch(`tables/reviews?search=${encodeURIComponent(currentUser.id)}&limit=50`);
+        if (!currentUser || !currentUser.id) {
+            console.error('❌ currentUser가 정의되지 않았습니다.');
+            return;
+        }
+        
+        const response = await fetch(`tables/reviews?limit=1000`);
+        if (!response.ok) {
+            console.error('❌ 리뷰 목록 조회 실패:', response.status);
+            throw new Error(`리뷰 조회 실패: ${response.status}`);
+        }
+        
         const data = await response.json();
-        const reviews = data.data || [];
+        // customer_id로 필터링
+        const reviews = (data.data || []).filter(r => r.customer_id === currentUser.id);
+        
+        console.log('✅ 내 리뷰 목록:', reviews.length, '개');
         
         const myReviewsContainer = document.getElementById('my-reviews-list');
         
@@ -1053,19 +1131,19 @@ async function loadMyReviews() {
     }
 }
 
-// 리뷰 작성 모달 열기
-function showReviewModal(consultationId, shopId, shopName, treatmentType) {
+// 리뷰 작성 모달 열기 (수정: quoteId 추가)
+function showReviewModal(consultationId, shopId, shopName, quoteId) {
     selectedConsultation = {
         id: consultationId,
         shop_id: shopId,
         shop_name: shopName,
-        treatment_type: treatmentType
+        quote_id: quoteId // 견적서 ID 추가
     };
     
     document.getElementById('review-consultation-id').value = consultationId;
     document.getElementById('review-shop-id').value = shopId;
     document.getElementById('review-shop-name').textContent = shopName;
-    document.getElementById('review-treatment-type').textContent = treatmentType;
+    document.getElementById('review-treatment-type').textContent = '견적 수락 완료';
     
     // 폼 초기화
     document.getElementById('review-form').reset();
@@ -1145,21 +1223,47 @@ async function submitReview(event) {
     const recommendShop = document.getElementById('recommend-shop').checked;
     
     // 유효성 검사
-    if (rating === 0) {
+    if (!selectedConsultation || !selectedConsultation.id) {
+        console.error('❌ selectedConsultation이 정의되지 않았습니다.');
+        showNotification('리뷰 작성 오류가 발생했습니다. 페이지를 새로고침해주세요.', 'error');
+        return;
+    }
+    
+    if (!currentUser || !currentUser.id) {
+        console.error('❌ currentUser가 정의되지 않았습니다.');
+        showNotification('로그인 정보를 확인할 수 없습니다. 다시 로그인해주세요.', 'error');
+        return;
+    }
+    
+    if (rating === 0 || isNaN(rating)) {
         showNotification('전체 만족도를 선택해주세요.', 'error');
         return;
     }
     
-    if (!reviewContent || reviewContent.length < 20) {
+    if (!reviewContent || reviewContent.trim().length < 20) {
         showNotification('리뷰 내용을 20자 이상 작성해주세요.', 'error');
+        return;
+    }
+    
+    // FOREIGN KEY 무결성 검증
+    if (!selectedConsultation.shop_id) {
+        console.error('❌ shop_id가 없습니다:', selectedConsultation);
+        showNotification('샵 정보를 확인할 수 없습니다.', 'error');
+        return;
+    }
+    
+    if (!selectedConsultation.quote_id) {
+        console.error('❌ quote_id가 없습니다:', selectedConsultation);
+        showNotification('견적서 정보를 확인할 수 없습니다.', 'error');
         return;
     }
     
     try {
         const reviewData = {
             consultation_id: selectedConsultation.id,
-            shop_id: selectedConsultation.shop_id,
-            customer_id: currentUser.id,
+            quote_id: selectedConsultation.quote_id, // 견적서 ID (FOREIGN KEY)
+            shop_id: selectedConsultation.shop_id,   // 등록 샵 ID (FOREIGN KEY)
+            customer_id: currentUser.id,             // 고객 ID (FOREIGN KEY)
             customer_name: currentUser.name,
             rating: rating,
             review_text: reviewContent,
@@ -1173,6 +1277,8 @@ async function submitReview(event) {
             created_at: new Date().toISOString()
         };
         
+        console.log('✅ 리뷰 데이터:', reviewData);
+        
         const response = await fetch('tables/reviews', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -1180,11 +1286,19 @@ async function submitReview(event) {
         });
         
         if (response.ok) {
+            const result = await response.json();
+            console.log('✅ 리뷰 저장 성공:', result);
             showNotification('리뷰가 성공적으로 작성되었습니다!', 'success');
             closeReviewModal();
             loadReviewsSection(); // 리뷰 목록 새로고침
         } else {
-            throw new Error('리뷰 저장 실패');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('❌ 리뷰 저장 실패:', {
+                status: response.status,
+                statusText: response.statusText,
+                error: errorData
+            });
+            throw new Error(`리뷰 저장 실패 (${response.status}): ${errorData.message || response.statusText}`);
         }
         
     } catch (error) {
