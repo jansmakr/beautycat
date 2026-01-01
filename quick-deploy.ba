@@ -1,0 +1,79 @@
+@echo off
+chcp 65001 >nul
+cls
+echo ╔════════════════════════════════════════╗
+echo ║     BeautyCat 빠른 배포 스크립트      ║
+echo ╚════════════════════════════════════════╝
+echo.
+
+REM 커밋 메시지 입력
+set /p COMMIT_MSG="📝 커밋 메시지를 입력하세요: "
+
+if "%COMMIT_MSG%"=="" (
+    echo.
+    echo ❌ 커밋 메시지가 비어있습니다!
+    pause
+    exit /b 1
+)
+
+echo.
+echo ════════════════════════════════════════
+echo 🔍 [1/4] Git 상태 확인
+echo ════════════════════════════════════════
+git status
+echo.
+
+echo ════════════════════════════════════════
+echo 📦 [2/4] 변경된 파일 추가
+echo ════════════════════════════════════════
+git add .
+if errorlevel 1 (
+    echo ❌ 파일 추가 실패!
+    pause
+    exit /b 1
+)
+echo ✅ 모든 변경 파일 추가 완료
+echo.
+
+echo ════════════════════════════════════════
+echo 💾 [3/4] 커밋 생성
+echo ════════════════════════════════════════
+git commit -m "%COMMIT_MSG%"
+if errorlevel 1 (
+    echo.
+    echo ⚠️  커밋할 변경사항이 없습니다.
+    pause
+    exit /b 0
+)
+echo ✅ 커밋 완료
+echo.
+
+echo ════════════════════════════════════════
+echo 🚀 [4/4] GitHub에 푸시
+echo ════════════════════════════════════════
+git push origin main
+if errorlevel 1 (
+    echo ❌ 푸시 실패!
+    pause
+    exit /b 1
+)
+echo ✅ 푸시 완료
+echo.
+
+echo ╔════════════════════════════════════════╗
+echo ║           🎉 배포 완료!                ║
+echo ╚════════════════════════════════════════╝
+echo.
+echo 📍 배포 URL: https://beautycat.kr
+echo 📍 백업 URL: https://beautyket.com
+echo ⏱️  Cloudflare Pages 배포 대기: 2-3분
+echo.
+echo 🧪 테스트 방법:
+echo    1. Ctrl + Shift + N (시크릿 모드)
+echo    2. https://beautycat.kr 접속
+echo    3. 변경사항 확인
+echo.
+echo 📊 최근 커밋:
+git log --oneline -1
+echo.
+pause
