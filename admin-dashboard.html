@@ -1655,6 +1655,46 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+    
+    // 🔥 공공데이터 버튼 이벤트 리스너 추가 (강제)
+    console.log('🔧 공공데이터 버튼 이벤트 리스너 설정 시작...');
+    
+    // 모든 공공데이터 관련 요소 찾기
+    setTimeout(() => {
+        const elements = document.querySelectorAll('[onclick*="import-public-data"]');
+        console.log('🔍 찾은 공공데이터 요소:', elements.length);
+        
+        elements.forEach((el, index) => {
+            console.log(`📌 요소 ${index + 1}:`, el.tagName, el.textContent.trim());
+            
+            // 기존 onclick 제거
+            el.removeAttribute('onclick');
+            
+            // 새로운 이벤트 리스너 추가
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                console.log('🚀 공공데이터 버튼 클릭됨! 새 탭으로 열기...');
+                const newWindow = window.open('import-public-data.html?v=20260101', '_blank');
+                
+                if (newWindow) {
+                    console.log('✅ 새 탭 열기 성공!');
+                    newWindow.focus();
+                } else {
+                    console.error('❌ 팝업 차단됨! 팝업 차단을 해제해주세요.');
+                    alert('팝업이 차단되었습니다. 팝업 차단을 해제해주세요.');
+                }
+                
+                return false;
+            }, true); // capture phase에서 실행
+            
+            console.log(`✅ 이벤트 리스너 추가 완료: ${index + 1}`);
+        });
+        
+        console.log('🎉 공공데이터 버튼 이벤트 리스너 설정 완료!');
+    }, 1000); // 1초 대기 후 실행
 });
 
 // 대시보드 통계 로드 함수
