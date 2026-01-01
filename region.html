@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">지역별 피부관리실 - BeautyCat</title>
+    <meta name="description" id="page-description" content="지역별 피부관리실 찾기 - 전국 30,000개 피부관리실">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff2d92;
+            text-decoration: none;
+        }
+        
+        nav a {
+            margin-left: 2rem;
+            color: #333;
+            text-decoration: none;
+        }
+        
+        .region-list {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .region-header {
+            margin-bottom: 2rem;
+        }
+        
+        .region-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filters {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .filters select {
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 1rem;
+            min-width: 150px;
+        }
+        
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .shop-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .shop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .shop-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .shop-address {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .shop-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination button:hover:not(:disabled) {
+            background: #ff2d92;
+            color: white;
+            border-color: #ff2d92;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination button.active {
+            background: #ff2d92;
+            color: white;
+            border-color: #ff2d92;
+        }
+        
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: #ff2d92;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">BeautyCat</a>
+            <nav>
+                <a href="/">홈</a>
+                <a href="/region.html">지역별 찾기</a>
+                <a href="/login.html">로그인</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="region-list">
+        <div class="breadcrumb">
+            <a href="/">홈</a> &gt; 지역별 피부관리실
+        </div>
+        
+        <div class="region-header">
+            <h1 id="page-heading">지역별 피부관리실</h1>
+            <p>전국 30,000개 피부관리실 정보</p>
+        </div>
+        
+        <div class="filters">
+            <select id="region-filter" onchange="onRegionChange()">
+                <option value="">지역 선택</option>
+            </select>
+            
+            <select id="district-filter" onchange="onDistrictChange()">
+                <option value="">시/군/구 선택</option>
+            </select>
+        </div>
+        
+        <div id="loading" class="loading">로딩 중...</div>
+        
+        <div id="shop-grid" class="shop-grid" style="display: none;"></div>
+        
+        <div id="pagination" class="pagination" style="display: none;"></div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 BeautyCat. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        let currentPage = 1;
+        const pageSize = 30;
+        let currentRegion = '';
+        let currentDistrict = '';
+        
+        function getURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                region: params.get('region') || '',
+                district: params.get('district') || '',
+                page: parseInt(params.get('page')) || 1
+            };
+        }
+        
+        async function loadRegionFilters() {
+            try {
+                const regions = ['경기', '서울', '대구', '충북', '전북', '경북', '광주', '부산', '인천', '경남', '충남', '대전', '강원', '전남', '제주', '울산', '세종'];
+                
+                const regionSelect = document.getElementById('region-filter');
+                
+                regions.forEach(region => {
+                    const option = document.createElement('option');
+                    option.value = region;
+                    option.textContent = region;
+                    regionSelect.appendChild(option);
+                });
+                
+                const params = getURLParams();
+                if (params.region) {
+                    regionSelect.value = params.region;
+                    currentRegion = params.region;
+                    await loadDistrictFilters(params.region);
+                    if (params.district) {
+                        document.getElementById('district-filter').value = params.district;
+                        currentDistrict = params.district;
+                    }
+                }
+                
+                currentPage = params.page;
+                loadShops();
+            } catch (error) {
+                console.error('필터 로드 오류:', error);
+            }
+        }
+        
+        async function loadDistrictFilters(region) {
+            try {
+                const response = await fetch(`/tables/public_skincare_data?search=${encodeURIComponent(region)}&limit=1000`);
+                const data = await response.json();
+                
+                const districts = [...new Set(data.data
+                    .filter(shop => shop.region === region)
+                    .map(shop => shop.district))].sort();
+                
+                const districtSelect = document.getElementById('district-filter');
+                districtSelect.innerHTML = '<option value="">전체</option>';
+                
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('시/군/구 필터 로드 오류:', error);
+            }
+        }
+        
+        async function loadShops() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('shop-grid').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            
+            try {
+                let url = `/tables/public_skincare_data?page=${currentPage}&limit=${pageSize}`;
+                
+                if (currentRegion) {
+                    url += `&search=${encodeURIComponent(currentRegion)}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let shops = data.data;
+                
+                if (currentRegion) {
+                    shops = shops.filter(shop => shop.region === currentRegion);
+                }
+                
+                if (currentDistrict) {
+                    shops = shops.filter(shop => shop.district === currentDistrict);
+                }
+                
+                displayShops(shops);
+                displayPagination(data.total);
+                updatePageTitle();
+                
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                console.error('샵 로드 오류:', error);
+                document.getElementById('loading').textContent = '데이터 로드 실패';
+            }
+        }
+        
+        function displayShops(shops) {
+            const grid = document.getElementById('shop-grid');
+            grid.style.display = 'grid';
+            
+            if (shops.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">해당 지역에 등록된 샵이 없습니다.</p>';
+                return;
+            }
+            
+            grid.innerHTML = shops.map(shop => `
+                <div class="shop-card" onclick="window.location.href='/shop-detail.html?id=${shop.id}'">
+                    <div class="shop-name">${escapeHtml(shop.business_name)}</div>
+                    <div class="shop-address">${escapeHtml(shop.address)}</div>
+                    <div class="shop-status">${shop.status || '영업중'}</div>
+                </div>
+            `).join('');
+        }
+        
+        function displayPagination(total) {
+            const totalPages = Math.ceil(total / pageSize);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let buttons = [];
+            buttons.push(`<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>이전</button>`);
+            
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                buttons.push(`<button onclick="goToPage(1)">1</button>`);
+                if (startPage > 2) buttons.push('<button disabled>...</button>');
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                buttons.push(`<button onclick="goToPage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>`);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) buttons.push('<button disabled>...</button>');
+                buttons.push(`<button onclick="goToPage(${totalPages})">${totalPages}</button>`);
+            }
+            
+            buttons.push(`<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>다음</button>`);
+            
+            pagination.innerHTML = buttons.join('');
+        }
+        
+        function goToPage(page) {
+            currentPage = page;
+            updateURL();
+            loadShops();
+            window.scrollTo(0, 0);
+        }
+        
+        function onRegionChange() {
+            const regionSelect = document.getElementById('region-filter');
+            currentRegion = regionSelect.value;
+            currentDistrict = '';
+            currentPage = 1;
+            
+            if (currentRegion) {
+                loadDistrictFilters(currentRegion);
+            } else {
+                document.getElementById('district-filter').innerHTML = '<option value="">시/군/구 선택</option>';
+            }
+            
+            updateURL();
+            loadShops();
+        }
+        
+        function onDistrictChange() {
+            const districtSelect = document.getElementById('district-filter');
+            currentDistrict = districtSelect.value;
+            currentPage = 1;
+            
+            updateURL();
+            loadShops();
+        }
+        
+        function updateURL() {
+            const params = new URLSearchParams();
+            if (currentRegion) params.set('region', currentRegion);
+            if (currentDistrict) params.set('district', currentDistrict);
+            if (currentPage > 1) params.set('page', currentPage);
+            
+            const newURL = params.toString() ? `?${params.toString()}` : '/region.html';
+            history.pushState({}, '', newURL);
+        }
+        
+        function updatePageTitle() {
+            let title = '지역별 피부관리실';
+            let heading = '지역별 피부관리실';
+            
+            if (currentRegion) {
+                title = `${currentRegion} 피부관리실`;
+                heading = `${currentRegion}`;
+                
+                if (currentDistrict) {
+                    title = `${currentRegion} ${currentDistrict} 피부관리실`;
+                    heading = `${currentRegion} ${currentDistrict}`;
+                }
+                
+                title += ' - BeautyCat';
+            } else {
+                title = '지역별 피부관리실 - BeautyCat';
+            }
+            
+            document.getElementById('page-title').textContent = title;
+            document.getElementById('page-heading').textContent = heading;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadRegionFilters);
+    </script>
+</body>
+</html>
