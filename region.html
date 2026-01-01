@@ -277,9 +277,42 @@
                 const response = await fetch(`/tables/public_skincare_data?search=${encodeURIComponent(region)}&limit=1000`);
                 const data = await response.json();
                 
+                // district 추출: address에서 구/시/군 이름 추출
                 const districts = [...new Set(data.data
                     .filter(shop => shop.region === region)
-                    .map(shop => shop.district))].sort();
+                    .map(shop => {
+                        // address에서 구/시/군 이름 추출
+                        const address = shop.address || '';
+                        
+                        // 서울: "서울특별시 강남구" → "강남구"
+                        // 경기: "경기도 남양주시" → "남양주시"
+                        const match = address.match(/[가-힣]+(?:특별시|광역시|도)\s+([가-힣]+(?:구|시|군))/);
+                        if (match && match[1]) {
+                            return match[1];
+                        }
+                        
+                        // 매칭 실패 시 기존 district 사용
+                        return shop.district;
+                    })
+                    .filter(district => {
+                        if (!district) return false;
+                        // 광역시/특별시/도 이름 제외
+                        const excludeList = [
+                            region,
+                            `${region}특별시`,
+                            `${region}광역시`,
+                            '서울특별시',
+                            '부산광역시',
+                            '대구광역시',
+                            '인천광역시',
+                            '광주광역시',
+                            '대전광역시',
+                            '울산광역시',
+                            '세종특별자치시'
+                        ];
+                        return !excludeList.includes(district);
+                    })
+                )].sort();
                 
                 const districtSelect = document.getElementById('district-filter');
                 districtSelect.innerHTML = '<option value="">전체</option>';
@@ -317,7 +350,13 @@
                 }
                 
                 if (currentDistrict) {
-                    shops = shops.filter(shop => shop.district === currentDistrict);
+                    shops = shops.filter(shop => {
+                        // address에서 구/시/군 이름 추출하여 비교
+                        const address = shop.address || '';
+                        const match = address.match(/[가-힣]+(?:특별시|광역시|도)\s+([가-힣]+(?:구|시|군))/);
+                        const extractedDistrict = match && match[1] ? match[1] : shop.district;
+                        return extractedDistrict === currentDistrict;
+                    });
                 }
                 
                 displayShops(shops);
