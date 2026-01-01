@@ -5,6 +5,165 @@ let allShops = [];
 let allConsultations = [];
 let selectedUser = null;
 
+// ===== 공공 데이터 자동 매칭 시스템 =====
+/**
+ * 공공 데이터와 등록 샵 자동 매칭 함수
+ * @param {Object} newShop - 등록된 샵 정보
+ * @returns {Object|null} - 매칭된 공공 데이터 샵 또는 null
+ */
+async function autoMatchPublicData(newShop) {
+    const { name, address, phone } = newShop;
+    
+    try {
+        console.log('🔍 공공 데이터 검색:', { name, address, phone });
+        
+        // 입력 검증
+        if (!name || !newShop.id) {
+            console.error('❌ 필수 정보 누락:', { name, id: newShop.id });
+            return null;
+        }
+        
+        // 1. 유사도 검색
+        const publicShopsResponse = await fetch(
+            `tables/public_skincare_data?search=${encodeURIComponent(name)}&limit=10`
+        );
+        
+        if (!publicShopsResponse.ok) {
+            console.error('❌ 공공 데이터 조회 실패:', publicShopsResponse.status);
+            return null;
+        }
+        
+        const publicShops = await publicShopsResponse.json();
+        
+        console.log('📊 검색 결과:', publicShops.data?.length || 0, '개');
+        
+        if (!publicShops.data || publicShops.data.length === 0) {
+            console.log('ℹ️ 검색 결과 없음');
+            return null;
+        }
+        
+        // 2. 이미 매칭된 샵 제외
+        const unmatchedShops = publicShops.data.filter(shop => !shop.matched_shop_id);
+        
+        if (unmatchedShops.length === 0) {
+            console.log('ℹ️ 모든 검색 결과가 이미 매칭됨');
+            return null;
+        }
+        
+        // 3. 각 샵의 유사도 점수 계산
+        const scoredShops = unmatchedShops.map(shop => {
+            const nameSimilarity = calculateSimilarity(name, shop.business_name);
+            const addressSimilarity = address && shop.address ? calculateSimilarity(address, shop.address) : 0;
+            const phoneMatch = phone && shop.phone && phone.replace(/[^0-9]/g, '') === shop.phone.replace(/[^0-9]/g, '');
+            
+            // 점수 계산: 이름 60%, 주소 30%, 전화번호 10% (일치 시 +50점)
+            let score = (nameSimilarity * 0.6) + (addressSimilarity * 0.3);
+            if (phoneMatch) score += 0.5;
+            
+            console.log('🔎 매칭 검사:', {
+                shop: shop.business_name,
+                nameSimilarity: nameSimilarity.toFixed(2),
+                addressSimilarity: addressSimilarity.toFixed(2),
+                phoneMatch,
+                totalScore: score.toFixed(2)
+            });
+            
+            return { shop, score, nameSimilarity, addressSimilarity, phoneMatch };
+        });
+        
+        // 4. 점수 순 정렬
+        scoredShops.sort((a, b) => b.score - a.score);
+        
+        // 5. 최고 점수 샵 선택 (임계값 확인)
+        const bestMatch = scoredShops[0];
+        const isValidMatch = (bestMatch.nameSimilarity > 0.8 && bestMatch.addressSimilarity > 0.6) || 
+                             bestMatch.phoneMatch;
+        
+        if (!isValidMatch) {
+            console.log('ℹ️ 임계값 미달:', {
+                bestScore: bestMatch.score.toFixed(2),
+                name: bestMatch.nameSimilarity.toFixed(2),
+                address: bestMatch.addressSimilarity.toFixed(2)
+            });
+            return null;
+        }
+        
+        // 6. 매칭 업데이트
+        console.log('✅ 매칭 발견:', {
+            business_name: bestMatch.shop.business_name,
+            score: bestMatch.score.toFixed(2)
+        });
+        
+        const updateResponse = await fetch(`tables/public_skincare_data/${bestMatch.shop.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                matched_shop_id: newShop.id,
+                phone: phone || bestMatch.shop.phone
+            })
+        });
+        
+        if (!updateResponse.ok) {
+            console.error('❌ 매칭 업데이트 실패:', updateResponse.status);
+            return null;
+        }
+        
+        console.log('✅ 매칭 업데이트 완료');
+        return bestMatch.shop;
+        
+    } catch (error) {
+        console.error('❌ 자동 매칭 실패:', error);
+        return null;
+    }
+}
+
+/**
+ * 두 문자열 간의 유사도 계산 (Levenshtein Distance)
+ */
+function calculateSimilarity(str1, str2) {
+    if (!str1 || !str2) return 0;
+    
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+    
+    if (longer.length === 0) return 1.0;
+    
+    const editDistance = levenshteinDistance(longer, shorter);
+    return (longer.length - editDistance) / longer.length;
+}
+
+/**
+ * Levenshtein Distance 알고리즘
+ */
+function levenshteinDistance(str1, str2) {
+    const matrix = [];
+    
+    for (let i = 0; i <= str2.length; i++) {
+        matrix[i] = [i];
+    }
+    
+    for (let j = 0; j <= str1.length; j++) {
+        matrix[0][j] = j;
+    }
+    
+    for (let i = 1; i <= str2.length; i++) {
+        for (let j = 1; j <= str1.length; j++) {
+            if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1, // 치환
+                    matrix[i][j - 1] + 1,     // 삽입
+                    matrix[i - 1][j] + 1      // 삭제
+                );
+            }
+        }
+    }
+    
+    return matrix[str2.length][str1.length];
+}
+// ===== 공공 데이터 자동 매칭 시스템 끝 =====
+
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Admin dashboard loaded');
@@ -1387,14 +1546,40 @@ async function approveShop(shopId) {
         });
         
         if (response.ok) {
-            showNotification(
-                `✅ 플랫폼 입점 승인 완료!\n\n` +
-                `샵명: ${shop.name}\n` +
-                `지역: ${shop.state} ${shop.district}\n\n` +
-                `해당 지역의 고객 견적 요청을 수신합니다.`,
-                'success',
-                8000
-            );
+            // 4. 자동 매칭 시도 (공공 데이터와 연결)
+            console.log('🔄 공공 데이터 자동 매칭 시도...');
+            const matchedPublicShop = await autoMatchPublicData(shop);
+            
+            if (matchedPublicShop) {
+                console.log('✅ 매칭 성공:', {
+                    registered_shop: shop.name,
+                    public_shop: matchedPublicShop.business_name,
+                    public_shop_id: matchedPublicShop.id
+                });
+                
+                showNotification(
+                    `✅ 플랫폼 입점 승인 완료!\n\n` +
+                    `샵명: ${shop.name}\n` +
+                    `지역: ${shop.state} ${shop.district}\n\n` +
+                    `🔗 공공 데이터 매칭 완료:\n` +
+                    `${matchedPublicShop.business_name}\n\n` +
+                    `이제 리뷰 작성이 가능합니다.`,
+                    'success',
+                    10000
+                );
+            } else {
+                console.log('ℹ️ 매칭 실패: 유사한 공공 데이터를 찾지 못했습니다.');
+                
+                showNotification(
+                    `✅ 플랫폼 입점 승인 완료!\n\n` +
+                    `샵명: ${shop.name}\n` +
+                    `지역: ${shop.state} ${shop.district}\n\n` +
+                    `해당 지역의 고객 견적 요청을 수신합니다.`,
+                    'success',
+                    8000
+                );
+            }
+            
             loadShops(); // Refresh shops list
         } else {
             throw new Error('플랫폼 입점 승인 실패');
