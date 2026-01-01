@@ -274,7 +274,7 @@
         
         async function loadDistrictFilters(region) {
             try {
-                const response = await fetch(`/tables/public_skincare_data?search=${encodeURIComponent(region)}&limit=1000`);
+                const response = await fetch(`/tables/public_skincare_data?search=${encodeURIComponent(region)}&limit=10000`);
                 const data = await response.json();
                 
                 // district 추출: address에서 구/시/군 이름 추출
