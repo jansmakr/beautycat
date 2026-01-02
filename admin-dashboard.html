@@ -92,13 +92,13 @@
                 <nav class="hidden md:flex space-x-6">
                     <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
                     <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
-                    <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 입점관리</a>
+                    <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 관리</a>
                     <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
                 </nav>
                 
                 <!-- 가운데 로고 (v2.8.13.6.83 - 50% 축소 + 중앙 정렬) -->
-                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center;">
-                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
+                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; z-index: 0; pointer-events: none;">
+                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important; pointer-events: auto;">
                 </a>
                 
                 <!-- 오른쪽 네비게이션 -->
@@ -107,7 +107,6 @@
                     <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">
                         <i class="fas fa-bullhorn mr-1"></i>공지사항
                     </a>
-                    <button type="button" onclick="event.stopPropagation(); event.preventDefault(); window.open('import-public-data.html?v=20260101', '_blank'); return false;" class="text-gray-600 hover:text-primary-500 font-medium transition-colors bg-transparent border-0 cursor-pointer">공공데이터</button>
                     <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
                 </nav>
 
@@ -129,9 +128,6 @@
                         <a href="#" onclick="showSection('announcements')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-bullhorn mr-2"></i>공지사항 관리
                         </a>
-                        <button type="button" onclick="event.stopPropagation(); event.preventDefault(); window.open('import-public-data.html?v=20260101', '_blank'); return false;" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 bg-transparent border-0 cursor-pointer">
-                            <i class="fas fa-cloud-upload-alt mr-2"></i>공공데이터 업로드
-                        </button>
                         <a href="#" onclick="showSection('test')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-flask mr-2"></i>기능 테스트
                         </a>
@@ -298,7 +294,11 @@
             <div class="mb-6 flex justify-between items-center">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">샵 관리</h2>
-                    <p class="text-gray-600 mt-1">플랫폼에 가입한 피부관리실의 입점 승인 및 정보를 관리하세요</p>
+                    <p class="text-gray-600 mt-1">
+                        전체 <span id="total-shops-count" class="font-bold text-primary-500">30,020</span>개 
+                        (⭐ 인증 <span id="verified-shops-count" class="font-bold text-green-600">20</span>개 
+                        + 📍 공공데이터 <span id="public-shops-count" class="font-bold text-blue-600">30,000</span>개)
+                    </p>
                 </div>
                 <button onclick="refreshShops()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
                     <i class="fas fa-refresh mr-2"></i>새로고침
@@ -323,7 +323,7 @@
 
             <!-- Search and Filter Section -->
             <div class="mb-4 bg-white p-4 rounded-lg border border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">검색</label>
                         <div class="relative">
@@ -331,6 +331,15 @@
                                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                         </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">샵 타입</label>
+                        <select id="shop-type-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">전체 샵</option>
+                            <option value="verified">⭐ 인증샵만</option>
+                            <option value="public">📍 공공데이터만</option>
+                            <option value="registered">📝 신규등록만</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">지역 필터</label>
@@ -1655,46 +1664,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
-    // 🔥 공공데이터 버튼 이벤트 리스너 추가 (강제)
-    console.log('🔧 공공데이터 버튼 이벤트 리스너 설정 시작...');
-    
-    // 모든 공공데이터 관련 요소 찾기
-    setTimeout(() => {
-        const elements = document.querySelectorAll('[onclick*="import-public-data"]');
-        console.log('🔍 찾은 공공데이터 요소:', elements.length);
-        
-        elements.forEach((el, index) => {
-            console.log(`📌 요소 ${index + 1}:`, el.tagName, el.textContent.trim());
-            
-            // 기존 onclick 제거
-            el.removeAttribute('onclick');
-            
-            // 새로운 이벤트 리스너 추가
-            el.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                console.log('🚀 공공데이터 버튼 클릭됨! 새 탭으로 열기...');
-                const newWindow = window.open('import-public-data.html?v=20260101', '_blank');
-                
-                if (newWindow) {
-                    console.log('✅ 새 탭 열기 성공!');
-                    newWindow.focus();
-                } else {
-                    console.error('❌ 팝업 차단됨! 팝업 차단을 해제해주세요.');
-                    alert('팝업이 차단되었습니다. 팝업 차단을 해제해주세요.');
-                }
-                
-                return false;
-            }, true); // capture phase에서 실행
-            
-            console.log(`✅ 이벤트 리스너 추가 완료: ${index + 1}`);
-        });
-        
-        console.log('🎉 공공데이터 버튼 이벤트 리스너 설정 완료!');
-    }, 1000); // 1초 대기 후 실행
 });
 
 // 대시보드 통계 로드 함수
