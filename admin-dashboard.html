@@ -1646,6 +1646,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // 대시보드 통계 로드
     loadDashboardStats();
     
+    // v2.8.13.6.129: 샵 타입 필터 이벤트 리스너 추가
+    const shopTypeFilter = document.getElementById('shop-type-filter');
+    if (shopTypeFilter) {
+        shopTypeFilter.addEventListener('change', function() {
+            filterShops();
+        });
+    }
+    
+    // 기존 필터들에도 이벤트 추가
+    const shopSearchInput = document.getElementById('shop-search');
+    const shopRegionFilter = document.getElementById('shop-region-filter');
+    const shopStatusFilter = document.getElementById('shop-status-filter');
+    
+    if (shopSearchInput) {
+        shopSearchInput.addEventListener('input', filterShops);
+    }
+    if (shopRegionFilter) {
+        shopRegionFilter.addEventListener('change', filterShops);
+    }
+    if (shopStatusFilter) {
+        shopStatusFilter.addEventListener('change', filterShops);
+    }
+    
     // 사업자등록번호 필드 자동 하이픈 추가
     const businessNumberInputs = [
         document.getElementById('edit-business-number'),
@@ -1673,6 +1696,58 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// v2.8.13.6.129: 통합 필터 함수
+function filterShops() {
+    if (!allShops || allShops.length === 0) {
+        console.log('⚠️ allShops가 비어있습니다');
+        return;
+    }
+    
+    let filtered = [...allShops];
+    
+    // 1. 샵 타입 필터
+    const typeFilter = document.getElementById('shop-type-filter')?.value;
+    if (typeFilter === 'verified') {
+        // 인증샵만: verified = 1
+        filtered = filtered.filter(shop => shop.verified === 1 || shop.verified === true);
+    } else if (typeFilter === 'public') {
+        // 공공데이터만: source = 'public'
+        filtered = filtered.filter(shop => shop.source === 'public');
+    } else if (typeFilter === 'registered') {
+        // 신규등록만: source = 'registered'
+        filtered = filtered.filter(shop => shop.source === 'registered');
+    }
+    
+    // 2. 검색어 필터
+    const searchQuery = document.getElementById('shop-search')?.value?.toLowerCase();
+    if (searchQuery) {
+        filtered = filtered.filter(shop => {
+            const name = (shop.shop_name || shop.name || '').toLowerCase();
+            const ownerName = (shop.owner_name || '').toLowerCase();
+            const email = (shop.email || '').toLowerCase();
+            return name.includes(searchQuery) || ownerName.includes(searchQuery) || email.includes(searchQuery);
+        });
+    }
+    
+    // 3. 지역 필터
+    const regionFilter = document.getElementById('shop-region-filter')?.value;
+    if (regionFilter) {
+        filtered = filtered.filter(shop => {
+            const shopRegion = shop.region || shop.state || '';
+            return shopRegion.includes(regionFilter);
+        });
+    }
+    
+    // 4. 상태 필터
+    const statusFilter = document.getElementById('shop-status-filter')?.value;
+    if (statusFilter) {
+        filtered = filtered.filter(shop => shop.status === statusFilter);
+    }
+    
+    console.log(`🔍 필터 결과: ${allShops.length}개 → ${filtered.length}개`);
+    displayShops(filtered);
+}
 
 // 대시보드 통계 로드 함수
 async function loadDashboardStats() {
