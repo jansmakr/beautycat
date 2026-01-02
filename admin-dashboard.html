@@ -1646,26 +1646,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // 대시보드 통계 로드
     loadDashboardStats();
     
-    // v2.8.13.6.129.2: 필터 강제 초기화 (브라우저 캐시 방지)
+    // v2.8.13.6.129.3: 필터 이벤트 리스너만 등록 (초기화 제거)
     const shopTypeFilter = document.getElementById('shop-type-filter');
     const shopSearchInput = document.getElementById('shop-search');
     const shopRegionFilter = document.getElementById('shop-region-filter');
     const shopStatusFilter = document.getElementById('shop-status-filter');
     
-    // 필터 값 강제 초기화
-    if (shopTypeFilter) shopTypeFilter.value = '';
-    if (shopSearchInput) shopSearchInput.value = '';
-    if (shopRegionFilter) shopRegionFilter.value = '';
-    if (shopStatusFilter) shopStatusFilter.value = '';
-    
-    // v2.8.13.6.129: 샵 타입 필터 이벤트 리스너 추가
+    // 이벤트 리스너 등록 (단, 페이지 로드 시에는 filterShops() 실행 안 함)
     if (shopTypeFilter) {
         shopTypeFilter.addEventListener('change', function() {
+            console.log('📊 샵 타입 필터 변경:', this.value);
             filterShops();
         });
     }
     
-    // 기존 필터들에도 이벤트 추가
     if (shopSearchInput) {
         shopSearchInput.addEventListener('input', filterShops);
     }
