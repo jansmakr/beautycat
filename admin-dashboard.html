@@ -1706,17 +1706,23 @@ function filterShops() {
     
     let filtered = [...allShops];
     
-    // 1. 샵 타입 필터
+    // 1. 샵 타입 필터 (v2.8.13.6.129.1: email 기반 구분)
     const typeFilter = document.getElementById('shop-type-filter')?.value;
     if (typeFilter === 'verified') {
-        // 인증샵만: verified = 1
-        filtered = filtered.filter(shop => shop.verified === 1 || shop.verified === true);
+        // 인증샵만: status = 'active' AND email이 정상
+        filtered = filtered.filter(shop => {
+            return shop.status === 'active' && shop.email && !shop.email.includes('@example.com');
+        });
     } else if (typeFilter === 'public') {
-        // 공공데이터만: source = 'public'
-        filtered = filtered.filter(shop => shop.source === 'public');
+        // 공공데이터만: email이 없거나 @example.com
+        filtered = filtered.filter(shop => {
+            return !shop.email || shop.email.includes('@example.com');
+        });
     } else if (typeFilter === 'registered') {
-        // 신규등록만: source = 'registered'
-        filtered = filtered.filter(shop => shop.source === 'registered');
+        // 신규등록만: email이 있고 정상적인 이메일
+        filtered = filtered.filter(shop => {
+            return shop.email && !shop.email.includes('@example.com');
+        });
     }
     
     // 2. 검색어 필터
