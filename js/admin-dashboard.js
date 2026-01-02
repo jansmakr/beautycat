@@ -612,6 +612,38 @@ function copyPassword(userId) {
     });
 }
 
+// v2.8.13.6.129.6: 샵 필터 이벤트 리스너 초기화 함수
+function initializeShopFilters() {
+    const shopTypeFilter = document.getElementById('shop-type-filter');
+    const shopSearchInput = document.getElementById('shop-search');
+    const shopRegionFilter = document.getElementById('shop-region-filter');
+    const shopStatusFilter = document.getElementById('shop-status-filter');
+    
+    // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
+    if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
+        shopTypeFilter.addEventListener('change', function() {
+            console.log('📊 샵 타입 필터 변경:', this.value);
+            filterShops();
+        });
+        shopTypeFilter.dataset.listenerAdded = 'true';
+    }
+    
+    if (shopSearchInput && !shopSearchInput.dataset.listenerAdded) {
+        shopSearchInput.addEventListener('input', filterShops);
+        shopSearchInput.dataset.listenerAdded = 'true';
+    }
+    
+    if (shopRegionFilter && !shopRegionFilter.dataset.listenerAdded) {
+        shopRegionFilter.addEventListener('change', filterShops);
+        shopRegionFilter.dataset.listenerAdded = 'true';
+    }
+    
+    if (shopStatusFilter && !shopStatusFilter.dataset.listenerAdded) {
+        shopStatusFilter.addEventListener('change', filterShops);
+        shopStatusFilter.dataset.listenerAdded = 'true';
+    }
+}
+
 // Load shops
 async function loadShops(updateTable = true) {
     try {
@@ -641,6 +673,12 @@ async function loadShops(updateTable = true) {
             
             displayShops(allShops);
             console.log('✅ 테이블 렌더링 완료');
+            
+            // v2.8.13.6.129.6: 테이블 렌더링 후 이벤트 리스너 등록 (초기 필터링 방지)
+            setTimeout(() => {
+                initializeShopFilters();
+                console.log('✅ 필터 이벤트 리스너 등록 완료');
+            }, 100);
         }
     } catch (error) {
         console.error('❌ Shops loading error:', error);
