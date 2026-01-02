@@ -626,16 +626,18 @@ async function loadShops(updateTable = true) {
         if (updateTable) {
             console.log('🖼️ 테이블 렌더링 시작...');
             
-            // 필터 초기화 (캐시된 값 제거)
+            // 필터 초기화 (캐시된 값 제거) - v2.8.13.6.129.4: shop-type-filter 추가
             const searchInput = document.getElementById('shop-search');
             const regionFilter = document.getElementById('shop-region-filter');
             const statusFilter = document.getElementById('shop-status-filter');
+            const typeFilter = document.getElementById('shop-type-filter');
             
             if (searchInput) searchInput.value = '';
             if (regionFilter) regionFilter.value = '';
             if (statusFilter) statusFilter.value = '';
+            if (typeFilter) typeFilter.value = '';  // ✅ shop-type-filter 초기화 추가!
             
-            console.log('🔄 필터 초기화 완료');
+            console.log('🔄 필터 초기화 완료 (shop-type-filter 포함)');
             
             displayShops(allShops);
             console.log('✅ 테이블 렌더링 완료');
