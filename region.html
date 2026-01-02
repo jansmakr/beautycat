@@ -274,12 +274,16 @@
         
         async function loadDistrictFilters(region) {
             try {
-                const response = await fetch(`/tables/public_skincare_data?search=${encodeURIComponent(region)}&limit=10000`);
+                const response = await fetch(`/tables/skincare_shops?search=${encodeURIComponent(region)}&limit=10000`);
                 const data = await response.json();
                 
                 // district 추출: address에서 구/시/군 이름 추출
                 const districts = [...new Set(data.data
-                    .filter(shop => shop.region === region)
+                    .filter(shop => {
+                        // v2.8.13.6.129: region 필드 사용
+                        const shopRegion = shop.region || shop.state?.replace(/특별시|광역시|특별자치시|도/g, '').trim();
+                        return shopRegion === region;
+                    })
                     .map(shop => {
                         // address에서 구/시/군 이름 추출
                         const address = shop.address || '';
@@ -334,7 +338,7 @@
             document.getElementById('pagination').style.display = 'none';
             
             try {
-                let url = `/tables/public_skincare_data?page=${currentPage}&limit=${pageSize}`;
+                let url = `/tables/skincare_shops?page=${currentPage}&limit=${pageSize}`;
                 
                 if (currentRegion) {
                     url += `&search=${encodeURIComponent(currentRegion)}`;
@@ -346,7 +350,12 @@
                 let shops = data.data;
                 
                 if (currentRegion) {
-                    shops = shops.filter(shop => shop.region === currentRegion);
+                    // v2.8.13.6.129: region 필드 사용 (마이그레이션 후)
+                    shops = shops.filter(shop => {
+                        // region 필드가 있으면 사용, 없으면 state에서 추출
+                        const shopRegion = shop.region || shop.state?.replace(/특별시|광역시|특별자치시|도/g, '').trim();
+                        return shopRegion === currentRegion;
+                    });
                 }
                 
                 if (currentDistrict) {
@@ -381,7 +390,7 @@
             
             grid.innerHTML = shops.map(shop => `
                 <div class="shop-card" onclick="window.location.href='/shop-detail.html?id=${shop.id}'">
-                    <div class="shop-name">${escapeHtml(shop.business_name)}</div>
+                    <div class="shop-name">${escapeHtml(shop.business_name || shop.name)}</div>
                     <div class="shop-address">${escapeHtml(shop.address)}</div>
                     <div class="shop-status">${shop.status || '영업중'}</div>
                 </div>
