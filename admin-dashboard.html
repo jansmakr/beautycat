@@ -6,11 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="last-modified" content="2026-01-03T19:00:00+09:00">
-    <!-- 🔥 Cache Busting Timestamp: 2026-01-03 19:00 KST - PATCH→PUT Critical Fix -->
-    <meta name="version" content="2.8.13.6.130-20260103-1900">
-    <meta name="cache-version" content="v2.8.13.6.130-patch-to-put-critical-fix">
-    <!-- v2.8.13.6.130: PATCH → PUT 완전 수정 (admin-dashboard.html) -->
+    <meta name="last-modified" content="2026-01-03T20:30:00+09:00">
+    <!-- 🔥 Cache Busting Timestamp: 2026-01-03 20:30 KST - 공공 데이터 탭 추가 -->
+    <meta name="version" content="2.8.13.6.131-20260103-2030">
+    <meta name="cache-version" content="v2.8.13.6.131-public-data-tab">
+    <!-- v2.8.13.6.131: 공공 데이터 관리 탭 추가 (102,902개) -->
     <title>관리자 대시보드 - beautycat (뷰티+에티켓)</title>
     <meta name="naver-site-verification" content="d1de02844a6d373cbc20ace550630fcc83bf8979" />
     
@@ -101,6 +101,7 @@
                     <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
                     <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
                     <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 관리</a>
+                    <a href="#" onclick="showSection('public-data')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">📍 공공 데이터</a>
                     <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
                 </nav>
                 
@@ -477,6 +478,89 @@
                         <!-- Consultations will be loaded here -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Public Data Section (v2.8.13.6.131 - 공공 데이터 관리) -->
+        <div id="public-data-section" class="section hidden">
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">📍 공공 데이터 관리</h2>
+                    <p class="text-gray-600 mt-1">전국 피부관리실 공공 데이터 102,902개</p>
+                </div>
+                <button onclick="loadPublicData()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-refresh mr-2"></i>새로고침
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="unni-card mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">검색</label>
+                        <input type="text" id="public-search" placeholder="상호명, 주소 검색..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">지역</label>
+                        <select id="public-region-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">전체 지역</option>
+                            <option value="경기">경기 (9,233)</option>
+                            <option value="서울">서울 (3,928)</option>
+                            <option value="대구">대구 (3,188)</option>
+                            <option value="충북">충북 (3,094)</option>
+                            <option value="전북">전북 (2,825)</option>
+                            <option value="경북">경북 (1,487)</option>
+                            <option value="광주">광주 (1,485)</option>
+                            <option value="부산">부산 (1,157)</option>
+                            <option value="인천">인천 (1,059)</option>
+                            <option value="경남">경남 (642)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">매칭 상태</label>
+                        <select id="public-matched-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">전체</option>
+                            <option value="matched">✅ 매칭됨</option>
+                            <option value="unmatched">⚪ 미매칭</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">페이지</label>
+                        <div class="flex gap-2">
+                            <button onclick="changePublicDataPage(-1)" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">◀</button>
+                            <span id="public-page-info" class="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-center min-w-[100px]">1 / 1030</span>
+                            <button onclick="changePublicDataPage(1)" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Public Data Table -->
+            <div class="unni-card overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상호명</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">주소</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">전화번호</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">매칭 상태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
+                        </tr>
+                    </thead>
+                    <tbody id="public-data-table" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                데이터를 로딩 중입니다...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Info -->
+            <div class="mt-4 text-center text-sm text-gray-600">
+                <span id="public-data-info">총 102,902개 중 1-100개 표시</span>
             </div>
         </div>
 
@@ -1673,7 +1757,8 @@
     window.KOREA_TOWN_DATA = KOREA_TOWN_DATA;
     </script>
     
-    <script src="js/admin-dashboard.js?v=2.8.13.6.129.12"></script>
+    <script src="js/admin-dashboard.js?v=2.8.13.6.131"></script>
+    <script src="js/public-data-manager.js?v=2.8.13.6.131"></script>
 
 <!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
 <script>

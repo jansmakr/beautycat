@@ -5,6 +5,11 @@ let allShops = [];
 let allConsultations = [];
 let selectedUser = null;
 
+// v2.8.13.6.131: 공공 데이터 관리
+let allPublicData = [];
+let currentPublicPage = 1;
+let publicPageSize = 100;
+
 // ===== 공공 데이터 자동 매칭 시스템 =====
 /**
  * 공공 데이터와 등록 샵 자동 매칭 함수
@@ -276,6 +281,10 @@ function showSection(sectionName) {
         case 'shops':
             console.log('🏪 loadShops() 호출');
             loadShops();
+            break;
+        case 'public-data':
+            console.log('📍 loadPublicData() 호출');
+            loadPublicData(1);
             break;
         case 'consultations':
             loadConsultations();
