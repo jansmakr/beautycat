@@ -94,13 +94,17 @@ async function autoMatchPublicData(newShop) {
             score: bestMatch.score.toFixed(2)
         });
         
+        // PUT 사용 (Cloudflare Workers는 PATCH 미지원)
+        const updatedData = {
+            ...bestMatch.shop,
+            matched_shop_id: newShop.id,
+            phone: phone || bestMatch.shop.phone
+        };
+        
         const updateResponse = await fetch(`tables/public_skincare_data/${bestMatch.shop.id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                matched_shop_id: newShop.id,
-                phone: phone || bestMatch.shop.phone
-            })
+            body: JSON.stringify(updatedData)
         });
         
         if (!updateResponse.ok) {
@@ -183,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupShopFilters();
 });
 
-// Check admin authentication (v2.8.13.6.74 - 조건부 권한 확인)
+// Check admin authentication (v2.8.13.6.130 - 간소화된 권한 확인)
 function checkAdminAuth() {
     console.log('🔓 admin-dashboard.js - 관리자 권한 체크');
     
@@ -191,34 +195,36 @@ function checkAdminAuth() {
     const userType = localStorage.getItem('user_type');
     const adminAccess = localStorage.getItem('adminAccess') === 'true';
     const sessionToken = localStorage.getItem('session_token');
+    const userEmail = localStorage.getItem('user_email');
     
-    // 관리자 권한 체크 (admin-dashboard.html과 동일한 로직)
+    // 관리자 권한 체크 (단순화)
     const hasAdminAuth = (isLoggedIn && userType === 'admin') || 
                          adminAccess || 
-                         (sessionToken && sessionToken.startsWith('admin_'));
+                         (sessionToken && sessionToken.startsWith('admin_')) ||
+                         (userEmail === 'admin@beautycat.kr');
     
     if (hasAdminAuth) {
-        // 기존 세션이 있으면 currentUser 설정
+        console.log('✅ 관리자 권한 확인됨');
+        // 관리자 정보 설정
         currentUser = {
-            id: 'admin',
-            email: localStorage.getItem('user_email') || 'admin@beautycat.kr',
+            id: localStorage.getItem('user_id') || 'admin_001',
+            email: userEmail || 'admin@beautycat.kr',
             name: localStorage.getItem('user_name') || '관리자',
-            user_type: 'admin'
+            type: 'admin'
         };
-        console.log('✅ 관리자 인증 성공:', currentUser);
-    } else {
-        // 권한이 없으면 currentUser를 null로 설정 (로그아웃 상태)
-        console.warn('⚠️ 관리자 권한 없음 - 로그인 필요');
-        currentUser = null;
-        // localStorage는 admin-dashboard.html에서만 설정
-        // 여기서는 설정하지 않음 (중복 방지)
+        
+        // Display admin name
+        const adminNameElement = document.getElementById('admin-name');
+        if (adminNameElement) {
+            adminNameElement.textContent = currentUser.name;
+        }
+        
+        return true;
     }
     
-    // Display admin name
-    const adminNameElement = document.getElementById('admin-name');
-    if (adminNameElement && currentUser) {
-        adminNameElement.textContent = currentUser.name || '관리자';
-    }
+    console.warn('⚠️ 관리자 권한 없음 - 로그인 페이지로 리다이렉트');
+    window.location.href = 'login.html?returnUrl=' + encodeURIComponent(window.location.href);
+    return false;
 }
 
 // Set up event listeners
@@ -637,15 +643,6 @@ function initializeShopFilters() {
     
     console.log('🔒 필터 강제 초기화 완료 (selectedIndex 포함)');
     
-    // v2.8.13.6.129.11: 이벤트 리스너 등록 전에 100ms 대기 후 다시 초기화
-    setTimeout(() => {
-        if (shopTypeFilter) {
-            shopTypeFilter.value = '';
-            shopTypeFilter.selectedIndex = 0;
-            console.log('🔥 최종 초기화: shop-type-filter =', shopTypeFilter.value);
-        }
-    }, 100);
-    
     // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
     if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
         shopTypeFilter.addEventListener('change', function() {
@@ -654,6 +651,15 @@ function initializeShopFilters() {
         });
         shopTypeFilter.dataset.listenerAdded = 'true';
     }
+    
+    // v2.8.13.6.130.2: 이벤트 리스너 등록 후 강제 초기화 (브라우저 autocomplete 완전 차단)
+    setTimeout(() => {
+        if (shopTypeFilter) {
+            shopTypeFilter.value = '';
+            shopTypeFilter.selectedIndex = 0;
+            console.log('🔥 최종 초기화 (이벤트 후): shop-type-filter =', shopTypeFilter.value);
+        }
+    }, 150);
     
     if (shopSearchInput && !shopSearchInput.dataset.listenerAdded) {
         shopSearchInput.addEventListener('input', filterShops);
@@ -762,12 +768,16 @@ async function handleCSVUpload(event) {
                     if (response.ok) {
                         successCount++;
                         const globalIndex = i + index + 1;
-                        console.log(`✅ ${globalIndex}/${shops.length}: ${shop.business_name}`);
+                        // 매 100건마다만 로그 출력
+                        if (globalIndex % 100 === 0 || globalIndex === shops.length) {
+                            console.log(`✅ ${globalIndex}/${shops.length} 업로드 완료`);
+                        }
                         return { success: true, shop };
                     } else {
                         errorCount++;
                         const globalIndex = i + index + 1;
                         const errorText = await response.text();
+                        // 오류는 항상 로그
                         console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, errorText);
                         return { success: false, shop, error: errorText };
                     }
@@ -820,9 +830,11 @@ async function loadShops(updateTable = true) {
         console.log('🏪 업체 목록 로딩 시작...');
         const response = await fetch('tables/skincare_shops?limit=50000&sort=created_at');
         const data = await response.json();
-        allShops = data.data || [];
         
-        console.log('📊 업체 수:', allShops.length);
+        // 삭제된 샵 제외 (Soft Delete 필터링)
+        allShops = (data.data || []).filter(shop => !shop.deleted);
+        
+        console.log('📊 업체 수:', allShops.length, '(삭제된 샵 제외)');
         console.log('📋 업체 목록:', allShops);
         
         if (updateTable) {
@@ -3220,7 +3232,7 @@ async function saveShopChanges() {
     }
 }
 
-// Delete shop function
+// Delete shop function (Soft Delete)
 async function deleteShop(shopId) {
     const shop = allShops.find(s => s.id === shopId);
     if (!shop) {
@@ -3229,43 +3241,44 @@ async function deleteShop(shopId) {
     }
     
     // 확인 대화상자
-    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
+    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n※ 소프트 삭제: 데이터는 보관되며 복구 가능합니다.`;
     if (!confirm(confirmMessage)) {
         return;
     }
     
     try {
-        console.log('🗑️ 샵 삭제 요청:', shopId);
+        console.log('🗑️ 샵 Soft Delete 요청:', shopId);
+        
+        // Soft Delete: deleted 플래그를 true로 설정
+        const updatedShop = {
+            ...shop,
+            deleted: true,
+            status: 'deleted',
+            updated_at: Date.now()
+        };
+        
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'DELETE',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(updatedShop)
         });
         
-        console.log('📡 삭제 응답 상태:', response.status);
+        console.log('📡 Soft Delete 응답 상태:', response.status);
         
-        if (response.ok || response.status === 204) {
+        if (response.ok) {
             showNotification('샵이 성공적으로 삭제되었습니다.', 'success');
-            console.log('✅ 샵 삭제 성공, 테이블 새로고침 중...');
-            await loadShops(); // refreshShops() 대신 loadShops() 직접 호출
+            console.log('✅ 샵 Soft Delete 성공, 테이블 새로고침 중...');
+            await loadShops();
         } else {
             const errorData = await response.text();
-            console.error('❌ 삭제 실패 응답:', errorData);
+            console.error('❌ Soft Delete 실패 응답:', errorData);
             throw new Error(`HTTP ${response.status}: ${errorData}`);
         }
     } catch (error) {
-        console.error('Shop deletion error:', error);
-        
-        // API 실패시 로컬 데이터에서 제거
-        const shopIndex = allShops.findIndex(s => s.id === shopId);
-        if (shopIndex !== -1) {
-            allShops.splice(shopIndex, 1);
-            displayShops(allShops);
-            showNotification('샵이 로컬에서 삭제되었습니다. (API 연결 필요)', 'warning');
-        } else {
-            showNotification('샵 삭제에 실패했습니다.', 'error');
-        }
+        console.error('Shop soft deletion error:', error);
+        showNotification('샵 삭제에 실패했습니다: ' + error.message, 'error');
     }
 }
 
