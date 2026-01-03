@@ -434,9 +434,22 @@
                             return shop.district === currentDistrict;
                         }
                         
-                        // address에서 구/시/군 이름 추출하여 비교
+                        // address에서 구/시/군 이름 추출하여 비교 (v2.8.13.6.129.10: 공백 선택적)
                         const address = shop.address || '';
-                        const match = address.match(/[가-힣]+(?:특별시|광역시|도)\s+([가-힣]+(?:구|시|군))/);
+                        
+                        // 패턴 1: 공백 있음 (예: "서울특별시 강남구")
+                        let match = address.match(/[가-힣]+(?:특별시|광역시|도)\s+([가-힣]+(?:구|시|군))/);
+                        
+                        // 패턴 2: 공백 없음 (예: "서울특별시강남구")
+                        if (!match) {
+                            match = address.match(/[가-힣]+(?:특별시|광역시|도)([가-힣]+(?:구|시|군))/);
+                        }
+                        
+                        // 패턴 3: 직할시/광역시 없이 (예: "강남구 역삼동")
+                        if (!match) {
+                            match = address.match(/^([가-힣]+(?:구|시|군))/);
+                        }
+                        
                         const extractedDistrict = match && match[1] ? match[1] : null;
                         return extractedDistrict === currentDistrict;
                     });
