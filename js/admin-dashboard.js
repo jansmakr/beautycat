@@ -637,6 +637,15 @@ function initializeShopFilters() {
     
     console.log('🔒 필터 강제 초기화 완료 (selectedIndex 포함)');
     
+    // v2.8.13.6.129.11: 이벤트 리스너 등록 전에 100ms 대기 후 다시 초기화
+    setTimeout(() => {
+        if (shopTypeFilter) {
+            shopTypeFilter.value = '';
+            shopTypeFilter.selectedIndex = 0;
+            console.log('🔥 최종 초기화: shop-type-filter =', shopTypeFilter.value);
+        }
+    }, 100);
+    
     // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
     if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
         shopTypeFilter.addEventListener('change', function() {
@@ -660,6 +669,136 @@ function initializeShopFilters() {
         shopStatusFilter.addEventListener('change', filterShops);
         shopStatusFilter.dataset.listenerAdded = 'true';
     }
+}
+
+// ===== CSV 업로드 함수 =====
+/**
+ * CSV 파일 업로드 및 처리
+ * v2.8.13.6.129.12: CSV 파일로 샵 정보 일괄 업로드
+ */
+async function handleCSVUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    console.log('📤 CSV 업로드 시작:', file.name);
+    
+    // 진행 상황 표시
+    const progressDiv = document.getElementById('upload-progress');
+    const progressBar = document.getElementById('upload-progress-bar');
+    const progressPercentage = document.getElementById('upload-percentage');
+    const statusText = document.getElementById('upload-status');
+    
+    progressDiv.style.display = 'block';
+    statusText.textContent = 'CSV 파일 읽는 중...';
+    
+    try {
+        // CSV 파일 읽기
+        const text = await file.text();
+        const lines = text.trim().split('\n');
+        
+        if (lines.length < 2) {
+            throw new Error('CSV 파일이 비어있거나 헤더만 있습니다.');
+        }
+        
+        // 헤더 파싱
+        const headers = lines[0].split(',').map(h => h.trim());
+        console.log('📋 CSV 헤더:', headers);
+        
+        // 필수 필드 확인
+        const requiredFields = ['business_name', 'address', 'region', 'district'];
+        const missingFields = requiredFields.filter(field => !headers.includes(field));
+        
+        if (missingFields.length > 0) {
+            throw new Error(`필수 필드 누락: ${missingFields.join(', ')}`);
+        }
+        
+        // 데이터 파싱
+        const shops = [];
+        for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(v => v.trim());
+            const shop = {};
+            
+            headers.forEach((header, index) => {
+                shop[header] = values[index] || '';
+            });
+            
+            shops.push(shop);
+        }
+        
+        console.log('✅ 파싱된 샵 수:', shops.length);
+        statusText.textContent = `${shops.length}개 샵 정보 파싱 완료. 업로드 중...`;
+        
+        // 업로드 시작
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (let i = 0; i < shops.length; i++) {
+            const shop = shops[i];
+            const progress = Math.round((i + 1) / shops.length * 100);
+            
+            progressBar.style.width = progress + '%';
+            progressPercentage.textContent = progress + '%';
+            statusText.textContent = `업로드 중... (${i + 1}/${shops.length})`;
+            
+            try {
+                // public_skincare_data 테이블에 업로드
+                const response = await fetch('/tables/public_skincare_data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        business_name: shop.business_name,
+                        address: shop.address,
+                        phone: shop.phone || '',
+                        region: shop.region,
+                        district: shop.district,
+                        town: shop.town || '',
+                        open_date: shop.open_date || new Date().toISOString().split('T')[0],
+                        status: shop.status || 'active'
+                    })
+                });
+                
+                if (response.ok) {
+                    successCount++;
+                    console.log(`✅ ${i + 1}/${shops.length}: ${shop.business_name}`);
+                } else {
+                    errorCount++;
+                    console.error(`❌ ${i + 1}/${shops.length}: ${shop.business_name}`, await response.text());
+                }
+            } catch (error) {
+                errorCount++;
+                console.error(`❌ ${i + 1}/${shops.length}: ${shop.business_name}`, error);
+            }
+            
+            // API 부하 방지 (100ms 대기)
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // 완료
+        progressBar.style.width = '100%';
+        progressPercentage.textContent = '100%';
+        statusText.textContent = `✅ 업로드 완료! 성공: ${successCount}개, 실패: ${errorCount}개`;
+        
+        showNotification(`CSV 업로드 완료: ${successCount}개 성공, ${errorCount}개 실패`, successCount > 0 ? 'success' : 'error');
+        
+        // 3초 후 진행 상황 숨기기
+        setTimeout(() => {
+            progressDiv.style.display = 'none';
+            progressBar.style.width = '0%';
+        }, 3000);
+        
+        // 샵 목록 새로고침
+        if (successCount > 0) {
+            await loadShops();
+        }
+        
+    } catch (error) {
+        console.error('❌ CSV 업로드 오류:', error);
+        statusText.textContent = '❌ 오류: ' + error.message;
+        showNotification('CSV 업로드 실패: ' + error.message, 'error');
+    }
+    
+    // 파일 입력 초기화
+    event.target.value = '';
 }
 
 // Load shops

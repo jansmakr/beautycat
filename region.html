@@ -228,11 +228,11 @@
     
     <script>
         let currentPage = 1;
-        const pageSize = 30;  // v2.8.13.6.129.8: 페이지당 30개 (사용자 요청)
+        const pageSize = 30;
         let currentRegion = '';
         let currentDistrict = '';
         
-        // v2.8.13.6.129.9: 하드코딩된 구/군 목록 (데이터 부족 문제 해결)
+        // v2.8.13.6.129.10: 하드코딩된 구/군 목록
         const DISTRICT_MAP = {
             '서울': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', 
                     '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', 
@@ -311,15 +311,12 @@
             try {
                 console.log('🔍 구/군 필터 로드 시작:', region);
                 
-                // v2.8.13.6.129.9: 하드코딩된 구/군 목록 사용 (데이터 파싱 문제 해결)
                 let districts = [];
                 
                 if (DISTRICT_MAP[region]) {
-                    // 하드코딩된 목록 사용
                     districts = DISTRICT_MAP[region];
                     console.log('✅ 하드코딩된 구/군 목록 사용:', districts.length, districts);
                 } else {
-                    // 하드코딩 없으면 기존 방식 (데이터에서 추출)
                     console.log('⚠️ 하드코딩 없음, 데이터에서 추출 시도');
                     
                     const [shopsResponse, publicResponse] = await Promise.all([
@@ -386,7 +383,6 @@
             try {
                 console.log('🔍 샵 로딩 시작:', { currentRegion, currentDistrict, currentPage });
                 
-                // v2.8.13.6.129.8: 두 테이블 모두 fetch (일반 샵 + 공공 데이터)
                 const [shopsResponse, publicResponse] = await Promise.all([
                     fetch(`/tables/skincare_shops?limit=50000`),
                     fetch(`/tables/public_skincare_data?limit=50000`)
@@ -398,11 +394,9 @@
                 console.log('📊 일반 샵 수:', shopsData.data.length);
                 console.log('📊 공공 데이터 수:', publicData.data.length);
                 
-                // 두 테이블 데이터 병합
                 let shops = [...shopsData.data, ...publicData.data];
                 console.log('📊 병합 후 전체 샵 수:', shops.length);
                 
-                // v2.8.13.6.129.8: 중복 제거 (같은 이름 + 같은 주소)
                 const uniqueShops = [];
                 const seenKeys = new Set();
                 
@@ -418,9 +412,7 @@
                 console.log('📊 중복 제거 후 샵 수:', shops.length);
                 
                 if (currentRegion) {
-                    // region 필드 사용
                     shops = shops.filter(shop => {
-                        // region 필드가 있으면 사용, 없으면 state에서 추출
                         const shopRegion = shop.region || shop.state?.replace(/특별시|광역시|특별자치시|도/g, '').trim();
                         return shopRegion === currentRegion;
                     });
@@ -429,23 +421,19 @@
                 
                 if (currentDistrict) {
                     shops = shops.filter(shop => {
-                        // district 필드 우선 사용
                         if (shop.district) {
                             return shop.district === currentDistrict;
                         }
                         
-                        // address에서 구/시/군 이름 추출하여 비교 (v2.8.13.6.129.10: 공백 선택적)
                         const address = shop.address || '';
                         
-                        // 패턴 1: 공백 있음 (예: "서울특별시 강남구")
+                        // v2.8.13.6.129.10: 3가지 패턴 지원
                         let match = address.match(/[가-힣]+(?:특별시|광역시|도)\s+([가-힣]+(?:구|시|군))/);
                         
-                        // 패턴 2: 공백 없음 (예: "서울특별시강남구")
                         if (!match) {
                             match = address.match(/[가-힣]+(?:특별시|광역시|도)([가-힣]+(?:구|시|군))/);
                         }
                         
-                        // 패턴 3: 직할시/광역시 없이 (예: "강남구 역삼동")
                         if (!match) {
                             match = address.match(/^([가-힣]+(?:구|시|군))/);
                         }
@@ -458,7 +446,6 @@
                 
                 console.log('✅ 필터링 후 샵 수:', shops.length);
                 
-                // v2.8.13.6.129.7: 클라이언트 측 페이지네이션
                 const totalShops = shops.length;
                 const startIndex = (currentPage - 1) * pageSize;
                 const endIndex = startIndex + pageSize;
