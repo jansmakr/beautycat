@@ -1,23 +1,34 @@
 # BeautyCat - 피부관리실 견적비교 예약 플랫폼
 
-## 🎉 최신 업데이트 (2025-12-31) - v2.8.13.6.121
+## 🎉 최신 업데이트 (2026-01-03 19:00) - v2.8.13.6.130 🚨 CRITICAL FIX
 
 ### ✅ 완료된 작업
-- **30,000개 전국 피부관리실 데이터 업로드 완료**
+- **102,902개 전국 피부관리실 데이터 업로드 완료**
+- **🔥 CRITICAL: admin-dashboard.html PATCH → PUT 완전 수정**
+  - ✅ Line 1984: 샵 정보 업데이트 PATCH → PUT  
+  - ✅ Line 2011: 사용자 동기화 PATCH → PUT
+  - ✅ 모든 관리자 대시보드 기능 정상화 (샵 삭제/수정/CSV 업로드)
+- **🔧 js/admin-dashboard.js 개선**
+  - ✅ PATCH → PUT 메서드 변경 (Line 98)
+  - ✅ 샵 삭제 Soft Delete 전환 (데이터 복구 가능)
+  - ✅ 관리자 인증 로직 간소화
+  - ✅ CSV 업로드 로깅 최소화 (100건당 1번)
+  - ✅ 관리자 계정 초기 생성 스크립트 추가
+- **CSV 자동 수정 도구 추가** (`csv-standalone-tool.html`)
+- **Region 필드 자동 채우기 시스템**
 - **동적 샵 페이지 시스템 구축**
 - **지역별 샵 검색 페이지 구현**
 - **RESTful API 연동**
-- **🆕 관리자 대시보드 샵 표시 수정** (API 경로 정상화)
-- **🆕 공공 데이터 자동 매칭 시스템 추가** (원장 가입 시 자동 연결)
-- **🆕 리뷰 시스템 연동 완료** (matched_shop_id → reviews.shop_id)
+- **공공 데이터 자동 매칭 시스템** (원장 가입 시 자동 연결)
+- **리뷰 시스템 연동 완료** (matched_shop_id → reviews.shop_id)
 
 ---
 
 ## 📊 프로젝트 현황
 
 ### 데이터베이스
-- **총 레코드**: 30,000개
-- **데이터베이스 크기**: 11.75 MB
+- **총 레코드**: 102,902개
+- **데이터베이스 크기**: 약 40 MB
 - **테이블**: `public_skincare_data`
 
 ### 지역별 분포
@@ -402,6 +413,21 @@ Copyright © 2025 케이뷰틱스 (K-Beautyx). All rights reserved.
 ---
 
 ## 📝 변경 이력
+
+### v2.8.13.6.130 (2026-01-03 19:00) 🚨 CRITICAL FIX
+- 🔥 **admin-dashboard.html PATCH → PUT 완전 수정** (근본 원인 해결)
+  - Line 1984: 샵 정보 업데이트 PATCH → PUT
+  - Line 2011: 사용자 동기화 PATCH → PUT
+  - 영향: 샵 삭제/수정/CSV 업로드 등 모든 기능 정상화
+- ✅ **js/admin-dashboard.js 개선**
+  - PATCH → PUT 메서드 변경 (Line 98)
+  - 샵 삭제 Soft Delete 전환 (복구 가능)
+  - 관리자 인증 로직 간소화
+  - CSV 업로드 로깅 최소화 (100건당 1번)
+  - 관리자 계정 생성 스크립트 (`create-admin-account.js`)
+- ✅ 102,902개 전국 피부관리실 데이터 업로드
+- ✅ CSV 자동 수정 도구 (`csv-standalone-tool.html`)
+- ✅ Region 필드 자동 채우기 시스템
 
 ### v2.8.13.6.118 (2025-12-31)
 - ✅ 30,000개 전국 피부관리실 데이터 업로드

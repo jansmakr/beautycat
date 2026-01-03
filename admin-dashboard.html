@@ -6,11 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="last-modified" content="2026-01-02T01:10:00+09:00">
-    <!-- 🔥 Cache Busting Timestamp: 2026-01-02 01:10 KST - Public Data Integration -->
-    <meta name="version" content="2.8.13.6.128-20260102-0110">
-    <meta name="cache-version" content="v2.8.13.6.128-admin-public-data-integration">
-    <!-- v2.8.13.6.128: 공공데이터 탭 제거 + 샵 관리 통합 -->
+    <meta name="last-modified" content="2026-01-03T19:00:00+09:00">
+    <!-- 🔥 Cache Busting Timestamp: 2026-01-03 19:00 KST - PATCH→PUT Critical Fix -->
+    <meta name="version" content="2.8.13.6.130-20260103-1900">
+    <meta name="cache-version" content="v2.8.13.6.130-patch-to-put-critical-fix">
+    <!-- v2.8.13.6.130: PATCH → PUT 완전 수정 (admin-dashboard.html) -->
     <title>관리자 대시보드 - beautycat (뷰티+에티켓)</title>
     <meta name="naver-site-verification" content="d1de02844a6d373cbc20ace550630fcc83bf8979" />
     
@@ -1980,12 +1980,22 @@ window.saveShopChanges = async function() {
     console.log('📤 HTML 오버라이드 함수 - 전송 데이터:', updatedData);
     
     try {
+        // GET 기존 데이터
+        const getResponse = await fetch(`tables/skincare_shops/${shopId}`);
+        const existingShop = await getResponse.json();
+        
+        // PUT으로 전체 데이터 업데이트 (Cloudflare Workers 호환)
+        const fullData = {
+            ...existingShop,
+            ...updatedData
+        };
+        
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(updatedData)
+            body: JSON.stringify(fullData)
         });
         
         if (response.ok) {
@@ -2006,13 +2016,17 @@ window.saveShopChanges = async function() {
                 if (user && user.user_type === 'shop') {
                     console.log('🔄 사용자 이름 업데이트:', user.name, '→', updatedData.name);
                     
-                    // 사용자 이름 업데이트
+                    // 사용자 이름 업데이트 (PUT 사용)
+                    const userGetResponse = await fetch(`tables/users/${user.id}`);
+                    const existingUser = await userGetResponse.json();
+                    
                     const userUpdateResponse = await fetch(`tables/users/${user.id}`, {
-                        method: 'PATCH',
+                        method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
+                            ...existingUser,
                             name: updatedData.name
                         })
                     });
