@@ -752,8 +752,8 @@ async function handleCSVUpload(event) {
                         region: shop.region,
                         district: shop.district,
                         town: shop.town || '',
-                        open_date: shop.open_date || new Date().toISOString().split('T')[0],
-                        status: shop.status || 'active'
+                        status: shop.status || '영업',
+                        data_source: 'csv_upload'
                     })
                 });
                 

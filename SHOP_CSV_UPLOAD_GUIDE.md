@@ -11,15 +11,14 @@
 ### 선택 필드
 - **phone**: 전화번호 (예: 02-1234-5678)
 - **town**: 동/읍/면 (예: 역삼동)
-- **open_date**: 개업일 (YYYY-MM-DD 형식)
-- **status**: 상태 (active, inactive 등)
+- **status**: 상태 (영업, 휴업, 폐업 등)
 
 ## 📝 작성 예시
 
 ```csv
-business_name,address,phone,region,district,town,open_date,status
-뷰티샵 예시,서울특별시 강남구 역삼동 123-45,02-1234-5678,서울,강남구,역삼동,2024-01-01,active
-피부관리실 샘플,경기도 성남시 분당구 정자동 567-89,031-9876-5432,경기,성남시,정자동,2024-02-15,active
+business_name,address,phone,region,district,town,status
+뷰티샵 예시,서울특별시 강남구 역삼동 123-45,02-1234-5678,서울,강남구,역삼동,영업
+피부관리실 샘플,경기도 성남시 분당구 정자동 567-89,031-9876-5432,경기,성남시,정자동,영업
 ```
 
 ## ⚠️ 주의사항
