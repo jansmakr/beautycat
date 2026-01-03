@@ -612,12 +612,30 @@ function copyPassword(userId) {
     });
 }
 
-// v2.8.13.6.129.6: 샵 필터 이벤트 리스너 초기화 함수
+// v2.8.13.6.129.7: 샵 필터 이벤트 리스너 초기화 함수 (강제 초기화 추가)
 function initializeShopFilters() {
     const shopTypeFilter = document.getElementById('shop-type-filter');
     const shopSearchInput = document.getElementById('shop-search');
     const shopRegionFilter = document.getElementById('shop-region-filter');
     const shopStatusFilter = document.getElementById('shop-status-filter');
+    
+    // 🔥 CRITICAL: 이벤트 리스너 등록 전에 다시 한 번 강제 초기화!
+    if (shopTypeFilter) {
+        shopTypeFilter.value = '';
+        // 브라우저가 값을 복원하지 못하도록 selectedIndex도 초기화
+        shopTypeFilter.selectedIndex = 0;
+    }
+    if (shopSearchInput) shopSearchInput.value = '';
+    if (shopRegionFilter) {
+        shopRegionFilter.value = '';
+        shopRegionFilter.selectedIndex = 0;
+    }
+    if (shopStatusFilter) {
+        shopStatusFilter.value = '';
+        shopStatusFilter.selectedIndex = 0;
+    }
+    
+    console.log('🔒 필터 강제 초기화 완료 (selectedIndex 포함)');
     
     // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
     if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
@@ -648,7 +666,7 @@ function initializeShopFilters() {
 async function loadShops(updateTable = true) {
     try {
         console.log('🏪 업체 목록 로딩 시작...');
-        const response = await fetch('tables/skincare_shops?limit=1000&sort=created_at');
+        const response = await fetch('tables/skincare_shops?limit=50000&sort=created_at');
         const data = await response.json();
         allShops = data.data || [];
         
@@ -3065,6 +3083,7 @@ async function deleteShop(shopId) {
     }
     
     try {
+        console.log('🗑️ 샵 삭제 요청:', shopId);
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
             method: 'DELETE',
             headers: {
@@ -3072,11 +3091,16 @@ async function deleteShop(shopId) {
             }
         });
         
+        console.log('📡 삭제 응답 상태:', response.status);
+        
         if (response.ok || response.status === 204) {
             showNotification('샵이 성공적으로 삭제되었습니다.', 'success');
-            refreshShops(); // Reload shops table
+            console.log('✅ 샵 삭제 성공, 테이블 새로고침 중...');
+            await loadShops(); // refreshShops() 대신 loadShops() 직접 호출
         } else {
-            throw new Error(`HTTP ${response.status}`);
+            const errorData = await response.text();
+            console.error('❌ 삭제 실패 응답:', errorData);
+            throw new Error(`HTTP ${response.status}: ${errorData}`);
         }
     } catch (error) {
         console.error('Shop deletion error:', error);

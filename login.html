@@ -595,6 +595,78 @@
             document.getElementById('loginBtn').disabled = false;
         }
 
+        // 로그인 함수 정의
+        async function login(loginData) {
+            try {
+                console.log('🔐 로그인 시도:', loginData.email, loginData.user_type);
+                
+                // API 호출
+                const response = await fetch(`tables/users?limit=50000`);
+                if (!response.ok) {
+                    throw new Error('사용자 데이터를 불러올 수 없습니다.');
+                }
+                
+                const data = await response.json();
+                const users = data.data || [];
+                
+                // 이메일로 사용자 찾기 (대소문자 무시)
+                const user = users.find(u => 
+                    u.email && u.email.toLowerCase() === loginData.email.toLowerCase()
+                );
+                
+                if (!user) {
+                    hideLoading();
+                    showError('등록되지 않은 이메일입니다.');
+                    return;
+                }
+                
+                // 비밀번호 확인
+                if (user.password !== loginData.password) {
+                    hideLoading();
+                    showError('비밀번호가 일치하지 않습니다.');
+                    return;
+                }
+                
+                // user_type 확인
+                if (user.user_type !== loginData.user_type) {
+                    hideLoading();
+                    showError(`${loginData.user_type === 'customer' ? '고객' : loginData.user_type === 'shop' ? '업체' : '관리자'} 계정이 아닙니다.`);
+                    return;
+                }
+                
+                // 로그인 성공
+                console.log('✅ 로그인 성공:', user.name);
+                
+                // 세션 저장
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('user_data', JSON.stringify(user));
+                localStorage.setItem('user_type', user.user_type);
+                localStorage.setItem('session_token', 'session_' + Date.now());
+                localStorage.setItem('session_expires', Date.now() + 24*60*60*1000); // 24시간
+                
+                // 성공 메시지
+                hideLoading();
+                alert(`${user.name}님, 환영합니다!`);
+                
+                // 대시보드로 리다이렉트
+                setTimeout(() => {
+                    if (user.user_type === 'admin') {
+                        window.location.href = '/admin-dashboard.html';
+                    } else if (user.user_type === 'shop') {
+                        window.location.href = '/shop-dashboard.html';
+                    } else {
+                        window.location.href = '/customer-dashboard.html';
+                    }
+                }, 500);
+                
+            } catch (error) {
+                console.error('로그인 오류:', error);
+                hideLoading();
+                showError('로그인 중 오류가 발생했습니다.');
+                throw error;
+            }
+        }
+
         // 로그인 폼 제출
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -618,7 +690,7 @@
             showLoading();
             
             try {
-                // 로그인 함수 호출 (auth.js에서 정의됨)
+                // 로그인 함수 호출
                 await login({
                     email: email,
                     password: password,
