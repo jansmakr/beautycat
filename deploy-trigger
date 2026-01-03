@@ -1,0 +1,3 @@
+# Deployment trigger
+Timestamp: 2026-01-03 13:50
+Reason: Force Cloudflare redeploy after git history rewrite
