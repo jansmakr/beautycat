@@ -424,8 +424,9 @@ async function loadUsers(updateTable = true) {
         console.log('📊 전체 데이터:', data);
         console.log('👥 사용자 수:', data.total, '명');
         
-        allUsers = data.data || [];
-        console.log('✅ allUsers 배열:', allUsers.length, '명');
+        // v2.8.13.6.131.1: 삭제된 사용자 제외
+        allUsers = (data.data || []).filter(user => !user.deleted);
+        console.log('✅ allUsers 배열:', allUsers.length, '명 (삭제된 사용자 제외)');
         
         if (updateTable) {
             console.log('🔄 테이블 업데이트 시작');
@@ -1314,14 +1315,36 @@ async function deleteUser(userId) {
             }
         }
         
-        // Delete user
-        const response = await fetch(`tables/users/${userId}`, {
-            method: 'DELETE'
+        // Soft Delete user (v2.8.13.6.131 - Soft Delete로 변경)
+        console.log('🗑️ 사용자 Soft Delete 시작:', userId);
+        
+        // GET 기존 데이터
+        const getUserResponse = await fetch(`/tables/users/${userId}`);
+        if (!getUserResponse.ok) {
+            throw new Error(`사용자 조회 실패: ${getUserResponse.status}`);
+        }
+        const existingUser = await getUserResponse.json();
+        
+        // Soft Delete: deleted 플래그 설정
+        const updatedUser = {
+            ...existingUser,
+            deleted: true,
+            is_active: false,
+            status: 'deleted',
+            updated_at: Date.now()
+        };
+        
+        const response = await fetch(`/tables/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedUser)
         });
         
         if (response.ok) {
-            console.log('✅ 사용자 삭제 완료:', userId);
-            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다.`, 'success');
+            console.log('✅ 사용자 Soft Delete 성공:', userId);
+            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다 (복구 가능)`, 'success');
             await loadUsers(); // Refresh users list
         } else {
             throw new Error('사용자 삭제 실패');
