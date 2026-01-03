@@ -228,7 +228,7 @@
     
     <script>
         let currentPage = 1;
-        const pageSize = 30;
+        const pageSize = 30;  // v2.8.13.6.129.8: 페이지당 30개 (사용자 요청)
         let currentRegion = '';
         let currentDistrict = '';
         
@@ -274,17 +274,38 @@
         
         async function loadDistrictFilters(region) {
             try {
-                const response = await fetch(`/tables/skincare_shops?search=${encodeURIComponent(region)}&limit=10000`);
-                const data = await response.json();
+                console.log('🔍 구/군 필터 로드 시작:', region);
                 
-                // district 추출: address에서 구/시/군 이름 추출
-                const districts = [...new Set(data.data
+                // v2.8.13.6.129.8: 두 테이블 모두 fetch (일반 샵 + 공공 데이터)
+                const [shopsResponse, publicResponse] = await Promise.all([
+                    fetch(`/tables/skincare_shops?limit=50000`),
+                    fetch(`/tables/public_skincare_data?limit=50000`)
+                ]);
+                
+                const shopsData = await shopsResponse.json();
+                const publicData = await publicResponse.json();
+                
+                console.log('📊 일반 샵 수:', shopsData.data.length);
+                console.log('📊 공공 데이터 수:', publicData.data.length);
+                
+                // 두 테이블 데이터 병합
+                const allShops = [...shopsData.data, ...publicData.data];
+                console.log('📊 병합 후 전체 샵 수:', allShops.length);
+                
+                // v2.8.13.6.129.8: district 추출 로직 강화
+                const districts = [...new Set(allShops
                     .filter(shop => {
-                        // v2.8.13.6.129: region 필드 사용
+                        // region 필드 사용
                         const shopRegion = shop.region || shop.state?.replace(/특별시|광역시|특별자치시|도/g, '').trim();
-                        return shopRegion === region;
+                        const isMatch = shopRegion === region;
+                        return isMatch;
                     })
                     .map(shop => {
+                        // district 필드가 있으면 우선 사용
+                        if (shop.district) {
+                            return shop.district;
+                        }
+                        
                         // address에서 구/시/군 이름 추출
                         const address = shop.address || '';
                         
@@ -295,8 +316,7 @@
                             return match[1];
                         }
                         
-                        // 매칭 실패 시 기존 district 사용
-                        return shop.district;
+                        return null;
                     })
                     .filter(district => {
                         if (!district) return false;
@@ -318,8 +338,14 @@
                     })
                 )].sort();
                 
+                console.log('✅ 추출된 구/군 목록:', districts.length, districts);
+                
                 const districtSelect = document.getElementById('district-filter');
                 districtSelect.innerHTML = '<option value="">전체</option>';
+                
+                if (districts.length === 0) {
+                    console.warn('⚠️ 구/군 데이터가 없습니다!');
+                }
                 
                 districts.forEach(district => {
                     const option = document.createElement('option');
@@ -338,38 +364,77 @@
             document.getElementById('pagination').style.display = 'none';
             
             try {
-                let url = `/tables/skincare_shops?page=${currentPage}&limit=${pageSize}`;
+                console.log('🔍 샵 로딩 시작:', { currentRegion, currentDistrict, currentPage });
                 
-                if (currentRegion) {
-                    url += `&search=${encodeURIComponent(currentRegion)}`;
+                // v2.8.13.6.129.8: 두 테이블 모두 fetch (일반 샵 + 공공 데이터)
+                const [shopsResponse, publicResponse] = await Promise.all([
+                    fetch(`/tables/skincare_shops?limit=50000`),
+                    fetch(`/tables/public_skincare_data?limit=50000`)
+                ]);
+                
+                const shopsData = await shopsResponse.json();
+                const publicData = await publicResponse.json();
+                
+                console.log('📊 일반 샵 수:', shopsData.data.length);
+                console.log('📊 공공 데이터 수:', publicData.data.length);
+                
+                // 두 테이블 데이터 병합
+                let shops = [...shopsData.data, ...publicData.data];
+                console.log('📊 병합 후 전체 샵 수:', shops.length);
+                
+                // v2.8.13.6.129.8: 중복 제거 (같은 이름 + 같은 주소)
+                const uniqueShops = [];
+                const seenKeys = new Set();
+                
+                for (const shop of shops) {
+                    const key = `${shop.business_name || shop.shop_name}-${shop.address}`.toLowerCase();
+                    if (!seenKeys.has(key)) {
+                        seenKeys.add(key);
+                        uniqueShops.push(shop);
+                    }
                 }
                 
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                let shops = data.data;
+                shops = uniqueShops;
+                console.log('📊 중복 제거 후 샵 수:', shops.length);
                 
                 if (currentRegion) {
-                    // v2.8.13.6.129: region 필드 사용 (마이그레이션 후)
+                    // region 필드 사용
                     shops = shops.filter(shop => {
                         // region 필드가 있으면 사용, 없으면 state에서 추출
                         const shopRegion = shop.region || shop.state?.replace(/특별시|광역시|특별자치시|도/g, '').trim();
                         return shopRegion === currentRegion;
                     });
+                    console.log('📍 지역 필터링 후:', shops.length, '(region:', currentRegion, ')');
                 }
                 
                 if (currentDistrict) {
                     shops = shops.filter(shop => {
+                        // district 필드 우선 사용
+                        if (shop.district) {
+                            return shop.district === currentDistrict;
+                        }
+                        
                         // address에서 구/시/군 이름 추출하여 비교
                         const address = shop.address || '';
                         const match = address.match(/[가-힣]+(?:특별시|광역시|도)\s+([가-힣]+(?:구|시|군))/);
-                        const extractedDistrict = match && match[1] ? match[1] : shop.district;
+                        const extractedDistrict = match && match[1] ? match[1] : null;
                         return extractedDistrict === currentDistrict;
                     });
+                    console.log('🏘️ 구/군 필터링 후:', shops.length, '(district:', currentDistrict, ')');
                 }
                 
-                displayShops(shops);
-                displayPagination(data.total);
+                console.log('✅ 필터링 후 샵 수:', shops.length);
+                
+                // v2.8.13.6.129.7: 클라이언트 측 페이지네이션
+                const totalShops = shops.length;
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = startIndex + pageSize;
+                const paginatedShops = shops.slice(startIndex, endIndex);
+                
+                console.log('📄 페이지:', currentPage, '표시:', paginatedShops.length, '/', totalShops);
+                
+                displayShops(paginatedShops);
+                displayPagination(totalShops);
                 updatePageTitle();
                 
                 document.getElementById('loading').style.display = 'none';
@@ -390,8 +455,8 @@
             
             grid.innerHTML = shops.map(shop => `
                 <div class="shop-card" onclick="window.location.href='/shop-detail.html?id=${shop.id}'">
-                    <div class="shop-name">${escapeHtml(shop.business_name || shop.name)}</div>
-                    <div class="shop-address">${escapeHtml(shop.address)}</div>
+                    <div class="shop-name">${escapeHtml(shop.business_name || shop.shop_name || shop.name || '이름 없음')}</div>
+                    <div class="shop-address">${escapeHtml(shop.address || '주소 정보 없음')}</div>
                     <div class="shop-status">${shop.status || '영업중'}</div>
                 </div>
             `).join('');

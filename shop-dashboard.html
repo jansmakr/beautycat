@@ -1881,7 +1881,7 @@ async function confirmDeleteAccount() {
         console.log('🗑️ 계정 삭제 시작:', currentUser.id);
         
         // 1) 샵 레코드 삭제
-        const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
+        const shopsResponse = await fetch('tables/skincare_shops?limit=50000');
         const shopsData = await shopsResponse.json();
         const shop = shopsData.data.find(s => 
             s.email && s.email.toLowerCase() === currentUser.email.toLowerCase()
