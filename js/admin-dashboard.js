@@ -728,49 +728,62 @@ async function handleCSVUpload(event) {
         console.log('✅ 파싱된 샵 수:', shops.length);
         statusText.textContent = `${shops.length}개 샵 정보 파싱 완료. 업로드 중...`;
         
-        // 업로드 시작
+        // v2.8.13.6.129.12: 배치 업로드 (10개씩 묶어서 동시 업로드)
         let successCount = 0;
         let errorCount = 0;
+        const BATCH_SIZE = 10; // 동시에 10개씩 업로드
         
-        for (let i = 0; i < shops.length; i++) {
-            const shop = shops[i];
-            const progress = Math.round((i + 1) / shops.length * 100);
+        for (let i = 0; i < shops.length; i += BATCH_SIZE) {
+            const batch = shops.slice(i, i + BATCH_SIZE);
+            const progress = Math.round((i + batch.length) / shops.length * 100);
             
             progressBar.style.width = progress + '%';
             progressPercentage.textContent = progress + '%';
-            statusText.textContent = `업로드 중... (${i + 1}/${shops.length})`;
+            statusText.textContent = `업로드 중... (${i + batch.length}/${shops.length})`;
             
-            try {
-                // public_skincare_data 테이블에 업로드
-                const response = await fetch('/tables/public_skincare_data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        business_name: shop.business_name,
-                        address: shop.address,
-                        phone: shop.phone || '',
-                        region: shop.region,
-                        district: shop.district,
-                        town: shop.town || '',
-                        status: shop.status || '영업',
-                        data_source: 'csv_upload'
-                    })
-                });
-                
-                if (response.ok) {
-                    successCount++;
-                    console.log(`✅ ${i + 1}/${shops.length}: ${shop.business_name}`);
-                } else {
+            // 배치 내 모든 샵을 동시에 업로드
+            const uploadPromises = batch.map(async (shop, index) => {
+                try {
+                    const response = await fetch('/tables/public_skincare_data', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            business_name: shop.business_name,
+                            address: shop.address,
+                            phone: shop.phone || '',
+                            region: shop.region,
+                            district: shop.district,
+                            town: shop.town || '',
+                            status: shop.status || '영업',
+                            data_source: 'csv_upload'
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        successCount++;
+                        const globalIndex = i + index + 1;
+                        console.log(`✅ ${globalIndex}/${shops.length}: ${shop.business_name}`);
+                        return { success: true, shop };
+                    } else {
+                        errorCount++;
+                        const globalIndex = i + index + 1;
+                        const errorText = await response.text();
+                        console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, errorText);
+                        return { success: false, shop, error: errorText };
+                    }
+                } catch (error) {
                     errorCount++;
-                    console.error(`❌ ${i + 1}/${shops.length}: ${shop.business_name}`, await response.text());
+                    const globalIndex = i + index + 1;
+                    console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, error);
+                    return { success: false, shop, error: error.message };
                 }
-            } catch (error) {
-                errorCount++;
-                console.error(`❌ ${i + 1}/${shops.length}: ${shop.business_name}`, error);
-            }
+            });
             
-            // API 부하 방지 (100ms 대기)
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // 배치 완료 대기
+            await Promise.all(uploadPromises);
+            
+            // API 부하 방지 (배치당 50ms 대기)
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
         
         // 완료
