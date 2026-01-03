@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">샵 정보 - BeautyCat</title>
+    <meta name="description" id="page-description" content="전국 피부관리실 정보">
+    <meta name="keywords" id="page-keywords" content="피부관리실, 피부관리, 스킨케어">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="business.business">
+    <meta property="og:title" id="og-title" content="BeautyCat">
+    <meta property="og:description" id="og-description" content="">
+    <meta property="og:url" id="og-url" content="">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="canonical" id="canonical-url" href="">
+    
+    <style>
+        .shop-detail {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .shop-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .shop-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumb a {
+            color: #ff69b4;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .shop-info {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .shop-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .shop-info dl {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 0.8rem;
+            margin: 0;
+        }
+        
+        .shop-info dt {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .shop-info dd {
+            margin: 0;
+            color: #333;
+        }
+        
+        .shop-cta {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #ff69b4;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #ff1493;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #ff69b4;
+            border: 2px solid #ff69b4;
+        }
+        
+        .btn-secondary:hover {
+            background: #ff69b4;
+            color: white;
+        }
+        
+        .related-shops {
+            background: #f0f8ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .related-shops h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #d32f2f;
+        }
+        
+        @media (max-width: 768px) {
+            .shop-detail {
+                padding: 1rem;
+            }
+            
+            .shop-info dl {
+                grid-template-columns: 1fr;
+            }
+            
+            .shop-cta {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">홈</a>
+        </nav>
+    </header>
+    
+    <main class="shop-detail">
+        <div id="loading" class="loading">
+            로딩 중...
+        </div>
+        
+        <div id="content" style="display: none;">
+            <div class="shop-header">
+                <nav class="breadcrumb">
+                    <a href="/">홈</a> &gt; 
+                    <a href="#" id="region-link"></a> &gt; 
+                    <a href="#" id="district-link"></a>
+                </nav>
+                <h1 id="shop-name"></h1>
+            </div>
+            
+            <section class="shop-info">
+                <h2>기본 정보</h2>
+                <dl>
+                    <dt>주소</dt>
+                    <dd id="shop-address"></dd>
+                    
+                    <dt>전화번호</dt>
+                    <dd id="shop-phone"></dd>
+                    
+                    <dt>지역</dt>
+                    <dd id="shop-location"></dd>
+                </dl>
+            </section>
+            
+            <section class="shop-map">
+                <h2>오시는 길</h2>
+                <p>지도는 곧 제공될 예정입니다.</p>
+            </section>
+            
+            <section class="shop-cta">
+                <a href="/contact.html" class="btn-primary">무료 상담 신청</a>
+                <a href="/matching.html" class="btn-secondary">AI 매칭 시작</a>
+            </section>
+            
+            <aside class="related-shops">
+                <h2>주변 샵</h2>
+                <p>같은 지역의 다른 피부관리실을 찾아보세요.</p>
+                <a href="#" id="region-all-link">전체보기 →</a>
+            </aside>
+        </div>
+        
+        <div id="error" style="display: none;" class="error">
+            <h2>샵 정보를 찾을 수 없습니다</h2>
+            <p><a href="/">홈으로 돌아가기</a></p>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 BeautyCat. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        // URL에서 샵 ID 추출
+        function getShopIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+        
+        // 샵 데이터 로드 (v2.8.13.6.129.9: 두 테이블 모두 검색)
+        async function loadShopData(shopId) {
+            try {
+                console.log('🔍 샵 데이터 로드 시작:', shopId);
+                
+                // 1) skincare_shops 테이블에서 먼저 검색
+                let response = await fetch(`/tables/skincare_shops/${shopId}`);
+                let shop = null;
+                let source = 'skincare_shops';
+                
+                if (response.ok) {
+                    shop = await response.json();
+                    console.log('✅ skincare_shops에서 찾음:', shop);
+                } else {
+                    // 2) 없으면 public_skincare_data 테이블에서 검색
+                    console.log('⚠️ skincare_shops에 없음, public_skincare_data 검색...');
+                    response = await fetch(`/tables/public_skincare_data/${shopId}`);
+                    source = 'public_skincare_data';
+                    
+                    if (response.ok) {
+                        shop = await response.json();
+                        console.log('✅ public_skincare_data에서 찾음:', shop);
+                    } else {
+                        throw new Error('샵 정보를 찾을 수 없습니다');
+                    }
+                }
+                
+                console.log('📊 최종 샵 데이터:', shop, 'source:', source);
+                displayShopData(shop, source);
+                
+            } catch (error) {
+                console.error('❌ 샵 로드 오류:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+        
+        // 샵 데이터 표시 (v2.8.13.6.129.9: source 파라미터 추가)
+        function displayShopData(shop, source) {
+            // 샵 이름 처리 (business_name 또는 shop_name)
+            const shopName = shop.business_name || shop.shop_name || shop.name || '이름 없음';
+            
+            // 메타 태그 업데이트
+            const title = `${shopName} - ${shop.district || shop.region} 피부관리실`;
+            const description = `${shop.address}에 위치한 ${shopName}. 전화번호, 위치, 리뷰 정보를 확인하세요.`;
+            
+            document.getElementById('page-title').textContent = title;
+            document.getElementById('page-description').setAttribute('content', description);
+            document.getElementById('page-keywords').setAttribute('content', 
+                `${shopName}, 피부관리실, ${shop.region}, ${shop.district}, 피부관리, 스킨케어`);
+            
+            document.getElementById('og-title').setAttribute('content', title);
+            document.getElementById('og-description').setAttribute('content', description);
+            document.getElementById('og-url').setAttribute('content', window.location.href);
+            document.getElementById('canonical-url').setAttribute('href', window.location.href);
+            
+            // 샵 정보 표시
+            document.getElementById('shop-name').textContent = shopName;
+            document.getElementById('shop-address').textContent = shop.address || '정보 없음';
+            document.getElementById('shop-phone').textContent = shop.phone || '정보 없음';
+            document.getElementById('shop-location').textContent = 
+                `${shop.region} > ${shop.district}${shop.town ? ' > ' + shop.town : ''}`;
+            
+            // 브레드크럼 링크
+            document.getElementById('region-link').textContent = shop.region;
+            document.getElementById('region-link').href = `/region.html?region=${shop.region}`;
+            
+            document.getElementById('district-link').textContent = shop.district;
+            document.getElementById('district-link').href = `/region.html?region=${shop.region}&district=${shop.district}`;
+            
+            document.getElementById('region-all-link').href = `/region.html?region=${shop.region}&district=${shop.district}`;
+            document.getElementById('region-all-link').textContent = `${shop.district} 전체보기 →`;
+            
+            // Schema.org 추가
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "BeautySalon",
+                "name": shop.business_name,
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": shop.address,
+                    "addressLocality": shop.district || '',
+                    "addressRegion": shop.region || '',
+                    "addressCountry": "KR"
+                },
+                "telephone": shop.phone || '',
+                "url": window.location.href
+            };
+            
+            const script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.textContent = JSON.stringify(schema);
+            document.head.appendChild(script);
+            
+            // 표시
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+        
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', () => {
+            const shopId = getShopIdFromURL();
+            
+            if (!shopId) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                return;
+            }
+            
+            loadShopData(shopId);
+        });
+    </script>
+</body>
+</html>
