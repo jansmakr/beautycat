@@ -720,25 +720,99 @@ async function handleCSVUpload(event) {
         const headers = lines[0].split(',').map(h => h.trim());
         console.log('📋 CSV 헤더:', headers);
         
-        // 필수 필드 확인
-        const requiredFields = ['business_name', 'address', 'region', 'district'];
+        // v2.8.13.6.132: 필수 필드 확인 (유연한 헤더 지원)
+        const requiredFields = ['business_name', 'address'];
         const missingFields = requiredFields.filter(field => !headers.includes(field));
         
         if (missingFields.length > 0) {
             throw new Error(`필수 필드 누락: ${missingFields.join(', ')}`);
         }
         
-        // 데이터 파싱
+        console.log('✅ 필수 필드 확인 완료');
+        
+        // v2.8.13.6.132: 데이터 파싱 및 정제
         const shops = [];
         for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue; // 빈 줄 스킵
+            
             const values = lines[i].split(',').map(v => v.trim());
-            const shop = {};
+            const rawShop = {};
             
             headers.forEach((header, index) => {
-                shop[header] = values[index] || '';
+                rawShop[header] = values[index] || '';
             });
             
-            shops.push(shop);
+            // 데이터 정제 및 변환
+            const cleanedShop = cleanShopData(rawShop);
+            if (cleanedShop) {
+                shops.push(cleanedShop);
+            }
+        }
+        
+        // 정제 함수 (인라인 정의)
+        function cleanShopData(raw) {
+            try {
+                // region 추출 ("전라남1여수시" -> "전남")
+                let region = raw.district || raw.region || '';
+                let district = '';
+                
+                // "전라남1여수시" 형식 파싱
+                if (region.includes('1') || region.includes('도') || region.includes('시')) {
+                    // 지역명 매핑
+                    const regionMap = {
+                        '서울': '서울', '부산': '부산', '대구': '대구', '인천': '인천',
+                        '광주': '광주', '대전': '대전', '울산': '울산', '세종': '세종',
+                        '경기': '경기', '강원': '강원', '충북': '충북', '충남': '충남',
+                        '전북': '전북', '전남': '전남', '경북': '경북', '경남': '경남', '제주': '제주',
+                        '전라북': '전북', '전라남': '전남', '경상북': '경북', '경상남': '경남',
+                        '충청북': '충북', '충청남': '충남'
+                    };
+                    
+                    // 지역 추출
+                    for (const [key, value] of Object.entries(regionMap)) {
+                        if (region.startsWith(key)) {
+                            region = value;
+                            // district 추출 (숫자 뒤 부분)
+                            const match = raw.district.match(/\d+(.+)/);
+                            if (match) {
+                                district = match[1];
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                // phone 처리 ("미등록" -> 빈 값)
+                let phone = raw.phone_region || raw.phone || '';
+                if (phone === '미등록' || phone === '미등' || phone === '-') {
+                    phone = '';
+                }
+                
+                // status 변환 (active -> 영업중)
+                let status = raw.open_d_status || raw.status || '영업중';
+                if (status === 'active') {
+                    status = '영업중';
+                } else if (status === 'inactive' || status === 'closed') {
+                    status = '폐업';
+                }
+                
+                return {
+                    name: raw.business_name || raw.name,
+                    business_name: raw.business_name,
+                    address: raw.address,
+                    phone: phone,
+                    region: region,
+                    district: district,
+                    town: '',  // town은 address에 포함되어 있으므로 빈 값
+                    status: status,
+                    data_source: 'csv_upload',
+                    email: '',  // 공공 데이터는 이메일 없음
+                    verified: false
+                };
+            } catch (error) {
+                console.warn('⚠️ 데이터 정제 실패:', raw, error);
+                return null;
+            }
         }
         
         console.log('✅ 파싱된 샵 수:', shops.length);
@@ -760,19 +834,11 @@ async function handleCSVUpload(event) {
             // 배치 내 모든 샵을 동시에 업로드
             const uploadPromises = batch.map(async (shop, index) => {
                 try {
-                    const response = await fetch('/tables/public_skincare_data', {
+                    // v2.8.13.6.132: skincare_shops 테이블로 업로드
+                    const response = await fetch('/tables/skincare_shops', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            business_name: shop.business_name,
-                            address: shop.address,
-                            phone: shop.phone || '',
-                            region: shop.region,
-                            district: shop.district,
-                            town: shop.town || '',
-                            status: shop.status || '영업',
-                            data_source: 'csv_upload'
-                        })
+                        body: JSON.stringify(shop)
                     });
                     
                     if (response.ok) {
