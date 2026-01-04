@@ -805,7 +805,6 @@ async function handleCSVUpload(event) {
                     district: district,
                     town: '',  // town은 address에 포함되어 있으므로 빈 값
                     status: status,
-                    data_source: 'csv_upload',
                     email: '',  // 공공 데이터는 이메일 없음
                     verified: false
                 };
