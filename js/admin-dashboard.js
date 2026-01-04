@@ -806,8 +806,7 @@ async function handleCSVUpload(event) {
                     town: '',  // town은 address에 포함되어 있으므로 빈 값
                     status: status,
                     email: '',  // 공공 데이터는 이메일 없음
-                    verified: false
-                };
+                    };
             } catch (error) {
                 console.warn('⚠️ 데이터 정제 실패:', raw, error);
                 return null;
