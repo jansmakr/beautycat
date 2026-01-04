@@ -838,7 +838,18 @@ async function handleCSVUpload(event) {
                     const response = await fetch('/tables/skincare_shops', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(shop)
+                       body: JSON.stringify({
+    name: shop.name,  // cleanShopData에서 이미 변환됨
+    address: shop.address,
+    phone: shop.phone,
+    region: shop.region,
+    district: shop.district,
+    status: shop.status,
+    data_source: shop.data_source || 'csv_upload',
+    email: shop.email || '',
+    verified: shop.verified || false
+})
+
                     });
                     
                     if (response.ok) {
