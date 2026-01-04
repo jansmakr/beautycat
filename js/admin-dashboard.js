@@ -796,17 +796,16 @@ async function handleCSVUpload(event) {
                     status = '폐업';
                 }
                 
-                return {
+                                return {
                     name: raw.business_name || raw.name,
-                    business_name: raw.business_name,
                     address: raw.address,
                     phone: phone,
-                    state: region, 
+                    state: region,
                     district: district,
-                    town: '',  // town은 address에 포함되어 있으므로 빈 값
                     status: status,
-                    email: '',  // 공공 데이터는 이메일 없음
-                    };
+                    email: ''
+                };
+
             } catch (error) {
                 console.warn('⚠️ 데이터 정제 실패:', raw, error);
                 return null;
