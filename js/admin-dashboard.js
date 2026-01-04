@@ -801,7 +801,7 @@ async function handleCSVUpload(event) {
                     business_name: raw.business_name,
                     address: raw.address,
                     phone: phone,
-                    region: region,
+                    state: region, 
                     district: district,
                     town: '',  // town은 address에 포함되어 있으므로 빈 값
                     status: status,
