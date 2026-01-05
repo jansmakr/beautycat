@@ -798,16 +798,12 @@ async function handleCSVUpload(event) {
                 
                 return {
                     name: raw.business_name || raw.name,
-                    business_name: raw.business_name,
                     address: raw.address,
                     phone: phone,
-                    region: region,
+                    state: region,  // DB 스키마는 state 사용
                     district: district,
-                    town: '',  // town은 address에 포함되어 있으므로 빈 값
                     status: status,
-                    data_source: 'csv_upload',
-                    email: '',  // 공공 데이터는 이메일 없음
-                    verified: false
+                    email: ''  // 공공 데이터는 이메일 없음
                 };
             } catch (error) {
                 console.warn('⚠️ 데이터 정제 실패:', raw, error);
@@ -854,13 +850,13 @@ async function handleCSVUpload(event) {
                         const globalIndex = i + index + 1;
                         const errorText = await response.text();
                         // 오류는 항상 로그
-                        console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, errorText);
+                        console.error(`❌ ${globalIndex}/${shops.length}: ${shop.name}`, errorText);
                         return { success: false, shop, error: errorText };
                     }
                 } catch (error) {
                     errorCount++;
                     const globalIndex = i + index + 1;
-                    console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, error);
+                    console.error(`❌ ${globalIndex}/${shops.length}: ${shop.name}`, error);
                     return { success: false, shop, error: error.message };
                 }
             });
