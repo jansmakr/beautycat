@@ -904,7 +904,7 @@ async function handleCSVUpload(event) {
 async function loadShops(updateTable = true) {
     try {
         console.log('🏪 업체 목록 로딩 시작...');
-        // 필터 값 가져오기
+        // 필터 값 가져오기 (서버 사이드 필터)
         const searchTerm = document.getElementById('shop-search')?.value || '';
         const regionFilter = document.getElementById('shop-region-filter')?.value || '';
         const statusFilter = document.getElementById('shop-status-filter')?.value || '';
@@ -915,7 +915,7 @@ async function loadShops(updateTable = true) {
         if (regionFilter) queryParams += `&state=${encodeURIComponent(regionFilter)}`;
         if (statusFilter) queryParams += `&status=${encodeURIComponent(statusFilter)}`;
         
-        console.log('🔍 필터 적용:', { searchTerm, regionFilter, statusFilter });
+        console.log('🔍 서버 필터 적용:', { searchTerm, regionFilter, statusFilter });
         
         const response = await fetch(`tables/skincare_shops?${queryParams}`);
         const data = await response.json();
@@ -923,13 +923,41 @@ async function loadShops(updateTable = true) {
         // 삭제된 샵 제외 (Soft Delete 필터링)
         allShops = (data.data || []).filter(shop => !shop.deleted);
         
-        console.log('📊 업체 수:', allShops.length, '(삭제된 샵 제외)');
-        console.log('📋 업체 목록:', allShops);
+        console.log('📊 서버에서 로딩된 업체 수:', allShops.length, '(삭제된 샵 제외)');
+        
+        // v2.8.13.6.140: 클라이언트 사이드 필터 적용 (샵 타입)
+        const shopTypeFilter = document.getElementById('shop-type-filter')?.value || '';
+        let filteredShops = [...allShops];
+        
+        if (shopTypeFilter === 'verified') {
+            // 인증샵만: status = 'active' AND email이 정상
+            filteredShops = filteredShops.filter(shop => {
+                return shop.status === 'active' && shop.email && !shop.email.includes('@example.com');
+            });
+            console.log('🔍 클라이언트 필터: 인증샵만 -', filteredShops.length, '개');
+        } else if (shopTypeFilter === 'public') {
+            // 공공데이터만: email이 없거나 @example.com
+            filteredShops = filteredShops.filter(shop => {
+                return !shop.email || shop.email.includes('@example.com');
+            });
+            console.log('🔍 클라이언트 필터: 공공데이터만 -', filteredShops.length, '개');
+        } else if (shopTypeFilter === 'registered') {
+            // 신규등록만: email이 있고 정상적인 이메일
+            filteredShops = filteredShops.filter(shop => {
+                return shop.email && !shop.email.includes('@example.com');
+            });
+            console.log('🔍 클라이언트 필터: 신규등록만 -', filteredShops.length, '개');
+        }
+        
+        console.log('📋 최종 필터링된 업체 수:', filteredShops.length);
+        
+        // v2.8.13.6.139: 업체 수 업데이트 (전체 데이터 기준)
+        updateShopCounts(allShops);
         
         if (updateTable) {
             console.log('🖼️ 테이블 렌더링 시작...');
             
-            displayShops(allShops);
+            displayShops(filteredShops);
             console.log('✅ 테이블 렌더링 완료');
             
             // v2.8.13.6.129.6: 테이블 렌더링 후 이벤트 리스너 등록 (초기 필터링 방지)
@@ -980,6 +1008,42 @@ let currentPage = 1;
 const itemsPerPage = 100;
 let displayedShops = [];
 let allFilteredShops = []; // 필터링된 전체 데이터
+
+// v2.8.13.6.139: 업체 수 업데이트 함수
+function updateShopCounts(shops) {
+    if (!shops) return;
+    
+    // 전체 업체 수
+    const totalCount = shops.length;
+    
+    // 인증 업체 수 (status = 'active' AND email이 있고 @example.com이 아님)
+    const verifiedCount = shops.filter(shop => 
+        shop.status === 'active' && 
+        shop.email && 
+        !shop.email.includes('@example.com')
+    ).length;
+    
+    // 신규 등록 업체 수 (email이 있고 @example.com이 아님)
+    const registeredCount = shops.filter(shop => 
+        shop.email && 
+        !shop.email.includes('@example.com')
+    ).length;
+    
+    // HTML 업데이트
+    const totalCountEl = document.getElementById('total-shops-count');
+    const verifiedCountEl = document.getElementById('verified-shops-count');
+    const registeredCountEl = document.getElementById('registered-shops-count');
+    
+    if (totalCountEl) totalCountEl.textContent = totalCount.toLocaleString();
+    if (verifiedCountEl) verifiedCountEl.textContent = verifiedCount.toLocaleString();
+    if (registeredCountEl) registeredCountEl.textContent = registeredCount.toLocaleString();
+    
+    console.log('📊 업체 수 업데이트:', {
+        total: totalCount,
+        verified: verifiedCount,
+        registered: registeredCount
+    });
+}
 
 // Display shops in table
 function displayShops(shops, append = false) {
@@ -3141,8 +3205,30 @@ function editShop(shopId) {
     document.getElementById('edit-phone').value = shop.phone || '';
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
+    
+    // v2.8.13.6.141: 시/도 설정 후 즉시 구/군 업데이트
     document.getElementById('edit-state').value = shop.state || '';
-    document.getElementById('edit-district').value = shop.district || '';
+    updateDistricts();  // 시/도 설정 직후 구/군 옵션 생성
+    
+    // 구/군 설정 (옵션이 생성된 후)
+    setTimeout(() => {
+        const districtSelect = document.getElementById('edit-district');
+        if (districtSelect && shop.district) {
+            districtSelect.value = shop.district;
+            updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
+            
+            // 읍/면/동 설정
+            if (shop.town) {
+                setTimeout(() => {
+                    const townSelect = document.getElementById('edit-town');
+                    if (townSelect) {
+                        townSelect.value = shop.town;
+                    }
+                }, 100);
+            }
+        }
+    }, 100);
+    
     document.getElementById('edit-address').value = shop.address || '';
     document.getElementById('edit-price-range').value = shop.price_range || '';
     document.getElementById('edit-description').value = shop.description || '';
@@ -3162,27 +3248,6 @@ function editShop(shopId) {
                 checkbox.checked = true;
             }
         });
-    }
-    
-    // 구/군 및 읍/면/동 업데이트
-    updateDistricts();
-    if (shop.district) {
-        setTimeout(() => {
-            const districtSelect = document.getElementById('edit-district');
-            if (districtSelect) {
-                districtSelect.value = shop.district;
-                updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
-                
-                if (shop.town) {
-                    setTimeout(() => {
-                        const townSelect = document.getElementById('edit-town');
-                        if (townSelect) {
-                            townSelect.value = shop.town;
-                        }
-                    }, 100);
-                }
-            }
-        }, 100);
     }
     
     // 이벤트 리스너 추가 (중복 방지)
@@ -3508,6 +3573,7 @@ function clearShopFilters() {
     document.getElementById('shop-search').value = '';
     document.getElementById('shop-region-filter').value = '';
     document.getElementById('shop-status-filter').value = '';
+    document.getElementById('shop-type-filter').value = ''; // v2.8.13.6.140: 샵 타입 필터 초기화 추가
     
     // Remove results counter
     const existingCounter = document.getElementById('shop-filter-results');
