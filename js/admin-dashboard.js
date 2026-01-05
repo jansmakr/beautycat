@@ -798,6 +798,7 @@ async function handleCSVUpload(event) {
                 
                 return {
                     name: raw.business_name || raw.name,
+                    owner_name: '정보 없음',  // CSV에 owner_name 없어도 업로드 가능
                     address: raw.address,
                     phone: phone,
                     state: region,  // DB 스키마는 state 사용
