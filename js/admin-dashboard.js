@@ -901,7 +901,7 @@ async function handleCSVUpload(event) {
 async function loadShops(updateTable = true) {
     try {
         console.log('🏪 업체 목록 로딩 시작...');
-        const response = await fetch('tables/skincare_shops?limit=50000&sort=created_at');
+        const response = await fetch('tables/skincare_shops?limit=100&sort=created_at');
         const data = await response.json();
         
         // 삭제된 샵 제외 (Soft Delete 필터링)
