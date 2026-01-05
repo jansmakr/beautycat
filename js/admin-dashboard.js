@@ -901,7 +901,20 @@ async function handleCSVUpload(event) {
 async function loadShops(updateTable = true) {
     try {
         console.log('🏪 업체 목록 로딩 시작...');
-        const response = await fetch('tables/skincare_shops?limit=100&sort=created_at');
+        // 필터 값 가져오기
+        const searchTerm = document.getElementById('shop-search')?.value || '';
+        const regionFilter = document.getElementById('shop-region-filter')?.value || '';
+        const statusFilter = document.getElementById('shop-status-filter')?.value || '';
+        
+        // API 쿼리 파라미터 구성 (v2.8.13.6.136: limit 50000)
+        let queryParams = 'limit=50000&sort=created_at';
+        if (searchTerm) queryParams += `&search=${encodeURIComponent(searchTerm)}`;
+        if (regionFilter) queryParams += `&state=${encodeURIComponent(regionFilter)}`;
+        if (statusFilter) queryParams += `&status=${encodeURIComponent(statusFilter)}`;
+        
+        console.log('🔍 필터 적용:', { searchTerm, regionFilter, statusFilter });
+        
+        const response = await fetch(`tables/skincare_shops?${queryParams}`);
         const data = await response.json();
         
         // 삭제된 샵 제외 (Soft Delete 필터링)
@@ -912,19 +925,6 @@ async function loadShops(updateTable = true) {
         
         if (updateTable) {
             console.log('🖼️ 테이블 렌더링 시작...');
-            
-            // 필터 초기화 (캐시된 값 제거) - v2.8.13.6.129.4: shop-type-filter 추가
-            const searchInput = document.getElementById('shop-search');
-            const regionFilter = document.getElementById('shop-region-filter');
-            const statusFilter = document.getElementById('shop-status-filter');
-            const typeFilter = document.getElementById('shop-type-filter');
-            
-            if (searchInput) searchInput.value = '';
-            if (regionFilter) regionFilter.value = '';
-            if (statusFilter) statusFilter.value = '';
-            if (typeFilter) typeFilter.value = '';  // ✅ shop-type-filter 초기화 추가!
-            
-            console.log('🔄 필터 초기화 완료 (shop-type-filter 포함)');
             
             displayShops(allShops);
             console.log('✅ 테이블 렌더링 완료');
@@ -972,9 +972,15 @@ async function loadShops(updateTable = true) {
     }
 }
 
+// 페이지네이션 변수
+let currentPage = 1;
+const itemsPerPage = 100;
+let displayedShops = [];
+let allFilteredShops = []; // 필터링된 전체 데이터
+
 // Display shops in table
-function displayShops(shops) {
-    console.log('📊 displayShops 호출됨, 업체 수:', shops.length);
+function displayShops(shops, append = false) {
+    console.log('📊 displayShops 호출됨, 업체 수:', shops.length, 'append:', append);
     console.log('📋 shops 데이터:', shops);
     
     const tableBody = document.getElementById('shops-table');
@@ -990,13 +996,32 @@ function displayShops(shops) {
     if (shops.length === 0) {
         console.log('⚠️ 표시할 업체가 없습니다');
         tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
+        updateLoadMoreButton(0, 0);
         return;
     }
     
     console.log('✅ 업체 테이블 렌더링 중...');
     console.log('🔍 첫 번째 업체:', shops[0]);
     
-    tableBody.innerHTML = shops.map(shop => {
+    // 전체 필터링된 데이터 저장
+    allFilteredShops = shops;
+    
+    // append가 false면 초기화
+    if (!append) {
+        displayedShops = [];
+        currentPage = 1;
+    }
+    
+    // 현재 페이지에 표시할 데이터 추가
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    const newShops = shops.slice(startIdx, endIdx);
+    displayedShops = displayedShops.concat(newShops);
+    
+    console.log(`📄 페이지 ${currentPage}: ${startIdx}~${endIdx} (${newShops.length}개 추가)`);
+    console.log(`📊 현재 표시 중: ${displayedShops.length}개 / 전체: ${shops.length}개`);
+    
+    const shopsHtml = displayedShops.map(shop => {
         const status = shop.status || 'active';
         const statusColors = {
             'active': 'text-green-600 bg-green-100',
@@ -1082,6 +1107,59 @@ function displayShops(shops) {
             </tr>
         `;
     }).join('');
+    
+    tableBody.innerHTML = shopsHtml;
+    
+    // "더 보기" 버튼 업데이트
+    updateLoadMoreButton(displayedShops.length, allFilteredShops.length);
+    
+    console.log('✅ 테이블 렌더링 완료');
+}
+
+// "더 보기" 버튼 업데이트
+function updateLoadMoreButton(displayed, total) {
+    let loadMoreContainer = document.getElementById('load-more-shops-container');
+    
+    // 컨테이너가 없으면 생성
+    if (!loadMoreContainer) {
+        const shopsSection = document.getElementById('shops-section');
+        if (!shopsSection) return;
+        
+        loadMoreContainer = document.createElement('div');
+        loadMoreContainer.id = 'load-more-shops-container';
+        loadMoreContainer.className = 'mt-4 text-center';
+        
+        // shops-table의 부모(card) 다음에 추가
+        const card = shopsSection.querySelector('.unni-card');
+        if (card && card.nextSibling) {
+            shopsSection.insertBefore(loadMoreContainer, card.nextSibling);
+        } else if (card) {
+            card.parentNode.appendChild(loadMoreContainer);
+        }
+    }
+    
+    // 더 표시할 데이터가 있으면 버튼 표시
+    if (displayed < total) {
+        const remaining = total - displayed;
+        loadMoreContainer.innerHTML = `
+            <button onclick="loadMoreShops()" 
+                    class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                <i class="fas fa-plus-circle mr-2"></i>더 보기 (${remaining}개 남음)
+            </button>
+            <p class="mt-2 text-sm text-gray-600">현재 ${displayed}개 / 전체 ${total}개</p>
+        `;
+    } else {
+        loadMoreContainer.innerHTML = `
+            <p class="text-sm text-gray-600">전체 ${total}개 표시 중</p>
+        `;
+    }
+}
+
+// 더 보기 버튼 클릭
+function loadMoreShops() {
+    console.log('📄 더 보기 클릭');
+    currentPage++;
+    displayShops(allFilteredShops, true); // append=true
 }
 
 // Refresh shops
@@ -3397,36 +3475,9 @@ function setupShopFilters() {
 
 // Filter shops based on search and filters
 function filterShops() {
-    const searchTerm = document.getElementById('shop-search')?.value.toLowerCase() || '';
-    const regionFilter = document.getElementById('shop-region-filter')?.value || '';
-    const statusFilter = document.getElementById('shop-status-filter')?.value || '';
-    
-    let filteredShops = allShops.filter(shop => {
-        // Search filter
-        const matchesSearch = !searchTerm || 
-            (shop.shop_name && shop.shop_name.toLowerCase().includes(searchTerm)) ||
-            (shop.owner_name && shop.owner_name.toLowerCase().includes(searchTerm)) ||
-            (shop.name && shop.name.toLowerCase().includes(searchTerm)) ||
-            (shop.email && shop.email.toLowerCase().includes(searchTerm)) ||
-            (shop.business_number && shop.business_number.includes(searchTerm));
-        
-        // Region filter
-        const matchesRegion = !regionFilter || 
-            (shop.state && shop.state === regionFilter) ||
-            (shop.shop_state && shop.shop_state === regionFilter) ||
-            (shop.region && shop.region.includes(regionFilter));
-        
-        // Status filter
-        const matchesStatus = !statusFilter || 
-            (shop.status === statusFilter);
-        
-        return matchesSearch && matchesRegion && matchesStatus;
-    });
-    
-    displayShops(filteredShops);
-    
-    // Update results count
-    updateShopFilterResults(filteredShops.length, allShops.length);
+    // 서버 측 필터링 사용 - loadShops() 재호출
+    console.log('🔍 필터 변경 감지 - 서버에서 재검색');
+    loadShops(true);
 }
 
 // Update filter results display
@@ -3460,8 +3511,9 @@ function clearShopFilters() {
         existingCounter.remove();
     }
     
-    // Show all shops
-    displayShops(allShops);
+    // 서버에서 전체 데이터 다시 로딩 - v2.8.13.6.136
+    console.log('🔄 필터 초기화 - 전체 데이터 로딩');
+    loadShops(true);
 }
 
 // Toggle representative shop status
