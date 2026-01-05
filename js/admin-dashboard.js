@@ -755,26 +755,39 @@ async function handleCSVUpload(event) {
         // 정제 함수 (인라인 정의)
         function cleanShopData(raw) {
             try {
-                // region 추출 ("전라남1여수시" -> "전남")
-                let region = raw.district || raw.region || '';
+                // v2.8.13.6.145: CSV 헤더에 맞춰 직접 매핑
+                let state = '';
                 let district = '';
+                let town = '';
                 
-                // "전라남1여수시" 형식 파싱
-                if (region.includes('1') || region.includes('도') || region.includes('시')) {
+                // 1) state 필드가 있으면 사용
+                if (raw.state) {
+                    state = raw.state;
+                    district = raw.district || '';
+                    town = raw.town || '';
+                } 
+                // 2) region 필드가 있으면 state로 매핑
+                else if (raw.region) {
+                    state = raw.region;
+                    district = raw.district || '';
+                    town = raw.town || '';
+                }
+                // 3) 이전 형식 ("전라남1여수시") 지원
+                else if (raw.district && (raw.district.includes('1') || raw.district.includes('도') || raw.district.includes('시'))) {
                     // 지역명 매핑
                     const regionMap = {
-                        '서울': '서울', '부산': '부산', '대구': '대구', '인천': '인천',
-                        '광주': '광주', '대전': '대전', '울산': '울산', '세종': '세종',
-                        '경기': '경기', '강원': '강원', '충북': '충북', '충남': '충남',
-                        '전북': '전북', '전남': '전남', '경북': '경북', '경남': '경남', '제주': '제주',
-                        '전라북': '전북', '전라남': '전남', '경상북': '경북', '경상남': '경남',
-                        '충청북': '충북', '충청남': '충남'
+                        '서울': '서울특별시', '부산': '부산광역시', '대구': '대구광역시', '인천': '인천광역시',
+                        '광주': '광주광역시', '대전': '대전광역시', '울산': '울산광역시', '세종': '세종특별자치시',
+                        '경기': '경기도', '강원': '강원특별자치도', '충북': '충청북도', '충남': '충청남도',
+                        '전북': '전북특별자치도', '전남': '전라남도', '경북': '경상북도', '경남': '경상남도', '제주': '제주특별자치도',
+                        '전라북': '전북특별자치도', '전라남': '전라남도', '경상북': '경상북도', '경상남': '경상남도',
+                        '충청북': '충청북도', '충청남': '충청남도'
                     };
                     
                     // 지역 추출
                     for (const [key, value] of Object.entries(regionMap)) {
-                        if (region.startsWith(key)) {
-                            region = value;
+                        if (raw.district.startsWith(key)) {
+                            state = value;
                             // district 추출 (숫자 뒤 부분)
                             const match = raw.district.match(/\d+(.+)/);
                             if (match) {
@@ -784,6 +797,27 @@ async function handleCSVUpload(event) {
                         }
                     }
                 }
+                
+                // 4) 주소에서 자동 추출 (fallback)
+                if (!state && raw.address) {
+                    const addressMatch = raw.address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
+                    if (addressMatch) {
+                        state = addressMatch[1];
+                        district = addressMatch[2];
+                        town = addressMatch[3];
+                        console.log('📍 주소에서 추출:', { state, district, town, address: raw.address });
+                    }
+                }
+                
+                console.log('🗺️ 지역 매핑:', { 
+                    raw_state: raw.state, 
+                    raw_region: raw.region, 
+                    raw_district: raw.district, 
+                    raw_town: raw.town,
+                    result_state: state, 
+                    result_district: district,
+                    result_town: town
+                });
                 
                 // phone 처리 ("미등록" -> 빈 값)
                 let phone = raw.phone_region || raw.phone || '';
@@ -801,13 +835,14 @@ async function handleCSVUpload(event) {
                 
                 return {
                     name: raw.business_name || raw.name,
-                    owner_name: '정보 없음',  // CSV에 owner_name 없어도 업로드 가능
+                    owner_name: raw.owner_name || '정보 없음',
                     address: raw.address,
                     phone: phone,
-                    state: region,  // DB 스키마는 state 사용
+                    state: state,
                     district: district,
+                    town: town,
                     status: status,
-                    email: ''  // 공공 데이터는 이메일 없음
+                    email: raw.email || ''
                 };
             } catch (error) {
                 console.warn('⚠️ 데이터 정제 실패:', raw, error);
@@ -909,8 +944,8 @@ async function loadShops(updateTable = true) {
         const regionFilter = document.getElementById('shop-region-filter')?.value || '';
         const statusFilter = document.getElementById('shop-status-filter')?.value || '';
         
-        // API 쿼리 파라미터 구성 (v2.8.13.6.136: limit 50000)
-        let queryParams = 'limit=50000&sort=created_at';
+        // API 쿼리 파라미터 구성 (v2.8.13.6.144: limit 5000으로 최적화)
+        let queryParams = 'limit=5000&sort=created_at';
         if (searchTerm) queryParams += `&search=${encodeURIComponent(searchTerm)}`;
         if (regionFilter) queryParams += `&state=${encodeURIComponent(regionFilter)}`;
         if (statusFilter) queryParams += `&status=${encodeURIComponent(statusFilter)}`;
@@ -3206,28 +3241,50 @@ function editShop(shopId) {
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
     
-    // v2.8.13.6.141: 시/도 설정 후 즉시 구/군 업데이트
-    document.getElementById('edit-state').value = shop.state || '';
-    updateDistricts();  // 시/도 설정 직후 구/군 옵션 생성
+    // v2.8.13.6.145: 주소에서 district 자동 추출
+    let district = shop.district || '';
+    let town = shop.town || '';
     
-    // 구/군 설정 (옵션이 생성된 후)
-    setTimeout(() => {
-        const districtSelect = document.getElementById('edit-district');
-        if (districtSelect && shop.district) {
-            districtSelect.value = shop.district;
-            updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
-            
-            // 읍/면/동 설정
-            if (shop.town) {
-                setTimeout(() => {
-                    const townSelect = document.getElementById('edit-town');
-                    if (townSelect) {
-                        townSelect.value = shop.town;
-                    }
-                }, 100);
-            }
+    // district가 없으면 주소에서 추출
+    if (!district && shop.address) {
+        const addressMatch = shop.address.match(/([가-힣]+시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
+        if (addressMatch) {
+            district = addressMatch[2];  // 구/군 추출
+            town = addressMatch[3];  // 읍/면/동 추출
+            console.log('📍 주소에서 추출:', { district, town, address: shop.address });
         }
-    }, 100);
+    }
+    
+    // 시/도 설정
+    document.getElementById('edit-state').value = shop.state || '';
+    
+    // 시/도 값이 DOM에 반영될 때까지 대기
+    setTimeout(() => {
+        updateDistricts();  // 시/도 설정 후 구/군 옵션 생성
+        
+        // 구/군 값 설정 (옵션 생성 후)
+        setTimeout(() => {
+            const districtSelect = document.getElementById('edit-district');
+            if (districtSelect && district) {
+                districtSelect.value = district;
+                console.log('✅ 구/군 설정:', district);
+                updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
+                
+                // 읍/면/동 설정
+                if (town) {
+                    setTimeout(() => {
+                        const townSelect = document.getElementById('edit-town');
+                        if (townSelect) {
+                            townSelect.value = town;
+                            console.log('✅ 읍/면/동 설정:', town);
+                        }
+                    }, 100);
+                }
+            } else {
+                console.warn('⚠️ 구/군을 설정할 수 없음:', { district, hasSelect: !!districtSelect });
+            }
+        }, 100);
+    }, 50);
     
     document.getElementById('edit-address').value = shop.address || '';
     document.getElementById('edit-price-range').value = shop.price_range || '';
@@ -3287,7 +3344,12 @@ function updateDistricts() {
     
     const state = stateSelect.value;
     
-    console.log('🏙️ 구/군 업데이트:', { state });
+    console.log('🏙️ 구/군 업데이트 시작:', { 
+        state, 
+        stateSelectValue: stateSelect.value,
+        hasKoreaTownData: typeof KOREA_TOWN_DATA !== 'undefined',
+        stateKeys: typeof KOREA_TOWN_DATA !== 'undefined' ? Object.keys(KOREA_TOWN_DATA).slice(0, 5) : []
+    });
     
     // 구/군 초기화
     districtSelect.innerHTML = '<option value="">선택하세요</option>';
