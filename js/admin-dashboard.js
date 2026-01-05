@@ -16,6 +16,8 @@ let publicPageSize = 100;
  * @param {Object} newShop - 등록된 샵 정보
  * @returns {Object|null} - 매칭된 공공 데이터 샵 또는 null
  */
+// v2.8.13.6.137: 자동 매칭 비활성화 (public_skincare_data 삭제됨)
+/*
 async function autoMatchPublicData(newShop) {
     const { name, address, phone } = newShop;
     
@@ -125,6 +127,7 @@ async function autoMatchPublicData(newShop) {
         return null;
     }
 }
+*/
 
 /**
  * 두 문자열 간의 유사도 계산 (Levenshtein Distance)
@@ -1941,30 +1944,31 @@ async function approveShop(shopId) {
         });
         
         if (response.ok) {
+            // v2.8.13.6.137: 자동 매칭 비활성화 (public_skincare_data 삭제됨)
             // 4. 자동 매칭 시도 (공공 데이터와 연결)
-            console.log('🔄 공공 데이터 자동 매칭 시도...');
-            const matchedPublicShop = await autoMatchPublicData(shop);
+            // console.log('🔄 공공 데이터 자동 매칭 시도...');
+            // const matchedPublicShop = await autoMatchPublicData(shop);
             
-            if (matchedPublicShop) {
-                console.log('✅ 매칭 성공:', {
-                    registered_shop: shop.name,
-                    public_shop: matchedPublicShop.business_name,
-                    public_shop_id: matchedPublicShop.id
-                });
-                
-                showNotification(
-                    `✅ 플랫폼 입점 승인 완료!\n\n` +
-                    `샵명: ${shop.name}\n` +
-                    `지역: ${shop.state} ${shop.district}\n\n` +
-                    `🔗 공공 데이터 매칭 완료:\n` +
-                    `${matchedPublicShop.business_name}\n\n` +
-                    `이제 리뷰 작성이 가능합니다.`,
-                    'success',
-                    10000
-                );
-            } else {
-                console.log('ℹ️ 매칭 실패: 유사한 공공 데이터를 찾지 못했습니다.');
-                
+            // if (matchedPublicShop) {
+            //     console.log('✅ 매칭 성공:', {
+            //         registered_shop: shop.name,
+            //         public_shop: matchedPublicShop.business_name,
+            //         public_shop_id: matchedPublicShop.id
+            //     });
+            //     
+            //     showNotification(
+            //         `✅ 플랫폼 입점 승인 완료!\n\n` +
+            //         `샵명: ${shop.name}\n` +
+            //         `지역: ${shop.state} ${shop.district}\n\n` +
+            //         `🔗 공공 데이터 매칭 완료:\n` +
+            //         `${matchedPublicShop.business_name}\n\n` +
+            //         `이제 리뷰 작성이 가능합니다.`,
+            //         'success',
+            //         10000
+            //     );
+            // } else {
+            //     console.log('ℹ️ 매칭 실패: 유사한 공공 데이터를 찾지 못했습니다.');
+            //     
                 showNotification(
                     `✅ 플랫폼 입점 승인 완료!\n\n` +
                     `샵명: ${shop.name}\n` +
@@ -1973,7 +1977,7 @@ async function approveShop(shopId) {
                     'success',
                     8000
                 );
-            }
+            // }
             
             loadShops(); // Refresh shops list
         } else {
