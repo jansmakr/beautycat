@@ -3241,19 +3241,38 @@ function editShop(shopId) {
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
     
-    // v2.8.13.6.145: 주소에서 district 자동 추출
+    // v2.8.13.6.146: 주소에서 district 자동 추출 (개선)
     let district = shop.district || '';
     let town = shop.town || '';
     
     // district가 없으면 주소에서 추출
     if (!district && shop.address) {
-        const addressMatch = shop.address.match(/([가-힣]+시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
+        // 패턴 1: 시/도 + 구/군 + 읍/면/동
+        let addressMatch = shop.address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
+        
         if (addressMatch) {
-            district = addressMatch[2];  // 구/군 추출
-            town = addressMatch[3];  // 읍/면/동 추출
-            console.log('📍 주소에서 추출:', { district, town, address: shop.address });
+            district = addressMatch[2];  // 구/군
+            town = addressMatch[3];  // 읍/면/동
+            console.log('📍 주소에서 추출 (패턴1):', { district, town, address: shop.address });
+        } else {
+            // 패턴 2: 시/도 + 구/군 (읍/면/동 없음)
+            addressMatch = shop.address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)/);
+            
+            if (addressMatch) {
+                district = addressMatch[2];  // 구/군
+                console.log('📍 주소에서 추출 (패턴2):', { district, address: shop.address });
+            }
         }
     }
+    
+    console.log('🏪 샵 수정 데이터:', { 
+        shopId: shop.id,
+        name: shop.name,
+        state: shop.state,
+        district_original: shop.district,
+        district_extracted: district,
+        address: shop.address
+    });
     
     // 시/도 설정
     document.getElementById('edit-state').value = shop.state || '';
