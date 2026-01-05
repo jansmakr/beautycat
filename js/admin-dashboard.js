@@ -3241,6 +3241,34 @@ function editShop(shopId) {
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
     
+    // v2.8.13.6.147: state 정규화 (줄임말 → 전체 이름)
+    let state = shop.state || '';
+    const stateMap = {
+        '서울': '서울특별시',
+        '부산': '부산광역시',
+        '대구': '대구광역시',
+        '인천': '인천광역시',
+        '광주': '광주광역시',
+        '대전': '대전광역시',
+        '울산': '울산광역시',
+        '세종': '세종특별자치시',
+        '경기': '경기도',
+        '강원': '강원특별자치도',
+        '충북': '충청북도',
+        '충남': '충청남도',
+        '전북': '전북특별자치도',
+        '전남': '전라남도',
+        '경북': '경상북도',
+        '경남': '경상남도',
+        '제주': '제주특별자치도'
+    };
+    
+    // 줄임말이면 전체 이름으로 변환
+    if (stateMap[state]) {
+        state = stateMap[state];
+        console.log('🗺️ 시/도 정규화:', { original: shop.state, normalized: state });
+    }
+    
     // v2.8.13.6.146: 주소에서 district 자동 추출 (개선)
     let district = shop.district || '';
     let town = shop.town || '';
@@ -3268,14 +3296,15 @@ function editShop(shopId) {
     console.log('🏪 샵 수정 데이터:', { 
         shopId: shop.id,
         name: shop.name,
-        state: shop.state,
+        state_original: shop.state,
+        state_normalized: state,
         district_original: shop.district,
         district_extracted: district,
         address: shop.address
     });
     
-    // 시/도 설정
-    document.getElementById('edit-state').value = shop.state || '';
+    // 시/도 설정 (정규화된 값 사용)
+    document.getElementById('edit-state').value = state;
     
     // 시/도 값이 DOM에 반영될 때까지 대기
     setTimeout(() => {
