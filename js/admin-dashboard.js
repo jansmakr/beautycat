@@ -178,7 +178,7 @@ function levenshteinDistance(str1, str2) {
 
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Admin dashboard loaded');
+    console.log('🎯 Admin Dashboard v2.8.13.6.151 초기화');
     checkAdminAuth();
     loadDashboardData();
     
