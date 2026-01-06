@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV 파일 수정 및 업로드 도구</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-file-csv text-green-600 mr-2"></i>
+                CSV 파일 자동 수정 및 업로드 도구
+            </h1>
+            
+            <!-- 설명 -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                <h3 class="font-bold text-blue-800 mb-2">🔧 자동 수정 항목:</h3>
+                <ul class="text-sm text-blue-700 space-y-1">
+                    <li>✅ <strong>region (시/도):</strong> 주소에서 자동 추출 및 정규화
+                        <br><span class="text-xs">예: "경기도 남양주시..." → "경기도" / "강원도" → "강원특별자치도"</span>
+                    </li>
+                    <li>✅ <strong>district (구/군):</strong> 주소에서 자동 추출
+                        <br><span class="text-xs">예: "경기도 남양주시..." → "남양주시"</span>
+                    </li>
+                    <li>✅ <strong>town (읍/면/동):</strong> 주소에서 자동 추출 (일반형 및 괄호형 모두 지원)
+                        <br><span class="text-xs">예: "...다산동" 또는 "...(다산동)" → "다산동"</span>
+                    </li>
+                    <li>✅ <strong>잘못된 데이터 자동 수정</strong></li>
+                    <li>✅ <strong>한글/영문 컬럼명 자동 인식</strong></li>
+                </ul>
+            </div>
+            
+            <!-- 파일 업로드 -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-upload mr-2"></i>CSV 파일 선택
+                </label>
+                <input type="file" id="csvFile" accept=".csv" 
+                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </div>
+            
+            <!-- 진행 상황 -->
+            <div id="progress" class="hidden mb-6">
+                <div class="bg-gray-200 rounded-full h-6 overflow-hidden">
+                    <div id="progressBar" class="bg-blue-600 h-6 text-white text-xs flex items-center justify-center transition-all duration-300" style="width: 0%">
+                        0%
+                    </div>
+                </div>
+                <p id="progressText" class="text-sm text-gray-600 mt-2"></p>
+            </div>
+            
+            <!-- 통계 -->
+            <div id="stats" class="hidden grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-600" id="totalCount">0</div>
+                    <div class="text-sm text-gray-600">전체</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-600" id="fixedCount">0</div>
+                    <div class="text-sm text-gray-600">수정됨</div>
+                </div>
+                <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-600" id="skippedCount">0</div>
+                    <div class="text-sm text-gray-600">건너뛰기</div>
+                </div>
+            </div>
+            
+            <!-- 미리보기 -->
+            <div id="preview" class="hidden mb-6">
+                <h3 class="font-bold text-gray-800 mb-3">
+                    <i class="fas fa-eye mr-2"></i>수정 전/후 미리보기 (처음 5개)
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">항목</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">수정 전</th>
+                                <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">수정 후</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewBody" class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 로그 -->
+            <div id="logContainer" class="hidden mb-6">
+                <h3 class="font-bold text-gray-800 mb-3">
+                    <i class="fas fa-terminal mr-2"></i>처리 로그
+                </h3>
+                <div id="log" class="bg-gray-900 text-green-400 p-4 rounded-lg h-64 overflow-y-auto font-mono text-xs"></div>
+            </div>
+            
+            <!-- 버튼 -->
+            <div class="flex space-x-4">
+                <button id="processBtn" onclick="processCSV()" disabled
+                        class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
+                    <i class="fas fa-cogs mr-2"></i>파일 분석 및 수정
+                </button>
+                <button id="downloadBtn" onclick="downloadFixed()" disabled
+                        class="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
+                    <i class="fas fa-download mr-2"></i>수정된 CSV 다운로드
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalData = [];
+        let fixedData = [];
+        let fixedCSV = '';
+        
+        // 시/도 매핑 (줄임말 → 전체 이름)
+        const stateMap = {
+            '서울': '서울특별시',
+            '부산': '부산광역시',
+            '대구': '대구광역시',
+            '인천': '인천광역시',
+            '광주': '광주광역시',
+            '대전': '대전광역시',
+            '울산': '울산광역시',
+            '세종': '세종특별자치시',
+            '경기': '경기도',
+            '강원': '강원특별자치도',
+            '충북': '충청북도',
+            '충남': '충청남도',
+            '전북': '전북특별자치도',
+            '전남': '전라남도',
+            '경북': '경상북도',
+            '경남': '경상남도',
+            '제주': '제주특별자치도'
+        };
+        
+        // 역방향 매핑도 추가 (전체 이름 → 전체 이름, 이미 정규화된 경우)
+        const stateNormalize = {
+            ...stateMap,
+            '서울특별시': '서울특별시',
+            '부산광역시': '부산광역시',
+            '대구광역시': '대구광역시',
+            '인천광역시': '인천광역시',
+            '광주광역시': '광주광역시',
+            '대전광역시': '대전광역시',
+            '울산광역시': '울산광역시',
+            '세종특별자치시': '세종특별자치시',
+            '경기도': '경기도',
+            '강원특별자치도': '강원특별자치도',
+            '강원도': '강원특별자치도',  // 구 명칭 → 신 명칭
+            '충청북도': '충청북도',
+            '충청남도': '충청남도',
+            '전북특별자치도': '전북특별자치도',
+            '전라북도': '전북특별자치도',  // 구 명칭 → 신 명칭
+            '전라남도': '전라남도',
+            '경상북도': '경상북도',
+            '경상남도': '경상남도',
+            '제주특별자치도': '제주특별자치도',
+            '제주도': '제주특별자치도'  // 구 명칭 → 신 명칭
+        };
+        
+        // 파일 선택 이벤트
+        document.getElementById('csvFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('processBtn').disabled = false;
+                addLog(`📁 파일 선택됨: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+            }
+        });
+        
+        // 로그 추가 함수
+        function addLog(message) {
+            const logContainer = document.getElementById('logContainer');
+            const log = document.getElementById('log');
+            logContainer.classList.remove('hidden');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // 주소에서 district/town 추출
+        function extractFromAddress(address) {
+            if (!address) return { district: '', town: '' };
+            
+            // 패턴 1: 시/도 + 구/군 + 읍/면/동
+            let match = address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
+            
+            if (match) {
+                return { district: match[2], town: match[3] };
+            }
+            
+            // 패턴 2: 시/도 + 구/군 (읍/면/동 없음)
+            match = address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)/);
+            
+            if (match) {
+                return { district: match[2], town: '' };
+            }
+            
+            return { district: '', town: '' };
+        }
+        
+        // CSV 처리
+        async function processCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('CSV 파일을 선택해주세요.');
+                return;
+            }
+            
+            addLog('🚀 CSV 파일 처리 시작...');
+            document.getElementById('processBtn').disabled = true;
+            document.getElementById('progress').classList.remove('hidden');
+            document.getElementById('stats').classList.remove('hidden');
+            
+            try {
+                // 파일 읽기
+                const text = await file.text();
+                const lines = text.trim().split('\n');
+                
+                if (lines.length < 2) {
+                    throw new Error('CSV 파일이 비어있거나 헤더만 있습니다.');
+                }
+                
+                // 헤더 파싱
+                const headers = lines[0].split(',').map(h => h.trim());
+                addLog(`📋 헤더: ${headers.join(', ')}`);
+                
+                // 데이터 파싱
+                originalData = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    
+                    const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                    });
+                    originalData.push(row);
+                }
+                
+                addLog(`✅ ${originalData.length}개 레코드 파싱 완료`);
+                document.getElementById('totalCount').textContent = originalData.length;
+                
+                // 컬럼명 매핑 (한글 + 영문 지원)
+                const columnMapping = {
+                    address: ['address', '주소', '도로명주소', 'full_address'],
+                    region: ['region', 'state', '시도', '시/도'],
+                    district: ['district', '구군', '구/군', 'district_name'],
+                    town: ['town', '읍면동', '읍/면/동', 'town_name'],
+                    owner_name: ['owner_name', '대표자명', '대표자', 'owner'],
+                    business_name: ['business_name', 'name', '업체명', '상호명', 'shop_name']
+                };
+                
+                // 실제 컬럼명 찾기
+                function findColumn(row, mappings) {
+                    for (const key of mappings) {
+                        if (row[key] !== undefined) {
+                            return key;
+                        }
+                    }
+                    return mappings[0]; // 기본값
+                }
+                
+                const addressCol = findColumn(originalData[0], columnMapping.address);
+                const regionCol = findColumn(originalData[0], columnMapping.region);
+                const districtCol = findColumn(originalData[0], columnMapping.district);
+                const townCol = findColumn(originalData[0], columnMapping.town);
+                const ownerCol = findColumn(originalData[0], columnMapping.owner_name);
+                
+                addLog(`🔍 컬럼 매핑: region="${regionCol}", district="${districtCol}", address="${addressCol}"`);
+                
+                // 주소에서 state와 district 추출하는 개선된 함수
+                function extractFullAddress(address) {
+                    if (!address) return { state: '', district: '', town: '' };
+                    
+                    let state = '', district = '', town = '';
+                    
+                    // 패턴 1: 시/도 추출
+                    let match = address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+특별자치도|[가-힣]+도)/);
+                    if (match) {
+                        state = match[1];
+                    }
+                    
+                    // 패턴 2: 구/군/시 추출 (시/도 다음)
+                    match = address.match(/^[가-힣]+(?:특별시|광역시|특별자치시|특별자치도|도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)/);
+                    if (match) {
+                        district = match[1];
+                    }
+                    
+                    // 패턴 3: 읍/면/동 추출 (여러 형태 지원)
+                    // 3-1: 일반 형태 "경기도 남양주시 다산동"
+                    match = address.match(/^[가-힣]+(?:특별시|광역시|특별자치시|특별자치도|도)\s+[가-힣]+(?:구|군|시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
+                    if (match) {
+                        town = match[1];
+                    } else {
+                        // 3-2: 괄호 안 형태 "...다산중앙로20번길 1층 (다산동)"
+                        match = address.match(/\(([가-힣]+동|[가-힣]+읍|[가-힣]+면)\)/);
+                        if (match) {
+                            town = match[1];
+                        }
+                    }
+                    
+                    return { state, district, town };
+                }
+                
+                // 데이터 수정
+                fixedData = [];
+                let fixedCount = 0;
+                let skippedCount = 0;
+                
+                for (let i = 0; i < originalData.length; i++) {
+                    const original = originalData[i];
+                    const fixed = { ...original };
+                    let needsFix = false;
+                    
+                    // 주소에서 정보 추출
+                    const addressValue = fixed[addressCol];
+                    const extracted = extractFullAddress(addressValue);
+                    
+                    // 1) region 컬럼 수정 (주소에서 추출한 state 사용, 정규화 적용)
+                    if (extracted.state) {
+                        // 추출된 state를 정규화 (예: "강원도" → "강원특별자치도")
+                        const normalizedState = stateNormalize[extracted.state] || extracted.state;
+                        fixed[regionCol] = normalizedState;
+                        needsFix = true;
+                        if (i < 5) addLog(`  🗺️ state 추출: "${extracted.state}" → "${normalizedState}" from "${addressValue.substring(0, 40)}..."`);
+                    }
+                    
+                    // 2) district 컬럼 수정 (주소에서 추출)
+                    if (extracted.district) {
+                        fixed[districtCol] = extracted.district;
+                        needsFix = true;
+                        if (i < 5) addLog(`  🏘️ district 추출: "${extracted.district}"`);
+                    }
+                    
+                    // 3) town 컬럼 수정 (주소에서 추출, 있는 경우만)
+                    if (extracted.town && townCol) {
+                        fixed[townCol] = extracted.town;
+                        needsFix = true;
+                        if (i < 5) addLog(`  📍 town 추출: "${extracted.town}"`);
+                    }
+                    
+                    // 4) owner_name 기본값
+                    const ownerValue = fixed[ownerCol];
+                    if (!ownerValue || ownerValue === '') {
+                        fixed[ownerCol] = '정보 없음';
+                        needsFix = true;
+                    }
+                    
+                    fixedData.push(fixed);
+                    
+                    if (needsFix) {
+                        fixedCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                    
+                    // 진행률 업데이트
+                    const progress = Math.round((i + 1) / originalData.length * 100);
+                    document.getElementById('progressBar').style.width = progress + '%';
+                    document.getElementById('progressBar').textContent = progress + '%';
+                    document.getElementById('progressText').textContent = `처리 중... ${i + 1}/${originalData.length}`;
+                    
+                    // 실시간 카운트 업데이트
+                    document.getElementById('fixedCount').textContent = fixedCount;
+                    document.getElementById('skippedCount').textContent = skippedCount;
+                }
+                
+                addLog(`✅ 처리 완료: 수정됨 ${fixedCount}개, 건너뛰기 ${skippedCount}개`);
+                
+                // 미리보기 생성
+                generatePreview();
+                
+                // CSV 생성
+                generateCSV(headers);
+                
+                // 다운로드 버튼 활성화
+                document.getElementById('downloadBtn').disabled = false;
+                
+            } catch (error) {
+                addLog(`❌ 에러: ${error.message}`);
+                alert('CSV 처리 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+        
+        // 미리보기 생성
+        function generatePreview() {
+            const previewBody = document.getElementById('previewBody');
+            const preview = document.getElementById('preview');
+            previewBody.innerHTML = '';
+            
+            const previewCount = Math.min(5, originalData.length);
+            
+            // 컬럼명 찾기
+            const findCol = (row, possibleNames) => {
+                for (const name of possibleNames) {
+                    if (row[name] !== undefined) return name;
+                }
+                return possibleNames[0];
+            };
+            
+            const nameCol = findCol(originalData[0], ['business_name', '업체명', 'name', 'shop_name']);
+            const regionCol = findCol(originalData[0], ['region', 'state', '시도', '시/도']);
+            const districtCol = findCol(originalData[0], ['district', '구군', '구/군']);
+            
+            for (let i = 0; i < previewCount; i++) {
+                const original = originalData[i];
+                const fixed = fixedData[i];
+                
+                // business_name
+                const nameRow = document.createElement('tr');
+                nameRow.innerHTML = `
+                    <td class="px-3 py-2 font-medium">업체명</td>
+                    <td class="px-3 py-2 text-gray-600">${original[nameCol] || '-'}</td>
+                    <td class="px-3 py-2 text-green-600">${fixed[nameCol] || '-'}</td>
+                `;
+                previewBody.appendChild(nameRow);
+                
+                // state
+                const regionChanged = original[regionCol] !== fixed[regionCol];
+                const stateRow = document.createElement('tr');
+                stateRow.innerHTML = `
+                    <td class="px-3 py-2 font-medium">시/도</td>
+                    <td class="px-3 py-2 ${regionChanged ? 'text-red-600 line-through' : 'text-gray-600'}">${original[regionCol] || '-'}</td>
+                    <td class="px-3 py-2 ${regionChanged ? 'text-green-600 font-bold' : 'text-gray-600'}">${fixed[regionCol] || '-'}</td>
+                `;
+                previewBody.appendChild(stateRow);
+                
+                // district
+                const districtChanged = original[districtCol] !== fixed[districtCol];
+                const districtRow = document.createElement('tr');
+                districtRow.innerHTML = `
+                    <td class="px-3 py-2 font-medium">구/군</td>
+                    <td class="px-3 py-2 ${districtChanged ? 'text-red-600 line-through' : 'text-gray-600'}">${original[districtCol] || '-'}</td>
+                    <td class="px-3 py-2 ${districtChanged ? 'text-green-600 font-bold' : 'text-gray-600'}">${fixed[districtCol] || '-'}</td>
+                `;
+                previewBody.appendChild(districtRow);
+                
+                // 구분선
+                if (i < previewCount - 1) {
+                    const divider = document.createElement('tr');
+                    divider.innerHTML = '<td colspan="3" class="py-2"><hr></td>';
+                    previewBody.appendChild(divider);
+                }
+            }
+            
+            preview.classList.remove('hidden');
+            addLog(`👀 처음 ${previewCount}개 미리보기 생성 완료`);
+        }
+        
+        // CSV 생성
+        function generateCSV(headers) {
+            let csv = headers.join(',') + '\n';
+            
+            fixedData.forEach(row => {
+                const values = headers.map(header => {
+                    let value = row[header] || '';
+                    // 쉼표나 줄바꿈이 있으면 따옴표로 감싸기
+                    if (value.includes(',') || value.includes('\n') || value.includes('"')) {
+                        value = '"' + value.replace(/"/g, '""') + '"';
+                    }
+                    return value;
+                });
+                csv += values.join(',') + '\n';
+            });
+            
+            fixedCSV = csv;
+            addLog(`📄 수정된 CSV 생성 완료 (${fixedData.length}개 레코드)`);
+        }
+        
+        // 다운로드
+        function downloadFixed() {
+            if (!fixedCSV) {
+                alert('먼저 CSV 파일을 처리해주세요.');
+                return;
+            }
+            
+            const blob = new Blob(['\uFEFF' + fixedCSV], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const originalName = document.getElementById('csvFile').files[0].name;
+            const fixedName = originalName.replace('.csv', '_fixed.csv');
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', fixedName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            addLog(`✅ 다운로드 완료: ${fixedName}`);
+        }
+    </script>
+</body>
+</html>

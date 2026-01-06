@@ -6,11 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="last-modified" content="2026-01-03T20:30:00+09:00">
-    <!-- 🔥 Cache Busting Timestamp: 2026-01-03 20:30 KST - 공공 데이터 탭 추가 -->
-    <meta name="version" content="2.8.13.6.131-20260103-2030">
-    <meta name="cache-version" content="v2.8.13.6.131-public-data-tab">
-    <!-- v2.8.13.6.131: 공공 데이터 관리 탭 추가 (102,902개) -->
+    <meta name="last-modified" content="2026-01-05T15:00:00+09:00">
+    <!-- 🔥 Cache Busting Timestamp: 2026-01-05 15:00 KST - town 필드 저장 수정 -->
+    <meta name="version" content="2.8.13.6.149-20260105-1500">
+    <meta name="cache-version" content="v2.8.13.6.149-town-field-fix">
+    <!-- v2.8.13.6.149: 샵 수정 시 town 필드 저장 추가 -->
     <title>관리자 대시보드 - beautycat (뷰티+에티켓)</title>
     <meta name="naver-site-verification" content="d1de02844a6d373cbc20ace550630fcc83bf8979" />
     
@@ -1997,6 +1997,7 @@ window.saveShopChanges = async function() {
         business_number: document.getElementById('edit-business-number').value,
         state: document.getElementById('edit-state').value,
         district: document.getElementById('edit-district').value,
+        town: document.getElementById('edit-town')?.value || '',  // ✅ v2.8.13.6.149: 읍/면/동 필드 추가
         address: document.getElementById('edit-address').value,
         representative_treatments: selectedTreatments.join(','),  // ✅ 수정: treatment_types → representative_treatments + 문자열 변환
         price_range: document.getElementById('edit-price-range').value,
