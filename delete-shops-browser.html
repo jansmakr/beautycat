@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>샵 데이터 일괄 삭제</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-red-600 mb-6">
+                🗑️ 샵 데이터 일괄 삭제
+            </h1>
+            
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                <h3 class="font-bold text-red-800 mb-2">⚠️ 경고!</h3>
+                <ul class="text-sm text-red-700 space-y-1">
+                    <li>❌ 이 작업은 <strong>되돌릴 수 없습니다!</strong></li>
+                    <li>❌ 모든 샵 데이터가 삭제됩니다!</li>
+                    <li>✅ 수정된 CSV 파일이 준비되어 있는지 확인하세요!</li>
+                </ul>
+            </div>
+            
+            <div id="stats" class="hidden grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-600" id="totalCount">0</div>
+                    <div class="text-sm text-gray-600">전체</div>
+                </div>
+                <div class="bg-red-50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-red-600" id="deletedCount">0</div>
+                    <div class="text-sm text-gray-600">삭제됨</div>
+                </div>
+                <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-yellow-600" id="failedCount">0</div>
+                    <div class="text-sm text-gray-600">실패</div>
+                </div>
+            </div>
+            
+            <div id="progress" class="hidden mb-6">
+                <div class="bg-gray-200 rounded-full h-6 overflow-hidden">
+                    <div id="progressBar" class="bg-red-600 h-6 text-white text-xs flex items-center justify-center transition-all duration-300" style="width: 0%">
+                        0%
+                    </div>
+                </div>
+                <p id="progressText" class="text-sm text-gray-600 mt-2"></p>
+            </div>
+            
+            <div id="log" class="bg-gray-900 text-green-400 p-4 rounded-lg h-96 overflow-y-auto font-mono text-xs mb-6"></div>
+            
+            <div class="flex space-x-4">
+                <button id="startBtn" onclick="startDeletion()" 
+                        class="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition">
+                    🗑️ 삭제 시작 (신중하게!)
+                </button>
+                <button onclick="window.close()" 
+                        class="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700 transition">
+                    ❌ 취소
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let totalShops = 0;
+        let deletedCount = 0;
+        let failedCount = 0;
+
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-green-400',
+                error: 'text-red-400',
+                warning: 'text-yellow-400',
+                success: 'text-blue-400'
+            };
+            log.innerHTML += `<div class="${colors[type] || 'text-green-400'}">[${timestamp}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function getAllShops() {
+            addLog('🔍 샵 데이터 가져오는 중...', 'info');
+            
+            let allShops = [];
+            let page = 1;
+            const limit = 5000;
+            
+            try {
+                while (true) {
+                    const url = `/tables/skincare_shops?page=${page}&limit=${limit}&sort=created_at`;
+                    addLog(`📄 페이지 ${page} 로딩 중...`);
+                    
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    const shops = data.data || [];
+                    
+                    addLog(`   ✅ ${shops.length}개 로드 완료`, 'success');
+                    
+                    if (shops.length === 0) break;
+                    
+                    const activeShops = shops.filter(shop => !shop.deleted);
+                    allShops = allShops.concat(activeShops);
+                    
+                    if (shops.length < limit) break;
+                    page++;
+                }
+                
+                addLog(`✅ 전체 ${allShops.length}개 샵 로드 완료`, 'success');
+                return allShops;
+                
+            } catch (error) {
+                addLog(`❌ 샵 데이터 로드 실패: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        async function deleteShop(shopId, shopName) {
+            const url = `/tables/skincare_shops/${shopId}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                return true;
+                
+            } catch (error) {
+                addLog(`   ❌ 삭제 실패 (${shopName}): ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function deleteAllShops(shops) {
+            addLog('🗑️ 샵 삭제 시작...', 'warning');
+            
+            totalShops = shops.length;
+            deletedCount = 0;
+            failedCount = 0;
+            const BATCH_SIZE = 10;
+            
+            document.getElementById('stats').classList.remove('hidden');
+            document.getElementById('progress').classList.remove('hidden');
+            document.getElementById('totalCount').textContent = totalShops;
+            
+            for (let i = 0; i < shops.length; i += BATCH_SIZE) {
+                const batch = shops.slice(i, i + BATCH_SIZE);
+                const promises = batch.map(shop => 
+                    deleteShop(shop.id, shop.business_name || shop.name || 'Unknown')
+                );
+                
+                const results = await Promise.all(promises);
+                
+                results.forEach((success, index) => {
+                    if (success) {
+                        deletedCount++;
+                        addLog(`   ✅ [${deletedCount}/${totalShops}] ${batch[index].business_name || batch[index].name || 'Unknown'} 삭제 완료`, 'success');
+                    } else {
+                        failedCount++;
+                    }
+                });
+                
+                const progress = Math.round((i + BATCH_SIZE) / totalShops * 100);
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressBar').textContent = progress + '%';
+                document.getElementById('progressText').textContent = `처리 중... ${Math.min(i + BATCH_SIZE, totalShops)}/${totalShops}`;
+                document.getElementById('deletedCount').textContent = deletedCount;
+                document.getElementById('failedCount').textContent = failedCount;
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            addLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
+            addLog('✅ 삭제 완료!', 'success');
+            addLog(`   전체: ${totalShops}개`, 'success');
+            addLog(`   삭제: ${deletedCount}개`, 'success');
+            addLog(`   실패: ${failedCount}개`, 'error');
+            addLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'success');
+        }
+
+        async function startDeletion() {
+            const confirmed = confirm('⚠️ 정말로 모든 샵 데이터를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다!');
+            
+            if (!confirmed) {
+                addLog('❌ 삭제 취소됨', 'warning');
+                return;
+            }
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').textContent = '삭제 진행 중...';
+            
+            try {
+                const shops = await getAllShops();
+                
+                if (shops.length === 0) {
+                    addLog('⚠️ 삭제할 샵이 없습니다.', 'warning');
+                    return;
+                }
+                
+                await deleteAllShops(shops);
+                
+                addLog('\n✅ 다음 단계: CSV 파일 수정 후 재업로드', 'success');
+                
+            } catch (error) {
+                addLog(`❌ 오류 발생: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('startBtn').textContent = '🗑️ 삭제 시작 (신중하게!)';
+            }
+        }
+
+        addLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        addLog('🗑️ 샵 데이터 일괄 삭제 도구', 'info');
+        addLog('   버전: v2.8.13.6.150', 'info');
+        addLog('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+        addLog('⚠️ 준비 완료! "삭제 시작" 버튼을 클릭하세요.', 'warning');
+    </script>
+</body>
+</html>
