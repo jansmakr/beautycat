@@ -346,6 +346,9 @@
                         <button onclick="document.getElementById('csv-upload-input').click()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                             <i class="fas fa-upload mr-2"></i>CSV 업로드
                         </button>
+                        <button onclick="showBulkDeleteModal()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                            <i class="fas fa-trash-alt mr-2"></i>일괄 삭제
+                        </button>
                         <input type="file" id="csv-upload-input" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
                     </div>
                 </div>
@@ -2277,6 +2280,9 @@ document.getElementById('consultation-view-modal').addEventListener('click', fun
 <!-- 공지사항 관리 시스템 -->
 <script src="js/announcements.js"></script>
 
+<!-- 일괄 삭제 시스템 (v2.8.13.6.150) -->
+<script src="js/bulk-delete.js"></script>
+
 <!-- 🔥 HOTFIX: PATCH → PUT 자동 변환 (v2.8.13.6.106) -->
 <script>
 console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환 (필수 필드만)');
@@ -2542,6 +2548,65 @@ console.log('✅ PATCH 자동 변환 활성화 완료 (필수 필드만 병합)'
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- 일괄 삭제 모달 -->
+<div id="bulk-delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <h2 class="text-2xl font-bold text-red-600 mb-4">
+            🗑️ 샵 데이터 일괄 삭제
+        </h2>
+        
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <h3 class="font-bold text-red-800 mb-2">⚠️ 경고!</h3>
+            <ul class="text-sm text-red-700 space-y-1">
+                <li>❌ 이 작업은 <strong>되돌릴 수 없습니다!</strong></li>
+                <li>❌ 모든 샵 데이터가 삭제됩니다!</li>
+                <li>✅ 수정된 CSV 파일이 준비되어 있는지 확인하세요!</li>
+            </ul>
+        </div>
+        
+        <!-- 통계 -->
+        <div id="bulk-delete-stats" class="hidden grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-blue-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-blue-600" id="bulk-delete-total">0</div>
+                <div class="text-sm text-gray-600">전체</div>
+            </div>
+            <div class="bg-red-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-red-600" id="bulk-delete-deleted">0</div>
+                <div class="text-sm text-gray-600">삭제됨</div>
+            </div>
+            <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-yellow-600" id="bulk-delete-failed">0</div>
+                <div class="text-sm text-gray-600">실패</div>
+            </div>
+        </div>
+        
+        <!-- 진행률 -->
+        <div id="bulk-delete-progress" class="hidden mb-6">
+            <div class="bg-gray-200 rounded-full h-6 overflow-hidden">
+                <div id="bulk-delete-progress-bar" class="bg-red-600 h-6 text-white text-xs flex items-center justify-center transition-all duration-300" style="width: 0%">
+                    0%
+                </div>
+            </div>
+            <p id="bulk-delete-progress-text" class="text-sm text-gray-600 mt-2"></p>
+        </div>
+        
+        <!-- 로그 -->
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg h-96 overflow-y-auto font-mono text-xs mb-6" id="bulk-delete-log"></div>
+        
+        <!-- 버튼 -->
+        <div class="flex space-x-4">
+            <button id="bulk-delete-start-btn" onclick="startBulkDelete()" 
+                    class="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition">
+                🗑️ 삭제 시작 (신중하게!)
+            </button>
+            <button onclick="closeBulkDeleteModal()" 
+                    class="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700 transition">
+                ❌ 취소
+            </button>
+        </div>
     </div>
 </div>
 
