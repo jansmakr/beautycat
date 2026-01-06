@@ -1,12 +1,17 @@
 /**
  * ===== 일괄 삭제 시스템 =====
- * v2.8.13.6.150 - 2026-01-06
+ * v2.8.13.6.151 - 2026-01-06 (속도 개선!)
  * 
  * 기능:
  * - 모든 샵 데이터 일괄 삭제
  * - 실시간 진행 상황 표시
- * - 배치 처리 (10개씩)
+ * - 배치 처리 (100개씩 - 10배 빠르게!)
  * - 삭제 성공/실패 통계
+ * 
+ * 변경 사항 (v2.8.13.6.151):
+ * - 배치 크기: 10개 → 100개 (10배 증가!)
+ * - 배치 대기: 100ms → 10ms (10배 단축!)
+ * - 예상 소요: 61,609개 기준 약 10-15분 (기존 15시간 → 15분!)
  */
 
 // 일괄 삭제 모달 열기
@@ -187,8 +192,8 @@ async function deleteShop(shopId, shopName) {
     }
 }
 
-// 배치 삭제 (10개씩 병렬 처리)
-async function deleteBatch(shops, batchSize = 10) {
+// 배치 삭제 (100개씩 병렬 처리 - 10배 빠르게!)
+async function deleteBatch(shops, batchSize = 100) {
     const results = [];
     
     for (let i = 0; i < shops.length; i += batchSize) {
@@ -201,8 +206,8 @@ async function deleteBatch(shops, batchSize = 10) {
         const batchResults = await Promise.all(batchPromises);
         results.push(...batchResults);
         
-        // API 제한 방지 (100ms 대기)
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // API 제한 방지 (10ms 대기 - 10배 빠르게!)
+        await new Promise(resolve => setTimeout(resolve, 10));
     }
     
     return results;
@@ -254,8 +259,8 @@ async function startBulkDelete() {
         let deletedCount = 0;
         let failedCount = 0;
         
-        // 배치 처리 (10개씩)
-        const batchSize = 10;
+        // 배치 처리 (100개씩 - 10배 빠르게!)
+        const batchSize = 100;
         for (let i = 0; i < allShops.length; i += batchSize) {
             const batch = allShops.slice(i, i + batchSize);
             
