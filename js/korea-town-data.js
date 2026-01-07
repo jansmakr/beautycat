@@ -303,5 +303,6 @@ function getTotalTownCount() {
     return count;
 }
 
-console.log('✅ 대한민국 읍면동 데이터 로드 완료');
-console.log(`📍 총 ${getTotalTownCount()}개 읍면동 (인구 5,000명 이상)`);
+// v2.8.13.6.162: 콘솔 로그 제거 (프로덕션)
+// console.log('✅ 대한민국 읍면동 데이터 로드 완료');
+// console.log(`📍 총 ${getTotalTownCount()}개 읍면동 (인구 5,000명 이상)`);
