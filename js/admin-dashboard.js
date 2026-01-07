@@ -958,6 +958,9 @@ async function loadShops(updateTable = true) {
         // 삭제된 샵 제외 (Soft Delete 필터링)
         allShops = (data.data || []).filter(shop => !shop.deleted);
         
+        // v2.8.13.6.155: 전역 변수로 노출 (editShop 함수에서 접근 가능하도록)
+        window.allShops = allShops;
+        
         console.log('📊 서버에서 로딩된 업체 수:', allShops.length, '(삭제된 샵 제외)');
         
         // v2.8.13.6.140: 클라이언트 사이드 필터 적용 (샵 타입)
@@ -3241,8 +3244,14 @@ function editShop(shopId) {
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
     
-    // v2.8.13.6.147: state 정규화 (줄임말 → 전체 이름)
-    let state = shop.state || '';
+    // v2.8.13.6.155: state 필드 우선순위 (region → state)
+    // API 매핑: state → region이므로 region을 우선 사용
+    let state = shop.region || shop.state || '';
+    
+    // region에서 state 추출 (예: "서울특별시 강남구" → "서울특별시")
+    if (state && state.includes(' ')) {
+        state = state.split(' ')[0];
+    }
     const stateMap = {
         '서울': '서울특별시',
         '부산': '부산광역시',
@@ -3296,6 +3305,7 @@ function editShop(shopId) {
     console.log('🏪 샵 수정 데이터:', { 
         shopId: shop.id,
         name: shop.name,
+        region: shop.region,
         state_original: shop.state,
         state_normalized: state,
         district_original: shop.district,

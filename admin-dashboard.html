@@ -8,7 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <meta name="last-modified" content="2026-01-07T10:00:00+09:00">
     <!-- 🔥 Cache Busting Timestamp: 2026-01-07 10:00 KST - 필터링 문제 해결 (limit 100000) -->
-    <meta name="version" content="2.8.13.6.154-20260107-1200">
+    <meta name="version" content="2.8.13.6.157-20260107-1500">
     <meta name="cache-version" content="v2.8.13.6.152-filter-fix">
     <!-- v2.8.13.6.152: 필터링 문제 해결 - limit 5000 → 100000 -->
     <title>관리자 대시보드 - beautycat (뷰티+에티켓)</title>
@@ -1660,11 +1660,11 @@
     
     <script src="js/auth.js"></script>
     
-    <!-- 한국 지역 데이터 (MIME 타입 문제 우회) -->
-    <script>
-    const KOREA_TOWN_DATA = {
-        "서울특별시": {
-            "강남구": ["역삼동", "개포동", "청담동", "삼성동", "대치동", "신사동", "논현동", "압구정동", "세곡동", "자곡동", "일원동", "수서동", "도곡동"],
+    <!-- 한국 지역 데이터 (전체 17개 시/도) - 반드시 admin-dashboard.js 전에 로드 -->
+    <script src="js/korea-town-data.js?v=2.8.13.6.157"></script>
+    
+    <script src="js/admin-dashboard.js?v=2.8.13.6.157"></script>
+    <script src="js/public-data-manager.js?v=2.8.13.6.131"></script>
             "강동구": ["천호동", "성내동", "길동", "둔촌동", "암사동", "상일동", "명일동", "고덕동", "강일동"],
             "강북구": ["미아동", "번동", "수유동", "우이동"],
             "강서구": ["염창동", "등촌동", "화곡동", "가양동", "마곡동", "내발산동", "외발산동", "공항동", "방화동"],
@@ -1756,11 +1756,7 @@
         }
     };
     
-    // 전역 변수로 노출
-    window.KOREA_TOWN_DATA = KOREA_TOWN_DATA;
-    </script>
-    
-    <script src="js/admin-dashboard.js?v=2.8.13.6.154"></script>
+    <script src="js/admin-dashboard.js?v=2.8.13.6.157"></script>
     <script src="js/public-data-manager.js?v=2.8.13.6.131"></script>
 
 <!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
