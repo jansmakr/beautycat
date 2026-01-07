@@ -1767,26 +1767,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // v2.8.13.6.129.11: 페이지 로드 직후 필터 강제 초기화 (브라우저 autocomplete 완전 차단)
     const shopTypeFilter = document.getElementById('shop-type-filter');
-    if (shopTypeFilter) {
-        // 즉시 초기화
-        shopTypeFilter.value = '';
-        shopTypeFilter.selectedIndex = 0;
-        console.log('🔒 페이지 로드 즉시 shop-type-filter 강제 초기화');
-        
-        // 50ms 후 재초기화
-        setTimeout(() => {
-            shopTypeFilter.value = '';
-            shopTypeFilter.selectedIndex = 0;
-            console.log('🔒 50ms 후 shop-type-filter 재초기화:', shopTypeFilter.value);
-        }, 50);
-        
-        // 200ms 후 최종 초기화
-        setTimeout(() => {
-            shopTypeFilter.value = '';
-            shopTypeFilter.selectedIndex = 0;
-            console.log('🔥 200ms 후 shop-type-filter 최종 초기화:', shopTypeFilter.value);
-        }, 200);
-    }
+    // v2.8.13.6.162: 필터 강제 초기화 제거 (사용자 선택 유지)
+    // shopTypeFilter 초기화 코드 삭제됨
     
     // 이벤트 리스너 등록은 loadShops() 완료 후에 수행
     // (페이지 로드 시 자동 필터링 방지)
