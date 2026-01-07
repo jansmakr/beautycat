@@ -3308,7 +3308,7 @@ function editShop(shopId) {
     
     // 시/도 값이 DOM에 반영될 때까지 대기
     setTimeout(() => {
-        updateDistricts();  // 시/도 설정 후 구/군 옵션 생성
+        updateDistrictsForEdit();  // 시/도 설정 후 구/군 옵션 생성
         
         // 구/군 값 설정 (옵션 생성 후)
         setTimeout(() => {
@@ -3360,7 +3360,7 @@ function editShop(shopId) {
     const districtSelect = document.getElementById('edit-district');
     
     if (stateSelect && !stateSelect.dataset.listenerAdded) {
-        stateSelect.addEventListener('change', updateDistricts);
+        stateSelect.addEventListener('change', updateDistrictsForEdit);
         stateSelect.dataset.listenerAdded = 'true';
         console.log('✅ 시/도 변경 이벤트 리스너 추가');
     }
@@ -3379,8 +3379,8 @@ function closeShopEditModal() {
     document.getElementById('shop-edit-modal').classList.add('hidden');
 }
 
-// 구/군 드롭다운 업데이트 함수
-function updateDistricts() {
+// 구/군 드롭다운 업데이트 함수 (샵 수정용)
+function updateDistrictsForEdit() {
     const stateSelect = document.getElementById('edit-state');
     const districtSelect = document.getElementById('edit-district');
     const townSelect = document.getElementById('edit-town');
@@ -4022,7 +4022,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 🗺️ 신규 샵 등록 모달용 updateDistricts 함수 (v2.8.13.6.115)
-function updateDistricts() {
+function updateDistrictsForNew() {
     const stateSelect = document.getElementById('new-shop-state');
     const districtSelect = document.getElementById('new-shop-district');
     
@@ -4056,8 +4056,10 @@ function updateDistricts() {
     }
 }
 
-// Make updateDistricts globally accessible
-window.updateDistricts = updateDistricts;
+// Make functions globally accessible
+window.updateDistricts = updateDistrictsForNew;
+window.updateDistrictsForEdit = updateDistrictsForEdit;
+window.updateDistrictsForNew = updateDistrictsForNew;
 
 // Close modal on ESC key
 document.addEventListener('keydown', function(e) {
