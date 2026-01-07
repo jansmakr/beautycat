@@ -429,8 +429,24 @@ async function processLogin(loginData) {
             u.email === loginData.email && 
             u.user_type === loginData.user_type &&
             u.status !== 'inactive' && // status 체크
-            u.is_active !== false // is_active도 체크 (오래된 데이터 호환)
+            u.is_active !== false && // is_active도 체크 (오래된 데이터 호환)
+            !u.deleted // v2.8.13.6.159: 탈퇴한 계정 로그인 차단
         );
+        
+        // v2.8.13.6.159: 탈퇴한 계정 체크
+        const deletedUser = userData.data?.find(u => 
+            u.email === loginData.email && 
+            u.user_type === loginData.user_type &&
+            u.deleted === true
+        );
+        
+        if (deletedUser) {
+            console.log('❌ 탈퇴한 계정:', deletedUser.email);
+            return {
+                success: false,
+                message: '탈퇴한 계정입니다.\n\n동일한 이메일로 재가입하시려면 회원가입 페이지를 이용해주세요.'
+            };
+        }
         
         if (user) {
             console.log('사용자 찾음:', user.name, user.user_type);
