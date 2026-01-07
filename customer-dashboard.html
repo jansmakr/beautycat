@@ -532,6 +532,37 @@
                                 </div>
                             </form>
                         </div>
+
+                        <!-- 회원 탈퇴 섹션 (v2.8.13.6.158) -->
+                        <div class="unni-card p-6 mt-6 border-2 border-red-200">
+                            <div class="mb-4">
+                                <h3 class="text-lg font-semibold text-red-600 mb-2">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>회원 탈퇴
+                                </h3>
+                                <p class="text-sm text-gray-600">
+                                    회원 탈퇴 시 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+                                </p>
+                            </div>
+
+                            <div class="bg-red-50 p-4 rounded-lg mb-4">
+                                <h4 class="text-sm font-semibold text-red-800 mb-2">탈퇴 시 삭제되는 정보</h4>
+                                <ul class="text-sm text-red-700 space-y-1">
+                                    <li>• 회원 정보 (이름, 이메일, 전화번호 등)</li>
+                                    <li>• 상담 내역 및 견적서</li>
+                                    <li>• 관심 샵 및 리뷰</li>
+                                    <li>• 모든 활동 기록</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button 
+                                    type="button" 
+                                    onclick="openDeleteAccountModal()"
+                                    class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                                    <i class="fas fa-user-times mr-2"></i>회원 탈퇴하기
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -719,13 +750,190 @@
         </div>
     </div>
 
+    <!-- 회원 탈퇴 확인 모달 (v2.8.13.6.158) -->
+    <div id="delete-account-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">정말로 탈퇴하시겠습니까?</h3>
+                <p class="text-sm text-gray-600">
+                    이 작업은 되돌릴 수 없으며, 모든 데이터가 영구적으로 삭제됩니다.
+                </p>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <h4 class="text-sm font-semibold text-yellow-800 mb-2">
+                    <i class="fas fa-info-circle mr-1"></i>확인하세요
+                </h4>
+                <ul class="text-xs text-yellow-700 space-y-1">
+                    <li>✓ 모든 상담 내역이 삭제됩니다</li>
+                    <li>✓ 받은 견적서를 더 이상 볼 수 없습니다</li>
+                    <li>✓ 관심 샵 및 리뷰가 모두 삭제됩니다</li>
+                    <li>✓ 동일한 이메일로 재가입이 가능합니다</li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    탈퇴를 진행하려면 <strong class="text-red-600">"탈퇴합니다"</strong>를 입력하세요
+                </label>
+                <input 
+                    type="text" 
+                    id="delete-confirmation-input"
+                    placeholder="탈퇴합니다"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+            </div>
+
+            <div class="flex space-x-3">
+                <button 
+                    onclick="closeDeleteAccountModal()"
+                    class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                    취소
+                </button>
+                <button 
+                    onclick="confirmDeleteAccount()"
+                    class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                    탈퇴하기
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/security.js"></script>
     <script src="js/external-payment.js"></script>
     <!-- Firebase API 백엔드 - Cloudflare Workers 사용으로 비활성화 -->
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
 <script src="js/auth.js"></script>
-    <script src="js/customer-dashboard.js?v=2.8.13.6.89"></script>
+    <script src="js/customer-dashboard.js?v=2.8.13.6.158"></script>
+
+<!-- 회원 탈퇴 기능 (v2.8.13.6.158) -->
+<script>
+console.log('🗑️ 회원 탈퇴 기능 로드 (v2.8.13.6.158)');
+
+// 탈퇴 모달 열기
+function openDeleteAccountModal() {
+    console.log('🗑️ 탈퇴 모달 열기');
+    document.getElementById('delete-account-modal').classList.remove('hidden');
+    document.getElementById('delete-confirmation-input').value = '';
+    document.getElementById('delete-confirmation-input').focus();
+}
+
+// 탈퇴 모달 닫기
+function closeDeleteAccountModal() {
+    console.log('❌ 탈퇴 모달 닫기');
+    document.getElementById('delete-account-modal').classList.add('hidden');
+    document.getElementById('delete-confirmation-input').value = '';
+}
+
+// 회원 탈퇴 확인 및 실행
+async function confirmDeleteAccount() {
+    const confirmText = document.getElementById('delete-confirmation-input').value.trim();
+    
+    if (confirmText !== '탈퇴합니다') {
+        alert('❌ "탈퇴합니다"를 정확히 입력해주세요.');
+        return;
+    }
+
+    // 현재 사용자 정보 가져오기
+    const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+    const currentUser = userData;
+    
+    if (!currentUser || !currentUser.id) {
+        alert('❌ 로그인 정보를 찾을 수 없습니다.\n다시 로그인해주세요.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        console.log('🗑️ 회원 탈퇴 시작:', currentUser.id);
+        
+        // 탈퇴 확인 (2차 확인)
+        const finalConfirm = confirm(
+            '⚠️ 최종 확인\n\n' +
+            '정말로 탈퇴하시겠습니까?\n' +
+            '모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.\n\n' +
+            '확인을 누르면 즉시 탈퇴 처리됩니다.'
+        );
+        
+        if (!finalConfirm) {
+            console.log('❌ 사용자가 최종 탈퇴를 취소함');
+            return;
+        }
+
+        // 1) 사용자 관련 데이터 조회 및 삭제
+        console.log('🔍 사용자 관련 데이터 조회 중...');
+        
+        // 상담 내역 삭제
+        try {
+            const consultationsResponse = await fetch(`tables/consultations?limit=10000`);
+            if (consultationsResponse.ok) {
+                const consultationsData = await consultationsResponse.json();
+                const userConsultations = consultationsData.data.filter(c => 
+                    c.user_id === currentUser.id
+                );
+                
+                console.log(`📝 상담 내역 ${userConsultations.length}건 삭제 중...`);
+                for (const consultation of userConsultations) {
+                    await fetch(`tables/consultations/${consultation.id}`, {
+                        method: 'DELETE'
+                    });
+                }
+                console.log('✅ 상담 내역 삭제 완료');
+            }
+        } catch (error) {
+            console.warn('⚠️ 상담 내역 삭제 오류 (계속 진행):', error);
+        }
+
+        // 2) 사용자 레코드 삭제 (Soft Delete)
+        console.log('🗑️ 사용자 레코드 삭제:', currentUser.id);
+        const deleteUserResponse = await fetch(`tables/users/${currentUser.id}`, {
+            method: 'DELETE'
+        });
+        
+        if (!deleteUserResponse.ok) {
+            throw new Error('사용자 삭제 실패');
+        }
+        console.log('✅ 사용자 레코드 삭제 완료');
+        
+        // 3) 로컬 스토리지 완전 초기화
+        console.log('🧹 로컬 데이터 초기화 중...');
+        localStorage.removeItem('user_data');
+        localStorage.removeItem('session_token');
+        localStorage.removeItem('session_expires');
+        localStorage.removeItem('user_type');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('userSession');
+        sessionStorage.clear();
+        console.log('✅ 로컬 데이터 초기화 완료');
+        
+        // 4) 탈퇴 완료 알림
+        alert(
+            '✅ 회원 탈퇴가 완료되었습니다.\n\n' +
+            '그동안 beautycat을 이용해 주셔서 감사합니다.\n' +
+            '더 나은 서비스로 다시 찾아뵙겠습니다.'
+        );
+        
+        // 5) 메인 페이지로 이동
+        console.log('🏠 메인 페이지로 이동');
+        window.location.href = 'index.html';
+        
+    } catch (error) {
+        console.error('❌ 회원 탈퇴 오류:', error);
+        alert(
+            '❌ 회원 탈퇴 처리 중 오류가 발생했습니다.\n\n' +
+            `오류 내용: ${error.message}\n\n` +
+            '관리자에게 문의해주세요.\n' +
+            '이메일: admin@beautycat.kr'
+        );
+        closeDeleteAccountModal();
+    }
+}
+
+console.log('✅ 회원 탈퇴 기능 로드 완료');
+</script>
 
 <!-- 🔥 긴급 핫픽스: PATCH → GET + PUT 변환 -->
 <script>
