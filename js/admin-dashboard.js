@@ -938,56 +938,82 @@ async function handleCSVUpload(event) {
 // Load shops
 async function loadShops(updateTable = true) {
     try {
-        console.log('🏪 업체 목록 로딩 시작...');
-        // 필터 값 가져오기 (서버 사이드 필터)
+        console.log('🏪 업체 목록 로딩 시작... (v2.8.13.6.160: 정적 JSON)');
+        
+        // v2.8.13.6.160: 정적 JSON 파일에서 로딩 (10,000개 고품질 업체)
+        const response = await fetch('/static/shops.json');
+        if (!response.ok) {
+            throw new Error(`정적 파일 로딩 실패: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // 삭제된 샵 제외 (Soft Delete 필터링) - 정적 파일에는 이미 필터링되어 있음
+        allShops = Array.isArray(data) ? data.filter(shop => !shop.deleted) : [];
+        
+        console.log('📊 정적 JSON에서 로딩된 업체 수:', allShops.length);
+        
+        // 필터 값 가져오기 (클라이언트 사이드 필터)
         const searchTerm = document.getElementById('shop-search')?.value || '';
         const regionFilter = document.getElementById('shop-region-filter')?.value || '';
         const statusFilter = document.getElementById('shop-status-filter')?.value || '';
         
-        // API 쿼리 파라미터 구성 (v2.8.13.6.153: limit 10000으로 조정 - CPU 타임아웃 방지)
-        let queryParams = 'limit=10000&sort=created_at';
-        if (searchTerm) queryParams += `&search=${encodeURIComponent(searchTerm)}`;
-        if (regionFilter) queryParams += `&state=${encodeURIComponent(regionFilter)}`;
-        if (statusFilter) queryParams += `&status=${encodeURIComponent(statusFilter)}`;
-        
-        console.log('🔍 서버 필터 적용:', { searchTerm, regionFilter, statusFilter });
-        
-        const response = await fetch(`tables/skincare_shops?${queryParams}`);
-        const data = await response.json();
-        
-        // 삭제된 샵 제외 (Soft Delete 필터링)
-        allShops = (data.data || []).filter(shop => !shop.deleted);
-        
         // v2.8.13.6.155: 전역 변수로 노출 (editShop 함수에서 접근 가능하도록)
         window.allShops = allShops;
         
-        console.log('📊 서버에서 로딩된 업체 수:', allShops.length, '(삭제된 샵 제외)');
-        
-        // v2.8.13.6.140: 클라이언트 사이드 필터 적용 (샵 타입)
-        const shopTypeFilter = document.getElementById('shop-type-filter')?.value || '';
+        // v2.8.13.6.160: 클라이언트 사이드 필터 적용 (검색, 지역, 상태)
         let filteredShops = [...allShops];
+        
+        // 검색어 필터
+        if (searchTerm) {
+            const searchLower = searchTerm.toLowerCase();
+            filteredShops = filteredShops.filter(shop => {
+                return (shop.name && shop.name.toLowerCase().includes(searchLower)) ||
+                       (shop.address && shop.address.toLowerCase().includes(searchLower)) ||
+                       (shop.phone && shop.phone.includes(searchTerm)) ||
+                       (shop.email && shop.email.toLowerCase().includes(searchLower));
+            });
+            console.log('🔍 검색어 필터:', searchTerm, '-', filteredShops.length, '개');
+        }
+        
+        // 지역 필터
+        if (regionFilter) {
+            filteredShops = filteredShops.filter(shop => {
+                return shop.state === regionFilter || (shop.state && shop.state.includes(regionFilter));
+            });
+            console.log('🔍 지역 필터:', regionFilter, '-', filteredShops.length, '개');
+        }
+        
+        // 상태 필터
+        if (statusFilter) {
+            filteredShops = filteredShops.filter(shop => shop.status === statusFilter);
+            console.log('🔍 상태 필터:', statusFilter, '-', filteredShops.length, '개');
+        }
+        
+        // v2.8.13.6.140: 샵 타입 필터
+        const shopTypeFilter = document.getElementById('shop-type-filter')?.value || '';
         
         if (shopTypeFilter === 'verified') {
             // 인증샵만: status = 'active' AND email이 정상
             filteredShops = filteredShops.filter(shop => {
                 return shop.status === 'active' && shop.email && !shop.email.includes('@example.com');
             });
-            console.log('🔍 클라이언트 필터: 인증샵만 -', filteredShops.length, '개');
+            console.log('🔍 샵 타입 필터: 인증샵만 -', filteredShops.length, '개');
         } else if (shopTypeFilter === 'public') {
             // 공공데이터만: email이 없거나 @example.com
             filteredShops = filteredShops.filter(shop => {
                 return !shop.email || shop.email.includes('@example.com');
             });
-            console.log('🔍 클라이언트 필터: 공공데이터만 -', filteredShops.length, '개');
+            console.log('🔍 샵 타입 필터: 공공데이터만 -', filteredShops.length, '개');
         } else if (shopTypeFilter === 'registered') {
             // 신규등록만: email이 있고 정상적인 이메일
             filteredShops = filteredShops.filter(shop => {
                 return shop.email && !shop.email.includes('@example.com');
             });
-            console.log('🔍 클라이언트 필터: 신규등록만 -', filteredShops.length, '개');
+            console.log('🔍 샵 타입 필터: 신규등록만 -', filteredShops.length, '개');
         }
         
-        console.log('📋 최종 필터링된 업체 수:', filteredShops.length);
+        console.log('📋 최종 필터링된 업체 수:', filteredShops.length, '/ 전체:', allShops.length);
         
         // v2.8.13.6.139: 업체 수 업데이트 (전체 데이터 기준)
         updateShopCounts(allShops);
