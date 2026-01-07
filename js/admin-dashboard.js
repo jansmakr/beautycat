@@ -944,8 +944,8 @@ async function loadShops(updateTable = true) {
         const regionFilter = document.getElementById('shop-region-filter')?.value || '';
         const statusFilter = document.getElementById('shop-status-filter')?.value || '';
         
-        // API 쿼리 파라미터 구성 (v2.8.13.6.144: limit 5000으로 최적화)
-        let queryParams = 'limit=5000&sort=created_at';
+        // API 쿼리 파라미터 구성 (v2.8.13.6.152: limit 100000으로 증가)
+        let queryParams = 'limit=100000&sort=created_at';
         if (searchTerm) queryParams += `&search=${encodeURIComponent(searchTerm)}`;
         if (regionFilter) queryParams += `&state=${encodeURIComponent(regionFilter)}`;
         if (statusFilter) queryParams += `&status=${encodeURIComponent(statusFilter)}`;
