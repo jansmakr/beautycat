@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- v2.8.13.6.163.2: 데이터 캐싱으로 503 에러 방지 -->
     <title id="page-title">지역별 피부관리실 - BeautyCat</title>
     <meta name="description" id="page-description" content="지역별 피부관리실 찾기 - 전국 30,000개 피부관리실">
     
@@ -375,6 +376,10 @@
             }
         }
         
+        // v2.8.13.6.163.2: 데이터 캐싱 (503 에러 방지)
+        let cachedAllShops = null;
+        let loadShopsDebounceTimer = null;
+        
         async function loadShops() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('shop-grid').style.display = 'none';
@@ -383,44 +388,62 @@
             try {
                 console.log('🔍 샵 로딩 시작:', { currentRegion, currentDistrict, currentPage });
                 
-                const [shopsResponse, publicResponse] = await Promise.all([
-                    fetch(`/tables/skincare_shops?limit=50000`),
-                    fetch(`/tables/public_skincare_data?limit=50000`)
-                ]);
+                let shops;
                 
-                const shopsData = await shopsResponse.json();
-                const publicData = await publicResponse.json();
-                
-                console.log('📊 일반 샵 수:', shopsData.data.length);
-                console.log('📊 공공 데이터 수:', publicData.data.length);
-                
-                let shops = [...shopsData.data, ...publicData.data];
-                console.log('📊 병합 후 전체 샵 수:', shops.length);
-                
-                const uniqueShops = [];
-                const seenKeys = new Set();
-                
-                for (const shop of shops) {
-                    const key = `${shop.business_name || shop.shop_name}-${shop.address}`.toLowerCase();
-                    if (!seenKeys.has(key)) {
-                        seenKeys.add(key);
-                        uniqueShops.push(shop);
+                // 캐시된 데이터가 있으면 재사용
+                if (cachedAllShops) {
+                    console.log('💾 캐시된 데이터 사용 (' + cachedAllShops.length + '개)');
+                    shops = cachedAllShops;
+                } else {
+                    // 처음에만 API 호출
+                    console.log('📡 API에서 데이터 로드 중...');
+                    const [shopsResponse, publicResponse] = await Promise.all([
+                        fetch(`/tables/skincare_shops?limit=50000`),
+                        fetch(`/tables/public_skincare_data?limit=50000`)
+                    ]);
+                    
+                    const shopsData = await shopsResponse.json();
+                    const publicData = await publicResponse.json();
+                    
+                    console.log('📊 일반 샵 수:', shopsData.data.length);
+                    console.log('📊 공공 데이터 수:', publicData.data.length);
+                    
+                    shops = [...shopsData.data, ...publicData.data];
+                    console.log('📊 병합 후 전체 샵 수:', shops.length);
+                    
+                    // 중복 제거
+                    const uniqueShops = [];
+                    const seenKeys = new Set();
+                    
+                    for (const shop of shops) {
+                        const key = `${shop.business_name || shop.shop_name}-${shop.address}`.toLowerCase();
+                        if (!seenKeys.has(key)) {
+                            seenKeys.add(key);
+                            uniqueShops.push(shop);
+                        }
                     }
+                    
+                    shops = uniqueShops;
+                    console.log('📊 중복 제거 후 샵 수:', shops.length);
+                    
+                    // 캐시에 저장
+                    cachedAllShops = shops;
+                    console.log('✅ 데이터 캐시 완료');
                 }
                 
-                shops = uniqueShops;
-                console.log('📊 중복 제거 후 샵 수:', shops.length);
+                // 이미 캐시된 데이터를 사용하므로 복사본 생성
+                let filteredShops = [...cachedAllShops];
                 
                 if (currentRegion) {
-                    shops = shops.filter(shop => {
+                    filteredShops = filteredShops.filter(shop => {
                         const shopRegion = shop.region || shop.state?.replace(/특별시|광역시|특별자치시|도/g, '').trim();
                         return shopRegion === currentRegion;
                     });
-                    console.log('📍 지역 필터링 후:', shops.length, '(region:', currentRegion, ')');
+                    console.log('📍 지역 필터링 후:', filteredShops.length, '(region:', currentRegion, ')');
                 }
                 
                 if (currentDistrict) {
-                    shops = shops.filter(shop => {
+                    filteredShops = filteredShops.filter(shop => {
                         if (shop.district) {
                             return shop.district === currentDistrict;
                         }
@@ -441,15 +464,15 @@
                         const extractedDistrict = match && match[1] ? match[1] : null;
                         return extractedDistrict === currentDistrict;
                     });
-                    console.log('🏘️ 구/군 필터링 후:', shops.length, '(district:', currentDistrict, ')');
+                    console.log('🏘️ 구/군 필터링 후:', filteredShops.length, '(district:', currentDistrict, ')');
                 }
                 
-                console.log('✅ 필터링 후 샵 수:', shops.length);
+                console.log('✅ 필터링 후 샵 수:', filteredShops.length);
                 
-                const totalShops = shops.length;
+                const totalShops = filteredShops.length;
                 const startIndex = (currentPage - 1) * pageSize;
                 const endIndex = startIndex + pageSize;
-                const paginatedShops = shops.slice(startIndex, endIndex);
+                const paginatedShops = filteredShops.slice(startIndex, endIndex);
                 
                 console.log('📄 페이지:', currentPage, '표시:', paginatedShops.length, '/', totalShops);
                 
