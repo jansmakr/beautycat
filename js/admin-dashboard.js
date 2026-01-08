@@ -5,169 +5,6 @@ let allShops = [];
 let allConsultations = [];
 let selectedUser = null;
 
-// ===== 공공 데이터 자동 매칭 시스템 =====
-/**
- * 공공 데이터와 등록 샵 자동 매칭 함수
- * @param {Object} newShop - 등록된 샵 정보
- * @returns {Object|null} - 매칭된 공공 데이터 샵 또는 null
- */
-async function autoMatchPublicData(newShop) {
-    const { name, address, phone } = newShop;
-    
-    try {
-        console.log('🔍 공공 데이터 검색:', { name, address, phone });
-        
-        // 입력 검증
-        if (!name || !newShop.id) {
-            console.error('❌ 필수 정보 누락:', { name, id: newShop.id });
-            return null;
-        }
-        
-        // 1. 유사도 검색
-        const publicShopsResponse = await fetch(
-            `tables/public_skincare_data?search=${encodeURIComponent(name)}&limit=10`
-        );
-        
-        if (!publicShopsResponse.ok) {
-            console.error('❌ 공공 데이터 조회 실패:', publicShopsResponse.status);
-            return null;
-        }
-        
-        const publicShops = await publicShopsResponse.json();
-        
-        console.log('📊 검색 결과:', publicShops.data?.length || 0, '개');
-        
-        if (!publicShops.data || publicShops.data.length === 0) {
-            console.log('ℹ️ 검색 결과 없음');
-            return null;
-        }
-        
-        // 2. 이미 매칭된 샵 제외
-        const unmatchedShops = publicShops.data.filter(shop => !shop.matched_shop_id);
-        
-        if (unmatchedShops.length === 0) {
-            console.log('ℹ️ 모든 검색 결과가 이미 매칭됨');
-            return null;
-        }
-        
-        // 3. 각 샵의 유사도 점수 계산
-        const scoredShops = unmatchedShops.map(shop => {
-            const nameSimilarity = calculateSimilarity(name, shop.business_name);
-            const addressSimilarity = address && shop.address ? calculateSimilarity(address, shop.address) : 0;
-            const phoneMatch = phone && shop.phone && phone.replace(/[^0-9]/g, '') === shop.phone.replace(/[^0-9]/g, '');
-            
-            // 점수 계산: 이름 60%, 주소 30%, 전화번호 10% (일치 시 +50점)
-            let score = (nameSimilarity * 0.6) + (addressSimilarity * 0.3);
-            if (phoneMatch) score += 0.5;
-            
-            console.log('🔎 매칭 검사:', {
-                shop: shop.business_name,
-                nameSimilarity: nameSimilarity.toFixed(2),
-                addressSimilarity: addressSimilarity.toFixed(2),
-                phoneMatch,
-                totalScore: score.toFixed(2)
-            });
-            
-            return { shop, score, nameSimilarity, addressSimilarity, phoneMatch };
-        });
-        
-        // 4. 점수 순 정렬
-        scoredShops.sort((a, b) => b.score - a.score);
-        
-        // 5. 최고 점수 샵 선택 (임계값 확인)
-        const bestMatch = scoredShops[0];
-        const isValidMatch = (bestMatch.nameSimilarity > 0.8 && bestMatch.addressSimilarity > 0.6) || 
-                             bestMatch.phoneMatch;
-        
-        if (!isValidMatch) {
-            console.log('ℹ️ 임계값 미달:', {
-                bestScore: bestMatch.score.toFixed(2),
-                name: bestMatch.nameSimilarity.toFixed(2),
-                address: bestMatch.addressSimilarity.toFixed(2)
-            });
-            return null;
-        }
-        
-        // 6. 매칭 업데이트
-        console.log('✅ 매칭 발견:', {
-            business_name: bestMatch.shop.business_name,
-            score: bestMatch.score.toFixed(2)
-        });
-        
-        // PUT 사용 (Cloudflare Workers는 PATCH 미지원)
-        const updatedData = {
-            ...bestMatch.shop,
-            matched_shop_id: newShop.id,
-            phone: phone || bestMatch.shop.phone
-        };
-        
-        const updateResponse = await fetch(`tables/public_skincare_data/${bestMatch.shop.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData)
-        });
-        
-        if (!updateResponse.ok) {
-            console.error('❌ 매칭 업데이트 실패:', updateResponse.status);
-            return null;
-        }
-        
-        console.log('✅ 매칭 업데이트 완료');
-        return bestMatch.shop;
-        
-    } catch (error) {
-        console.error('❌ 자동 매칭 실패:', error);
-        return null;
-    }
-}
-
-/**
- * 두 문자열 간의 유사도 계산 (Levenshtein Distance)
- */
-function calculateSimilarity(str1, str2) {
-    if (!str1 || !str2) return 0;
-    
-    const longer = str1.length > str2.length ? str1 : str2;
-    const shorter = str1.length > str2.length ? str2 : str1;
-    
-    if (longer.length === 0) return 1.0;
-    
-    const editDistance = levenshteinDistance(longer, shorter);
-    return (longer.length - editDistance) / longer.length;
-}
-
-/**
- * Levenshtein Distance 알고리즘
- */
-function levenshteinDistance(str1, str2) {
-    const matrix = [];
-    
-    for (let i = 0; i <= str2.length; i++) {
-        matrix[i] = [i];
-    }
-    
-    for (let j = 0; j <= str1.length; j++) {
-        matrix[0][j] = j;
-    }
-    
-    for (let i = 1; i <= str2.length; i++) {
-        for (let j = 1; j <= str1.length; j++) {
-            if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1, // 치환
-                    matrix[i][j - 1] + 1,     // 삽입
-                    matrix[i - 1][j] + 1      // 삭제
-                );
-            }
-        }
-    }
-    
-    return matrix[str2.length][str1.length];
-}
-// ===== 공공 데이터 자동 매칭 시스템 끝 =====
-
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Admin dashboard loaded');
@@ -187,44 +24,39 @@ document.addEventListener('DOMContentLoaded', function() {
     setupShopFilters();
 });
 
-// Check admin authentication (v2.8.13.6.130 - 간소화된 권한 확인)
+// Check admin authentication  
 function checkAdminAuth() {
-    console.log('🔓 admin-dashboard.js - 관리자 권한 체크');
+    // 관리자 인증 확인 (비밀번호 5874로 로그인한 경우)
+    const adminAuth = localStorage.getItem('adminAuth');
+    const adminLoginTime = localStorage.getItem('adminLoginTime');
     
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const userType = localStorage.getItem('user_type');
-    const adminAccess = localStorage.getItem('adminAccess') === 'true';
-    const sessionToken = localStorage.getItem('session_token');
-    const userEmail = localStorage.getItem('user_email');
+    // 24시간 세션 유지 (24 * 60 * 60 * 1000 = 86400000ms)
+    const sessionExpiry = 24 * 60 * 60 * 1000;
+    const currentTime = new Date().getTime();
     
-    // 관리자 권한 체크 (단순화)
-    const hasAdminAuth = (isLoggedIn && userType === 'admin') || 
-                         adminAccess || 
-                         (sessionToken && sessionToken.startsWith('admin_')) ||
-                         (userEmail === 'admin@beautycat.kr');
-    
-    if (hasAdminAuth) {
-        console.log('✅ 관리자 권한 확인됨');
-        // 관리자 정보 설정
+    if (adminAuth === 'true' && adminLoginTime && (currentTime - parseInt(adminLoginTime)) < sessionExpiry) {
+        // 관리자 세션 유효
         currentUser = {
-            id: localStorage.getItem('user_id') || 'admin_001',
-            email: userEmail || 'admin@beautycat.kr',
-            name: localStorage.getItem('user_name') || '관리자',
-            type: 'admin'
+            id: 'admin_5874',
+            email: 'admin@beautycat.com',
+            name: 'beautycat 관리자',
+            user_type: 'admin'
         };
-        
-        // Display admin name
-        const adminNameElement = document.getElementById('admin-name');
-        if (adminNameElement) {
-            adminNameElement.textContent = currentUser.name;
-        }
-        
-        return true;
+        console.log('관리자 인증 성공');
+    } else {
+        // 세션이 없거나 만료됨
+        alert('관리자 권한이 필요합니다. 로그인 페이지로 이동합니다.');
+        localStorage.removeItem('adminAuth');
+        localStorage.removeItem('adminLoginTime');
+        window.location.href = 'index.html';
+        return;
     }
     
-    console.warn('⚠️ 관리자 권한 없음 - 로그인 페이지로 리다이렉트');
-    window.location.href = 'login.html?returnUrl=' + encodeURIComponent(window.location.href);
-    return false;
+    // Display admin name
+    const adminNameElement = document.getElementById('admin-name');
+    if (adminNameElement) {
+        adminNameElement.textContent = currentUser.name || '관리자';
+    }
 }
 
 // Set up event listeners
@@ -245,11 +77,8 @@ function setupEventListeners() {
 
 // Show section
 function showSection(sectionName) {
-    console.log('🔄 섹션 전환 시작:', sectionName);
-    
     // Hide all sections
     const sections = document.querySelectorAll('.section');
-    console.log('📦 전체 섹션 수:', sections.length);
     sections.forEach(section => section.classList.add('hidden'));
     
     // Show selected section - try both with and without '-section' suffix
@@ -259,22 +88,16 @@ function showSection(sectionName) {
     }
     
     if (targetSection) {
-        console.log('✅ 대상 섹션 발견:', targetSection.id);
         targetSection.classList.remove('hidden');
         currentSection = sectionName;
-    } else {
-        console.error('❌ 섹션을 찾을 수 없습니다:', sectionName);
-        console.log('🔍 시도한 ID:', sectionName + '-section', 'and', sectionName);
     }
     
     // Load section-specific data
-    console.log('📊 섹션 데이터 로딩:', sectionName);
     switch(sectionName) {
         case 'users':
             loadUsers();
             break;
         case 'shops':
-            console.log('🏪 loadShops() 호출');
             loadShops();
             break;
         case 'consultations':
@@ -292,10 +115,7 @@ function showSection(sectionName) {
         case 'test':
             // Test section doesn't need data loading
             break;
-        default:
-            console.warn('⚠️ 알 수 없는 섹션:', sectionName);
     }
-    console.log('✅ showSection 완료:', sectionName);
 }
 
 // Toggle user menu
@@ -559,11 +379,8 @@ function displayUsers(users) {
                     <button onclick="viewUser('${user.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">
                         보기
                     </button>
-                    <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900 mr-2">
+                    <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900">
                         수정
-                    </button>
-                    <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900" title="사용자 삭제">
-                        삭제
                     </button>
                 </td>
             </tr>
@@ -618,252 +435,18 @@ function copyPassword(userId) {
     });
 }
 
-// v2.8.13.6.129.7: 샵 필터 이벤트 리스너 초기화 함수 (강제 초기화 추가)
-function initializeShopFilters() {
-    const shopTypeFilter = document.getElementById('shop-type-filter');
-    const shopSearchInput = document.getElementById('shop-search');
-    const shopRegionFilter = document.getElementById('shop-region-filter');
-    const shopStatusFilter = document.getElementById('shop-status-filter');
-    
-    // 🔥 CRITICAL: 이벤트 리스너 등록 전에 다시 한 번 강제 초기화!
-    if (shopTypeFilter) {
-        shopTypeFilter.value = '';
-        // 브라우저가 값을 복원하지 못하도록 selectedIndex도 초기화
-        shopTypeFilter.selectedIndex = 0;
-    }
-    if (shopSearchInput) shopSearchInput.value = '';
-    if (shopRegionFilter) {
-        shopRegionFilter.value = '';
-        shopRegionFilter.selectedIndex = 0;
-    }
-    if (shopStatusFilter) {
-        shopStatusFilter.value = '';
-        shopStatusFilter.selectedIndex = 0;
-    }
-    
-    console.log('🔒 필터 강제 초기화 완료 (selectedIndex 포함)');
-    
-    // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
-    if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
-        shopTypeFilter.addEventListener('change', function() {
-            console.log('📊 샵 타입 필터 변경:', this.value);
-            filterShops();
-        });
-        shopTypeFilter.dataset.listenerAdded = 'true';
-    }
-    
-    // v2.8.13.6.130.2: 이벤트 리스너 등록 후 강제 초기화 (브라우저 autocomplete 완전 차단)
-    setTimeout(() => {
-        if (shopTypeFilter) {
-            shopTypeFilter.value = '';
-            shopTypeFilter.selectedIndex = 0;
-            console.log('🔥 최종 초기화 (이벤트 후): shop-type-filter =', shopTypeFilter.value);
-        }
-    }, 150);
-    
-    if (shopSearchInput && !shopSearchInput.dataset.listenerAdded) {
-        shopSearchInput.addEventListener('input', filterShops);
-        shopSearchInput.dataset.listenerAdded = 'true';
-    }
-    
-    if (shopRegionFilter && !shopRegionFilter.dataset.listenerAdded) {
-        shopRegionFilter.addEventListener('change', filterShops);
-        shopRegionFilter.dataset.listenerAdded = 'true';
-    }
-    
-    if (shopStatusFilter && !shopStatusFilter.dataset.listenerAdded) {
-        shopStatusFilter.addEventListener('change', filterShops);
-        shopStatusFilter.dataset.listenerAdded = 'true';
-    }
-}
-
-// ===== CSV 업로드 함수 =====
-/**
- * CSV 파일 업로드 및 처리
- * v2.8.13.6.129.12: CSV 파일로 샵 정보 일괄 업로드
- */
-async function handleCSVUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    console.log('📤 CSV 업로드 시작:', file.name);
-    
-    // 진행 상황 표시
-    const progressDiv = document.getElementById('upload-progress');
-    const progressBar = document.getElementById('upload-progress-bar');
-    const progressPercentage = document.getElementById('upload-percentage');
-    const statusText = document.getElementById('upload-status');
-    
-    progressDiv.style.display = 'block';
-    statusText.textContent = 'CSV 파일 읽는 중...';
-    
-    try {
-        // CSV 파일 읽기
-        const text = await file.text();
-        const lines = text.trim().split('\n');
-        
-        if (lines.length < 2) {
-            throw new Error('CSV 파일이 비어있거나 헤더만 있습니다.');
-        }
-        
-        // 헤더 파싱
-        const headers = lines[0].split(',').map(h => h.trim());
-        console.log('📋 CSV 헤더:', headers);
-        
-        // 필수 필드 확인
-        const requiredFields = ['business_name', 'address', 'region', 'district'];
-        const missingFields = requiredFields.filter(field => !headers.includes(field));
-        
-        if (missingFields.length > 0) {
-            throw new Error(`필수 필드 누락: ${missingFields.join(', ')}`);
-        }
-        
-        // 데이터 파싱
-        const shops = [];
-        for (let i = 1; i < lines.length; i++) {
-            const values = lines[i].split(',').map(v => v.trim());
-            const shop = {};
-            
-            headers.forEach((header, index) => {
-                shop[header] = values[index] || '';
-            });
-            
-            shops.push(shop);
-        }
-        
-        console.log('✅ 파싱된 샵 수:', shops.length);
-        statusText.textContent = `${shops.length}개 샵 정보 파싱 완료. 업로드 중...`;
-        
-        // v2.8.13.6.129.12: 배치 업로드 (10개씩 묶어서 동시 업로드)
-        let successCount = 0;
-        let errorCount = 0;
-        const BATCH_SIZE = 10; // 동시에 10개씩 업로드
-        
-        for (let i = 0; i < shops.length; i += BATCH_SIZE) {
-            const batch = shops.slice(i, i + BATCH_SIZE);
-            const progress = Math.round((i + batch.length) / shops.length * 100);
-            
-            progressBar.style.width = progress + '%';
-            progressPercentage.textContent = progress + '%';
-            statusText.textContent = `업로드 중... (${i + batch.length}/${shops.length})`;
-            
-            // 배치 내 모든 샵을 동시에 업로드
-            const uploadPromises = batch.map(async (shop, index) => {
-                try {
-                    const response = await fetch('/tables/public_skincare_data', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            business_name: shop.business_name,
-                            address: shop.address,
-                            phone: shop.phone || '',
-                            region: shop.region,
-                            district: shop.district,
-                            town: shop.town || '',
-                            status: shop.status || '영업',
-                            data_source: 'csv_upload'
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        successCount++;
-                        const globalIndex = i + index + 1;
-                        // 매 100건마다만 로그 출력
-                        if (globalIndex % 100 === 0 || globalIndex === shops.length) {
-                            console.log(`✅ ${globalIndex}/${shops.length} 업로드 완료`);
-                        }
-                        return { success: true, shop };
-                    } else {
-                        errorCount++;
-                        const globalIndex = i + index + 1;
-                        const errorText = await response.text();
-                        // 오류는 항상 로그
-                        console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, errorText);
-                        return { success: false, shop, error: errorText };
-                    }
-                } catch (error) {
-                    errorCount++;
-                    const globalIndex = i + index + 1;
-                    console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, error);
-                    return { success: false, shop, error: error.message };
-                }
-            });
-            
-            // 배치 완료 대기
-            await Promise.all(uploadPromises);
-            
-            // API 부하 방지 (배치당 50ms 대기)
-            await new Promise(resolve => setTimeout(resolve, 50));
-        }
-        
-        // 완료
-        progressBar.style.width = '100%';
-        progressPercentage.textContent = '100%';
-        statusText.textContent = `✅ 업로드 완료! 성공: ${successCount}개, 실패: ${errorCount}개`;
-        
-        showNotification(`CSV 업로드 완료: ${successCount}개 성공, ${errorCount}개 실패`, successCount > 0 ? 'success' : 'error');
-        
-        // 3초 후 진행 상황 숨기기
-        setTimeout(() => {
-            progressDiv.style.display = 'none';
-            progressBar.style.width = '0%';
-        }, 3000);
-        
-        // 샵 목록 새로고침
-        if (successCount > 0) {
-            await loadShops();
-        }
-        
-    } catch (error) {
-        console.error('❌ CSV 업로드 오류:', error);
-        statusText.textContent = '❌ 오류: ' + error.message;
-        showNotification('CSV 업로드 실패: ' + error.message, 'error');
-    }
-    
-    // 파일 입력 초기화
-    event.target.value = '';
-}
-
 // Load shops
 async function loadShops(updateTable = true) {
     try {
-        console.log('🏪 업체 목록 로딩 시작...');
-        const response = await fetch('tables/skincare_shops?limit=50000&sort=created_at');
+        const response = await fetch('tables/skincare_shops?limit=1000&sort=created_at');
         const data = await response.json();
-        
-        // 삭제된 샵 제외 (Soft Delete 필터링)
-        allShops = (data.data || []).filter(shop => !shop.deleted);
-        
-        console.log('📊 업체 수:', allShops.length, '(삭제된 샵 제외)');
-        console.log('📋 업체 목록:', allShops);
+        allShops = data.data || [];
         
         if (updateTable) {
-            console.log('🖼️ 테이블 렌더링 시작...');
-            
-            // 필터 초기화 (캐시된 값 제거) - v2.8.13.6.129.4: shop-type-filter 추가
-            const searchInput = document.getElementById('shop-search');
-            const regionFilter = document.getElementById('shop-region-filter');
-            const statusFilter = document.getElementById('shop-status-filter');
-            const typeFilter = document.getElementById('shop-type-filter');
-            
-            if (searchInput) searchInput.value = '';
-            if (regionFilter) regionFilter.value = '';
-            if (statusFilter) statusFilter.value = '';
-            if (typeFilter) typeFilter.value = '';  // ✅ shop-type-filter 초기화 추가!
-            
-            console.log('🔄 필터 초기화 완료 (shop-type-filter 포함)');
-            
             displayShops(allShops);
-            console.log('✅ 테이블 렌더링 완료');
-            
-            // v2.8.13.6.129.6: 테이블 렌더링 후 이벤트 리스너 등록 (초기 필터링 방지)
-            setTimeout(() => {
-                initializeShopFilters();
-                console.log('✅ 필터 이벤트 리스너 등록 완료');
-            }, 100);
         }
     } catch (error) {
-        console.error('❌ Shops loading error:', error);
+        console.error('Shops loading error:', error);
         
         // API 실패시 데모 데이터 사용
         allShops = [
@@ -901,27 +484,12 @@ async function loadShops(updateTable = true) {
 
 // Display shops in table
 function displayShops(shops) {
-    console.log('📊 displayShops 호출됨, 업체 수:', shops.length);
-    console.log('📋 shops 데이터:', shops);
-    
     const tableBody = document.getElementById('shops-table');
     
-    if (!tableBody) {
-        console.error('❌ shops-table 요소를 찾을 수 없습니다!');
-        console.log('🔍 DOM 확인:', document.body.innerHTML.substring(0, 500));
-        return;
-    }
-    
-    console.log('✅ shops-table 요소 발견:', tableBody);
-    
     if (shops.length === 0) {
-        console.log('⚠️ 표시할 업체가 없습니다');
         tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
         return;
     }
-    
-    console.log('✅ 업체 테이블 렌더링 중...');
-    console.log('🔍 첫 번째 업체:', shops[0]);
     
     tableBody.innerHTML = shops.map(shop => {
         const status = shop.status || 'active';
@@ -1262,394 +830,10 @@ async function toggleUserStatus() {
     }
 }
 
-// Delete user
-async function deleteUser(userId) {
-    // Find user to get their info for confirmation
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) {
-        showNotification('사용자를 찾을 수 없습니다.', 'error');
-        return;
-    }
-    
-    // Admin cannot be deleted
-    if (user.user_type === 'admin') {
-        showNotification('관리자 계정은 삭제할 수 없습니다.', 'error');
-        return;
-    }
-    
-    // Confirmation
-    const confirmMessage = `정말로 이 사용자를 삭제하시겠습니까?\n\n` +
-                          `이름: ${user.name}\n` +
-                          `이메일: ${user.email}\n` +
-                          `타입: ${user.user_type}\n\n` +
-                          `⚠️ 이 작업은 되돌릴 수 없습니다.`;
-    
-    if (!confirm(confirmMessage)) {
-        return;
-    }
-    
-    try {
-        console.log('🗑️ 사용자 삭제 시작:', userId);
-        
-        // If user is a shop, delete the shop record first
-        if (user.user_type === 'shop' && user.shop_id) {
-            console.log('🏪 연결된 업체 레코드 삭제:', user.shop_id);
-            const shopDeleteResponse = await fetch(`tables/skincare_shops/${user.shop_id}`, {
-                method: 'DELETE'
-            });
-            
-            if (!shopDeleteResponse.ok) {
-                console.warn('⚠️ 업체 레코드 삭제 실패 (계속 진행)');
-            } else {
-                console.log('✅ 업체 레코드 삭제 완료');
-            }
-        }
-        
-        // Delete user
-        const response = await fetch(`tables/users/${userId}`, {
-            method: 'DELETE'
-        });
-        
-        if (response.ok) {
-            console.log('✅ 사용자 삭제 완료:', userId);
-            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다.`, 'success');
-            await loadUsers(); // Refresh users list
-        } else {
-            throw new Error('사용자 삭제 실패');
-        }
-    } catch (error) {
-        console.error('❌ User delete error:', error);
-        showNotification('사용자 삭제에 실패했습니다: ' + error.message, 'error');
-    }
-}
-
 // Edit user (placeholder)
-// Edit user
-async function editUser(userId) {
-    try {
-        console.log('📝 사용자 편집 시작:', userId);
-        
-        // 사용자 정보 가져오기
-        const response = await fetch(`tables/users/${userId}`);
-        if (!response.ok) {
-            throw new Error('사용자 정보를 가져올 수 없습니다.');
-        }
-        
-        const user = await response.json();
-        console.log('✅ 사용자 정보 로드:', user);
-        
-        // 폼에 데이터 채우기
-        document.getElementById('edit-user-name').value = user.name || '';
-        document.getElementById('edit-user-email').value = user.email || '';
-        document.getElementById('edit-user-phone').value = user.phone || '';
-        document.getElementById('edit-user-type').value = user.user_type || 'customer';
-        
-        // 모달에 사용자 ID 저장
-        document.getElementById('user-edit-modal').setAttribute('data-user-id', userId);
-        
-        // 경고 메시지 표시
-        document.getElementById('user-type-warning').classList.remove('hidden');
-        
-        // 모달 열기
-        const modal = document.getElementById('user-edit-modal');
-        modal.style.display = 'flex';
-        modal.classList.remove('hidden');
-        
-    } catch (error) {
-        console.error('사용자 편집 오류:', error);
-        showNotification('사용자 정보를 불러올 수 없습니다.', 'error');
-    }
+function editUser(userId) {
+    showNotification('사용자 편집 기능은 준비중입니다.', 'info');
 }
-
-// Close user edit modal
-function closeUserEditModal() {
-    const modal = document.getElementById('user-edit-modal');
-    modal.style.display = 'none';
-    modal.classList.add('hidden');
-    
-    // 폼 초기화
-    document.getElementById('user-edit-form').reset();
-    document.getElementById('user-type-warning').classList.add('hidden');
-}
-
-// Make functions globally accessible
-window.editUser = editUser;
-window.closeUserEditModal = closeUserEditModal;
-
-// Delete user
-async function deleteUser(userId) {
-    // Find user to get their info for confirmation
-    const user = allUsers.find(u => u.id === userId);
-    if (!user) {
-        showNotification('사용자를 찾을 수 없습니다.', 'error');
-        return;
-    }
-    
-    // Admin cannot be deleted
-    if (user.user_type === 'admin') {
-        showNotification('관리자 계정은 삭제할 수 없습니다.', 'error');
-        return;
-    }
-    
-    // Confirmation with user details
-    const confirmMessage = `정말로 이 사용자를 삭제하시겠습니까?\n\n` +
-                          `이름: ${user.name}\n` +
-                          `이메일: ${user.email}\n` +
-                          `타입: ${user.user_type}\n\n` +
-                          `⚠️ 이 작업은 되돌릴 수 없습니다.`;
-    
-    if (!confirm(confirmMessage)) {
-        return;
-    }
-    
-    try {
-        console.log('🗑️ 사용자 삭제 시작:', userId);
-        
-        // If user is a shop, try to find and delete the shop record first
-        if (user.user_type === 'shop') {
-            try {
-                // Try to find shop by email
-                const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
-                if (shopsResponse.ok) {
-                    const shopsData = await shopsResponse.json();
-                    const userShop = shopsData.data.find(s => 
-                        s.email && user.email && 
-                        s.email.toLowerCase() === user.email.toLowerCase()
-                    );
-                    
-                    if (userShop) {
-                        console.log('🏪 연결된 업체 레코드 삭제:', userShop.id);
-                        const shopDeleteResponse = await fetch(`tables/skincare_shops/${userShop.id}`, {
-                            method: 'DELETE'
-                        });
-                        
-                        if (shopDeleteResponse.ok) {
-                            console.log('✅ 업체 레코드 삭제 완료');
-                        } else {
-                            console.warn('⚠️ 업체 레코드 삭제 실패 (계속 진행)');
-                        }
-                    }
-                }
-            } catch (shopError) {
-                console.warn('⚠️ 업체 레코드 삭제 중 오류 (계속 진행):', shopError);
-            }
-        }
-        
-        // Delete user
-        const response = await fetch(`tables/users/${userId}`, {
-            method: 'DELETE'
-        });
-        
-        if (response.ok) {
-            console.log('✅ 사용자 삭제 완료:', userId);
-            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다.`, 'success');
-            await loadUsers(); // Refresh users list
-            
-            // Refresh shops list if it was a shop
-            if (user.user_type === 'shop') {
-                await loadShops();
-            }
-        } else {
-            throw new Error('사용자 삭제 실패');
-        }
-    } catch (error) {
-        console.error('❌ 사용자 삭제 오류:', error);
-        showNotification('사용자 삭제 중 오류가 발생했습니다: ' + error.message, 'error');
-    }
-}
-
-window.deleteUser = deleteUser;
-
-// User edit form submission
-document.addEventListener('DOMContentLoaded', function() {
-    const userEditForm = document.getElementById('user-edit-form');
-    if (userEditForm) {
-        userEditForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const modal = document.getElementById('user-edit-modal');
-            const userId = modal.getAttribute('data-user-id');
-            
-            if (!userId) {
-                showNotification('사용자 ID를 찾을 수 없습니다.', 'error');
-                return;
-            }
-            
-            // 폼 데이터 수집
-            const name = document.getElementById('edit-user-name').value.trim();
-            const phone = document.getElementById('edit-user-phone').value.trim();
-            const userType = document.getElementById('edit-user-type').value;
-            
-            if (!name) {
-                showNotification('이름을 입력해주세요.', 'error');
-                return;
-            }
-            
-            // 로딩 버튼
-            const submitBtn = userEditForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>저장 중...';
-            
-            try {
-                console.log('💾 사용자 정보 업데이트 중...', {userId, name, phone, userType});
-                
-                // 기존 사용자 정보 가져오기 (타입 변경 감지용)
-                const currentUserResponse = await fetch(`tables/users/${userId}`);
-                const currentUser = await currentUserResponse.json();
-                const oldUserType = currentUser.user_type;
-                
-                console.log('🔄 사용자 타입 변경:', oldUserType, '→', userType);
-                
-                // 사용자 정보 업데이트
-                const updateData = {
-                    name: name,
-                    phone: phone,
-                    user_type: userType
-                };
-                
-                const response = await fetch(`tables/users/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updateData)
-                });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`업데이트 실패: ${errorText}`);
-                }
-                
-                const updatedUser = await response.json();
-                console.log('✅ 사용자 정보 업데이트 완료:', updatedUser);
-                
-                // 🔄 사용자 이름이 변경되었고 shop 타입이면 → 샵 이름도 동기화
-                if (userType === 'shop' && name !== currentUser.name) {
-                    console.log('🔄 사용자 이름 변경 감지 → 샵 이름 동기화 시작');
-                    
-                    // 기존 샵 레코드 찾기
-                    const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
-                    const shopsData = await shopsResponse.json();
-                    const existingShop = shopsData.data.find(s => 
-                        s.email && s.email.toLowerCase() === updatedUser.email.toLowerCase()
-                    );
-                    
-                    if (existingShop) {
-                        console.log('🔄 샵 이름 업데이트:', existingShop.name, '→', name);
-                        
-                        // 샵 이름 업데이트
-                        const shopUpdateResponse = await fetch(`tables/skincare_shops/${existingShop.id}`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                name: name,
-                                owner_name: name
-                            })
-                        });
-                        
-                        if (shopUpdateResponse.ok) {
-                            console.log('✅ 샵 이름 동기화 완료');
-                        } else {
-                            console.error('❌ 샵 이름 동기화 실패:', await shopUpdateResponse.text());
-                        }
-                    }
-                }
-                
-                // 🏪 customer → shop 변경 시 skincare_shops 레코드 생성
-                if (oldUserType !== 'shop' && userType === 'shop') {
-                    console.log('🏪 업체 레코드 생성 중...');
-                    
-                    // 기존 업체 레코드 확인
-                    const shopsResponse = await fetch('tables/skincare_shops?limit=1000');
-                    const shopsData = await shopsResponse.json();
-                    const existingShop = shopsData.data.find(s => 
-                        s.email && s.email.toLowerCase() === updatedUser.email.toLowerCase()
-                    );
-                    
-                    if (existingShop) {
-                        console.log('✅ 기존 업체 레코드 존재:', existingShop.id);
-                        
-                        // 🔧 기존 샵의 시/도, 구/군이 비어있으면 경고
-                        if (!existingShop.state || !existingShop.district || 
-                            existingShop.state === '' || existingShop.district === '') {
-                            console.warn('⚠️ 기존 샵에 시/도, 구/군 정보 없음!');
-                            alert(
-                                '⚠️ 주의: 이 업체는 시/도, 구/군 정보가 없습니다.\n\n' +
-                                '견적 매칭이 제대로 작동하지 않을 수 있습니다.\n\n' +
-                                '➡️ "샵 입점 관리"에서 해당 업체를 찾아\n' +
-                                '   시/도, 구/군, 주소를 입력해주세요.'
-                            );
-                        }
-                    } else {
-                        // 새 업체 레코드 생성 (NOT NULL 필드에 기본값 제공)
-                        const shopData = {
-                            name: name,  // ✅ 수정: " 업체" 접미사 제거
-                            owner_name: name,
-                            email: updatedUser.email,
-                            phone: phone || '정보 없음',
-                            state: '정보 미등록',  // ⚠️ 수정: 명시적으로 미등록 표시
-                            district: '정보 미등록',  // ⚠️ 수정: 명시적으로 미등록 표시
-                            address: '주소 미등록',
-                            business_number: '정보 없음',
-                            business_license: '정보 없음',
-                            status: 'pending'
-                        };
-                        
-                        const shopResponse = await fetch('tables/skincare_shops', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(shopData)
-                        });
-                        
-                        if (shopResponse.ok) {
-                            const newShop = await shopResponse.json();
-                            console.log('✅ 업체 레코드 생성 완료:', newShop.id);
-                            
-                            // ⚠️ 시/도, 구/군 미등록 알림
-                            alert(
-                                '✅ 업체 레코드가 생성되었습니다.\n\n' +
-                                '⚠️ 중요: 시/도, 구/군, 주소가 미등록 상태입니다.\n\n' +
-                                '➡️ "샵 입점 관리"에서 해당 업체를 찾아\n' +
-                                '   필수 정보를 입력해주세요.\n\n' +
-                                '※ 정보 미입력 시 견적 매칭이 작동하지 않습니다.'
-                            );
-                        } else {
-                            const errorText = await shopResponse.text();
-                            console.error('❌ 업체 레코드 생성 실패:', shopResponse.status, errorText);
-                            console.error('전송한 데이터:', shopData);
-                        }
-                    }
-                }
-                
-                // 성공 알림
-                let successMessage = `${name}님의 정보가 업데이트되었습니다.`;
-                if (oldUserType !== 'shop' && userType === 'shop') {
-                    successMessage += '\n\n업체 레코드가 생성되었습니다. 추가 정보를 입력하려면 "샵 입점 관리"에서 해당 업체를 편집하세요.';
-                }
-                showNotification(successMessage, 'success', 7000);
-                
-                // 모달 닫기
-                closeUserEditModal();
-                
-                // 대시보드 데이터 새로고침
-                await loadDashboardData();
-                
-            } catch (error) {
-                console.error('사용자 업데이트 오류:', error);
-                showNotification('사용자 정보 업데이트 중 오류가 발생했습니다:\n' + error.message, 'error');
-            } finally {
-                // 버튼 복원
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
-        });
-    }
-});
 
 // View shop (placeholder)
 function viewShop(shopId) {
@@ -1665,7 +849,7 @@ function viewShop(shopId) {
     document.getElementById('view-phone').textContent = shop.phone || '-';
     document.getElementById('view-email').textContent = shop.email || '-';
     document.getElementById('view-business-number').textContent = shop.business_number || '-';
-    document.getElementById('view-license-number').textContent = shop.business_license || '-';
+    document.getElementById('view-license-number').textContent = shop.business_license_number || '-';
     document.getElementById('view-state').textContent = shop.state || shop.shop_state || '-';
     document.getElementById('view-district').textContent = shop.district || shop.shop_district || '-';
     document.getElementById('view-address').textContent = shop.address || shop.shop_address || '-';
@@ -1768,40 +952,14 @@ async function approveShop(shopId) {
         });
         
         if (response.ok) {
-            // 4. 자동 매칭 시도 (공공 데이터와 연결)
-            console.log('🔄 공공 데이터 자동 매칭 시도...');
-            const matchedPublicShop = await autoMatchPublicData(shop);
-            
-            if (matchedPublicShop) {
-                console.log('✅ 매칭 성공:', {
-                    registered_shop: shop.name,
-                    public_shop: matchedPublicShop.business_name,
-                    public_shop_id: matchedPublicShop.id
-                });
-                
-                showNotification(
-                    `✅ 플랫폼 입점 승인 완료!\n\n` +
-                    `샵명: ${shop.name}\n` +
-                    `지역: ${shop.state} ${shop.district}\n\n` +
-                    `🔗 공공 데이터 매칭 완료:\n` +
-                    `${matchedPublicShop.business_name}\n\n` +
-                    `이제 리뷰 작성이 가능합니다.`,
-                    'success',
-                    10000
-                );
-            } else {
-                console.log('ℹ️ 매칭 실패: 유사한 공공 데이터를 찾지 못했습니다.');
-                
-                showNotification(
-                    `✅ 플랫폼 입점 승인 완료!\n\n` +
-                    `샵명: ${shop.name}\n` +
-                    `지역: ${shop.state} ${shop.district}\n\n` +
-                    `해당 지역의 고객 견적 요청을 수신합니다.`,
-                    'success',
-                    8000
-                );
-            }
-            
+            showNotification(
+                `✅ 플랫폼 입점 승인 완료!\n\n` +
+                `샵명: ${shop.name}\n` +
+                `지역: ${shop.state} ${shop.district}\n\n` +
+                `해당 지역의 고객 견적 요청을 수신합니다.`,
+                'success',
+                8000
+            );
             loadShops(); // Refresh shops list
         } else {
             throw new Error('플랫폼 입점 승인 실패');
@@ -2959,14 +2117,18 @@ function editShop(shopId) {
     
     // Fill form with shop data
     document.getElementById('edit-shop-id').value = shop.id;
-    document.getElementById('edit-shop-name').value = shop.shop_name || shop.name || '';
+    document.getElementById('edit-shop-name').value = shop.shop_name || '';
     document.getElementById('edit-owner-name').value = shop.owner_name || '';
     document.getElementById('edit-phone').value = shop.phone || '';
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
     document.getElementById('edit-state').value = shop.state || '';
     document.getElementById('edit-district').value = shop.district || '';
+    // document.getElementById('edit-status').value = shop.status || 'pending'; // 필드 없음
     document.getElementById('edit-address').value = shop.address || '';
+    
+    // 읍면동 목록 업데이트 (v2.7.4 기능 - 임시 비활성화)
+    // updateTownDropdown(shop.state || '', shop.district || '', shop.town || '');
     document.getElementById('edit-price-range').value = shop.price_range || '';
     document.getElementById('edit-description').value = shop.description || '';
     
@@ -2987,43 +2149,6 @@ function editShop(shopId) {
         });
     }
     
-    // 구/군 및 읍/면/동 업데이트
-    updateDistricts();
-    if (shop.district) {
-        setTimeout(() => {
-            const districtSelect = document.getElementById('edit-district');
-            if (districtSelect) {
-                districtSelect.value = shop.district;
-                updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
-                
-                if (shop.town) {
-                    setTimeout(() => {
-                        const townSelect = document.getElementById('edit-town');
-                        if (townSelect) {
-                            townSelect.value = shop.town;
-                        }
-                    }, 100);
-                }
-            }
-        }, 100);
-    }
-    
-    // 이벤트 리스너 추가 (중복 방지)
-    const stateSelect = document.getElementById('edit-state');
-    const districtSelect = document.getElementById('edit-district');
-    
-    if (stateSelect && !stateSelect.dataset.listenerAdded) {
-        stateSelect.addEventListener('change', updateDistricts);
-        stateSelect.dataset.listenerAdded = 'true';
-        console.log('✅ 시/도 변경 이벤트 리스너 추가');
-    }
-    
-    if (districtSelect && !districtSelect.dataset.listenerAdded) {
-        districtSelect.addEventListener('change', updateTowns);
-        districtSelect.dataset.listenerAdded = 'true';
-        console.log('✅ 구/군 변경 이벤트 리스너 추가');
-    }
-    
     // Show modal
     document.getElementById('shop-edit-modal').classList.remove('hidden');
 }
@@ -3032,137 +2157,8 @@ function closeShopEditModal() {
     document.getElementById('shop-edit-modal').classList.add('hidden');
 }
 
-// 구/군 드롭다운 업데이트 함수
-function updateDistricts() {
-    const stateSelect = document.getElementById('edit-state');
-    const districtSelect = document.getElementById('edit-district');
-    const townSelect = document.getElementById('edit-town');
-    
-    if (!stateSelect || !districtSelect) {
-        console.warn('⚠️ 구/군 업데이트: 필수 요소를 찾을 수 없습니다');
-        return;
-    }
-    
-    const state = stateSelect.value;
-    
-    console.log('🏙️ 구/군 업데이트:', { state });
-    
-    // 구/군 초기화
-    districtSelect.innerHTML = '<option value="">선택하세요</option>';
-    
-    // 읍/면/동 초기화 및 비활성화
-    if (townSelect) {
-        townSelect.innerHTML = '<option value="">선택하세요</option>';
-        townSelect.disabled = true;
-    }
-    
-    // 시/도가 비어있으면 비활성화
-    if (!state) {
-        districtSelect.disabled = true;
-        console.log('⚠️ 시/도가 비어있어 구/군 비활성화');
-        return;
-    }
-    
-    // KOREA_TOWN_DATA가 로드되었는지 확인
-    if (typeof KOREA_TOWN_DATA === 'undefined') {
-        console.error('❌ KOREA_TOWN_DATA가 로드되지 않았습니다');
-        districtSelect.disabled = true;
-        return;
-    }
-    
-    // 해당 시/도의 구/군 데이터 가져오기
-    const stateData = KOREA_TOWN_DATA[state];
-    if (!stateData) {
-        console.warn('⚠️ 해당 시/도의 데이터가 없습니다:', state);
-        districtSelect.disabled = true;
-        return;
-    }
-    
-    // 구/군 옵션 추가
-    const districts = Object.keys(stateData);
-    districts.forEach(district => {
-        const option = document.createElement('option');
-        option.value = district;
-        option.textContent = district;
-        districtSelect.appendChild(option);
-    });
-    
-    // 드롭다운 활성화
-    districtSelect.disabled = false;
-    console.log(`✅ ${state}의 구/군 ${districts.length}개 로드 완료`);
-}
-
-// 읍/면/동 드롭다운 업데이트 함수
-function updateTowns() {
-    const stateSelect = document.getElementById('edit-state');
-    const districtSelect = document.getElementById('edit-district');
-    const townSelect = document.getElementById('edit-town');
-    
-    if (!stateSelect || !districtSelect || !townSelect) {
-        console.warn('⚠️ 읍/면/동 업데이트: 필수 요소를 찾을 수 없습니다');
-        return;
-    }
-    
-    const state = stateSelect.value;
-    const district = districtSelect.value;  // ✅ 수정: .value.trim() → .value (select는 trim 불필요)
-    
-    console.log('🏘️ 읍/면/동 업데이트:', { state, district });
-    
-    // 초기화
-    townSelect.innerHTML = '<option value="">선택하세요</option>';
-    
-    // 시/도 또는 구/군이 비어있으면 비활성화
-    if (!state || !district) {
-        townSelect.disabled = true;
-        console.log('⚠️ 시/도 또는 구/군이 비어있어 읍/면/동 비활성화');
-        return;
-    }
-    
-    // KOREA_TOWN_DATA가 로드되었는지 확인
-    if (typeof KOREA_TOWN_DATA === 'undefined') {
-        console.error('❌ KOREA_TOWN_DATA가 로드되지 않았습니다');
-        townSelect.disabled = true;
-        return;
-    }
-    
-    // 해당 시/도의 읍/면/동 데이터 가져오기
-    const stateData = KOREA_TOWN_DATA[state];
-    if (!stateData) {
-        console.warn('⚠️ 해당 시/도의 데이터가 없습니다:', state);
-        townSelect.disabled = true;
-        return;
-    }
-    
-    // 해당 구/군의 읍/면/동 데이터 가져오기
-    const towns = stateData[district];
-    if (!towns || towns.length === 0) {
-        console.warn('⚠️ 해당 구/군의 읍/면/동 데이터가 없습니다:', district);
-        townSelect.disabled = true;
-        return;
-    }
-    
-    // 읍/면/동 옵션 추가
-    towns.forEach(town => {
-        const option = document.createElement('option');
-        option.value = town;
-        option.textContent = town;
-        townSelect.appendChild(option);
-    });
-    
-    // 드롭다운 활성화
-    townSelect.disabled = false;
-    console.log(`✅ ${district}의 읍/면/동 ${towns.length}개 로드 완료`);
-}
-
 async function saveShopChanges() {
     const shopId = document.getElementById('edit-shop-id').value;
-    
-    if (!shopId) {
-        alert('샵 ID를 찾을 수 없습니다.');
-        return;
-    }
-    
-    console.log('💾 샵 정보 저장 시작:', shopId);
     
     // Collect treatment types
     const selectedTreatments = [];
@@ -3171,68 +2167,54 @@ async function saveShopChanges() {
     });
     
     const updatedData = {
-        name: document.getElementById('edit-shop-name').value || '',
-        owner_name: document.getElementById('edit-owner-name').value || '',
-        phone: document.getElementById('edit-phone').value || '',
-        email: document.getElementById('edit-email').value || '',
-        business_number: document.getElementById('edit-business-number').value || '',
-        state: document.getElementById('edit-state').value || '',
-        district: document.getElementById('edit-district').value || '',
+        shop_name: document.getElementById('edit-shop-name').value,
+        owner_name: document.getElementById('edit-owner-name').value,
+        phone: document.getElementById('edit-phone').value,
+        email: document.getElementById('edit-email').value,
+        business_number: document.getElementById('edit-business-number').value,
+        state: document.getElementById('edit-state').value,
+        district: document.getElementById('edit-district').value,
         town: document.getElementById('edit-town')?.value || '',
-        address: document.getElementById('edit-address').value || '',
-        representative_treatments: selectedTreatments.join(','),  // ✅ 배열을 문자열로 변환
-        price_range: document.getElementById('edit-price-range').value || '',
-        description: document.getElementById('edit-description').value || ''
+        address: document.getElementById('edit-address').value,
+        treatment_types: selectedTreatments,
+        price_range: document.getElementById('edit-price-range').value,
+        description: document.getElementById('edit-description').value,
+        updated_at: new Date().toISOString()
     };
-    
-    console.log('📤 전송 데이터:', updatedData);
-    console.log('📤 업체명 필드 상세 확인:');
-    console.log('  - edit-shop-name 요소:', document.getElementById('edit-shop-name'));
-    console.log('  - edit-shop-name 값:', document.getElementById('edit-shop-name')?.value);
-    console.log('  - updatedData.name:', updatedData.name);
-    console.log('📤 전송 URL:', `tables/skincare_shops/${shopId}`);
-    console.log('📤 전송 Method:', 'PUT');
-    console.log('📤 전송 필드 수:', Object.keys(updatedData).length);
     
     try {
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PATCH',  // ✅ 수정: PATCH 사용 (부분 업데이트)
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedData)
         });
         
-        console.log('📡 응답 상태:', response.status);
-        console.log('📡 응답 헤더:', [...response.headers.entries()]);
-        
         if (response.ok) {
-            const updatedShop = await response.json();
-            console.log('✅ 샵 정보 업데이트 완료:', updatedShop);
-            console.log('✅ 업데이트된 필드 확인:');
-            console.log('  - name:', updatedShop.name);
-            console.log('  - owner_name:', updatedShop.owner_name);
-            console.log('  - phone:', updatedShop.phone);
-            console.log('  - updated_at:', updatedShop.updated_at);
-            
-            showNotification('샵 정보가 성공적으로 수정되었습니다.', 'success');
+            alert('샵 정보가 성공적으로 수정되었습니다.');
             closeShopEditModal();
-            
-            console.log('🔄 샵 목록 새로고침 시작...');
-            await loadShops(); // Reload shops table
-            console.log('✅ 샵 목록 새로고침 완료');
+            refreshShops(); // Reload shops table
         } else {
-            const errorText = await response.text();
-            console.error('❌ 업데이트 실패:', response.status, errorText);
-            throw new Error(`업데이트 실패 (${response.status}): ${errorText}`);
+            throw new Error(`HTTP ${response.status}`);
         }
     } catch (error) {
-        console.error('❌ Shop update error:', error);
-        showNotification('샵 정보 수정 중 오류가 발생했습니다: ' + error.message, 'error');
+        console.error('Shop update error:', error);
+        
+        // 로컬 데이터 업데이트 (API 실패시)
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex !== -1) {
+            allShops[shopIndex] = { ...allShops[shopIndex], ...updatedData };
+            displayShops(allShops);
+            closeShopEditModal();
+            alert('샵 정보가 로컬에서 업데이트되었습니다. (API 연결 필요)');
+        } else {
+            alert('샵 정보 수정에 실패했습니다.');
+        }
     }
 }
 
-// Delete shop function (Soft Delete)
+// Delete shop function
 async function deleteShop(shopId) {
     const shop = allShops.find(s => s.id === shopId);
     if (!shop) {
@@ -3241,44 +2223,37 @@ async function deleteShop(shopId) {
     }
     
     // 확인 대화상자
-    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n※ 소프트 삭제: 데이터는 보관되며 복구 가능합니다.`;
+    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
     if (!confirm(confirmMessage)) {
         return;
     }
     
     try {
-        console.log('🗑️ 샵 Soft Delete 요청:', shopId);
-        
-        // Soft Delete: deleted 플래그를 true로 설정
-        const updatedShop = {
-            ...shop,
-            deleted: true,
-            status: 'deleted',
-            updated_at: Date.now()
-        };
-        
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PUT',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedShop)
+            }
         });
         
-        console.log('📡 Soft Delete 응답 상태:', response.status);
-        
-        if (response.ok) {
+        if (response.ok || response.status === 204) {
             showNotification('샵이 성공적으로 삭제되었습니다.', 'success');
-            console.log('✅ 샵 Soft Delete 성공, 테이블 새로고침 중...');
-            await loadShops();
+            refreshShops(); // Reload shops table
         } else {
-            const errorData = await response.text();
-            console.error('❌ Soft Delete 실패 응답:', errorData);
-            throw new Error(`HTTP ${response.status}: ${errorData}`);
+            throw new Error(`HTTP ${response.status}`);
         }
     } catch (error) {
-        console.error('Shop soft deletion error:', error);
-        showNotification('샵 삭제에 실패했습니다: ' + error.message, 'error');
+        console.error('Shop deletion error:', error);
+        
+        // API 실패시 로컬 데이터에서 제거
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex !== -1) {
+            allShops.splice(shopIndex, 1);
+            displayShops(allShops);
+            showNotification('샵이 로컬에서 삭제되었습니다. (API 연결 필요)', 'warning');
+        } else {
+            showNotification('샵 삭제에 실패했습니다.', 'error');
+        }
     }
 }
 
@@ -3549,27 +2524,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show loading
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalBtnText = submitBtn.innerHTML;
-                submitBtn.dataset.originalText = originalBtnText; // 데이터 속성에 저장
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>등록 중...';
                 
                 console.log('Creating new shop account...');
-                
-                // 중복 이메일 체크
-                try {
-                    const checkResponse = await fetch(`tables/users?limit=1000`);
-                    const checkData = await checkResponse.json();
-                    const existingUser = checkData.data.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
-                    
-                    if (existingUser) {
-                        alert('이미 등록된 이메일입니다. 다른 이메일을 사용해주세요.');
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnText;
-                        return;
-                    }
-                } catch (checkError) {
-                    console.warn('이메일 중복 체크 실패:', checkError);
-                }
                 
                 // Step 1: Create user account
                 const userData = {
@@ -3580,7 +2538,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     user_type: 'shop'
                 };
                 
-                const userResponse = await fetch('tables/users', {
+                const userResponse = await fetch('/tables/users', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData)
@@ -3604,11 +2562,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     district: district,
                     address: address,
                     business_number: businessNumber,
-                    business_license: licenseNumber || null,
-                    status: 'pending'
+                    business_license_number: licenseNumber || null,
+                    naver_cafe_id: naverCafeId || null,
+                    status: 'pending',
+                    approved: false,
+                    user_id: newUser.id
                 };
                 
-                const shopResponse = await fetch('tables/skincare_shops', {
+                const shopResponse = await fetch('/tables/skincare_shops', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(shopData)
@@ -3633,7 +2594,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.warn('User-shop linking failed, but registration completed');
                 }
                 
-                console.log('✅ Shop registration completed successfully');
+                console.log('Shop registration completed successfully');
                 
                 // Success!
                 alert(`업체 등록이 완료되었습니다!\n\n업체명: ${shopName}\n이메일: ${email}\n승인 상태: 대기중`);
@@ -3642,41 +2603,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeNewShopModal();
                 
                 // Reload dashboard data
-                try {
-                    console.log('📊 대시보드 데이터 새로고침 중...');
-                    await loadDashboardData();
-                    console.log('✅ 대시보드 데이터 새로고침 완료');
-                } catch (loadError) {
-                    console.error('❌ 대시보드 데이터 로드 실패:', loadError);
-                }
-                
-                try {
-                    console.log('🏪 업체 목록 새로고침 중...');
-                    await loadShops();
-                    console.log('✅ 업체 목록 새로고침 완료');
-                } catch (shopsError) {
-                    console.error('❌ 업체 목록 로드 실패:', shopsError);
-                }
+                await loadDashboardData();
+                await loadShops();
                 
                 // Show notification
                 showNotification('새 업체가 등록되었습니다.', 'success');
                 
             } catch (error) {
-                console.error('❌ Shop registration error:', error);
-                console.error('❌ Error stack:', error.stack);
+                console.error('Shop registration error:', error);
                 alert('업체 등록 중 오류가 발생했습니다:\n' + error.message);
                 
                 // Restore button
                 const submitBtn = form.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    // originalBtnText가 정의되어 있을 때만 복원
-                    if (typeof submitBtn.dataset.originalText !== 'undefined') {
-                        submitBtn.innerHTML = submitBtn.dataset.originalText;
-                    } else {
-                        submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>업체 등록';
-                    }
-                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             }
         });
     }
@@ -3693,44 +2633,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// 🗺️ 신규 샵 등록 모달용 updateDistricts 함수 (v2.8.13.6.115)
-function updateDistricts() {
-    const stateSelect = document.getElementById('new-shop-state');
-    const districtSelect = document.getElementById('new-shop-district');
-    
-    if (!stateSelect || !districtSelect) {
-        console.error('State or district select not found');
-        return;
-    }
-    
-    const selectedState = stateSelect.value;
-    
-    console.log('🗺️ updateDistricts 호출 (신규 샵 등록):', selectedState);
-    
-    // 구/군 초기화
-    districtSelect.innerHTML = '<option value="">선택하세요</option>';
-    
-    // KOREA_TOWN_DATA 사용
-    if (selectedState && typeof KOREA_TOWN_DATA !== 'undefined' && KOREA_TOWN_DATA[selectedState]) {
-        const districts = Object.keys(KOREA_TOWN_DATA[selectedState]);
-        console.log(`✅ ${selectedState} 구/군 ${districts.length}개 로드`);
-        
-        districts.forEach(district => {
-            const option = document.createElement('option');
-            option.value = district;
-            option.textContent = district;
-            districtSelect.appendChild(option);
-        });
-        districtSelect.disabled = false;
-    } else {
-        console.log('⚠️ 시/도가 선택되지 않음 또는 데이터 없음');
-        districtSelect.disabled = true;
-    }
-}
-
-// Make updateDistricts globally accessible
-window.updateDistricts = updateDistricts;
 
 // Close modal on ESC key
 document.addEventListener('keydown', function(e) {
@@ -3750,7 +2652,7 @@ async function loadRecentMembers() {
         console.log('Loading recent members...');
         
         // Fetch recent 5 users sorted by creation date
-        const response = await fetch('tables/users?limit=5&sort=-created_at');
+        const response = await fetch('/tables/users?limit=5&sort=-created_at');
         
         if (!response.ok) {
             throw new Error('Failed to fetch recent members');
