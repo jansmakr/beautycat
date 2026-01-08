@@ -5111,6 +5111,33 @@
             });
         });
     </script>
+    <!-- 🔧 v2.8.13.6.163.1: 하단 텍스트 노드 제거 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // body 태그의 직접 자식 텍스트 노드 제거
+            const bodyNodes = document.body.childNodes;
+            const nodesToRemove = [];
+            
+            bodyNodes.forEach(node => {
+                // 텍스트 노드이고 공백이 아닌 경우
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+                    // 지역 데이터로 보이는 텍스트 제거
+                    if (node.textContent.includes('강남구') || 
+                        node.textContent.includes('강동구') || 
+                        node.textContent.includes('역삼동') ||
+                        node.textContent.length > 100) {
+                        nodesToRemove.push(node);
+                    }
+                }
+            });
+            
+            // 발견된 노드 제거
+            nodesToRemove.forEach(node => {
+                node.remove();
+                console.log('🗑️ 불필요한 텍스트 노드 제거됨');
+            });
+        });
+    </script>
 
 </body>
 </html>
