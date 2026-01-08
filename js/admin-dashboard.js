@@ -45,7 +45,7 @@ async function autoMatchPublicData(newShop) {
         console.log('📊 검색 결과:', publicShops.data?.length || 0, '개');
         
         if (!publicShops.data || publicShops.data.length === 0) {
-            console.log('ℹ️ 검색 결과 없음');
+            console.log(ℹ️ 검색 결과 없음');
             return null;
         }
         
