@@ -45,7 +45,7 @@ async function autoMatchPublicData(newShop) {
         console.log('📊 검색 결과:', publicShops.data?.length || 0, '개');
         
         if (!publicShops.data || publicShops.data.length === 0) {
-            console.log(ℹ️ 검색 결과 없음');
+            console.log('ℹ️ 검색 결과 없음');
             return null;
         }
         
@@ -638,8 +638,23 @@ function initializeShopFilters() {
     const shopRegionFilter = document.getElementById('shop-region-filter');
     const shopStatusFilter = document.getElementById('shop-status-filter');
     
-    // v2.8.13.6.160: 필터 강제 초기화 제거 (사용자 선택 유지)
-    console.log('✅ 필터 이벤트 리스너 등록 (초기화 제거)');
+    // 🔥 CRITICAL: 이벤트 리스너 등록 전에 다시 한 번 강제 초기화!
+    if (shopTypeFilter) {
+        shopTypeFilter.value = '';
+        // 브라우저가 값을 복원하지 못하도록 selectedIndex도 초기화
+        shopTypeFilter.selectedIndex = 0;
+    }
+    if (shopSearchInput) shopSearchInput.value = '';
+    if (shopRegionFilter) {
+        shopRegionFilter.value = '';
+        shopRegionFilter.selectedIndex = 0;
+    }
+    if (shopStatusFilter) {
+        shopStatusFilter.value = '';
+        shopStatusFilter.selectedIndex = 0;
+    }
+    
+    console.log('🔒 필터 강제 초기화 완료 (selectedIndex 포함)');
     
     // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
     if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
@@ -649,6 +664,15 @@ function initializeShopFilters() {
         });
         shopTypeFilter.dataset.listenerAdded = 'true';
     }
+    
+    // v2.8.13.6.130.2: 이벤트 리스너 등록 후 강제 초기화 (브라우저 autocomplete 완전 차단)
+    setTimeout(() => {
+        if (shopTypeFilter) {
+            shopTypeFilter.value = '';
+            shopTypeFilter.selectedIndex = 0;
+            console.log('🔥 최종 초기화 (이벤트 후): shop-type-filter =', shopTypeFilter.value);
+        }
+    }, 150);
     
     if (shopSearchInput && !shopSearchInput.dataset.listenerAdded) {
         shopSearchInput.addEventListener('input', filterShops);
@@ -917,7 +941,7 @@ async function loadShops(updateTable = true) {
         console.log('🏪 업체 목록 로딩 시작... (v2.8.13.6.160: 정적 JSON)');
         
         // v2.8.13.6.160: 정적 JSON 파일에서 로딩 (10,000개 고품질 업체)
-        const response = await fetch('/shops.json');
+        const response = await fetch('/static/shops.json');
         if (!response.ok) {
             throw new Error(`정적 파일 로딩 실패: ${response.status}`);
         }
@@ -945,8 +969,6 @@ async function loadShops(updateTable = true) {
             const searchLower = searchTerm.toLowerCase();
             filteredShops = filteredShops.filter(shop => {
                 return (shop.name && shop.name.toLowerCase().includes(searchLower)) ||
-                       (shop.shop_name && shop.shop_name.toLowerCase().includes(searchLower)) ||
-                       (shop.owner_name && shop.owner_name.toLowerCase().includes(searchLower)) ||
                        (shop.address && shop.address.toLowerCase().includes(searchLower)) ||
                        (shop.phone && shop.phone.includes(searchTerm)) ||
                        (shop.email && shop.email.toLowerCase().includes(searchLower));
@@ -3607,36 +3629,570 @@ async function deleteShop(shopId) {
     }
     
     // 확인 대화상자
-    const shopName = shop.shop_name || shop.name || '이름 없음';
-    const confirmMessage = `정말로 '${shopName}' 샵을 삭제하시겠습니까?\n\n⚠️ 정적 JSON 모드: 실제 삭제되지 않으며 페이지 새로고침 시 복구됩니다.`;
+    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n※ 소프트 삭제: 데이터는 보관되며 복구 가능합니다.`;
     if (!confirm(confirmMessage)) {
         return;
     }
     
     try {
-        console.log('🗑️ 샵 삭제 요청 (정적 JSON 모드):', shopId);
+        console.log('🗑️ 샵 Soft Delete 요청:', shopId);
         
-        // v2.8.13.6.163.3: 정적 JSON 모드에서는 클라이언트 사이드에서만 제거
-        // allShops 배열에서 해당 샵 제거
-        const shopIndex = allShops.findIndex(s => s.id === shopId);
-        if (shopIndex > -1) {
-            allShops.splice(shopIndex, 1);
-            window.allShops = allShops; // 전역 변수 업데이트
-            
-            showNotification(`'${shopName}' 샵이 삭제되었습니다. (세션 동안만 유효)`, 'success');
-            console.log('✅ 샵 삭제 완료 (정적 JSON 모드), 테이블 새로고침 중...');
-            
-            // 테이블 새로고침 (API 호출 없이)
+        // Soft Delete: deleted 플래그를 true로 설정
+        const updatedShop = {
+            ...shop,
+            deleted: true,
+            status: 'deleted',
+            updated_at: Date.now()
+        };
+        
+        const response = await fetch(`tables/skincare_shops/${shopId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedShop)
+        });
+        
+        console.log('📡 Soft Delete 응답 상태:', response.status);
+        
+        if (response.ok) {
+            showNotification('샵이 성공적으로 삭제되었습니다.', 'success');
+            console.log('✅ 샵 Soft Delete 성공, 테이블 새로고침 중...');
             await loadShops();
         } else {
-            throw new Error('샵을 찾을 수 없습니다.');
+            const errorData = await response.text();
+            console.error('❌ Soft Delete 실패 응답:', errorData);
+            throw new Error(`HTTP ${response.status}: ${errorData}`);
         }
-        
-        // v2.8.13.6.163.3: API 호출 제거 (정적 JSON 사용 중)
-        // const response = await fetch(`tables/skincare_shops/${shopId}`, {...});
-        
     } catch (error) {
-        console.error('❌ 샵 삭제 오류:', error);
+        console.error('Shop soft deletion error:', error);
         showNotification('샵 삭제에 실패했습니다: ' + error.message, 'error');
     }
+}
+
+// Setup shop filters and search
+function setupShopFilters() {
+    const searchInput = document.getElementById('shop-search');
+    const regionFilter = document.getElementById('shop-region-filter');
+    const statusFilter = document.getElementById('shop-status-filter');
+    
+    // Add event listeners for real-time filtering
+    if (searchInput) {
+        searchInput.addEventListener('input', filterShops);
+    }
+    if (regionFilter) {
+        regionFilter.addEventListener('change', filterShops);
+    }
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterShops);
+    }
+}
+
+// Filter shops based on search and filters
+function filterShops() {
+    // 서버 측 필터링 사용 - loadShops() 재호출
+    console.log('🔍 필터 변경 감지 - 서버에서 재검색');
+    loadShops(true);
+}
+
+// Update filter results display
+function updateShopFilterResults(filtered, total) {
+    const existingCounter = document.getElementById('shop-filter-results');
+    if (existingCounter) {
+        existingCounter.remove();
+    }
+    
+    if (filtered !== total) {
+        const shopsSection = document.getElementById('shops-section');
+        const counter = document.createElement('div');
+        counter.id = 'shop-filter-results';
+        counter.className = 'mb-3 text-sm text-gray-600 bg-blue-50 border border-blue-200 rounded px-3 py-2';
+        counter.innerHTML = `<i class="fas fa-filter mr-2"></i>검색 결과: ${filtered}개 (전체 ${total}개 중)`;
+        
+        const table = shopsSection.querySelector('.unni-card');
+        shopsSection.insertBefore(counter, table);
+    }
+}
+
+// Clear all shop filters
+function clearShopFilters() {
+    document.getElementById('shop-search').value = '';
+    document.getElementById('shop-region-filter').value = '';
+    document.getElementById('shop-status-filter').value = '';
+    document.getElementById('shop-type-filter').value = ''; // v2.8.13.6.140: 샵 타입 필터 초기화 추가
+    
+    // Remove results counter
+    const existingCounter = document.getElementById('shop-filter-results');
+    if (existingCounter) {
+        existingCounter.remove();
+    }
+    
+    // 서버에서 전체 데이터 다시 로딩 - v2.8.13.6.136
+    console.log('🔄 필터 초기화 - 전체 데이터 로딩');
+    loadShops(true);
+}
+
+// Toggle representative shop status
+async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
+    try {
+        // 샵 정보 찾기
+        const shop = allShops.find(s => s.id === shopId);
+        if (!shop) {
+            alert('샵 정보를 찾을 수 없습니다.');
+            return;
+        }
+        
+        // 지역 정보 확인
+        const state = shop.state;
+        const district = shop.district;
+        
+        if (!state || !district) {
+            alert('샵의 지역 정보가 없습니다. 샵 정보를 먼저 수정해주세요.');
+            return;
+        }
+        
+        if (setAsRepresentative) {
+            // 대표샵으로 지정
+            const confirmMsg = `${shop.name}을(를) ${state} ${district}의 대표샵으로 지정하시겠습니까?\n\n대표샵으로 지정되면:\n- 해당 지역 메인 페이지에서 전화상담 버튼으로 노출됩니다\n- 고객이 바로 전화 상담할 수 있습니다`;
+            
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+            
+            // 해당 지역에 이미 대표샵이 있는지 확인
+            const existingRep = allShops.find(s => 
+                s.state === state && 
+                s.district === district && 
+                s.is_representative === true && 
+                s.id !== shopId
+            );
+            
+            if (existingRep) {
+                if (!confirm(`${state} ${district}에는 이미 대표샵 "${existingRep.name}"이(가) 있습니다.\n기존 대표샵을 해제하고 새로 지정하시겠습니까?`)) {
+                    return;
+                }
+                
+                // 기존 대표샵 해제
+                await updateShopRepresentativeStatus(existingRep.id, false);
+            }
+            
+            // 새로운 대표샵 지정
+            await updateShopRepresentativeStatus(shopId, true);
+            
+        } else {
+            // 대표샵 해제
+            if (!confirm(`${shop.name}의 대표샵 지정을 해제하시겠습니까?`)) {
+                return;
+            }
+            
+            await updateShopRepresentativeStatus(shopId, false);
+        }
+        
+        // 목록 새로고침
+        await refreshShops();
+        
+    } catch (error) {
+        console.error('Representative status toggle error:', error);
+        alert('대표샵 상태 변경 중 오류가 발생했습니다.');
+    }
+}
+
+// Update shop representative status via API
+async function updateShopRepresentativeStatus(shopId, isRepresentative) {
+    try {
+        const updateData = {
+            is_representative: isRepresentative,
+            representative_status: isRepresentative ? 'approved' : 'none',
+            representative_approved_at: isRepresentative ? new Date().toISOString() : null
+        };
+        
+        const response = await fetch(`tables/skincare_shops/${shopId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Representative status updated:', result);
+        
+        // 로컬 데이터 업데이트
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex !== -1) {
+            allShops[shopIndex] = { ...allShops[shopIndex], ...updateData };
+        }
+        
+        alert(isRepresentative ? '대표샵으로 지정되었습니다.' : '대표샵 지정이 해제되었습니다.');
+        
+    } catch (error) {
+        console.error('Representative status update error:', error);
+        
+        // API 실패 시 로컬 업데이트
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex !== -1) {
+            allShops[shopIndex].is_representative = isRepresentative;
+            allShops[shopIndex].representative_status = isRepresentative ? 'approved' : 'none';
+            displayShops(allShops);
+            alert(isRepresentative ? '대표샵으로 지정되었습니다 (로컬).' : '대표샵 지정이 해제되었습니다 (로컬).');
+        } else {
+            throw error;
+        }
+    }
+}
+
+// ======= NEW SHOP REGISTRATION MODAL =======
+
+// Open new shop registration modal
+function openNewShopModal() {
+    const modal = document.getElementById('new-shop-modal');
+    const form = document.getElementById('new-shop-form');
+    
+    // Reset form
+    form.reset();
+    
+    // Show modal
+    modal.style.display = 'flex';
+    modal.classList.remove('hidden');
+    
+    console.log('New shop modal opened');
+}
+
+// Close new shop registration modal
+function closeNewShopModal() {
+    const modal = document.getElementById('new-shop-modal');
+    const form = document.getElementById('new-shop-form');
+    
+    // Reset form
+    form.reset();
+    
+    // Hide modal
+    modal.style.display = 'none';
+    modal.classList.add('hidden');
+    
+    console.log('New shop modal closed');
+}
+
+// Handle new shop form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('new-shop-form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                // Get form data
+                const shopName = document.getElementById('new-shop-name').value.trim();
+                const ownerName = document.getElementById('new-shop-owner').value.trim();
+                const phone = document.getElementById('new-shop-phone').value.trim();
+                const email = document.getElementById('new-shop-email').value.trim();
+                const password = document.getElementById('new-shop-password').value;
+                const state = document.getElementById('new-shop-state').value;
+                const district = document.getElementById('new-shop-district').value.trim();
+                const address = document.getElementById('new-shop-address').value.trim();
+                const businessNumber = document.getElementById('new-shop-business-number').value.trim();
+                const licenseNumber = document.getElementById('new-shop-license-number').value.trim();
+                const naverCafeId = document.getElementById('new-shop-naver-id').value.trim();
+                
+                // Validation
+                if (!shopName || !ownerName || !phone || !email || !password || !state || !district || !address || !businessNumber) {
+                    alert('필수 항목을 모두 입력해주세요.');
+                    return;
+                }
+                
+                if (password.length < 8) {
+                    alert('비밀번호는 최소 8자 이상이어야 합니다.');
+                    return;
+                }
+                
+                // Show loading
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.dataset.originalText = originalBtnText; // 데이터 속성에 저장
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>등록 중...';
+                
+                console.log('Creating new shop account...');
+                
+                // 중복 이메일 체크
+                try {
+                    const checkResponse = await fetch(`tables/users?limit=1000`);
+                    const checkData = await checkResponse.json();
+                    const existingUser = checkData.data.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+                    
+                    if (existingUser) {
+                        alert('이미 등록된 이메일입니다. 다른 이메일을 사용해주세요.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        return;
+                    }
+                } catch (checkError) {
+                    console.warn('이메일 중복 체크 실패:', checkError);
+                }
+                
+                // Step 1: Create user account
+                const userData = {
+                    email: email,
+                    password: password,
+                    name: ownerName,
+                    phone: phone,
+                    user_type: 'shop'
+                };
+                
+                const userResponse = await fetch('tables/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                
+                if (!userResponse.ok) {
+                    const errorText = await userResponse.text();
+                    throw new Error(`사용자 계정 생성 실패: ${errorText}`);
+                }
+                
+                const newUser = await userResponse.json();
+                console.log('User created:', newUser);
+                
+                // Step 2: Create shop
+                const shopData = {
+                    name: shopName,
+                    owner_name: ownerName,
+                    phone: phone,
+                    email: email,
+                    state: state,
+                    district: district,
+                    address: address,
+                    business_number: businessNumber,
+                    business_license: licenseNumber || null,
+                    status: 'pending'
+                };
+                
+                const shopResponse = await fetch('tables/skincare_shops', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(shopData)
+                });
+                
+                if (!shopResponse.ok) {
+                    const errorText = await shopResponse.text();
+                    throw new Error(`업체 등록 실패: ${errorText}`);
+                }
+                
+                const newShop = await shopResponse.json();
+                console.log('Shop created:', newShop);
+                
+                // Step 3: Link user to shop
+                const linkResponse = await fetch(`/tables/users/${newUser.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shop_id: newShop.id })
+                });
+                
+                if (!linkResponse.ok) {
+                    console.warn('User-shop linking failed, but registration completed');
+                }
+                
+                console.log('✅ Shop registration completed successfully');
+                
+                // Success!
+                alert(`업체 등록이 완료되었습니다!\n\n업체명: ${shopName}\n이메일: ${email}\n승인 상태: 대기중`);
+                
+                // Close modal
+                closeNewShopModal();
+                
+                // Reload dashboard data
+                try {
+                    console.log('📊 대시보드 데이터 새로고침 중...');
+                    await loadDashboardData();
+                    console.log('✅ 대시보드 데이터 새로고침 완료');
+                } catch (loadError) {
+                    console.error('❌ 대시보드 데이터 로드 실패:', loadError);
+                }
+                
+                try {
+                    console.log('🏪 업체 목록 새로고침 중...');
+                    await loadShops();
+                    console.log('✅ 업체 목록 새로고침 완료');
+                } catch (shopsError) {
+                    console.error('❌ 업체 목록 로드 실패:', shopsError);
+                }
+                
+                // Show notification
+                showNotification('새 업체가 등록되었습니다.', 'success');
+                
+            } catch (error) {
+                console.error('❌ Shop registration error:', error);
+                console.error('❌ Error stack:', error.stack);
+                alert('업체 등록 중 오류가 발생했습니다:\n' + error.message);
+                
+                // Restore button
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    // originalBtnText가 정의되어 있을 때만 복원
+                    if (typeof submitBtn.dataset.originalText !== 'undefined') {
+                        submitBtn.innerHTML = submitBtn.dataset.originalText;
+                    } else {
+                        submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>업체 등록';
+                    }
+                }
+            }
+        });
+    }
+});
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('new-shop-modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeNewShopModal();
+            }
+        });
+    }
+});
+
+// 🗺️ 신규 샵 등록 모달용 updateDistricts 함수 (v2.8.13.6.115)
+function updateDistrictsForNew() {
+    const stateSelect = document.getElementById('new-shop-state');
+    const districtSelect = document.getElementById('new-shop-district');
+    
+    if (!stateSelect || !districtSelect) {
+        console.error('State or district select not found');
+        return;
+    }
+    
+    const selectedState = stateSelect.value;
+    
+    console.log('🗺️ updateDistricts 호출 (신규 샵 등록):', selectedState);
+    
+    // 구/군 초기화
+    districtSelect.innerHTML = '<option value="">선택하세요</option>';
+    
+    // KOREA_TOWN_DATA 사용
+    if (selectedState && typeof KOREA_TOWN_DATA !== 'undefined' && KOREA_TOWN_DATA[selectedState]) {
+        const districts = Object.keys(KOREA_TOWN_DATA[selectedState]);
+        console.log(`✅ ${selectedState} 구/군 ${districts.length}개 로드`);
+        
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district;
+            option.textContent = district;
+            districtSelect.appendChild(option);
+        });
+        districtSelect.disabled = false;
+    } else {
+        console.log('⚠️ 시/도가 선택되지 않음 또는 데이터 없음');
+        districtSelect.disabled = true;
+    }
+}
+
+// Make functions globally accessible
+window.updateDistricts = updateDistrictsForNew;
+window.updateDistrictsForEdit = updateDistrictsForEdit;
+window.updateDistrictsForNew = updateDistrictsForNew;
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('new-shop-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+            closeNewShopModal();
+        }
+    }
+});
+
+// ======= RECENT MEMBERS DISPLAY =======
+
+// Load recent members for dashboard
+async function loadRecentMembers() {
+    try {
+        console.log('Loading recent members...');
+        
+        // Fetch recent 5 users sorted by creation date
+        const response = await fetch('tables/users?limit=5&sort=-created_at');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch recent members');
+        }
+        
+        const result = await response.json();
+        const recentUsers = result.data || [];
+        
+        console.log('Recent members loaded:', recentUsers.length);
+        
+        // Display recent members
+        displayRecentMembers(recentUsers);
+        
+    } catch (error) {
+        console.error('Recent members loading error:', error);
+        
+        // Fallback: Use local data if API fails
+        if (allUsers && allUsers.length > 0) {
+            const sortedUsers = [...allUsers].sort((a, b) => {
+                const dateA = new Date(a.created_at || 0).getTime();
+                const dateB = new Date(b.created_at || 0).getTime();
+                return dateB - dateA;
+            });
+            const recentUsers = sortedUsers.slice(0, 5);
+            displayRecentMembers(recentUsers);
+            console.log('Using local data for recent members');
+        } else {
+            // Show empty state
+            const container = document.getElementById('recent-members');
+            if (container) {
+                container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가입자가 없습니다.</p>';
+            }
+        }
+    }
+}
+
+// Display recent members in the dashboard
+function displayRecentMembers(users) {
+    const container = document.getElementById('recent-members');
+    if (!container) return;
+    
+    if (users.length === 0) {
+        container.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">최근 가입자가 없습니다.</p>';
+        return;
+    }
+    
+    container.innerHTML = users.map(user => {
+        const userTypeLabels = {
+            'customer': '고객',
+            'shop': '업체',
+            'admin': '관리자'
+        };
+        
+        const userTypeColors = {
+            'customer': 'bg-blue-100 text-blue-800',
+            'shop': 'bg-green-100 text-green-800',
+            'admin': 'bg-purple-100 text-purple-800'
+        };
+        
+        const userType = user.user_type || 'customer';
+        const userName = user.name || user.email || 'Unknown';
+        const userEmail = user.email || '';
+        const createdDate = user.created_at ? new Date(user.created_at).toLocaleDateString('ko-KR') : '날짜 미상';
+        
+        return `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="showSection('users')">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-medium text-gray-900">${userName}</span>
+                        <span class="text-xs px-2 py-1 rounded-full ${userTypeColors[userType]}">${userTypeLabels[userType]}</span>
+                    </div>
+                    <p class="text-xs text-gray-500">${userEmail}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-gray-500">${createdDate}</p>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
