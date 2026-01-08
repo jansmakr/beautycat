@@ -6,11 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="last-modified" content="2026-01-08T02:00:00+09:00">
-    <!-- 🔥 Cache Busting Timestamp: 2026-01-08 02:00 KST - Region Data Fix -->
-    <meta name="version" content="2.8.13.6.163-20260108-0200">
-    <meta name="cache-version" content="v2.8.13.6.163-region-data-fix">
-    <!-- v2.8.13.6.163: 메인 페이지 하단 텍스트 제거 + 지역 데이터 외부화 -->
+    <meta name="last-modified" content="2026-01-08T03:00:00+09:00">
+    <!-- 🔥 Cache Busting Timestamp: 2026-01-08 03:00 KST - Text Node Cleanup -->
+    <meta name="version" content="2.8.13.6.163.1-20260108-0300">
+    <meta name="cache-version" content="v2.8.13.6.163.1-text-cleanup">
+    <!-- v2.8.13.6.163.1: 메인 페이지 하단 텍스트 노드 제거 -->
     <title>피부관리실 견적비교 예약 플랫폼 | beautycat - 강남 홍대 피부관리</title>
     <meta name="description" content="✨ 전국 피부관리실 견적을 무료로 비교하세요! 강남·홍대·잠실 인증된 피부관리 전문샵 1초 매칭 | 여드름·모공·미백 케어 | 최대 30% 할인 | 100% 무료 상담">    
     <meta name="keywords" content="피부관리실, 피부관리실 추천, 피부관리 견적, 피부관리 가격비교, 강남 피부관리, 홍대 피부관리, 잠실 피부관리, 서울 피부관리, 근처 피부관리실, 피부관리 예약, 피부케어, 여드름 관리, 모공관리, 미백케어, 피부관리 할인, 뷰티샵, 스킨케어 샵, 피부관리 전문, 저렴한 피부관리, 피부과 vs 피부관리실, beautycat, 뷰티캣">
@@ -5081,6 +5081,34 @@
                 
                 console.log('✅ 전국 샵 찾기 기능 초기화 완료');
             }
+        });
+    </script>
+
+    <!-- 🔧 v2.8.13.6.163: 하단 텍스트 노드 제거 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // body 태그의 직접 자식 텍스트 노드 제거
+            const bodyNodes = document.body.childNodes;
+            const nodesToRemove = [];
+            
+            bodyNodes.forEach(node => {
+                // 텍스트 노드이고 공백이 아닌 경우
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+                    // 지역 데이터로 보이는 텍스트 제거
+                    if (node.textContent.includes('강남구') || 
+                        node.textContent.includes('강동구') || 
+                        node.textContent.includes('역삼동') ||
+                        node.textContent.length > 100) {
+                        nodesToRemove.push(node);
+                    }
+                }
+            });
+            
+            // 발견된 노드 제거
+            nodesToRemove.forEach(node => {
+                node.remove();
+                console.log('🗑️ 불필요한 텍스트 노드 제거됨');
+            });
         });
     </script>
 
