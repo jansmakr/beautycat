@@ -5,19 +5,12 @@ let allShops = [];
 let allConsultations = [];
 let selectedUser = null;
 
-// v2.8.13.6.131: 공공 데이터 관리
-let allPublicData = [];
-let currentPublicPage = 1;
-let publicPageSize = 100;
-
 // ===== 공공 데이터 자동 매칭 시스템 =====
 /**
  * 공공 데이터와 등록 샵 자동 매칭 함수
  * @param {Object} newShop - 등록된 샵 정보
  * @returns {Object|null} - 매칭된 공공 데이터 샵 또는 null
  */
-// v2.8.13.6.137: 자동 매칭 비활성화 (public_skincare_data 삭제됨)
-/*
 async function autoMatchPublicData(newShop) {
     const { name, address, phone } = newShop;
     
@@ -127,7 +120,6 @@ async function autoMatchPublicData(newShop) {
         return null;
     }
 }
-*/
 
 /**
  * 두 문자열 간의 유사도 계산 (Levenshtein Distance)
@@ -178,7 +170,7 @@ function levenshteinDistance(str1, str2) {
 
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 Admin Dashboard v2.8.13.6.151 초기화');
+    console.log('Admin dashboard loaded');
     checkAdminAuth();
     loadDashboardData();
     
@@ -284,10 +276,6 @@ function showSection(sectionName) {
         case 'shops':
             console.log('🏪 loadShops() 호출');
             loadShops();
-            break;
-        case 'public-data':
-            console.log('📍 loadPublicData() 호출');
-            loadPublicData(1);
             break;
         case 'consultations':
             loadConsultations();
@@ -427,9 +415,8 @@ async function loadUsers(updateTable = true) {
         console.log('📊 전체 데이터:', data);
         console.log('👥 사용자 수:', data.total, '명');
         
-        // v2.8.13.6.131.1: 삭제된 사용자 제외
-        allUsers = (data.data || []).filter(user => !user.deleted);
-        console.log('✅ allUsers 배열:', allUsers.length, '명 (삭제된 사용자 제외)');
+        allUsers = data.data || [];
+        console.log('✅ allUsers 배열:', allUsers.length, '명');
         
         if (updateTable) {
             console.log('🔄 테이블 업데이트 시작');
@@ -723,131 +710,25 @@ async function handleCSVUpload(event) {
         const headers = lines[0].split(',').map(h => h.trim());
         console.log('📋 CSV 헤더:', headers);
         
-        // v2.8.13.6.132: 필수 필드 확인 (유연한 헤더 지원)
-        const requiredFields = ['business_name', 'address'];
+        // 필수 필드 확인
+        const requiredFields = ['business_name', 'address', 'region', 'district'];
         const missingFields = requiredFields.filter(field => !headers.includes(field));
         
         if (missingFields.length > 0) {
             throw new Error(`필수 필드 누락: ${missingFields.join(', ')}`);
         }
         
-        console.log('✅ 필수 필드 확인 완료');
-        
-        // v2.8.13.6.132: 데이터 파싱 및 정제
+        // 데이터 파싱
         const shops = [];
         for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue; // 빈 줄 스킵
-            
             const values = lines[i].split(',').map(v => v.trim());
-            const rawShop = {};
+            const shop = {};
             
             headers.forEach((header, index) => {
-                rawShop[header] = values[index] || '';
+                shop[header] = values[index] || '';
             });
             
-            // 데이터 정제 및 변환
-            const cleanedShop = cleanShopData(rawShop);
-            if (cleanedShop) {
-                shops.push(cleanedShop);
-            }
-        }
-        
-        // 정제 함수 (인라인 정의)
-        function cleanShopData(raw) {
-            try {
-                // v2.8.13.6.145: CSV 헤더에 맞춰 직접 매핑
-                let state = '';
-                let district = '';
-                let town = '';
-                
-                // 1) state 필드가 있으면 사용
-                if (raw.state) {
-                    state = raw.state;
-                    district = raw.district || '';
-                    town = raw.town || '';
-                } 
-                // 2) region 필드가 있으면 state로 매핑
-                else if (raw.region) {
-                    state = raw.region;
-                    district = raw.district || '';
-                    town = raw.town || '';
-                }
-                // 3) 이전 형식 ("전라남1여수시") 지원
-                else if (raw.district && (raw.district.includes('1') || raw.district.includes('도') || raw.district.includes('시'))) {
-                    // 지역명 매핑
-                    const regionMap = {
-                        '서울': '서울특별시', '부산': '부산광역시', '대구': '대구광역시', '인천': '인천광역시',
-                        '광주': '광주광역시', '대전': '대전광역시', '울산': '울산광역시', '세종': '세종특별자치시',
-                        '경기': '경기도', '강원': '강원특별자치도', '충북': '충청북도', '충남': '충청남도',
-                        '전북': '전북특별자치도', '전남': '전라남도', '경북': '경상북도', '경남': '경상남도', '제주': '제주특별자치도',
-                        '전라북': '전북특별자치도', '전라남': '전라남도', '경상북': '경상북도', '경상남': '경상남도',
-                        '충청북': '충청북도', '충청남': '충청남도'
-                    };
-                    
-                    // 지역 추출
-                    for (const [key, value] of Object.entries(regionMap)) {
-                        if (raw.district.startsWith(key)) {
-                            state = value;
-                            // district 추출 (숫자 뒤 부분)
-                            const match = raw.district.match(/\d+(.+)/);
-                            if (match) {
-                                district = match[1];
-                            }
-                            break;
-                        }
-                    }
-                }
-                
-                // 4) 주소에서 자동 추출 (fallback)
-                if (!state && raw.address) {
-                    const addressMatch = raw.address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
-                    if (addressMatch) {
-                        state = addressMatch[1];
-                        district = addressMatch[2];
-                        town = addressMatch[3];
-                        console.log('📍 주소에서 추출:', { state, district, town, address: raw.address });
-                    }
-                }
-                
-                console.log('🗺️ 지역 매핑:', { 
-                    raw_state: raw.state, 
-                    raw_region: raw.region, 
-                    raw_district: raw.district, 
-                    raw_town: raw.town,
-                    result_state: state, 
-                    result_district: district,
-                    result_town: town
-                });
-                
-                // phone 처리 ("미등록" -> 빈 값)
-                let phone = raw.phone_region || raw.phone || '';
-                if (phone === '미등록' || phone === '미등' || phone === '-') {
-                    phone = '';
-                }
-                
-                // status 변환 (active -> 영업중)
-                let status = raw.open_d_status || raw.status || '영업중';
-                if (status === 'active') {
-                    status = '영업중';
-                } else if (status === 'inactive' || status === 'closed') {
-                    status = '폐업';
-                }
-                
-                return {
-                    name: raw.business_name || raw.name,
-                    owner_name: raw.owner_name || '정보 없음',
-                    address: raw.address,
-                    phone: phone,
-                    state: state,
-                    district: district,
-                    town: town,
-                    status: status,
-                    email: raw.email || ''
-                };
-            } catch (error) {
-                console.warn('⚠️ 데이터 정제 실패:', raw, error);
-                return null;
-            }
+            shops.push(shop);
         }
         
         console.log('✅ 파싱된 샵 수:', shops.length);
@@ -869,11 +750,19 @@ async function handleCSVUpload(event) {
             // 배치 내 모든 샵을 동시에 업로드
             const uploadPromises = batch.map(async (shop, index) => {
                 try {
-                    // v2.8.13.6.132: skincare_shops 테이블로 업로드
-                    const response = await fetch('/tables/skincare_shops', {
+                    const response = await fetch('/tables/public_skincare_data', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(shop)
+                        body: JSON.stringify({
+                            business_name: shop.business_name,
+                            address: shop.address,
+                            phone: shop.phone || '',
+                            region: shop.region,
+                            district: shop.district,
+                            town: shop.town || '',
+                            status: shop.status || '영업',
+                            data_source: 'csv_upload'
+                        })
                     });
                     
                     if (response.ok) {
@@ -889,13 +778,13 @@ async function handleCSVUpload(event) {
                         const globalIndex = i + index + 1;
                         const errorText = await response.text();
                         // 오류는 항상 로그
-                        console.error(`❌ ${globalIndex}/${shops.length}: ${shop.name}`, errorText);
+                        console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, errorText);
                         return { success: false, shop, error: errorText };
                     }
                 } catch (error) {
                     errorCount++;
                     const globalIndex = i + index + 1;
-                    console.error(`❌ ${globalIndex}/${shops.length}: ${shop.name}`, error);
+                    console.error(`❌ ${globalIndex}/${shops.length}: ${shop.business_name}`, error);
                     return { success: false, shop, error: error.message };
                 }
             });
@@ -938,90 +827,33 @@ async function handleCSVUpload(event) {
 // Load shops
 async function loadShops(updateTable = true) {
     try {
-        console.log('🏪 업체 목록 로딩 시작... (v2.8.13.6.160: 정적 JSON)');
-        
-        // v2.8.13.6.160: 정적 JSON 파일에서 로딩 (10,000개 고품질 업체)
-        const response = await fetch('/static/shops.json');
-        if (!response.ok) {
-            throw new Error(`정적 파일 로딩 실패: ${response.status}`);
-        }
-        
+        console.log('🏪 업체 목록 로딩 시작...');
+        const response = await fetch('tables/skincare_shops?limit=50000&sort=created_at');
         const data = await response.json();
         
-        // 삭제된 샵 제외 (Soft Delete 필터링) - 정적 파일에는 이미 필터링되어 있음
-        allShops = Array.isArray(data) ? data.filter(shop => !shop.deleted) : [];
+        // 삭제된 샵 제외 (Soft Delete 필터링)
+        allShops = (data.data || []).filter(shop => !shop.deleted);
         
-        console.log('📊 정적 JSON에서 로딩된 업체 수:', allShops.length);
-        
-        // 필터 값 가져오기 (클라이언트 사이드 필터)
-        const searchTerm = document.getElementById('shop-search')?.value || '';
-        const regionFilter = document.getElementById('shop-region-filter')?.value || '';
-        const statusFilter = document.getElementById('shop-status-filter')?.value || '';
-        
-        // v2.8.13.6.155: 전역 변수로 노출 (editShop 함수에서 접근 가능하도록)
-        window.allShops = allShops;
-        
-        // v2.8.13.6.160: 클라이언트 사이드 필터 적용 (검색, 지역, 상태)
-        let filteredShops = [...allShops];
-        
-        // 검색어 필터
-        if (searchTerm) {
-            const searchLower = searchTerm.toLowerCase();
-            filteredShops = filteredShops.filter(shop => {
-                return (shop.name && shop.name.toLowerCase().includes(searchLower)) ||
-                       (shop.address && shop.address.toLowerCase().includes(searchLower)) ||
-                       (shop.phone && shop.phone.includes(searchTerm)) ||
-                       (shop.email && shop.email.toLowerCase().includes(searchLower));
-            });
-            console.log('🔍 검색어 필터:', searchTerm, '-', filteredShops.length, '개');
-        }
-        
-        // 지역 필터
-        if (regionFilter) {
-            filteredShops = filteredShops.filter(shop => {
-                return shop.state === regionFilter || (shop.state && shop.state.includes(regionFilter));
-            });
-            console.log('🔍 지역 필터:', regionFilter, '-', filteredShops.length, '개');
-        }
-        
-        // 상태 필터
-        if (statusFilter) {
-            filteredShops = filteredShops.filter(shop => shop.status === statusFilter);
-            console.log('🔍 상태 필터:', statusFilter, '-', filteredShops.length, '개');
-        }
-        
-        // v2.8.13.6.140: 샵 타입 필터
-        const shopTypeFilter = document.getElementById('shop-type-filter')?.value || '';
-        
-        if (shopTypeFilter === 'verified') {
-            // 인증샵만: status = 'active' AND email이 정상
-            filteredShops = filteredShops.filter(shop => {
-                return shop.status === 'active' && shop.email && !shop.email.includes('@example.com');
-            });
-            console.log('🔍 샵 타입 필터: 인증샵만 -', filteredShops.length, '개');
-        } else if (shopTypeFilter === 'public') {
-            // 공공데이터만: email이 없거나 @example.com
-            filteredShops = filteredShops.filter(shop => {
-                return !shop.email || shop.email.includes('@example.com');
-            });
-            console.log('🔍 샵 타입 필터: 공공데이터만 -', filteredShops.length, '개');
-        } else if (shopTypeFilter === 'registered') {
-            // 신규등록만: email이 있고 정상적인 이메일
-            filteredShops = filteredShops.filter(shop => {
-                return shop.email && !shop.email.includes('@example.com');
-            });
-            console.log('🔍 샵 타입 필터: 신규등록만 -', filteredShops.length, '개');
-        }
-        
-        console.log('📋 최종 필터링된 업체 수:', filteredShops.length, '/ 전체:', allShops.length);
-        
-        // v2.8.13.6.139: 업체 수 업데이트 (전체 데이터 기준)
-        updateShopCounts(allShops);
+        console.log('📊 업체 수:', allShops.length, '(삭제된 샵 제외)');
+        console.log('📋 업체 목록:', allShops);
         
         if (updateTable) {
             console.log('🖼️ 테이블 렌더링 시작...');
             
-            displayShops(filteredShops);
+            // 필터 초기화 (캐시된 값 제거) - v2.8.13.6.129.4: shop-type-filter 추가
+            const searchInput = document.getElementById('shop-search');
+            const regionFilter = document.getElementById('shop-region-filter');
+            const statusFilter = document.getElementById('shop-status-filter');
+            const typeFilter = document.getElementById('shop-type-filter');
+            
+            if (searchInput) searchInput.value = '';
+            if (regionFilter) regionFilter.value = '';
+            if (statusFilter) statusFilter.value = '';
+            if (typeFilter) typeFilter.value = '';  // ✅ shop-type-filter 초기화 추가!
+            
+            console.log('🔄 필터 초기화 완료 (shop-type-filter 포함)');
+            
+            displayShops(allShops);
             console.log('✅ 테이블 렌더링 완료');
             
             // v2.8.13.6.129.6: 테이블 렌더링 후 이벤트 리스너 등록 (초기 필터링 방지)
@@ -1067,51 +899,9 @@ async function loadShops(updateTable = true) {
     }
 }
 
-// 페이지네이션 변수
-let currentPage = 1;
-const itemsPerPage = 100;
-let displayedShops = [];
-let allFilteredShops = []; // 필터링된 전체 데이터
-
-// v2.8.13.6.139: 업체 수 업데이트 함수
-function updateShopCounts(shops) {
-    if (!shops) return;
-    
-    // 전체 업체 수
-    const totalCount = shops.length;
-    
-    // 인증 업체 수 (status = 'active' AND email이 있고 @example.com이 아님)
-    const verifiedCount = shops.filter(shop => 
-        shop.status === 'active' && 
-        shop.email && 
-        !shop.email.includes('@example.com')
-    ).length;
-    
-    // 신규 등록 업체 수 (email이 있고 @example.com이 아님)
-    const registeredCount = shops.filter(shop => 
-        shop.email && 
-        !shop.email.includes('@example.com')
-    ).length;
-    
-    // HTML 업데이트
-    const totalCountEl = document.getElementById('total-shops-count');
-    const verifiedCountEl = document.getElementById('verified-shops-count');
-    const registeredCountEl = document.getElementById('registered-shops-count');
-    
-    if (totalCountEl) totalCountEl.textContent = totalCount.toLocaleString();
-    if (verifiedCountEl) verifiedCountEl.textContent = verifiedCount.toLocaleString();
-    if (registeredCountEl) registeredCountEl.textContent = registeredCount.toLocaleString();
-    
-    console.log('📊 업체 수 업데이트:', {
-        total: totalCount,
-        verified: verifiedCount,
-        registered: registeredCount
-    });
-}
-
 // Display shops in table
-function displayShops(shops, append = false) {
-    console.log('📊 displayShops 호출됨, 업체 수:', shops.length, 'append:', append);
+function displayShops(shops) {
+    console.log('📊 displayShops 호출됨, 업체 수:', shops.length);
     console.log('📋 shops 데이터:', shops);
     
     const tableBody = document.getElementById('shops-table');
@@ -1127,32 +917,13 @@ function displayShops(shops, append = false) {
     if (shops.length === 0) {
         console.log('⚠️ 표시할 업체가 없습니다');
         tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-gray-500">등록된 업체가 없습니다.</td></tr>';
-        updateLoadMoreButton(0, 0);
         return;
     }
     
     console.log('✅ 업체 테이블 렌더링 중...');
     console.log('🔍 첫 번째 업체:', shops[0]);
     
-    // 전체 필터링된 데이터 저장
-    allFilteredShops = shops;
-    
-    // append가 false면 초기화
-    if (!append) {
-        displayedShops = [];
-        currentPage = 1;
-    }
-    
-    // 현재 페이지에 표시할 데이터 추가
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    const endIdx = startIdx + itemsPerPage;
-    const newShops = shops.slice(startIdx, endIdx);
-    displayedShops = displayedShops.concat(newShops);
-    
-    console.log(`📄 페이지 ${currentPage}: ${startIdx}~${endIdx} (${newShops.length}개 추가)`);
-    console.log(`📊 현재 표시 중: ${displayedShops.length}개 / 전체: ${shops.length}개`);
-    
-    const shopsHtml = displayedShops.map(shop => {
+    tableBody.innerHTML = shops.map(shop => {
         const status = shop.status || 'active';
         const statusColors = {
             'active': 'text-green-600 bg-green-100',
@@ -1238,59 +1009,6 @@ function displayShops(shops, append = false) {
             </tr>
         `;
     }).join('');
-    
-    tableBody.innerHTML = shopsHtml;
-    
-    // "더 보기" 버튼 업데이트
-    updateLoadMoreButton(displayedShops.length, allFilteredShops.length);
-    
-    console.log('✅ 테이블 렌더링 완료');
-}
-
-// "더 보기" 버튼 업데이트
-function updateLoadMoreButton(displayed, total) {
-    let loadMoreContainer = document.getElementById('load-more-shops-container');
-    
-    // 컨테이너가 없으면 생성
-    if (!loadMoreContainer) {
-        const shopsSection = document.getElementById('shops-section');
-        if (!shopsSection) return;
-        
-        loadMoreContainer = document.createElement('div');
-        loadMoreContainer.id = 'load-more-shops-container';
-        loadMoreContainer.className = 'mt-4 text-center';
-        
-        // shops-table의 부모(card) 다음에 추가
-        const card = shopsSection.querySelector('.unni-card');
-        if (card && card.nextSibling) {
-            shopsSection.insertBefore(loadMoreContainer, card.nextSibling);
-        } else if (card) {
-            card.parentNode.appendChild(loadMoreContainer);
-        }
-    }
-    
-    // 더 표시할 데이터가 있으면 버튼 표시
-    if (displayed < total) {
-        const remaining = total - displayed;
-        loadMoreContainer.innerHTML = `
-            <button onclick="loadMoreShops()" 
-                    class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
-                <i class="fas fa-plus-circle mr-2"></i>더 보기 (${remaining}개 남음)
-            </button>
-            <p class="mt-2 text-sm text-gray-600">현재 ${displayed}개 / 전체 ${total}개</p>
-        `;
-    } else {
-        loadMoreContainer.innerHTML = `
-            <p class="text-sm text-gray-600">전체 ${total}개 표시 중</p>
-        `;
-    }
-}
-
-// 더 보기 버튼 클릭
-function loadMoreShops() {
-    console.log('📄 더 보기 클릭');
-    currentPage++;
-    displayShops(allFilteredShops, true); // append=true
 }
 
 // Refresh shops
@@ -1587,36 +1305,14 @@ async function deleteUser(userId) {
             }
         }
         
-        // Soft Delete user (v2.8.13.6.131 - Soft Delete로 변경)
-        console.log('🗑️ 사용자 Soft Delete 시작:', userId);
-        
-        // GET 기존 데이터
-        const getUserResponse = await fetch(`/tables/users/${userId}`);
-        if (!getUserResponse.ok) {
-            throw new Error(`사용자 조회 실패: ${getUserResponse.status}`);
-        }
-        const existingUser = await getUserResponse.json();
-        
-        // Soft Delete: deleted 플래그 설정
-        const updatedUser = {
-            ...existingUser,
-            deleted: true,
-            is_active: false,
-            status: 'deleted',
-            updated_at: Date.now()
-        };
-        
-        const response = await fetch(`/tables/users/${userId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedUser)
+        // Delete user
+        const response = await fetch(`tables/users/${userId}`, {
+            method: 'DELETE'
         });
         
         if (response.ok) {
-            console.log('✅ 사용자 Soft Delete 성공:', userId);
-            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다 (복구 가능)`, 'success');
+            console.log('✅ 사용자 삭제 완료:', userId);
+            showNotification(`사용자 "${user.name}"이(가) 삭제되었습니다.`, 'success');
             await loadUsers(); // Refresh users list
         } else {
             throw new Error('사용자 삭제 실패');
@@ -2072,31 +1768,30 @@ async function approveShop(shopId) {
         });
         
         if (response.ok) {
-            // v2.8.13.6.137: 자동 매칭 비활성화 (public_skincare_data 삭제됨)
             // 4. 자동 매칭 시도 (공공 데이터와 연결)
-            // console.log('🔄 공공 데이터 자동 매칭 시도...');
-            // const matchedPublicShop = await autoMatchPublicData(shop);
+            console.log('🔄 공공 데이터 자동 매칭 시도...');
+            const matchedPublicShop = await autoMatchPublicData(shop);
             
-            // if (matchedPublicShop) {
-            //     console.log('✅ 매칭 성공:', {
-            //         registered_shop: shop.name,
-            //         public_shop: matchedPublicShop.business_name,
-            //         public_shop_id: matchedPublicShop.id
-            //     });
-            //     
-            //     showNotification(
-            //         `✅ 플랫폼 입점 승인 완료!\n\n` +
-            //         `샵명: ${shop.name}\n` +
-            //         `지역: ${shop.state} ${shop.district}\n\n` +
-            //         `🔗 공공 데이터 매칭 완료:\n` +
-            //         `${matchedPublicShop.business_name}\n\n` +
-            //         `이제 리뷰 작성이 가능합니다.`,
-            //         'success',
-            //         10000
-            //     );
-            // } else {
-            //     console.log('ℹ️ 매칭 실패: 유사한 공공 데이터를 찾지 못했습니다.');
-            //     
+            if (matchedPublicShop) {
+                console.log('✅ 매칭 성공:', {
+                    registered_shop: shop.name,
+                    public_shop: matchedPublicShop.business_name,
+                    public_shop_id: matchedPublicShop.id
+                });
+                
+                showNotification(
+                    `✅ 플랫폼 입점 승인 완료!\n\n` +
+                    `샵명: ${shop.name}\n` +
+                    `지역: ${shop.state} ${shop.district}\n\n` +
+                    `🔗 공공 데이터 매칭 완료:\n` +
+                    `${matchedPublicShop.business_name}\n\n` +
+                    `이제 리뷰 작성이 가능합니다.`,
+                    'success',
+                    10000
+                );
+            } else {
+                console.log('ℹ️ 매칭 실패: 유사한 공공 데이터를 찾지 못했습니다.');
+                
                 showNotification(
                     `✅ 플랫폼 입점 승인 완료!\n\n` +
                     `샵명: ${shop.name}\n` +
@@ -2105,7 +1800,7 @@ async function approveShop(shopId) {
                     'success',
                     8000
                 );
-            // }
+            }
             
             loadShops(); // Refresh shops list
         } else {
@@ -3269,107 +2964,8 @@ function editShop(shopId) {
     document.getElementById('edit-phone').value = shop.phone || '';
     document.getElementById('edit-email').value = shop.email || '';
     document.getElementById('edit-business-number').value = shop.business_number || '';
-    
-    // v2.8.13.6.155: state 필드 우선순위 (region → state)
-    // API 매핑: state → region이므로 region을 우선 사용
-    let state = shop.region || shop.state || '';
-    
-    // region에서 state 추출 (예: "서울특별시 강남구" → "서울특별시")
-    if (state && state.includes(' ')) {
-        state = state.split(' ')[0];
-    }
-    const stateMap = {
-        '서울': '서울특별시',
-        '부산': '부산광역시',
-        '대구': '대구광역시',
-        '인천': '인천광역시',
-        '광주': '광주광역시',
-        '대전': '대전광역시',
-        '울산': '울산광역시',
-        '세종': '세종특별자치시',
-        '경기': '경기도',
-        '강원': '강원특별자치도',
-        '충북': '충청북도',
-        '충남': '충청남도',
-        '전북': '전북특별자치도',
-        '전남': '전라남도',
-        '경북': '경상북도',
-        '경남': '경상남도',
-        '제주': '제주특별자치도'
-    };
-    
-    // 줄임말이면 전체 이름으로 변환
-    if (stateMap[state]) {
-        state = stateMap[state];
-        console.log('🗺️ 시/도 정규화:', { original: shop.state, normalized: state });
-    }
-    
-    // v2.8.13.6.146: 주소에서 district 자동 추출 (개선)
-    let district = shop.district || '';
-    let town = shop.town || '';
-    
-    // district가 없으면 주소에서 추출
-    if (!district && shop.address) {
-        // 패턴 1: 시/도 + 구/군 + 읍/면/동
-        let addressMatch = shop.address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)\s+([가-힣]+동|[가-힣]+읍|[가-힣]+면)/);
-        
-        if (addressMatch) {
-            district = addressMatch[2];  // 구/군
-            town = addressMatch[3];  // 읍/면/동
-            console.log('📍 주소에서 추출 (패턴1):', { district, town, address: shop.address });
-        } else {
-            // 패턴 2: 시/도 + 구/군 (읍/면/동 없음)
-            addressMatch = shop.address.match(/^([가-힣]+특별시|[가-힣]+광역시|[가-힣]+특별자치시|[가-힣]+도)\s+([가-힣]+구|[가-힣]+군|[가-힣]+시)/);
-            
-            if (addressMatch) {
-                district = addressMatch[2];  // 구/군
-                console.log('📍 주소에서 추출 (패턴2):', { district, address: shop.address });
-            }
-        }
-    }
-    
-    console.log('🏪 샵 수정 데이터:', { 
-        shopId: shop.id,
-        name: shop.name,
-        region: shop.region,
-        state_original: shop.state,
-        state_normalized: state,
-        district_original: shop.district,
-        district_extracted: district,
-        address: shop.address
-    });
-    
-    // 시/도 설정 (정규화된 값 사용)
-    document.getElementById('edit-state').value = state;
-    
-    // 시/도 값이 DOM에 반영될 때까지 대기
-    setTimeout(() => {
-        updateDistrictsForEdit();  // 시/도 설정 후 구/군 옵션 생성
-        
-        // 구/군 값 설정 (옵션 생성 후)
-        setTimeout(() => {
-            const districtSelect = document.getElementById('edit-district');
-            if (districtSelect && district) {
-                districtSelect.value = district;
-                console.log('✅ 구/군 설정:', district);
-                updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
-                
-                // 읍/면/동 설정
-                if (town) {
-                    setTimeout(() => {
-                        const townSelect = document.getElementById('edit-town');
-                        if (townSelect) {
-                            townSelect.value = town;
-                            console.log('✅ 읍/면/동 설정:', town);
-                        }
-                    }, 100);
-                }
-            } else {
-                console.warn('⚠️ 구/군을 설정할 수 없음:', { district, hasSelect: !!districtSelect });
-            }
-        }, 100);
-    }, 50);
-    
+    document.getElementById('edit-state').value = shop.state || '';
+    document.getElementById('edit-district').value = shop.district || '';
     document.getElementById('edit-address').value = shop.address || '';
     document.getElementById('edit-price-range').value = shop.price_range || '';
     document.getElementById('edit-description').value = shop.description || '';
@@ -3391,12 +2987,33 @@ function editShop(shopId) {
         });
     }
     
+    // 구/군 및 읍/면/동 업데이트
+    updateDistricts();
+    if (shop.district) {
+        setTimeout(() => {
+            const districtSelect = document.getElementById('edit-district');
+            if (districtSelect) {
+                districtSelect.value = shop.district;
+                updateTowns();  // 구/군 설정 후 읍/면/동 업데이트
+                
+                if (shop.town) {
+                    setTimeout(() => {
+                        const townSelect = document.getElementById('edit-town');
+                        if (townSelect) {
+                            townSelect.value = shop.town;
+                        }
+                    }, 100);
+                }
+            }
+        }, 100);
+    }
+    
     // 이벤트 리스너 추가 (중복 방지)
     const stateSelect = document.getElementById('edit-state');
     const districtSelect = document.getElementById('edit-district');
     
     if (stateSelect && !stateSelect.dataset.listenerAdded) {
-        stateSelect.addEventListener('change', updateDistrictsForEdit);
+        stateSelect.addEventListener('change', updateDistricts);
         stateSelect.dataset.listenerAdded = 'true';
         console.log('✅ 시/도 변경 이벤트 리스너 추가');
     }
@@ -3415,8 +3032,8 @@ function closeShopEditModal() {
     document.getElementById('shop-edit-modal').classList.add('hidden');
 }
 
-// 구/군 드롭다운 업데이트 함수 (샵 수정용)
-function updateDistrictsForEdit() {
+// 구/군 드롭다운 업데이트 함수
+function updateDistricts() {
     const stateSelect = document.getElementById('edit-state');
     const districtSelect = document.getElementById('edit-district');
     const townSelect = document.getElementById('edit-town');
@@ -3428,12 +3045,7 @@ function updateDistrictsForEdit() {
     
     const state = stateSelect.value;
     
-    console.log('🏙️ 구/군 업데이트 시작:', { 
-        state, 
-        stateSelectValue: stateSelect.value,
-        hasKoreaTownData: typeof KOREA_TOWN_DATA !== 'undefined',
-        stateKeys: typeof KOREA_TOWN_DATA !== 'undefined' ? Object.keys(KOREA_TOWN_DATA).slice(0, 5) : []
-    });
+    console.log('🏙️ 구/군 업데이트:', { state });
     
     // 구/군 초기화
     districtSelect.innerHTML = '<option value="">선택하세요</option>';
@@ -3690,9 +3302,36 @@ function setupShopFilters() {
 
 // Filter shops based on search and filters
 function filterShops() {
-    // 서버 측 필터링 사용 - loadShops() 재호출
-    console.log('🔍 필터 변경 감지 - 서버에서 재검색');
-    loadShops(true);
+    const searchTerm = document.getElementById('shop-search')?.value.toLowerCase() || '';
+    const regionFilter = document.getElementById('shop-region-filter')?.value || '';
+    const statusFilter = document.getElementById('shop-status-filter')?.value || '';
+    
+    let filteredShops = allShops.filter(shop => {
+        // Search filter
+        const matchesSearch = !searchTerm || 
+            (shop.shop_name && shop.shop_name.toLowerCase().includes(searchTerm)) ||
+            (shop.owner_name && shop.owner_name.toLowerCase().includes(searchTerm)) ||
+            (shop.name && shop.name.toLowerCase().includes(searchTerm)) ||
+            (shop.email && shop.email.toLowerCase().includes(searchTerm)) ||
+            (shop.business_number && shop.business_number.includes(searchTerm));
+        
+        // Region filter
+        const matchesRegion = !regionFilter || 
+            (shop.state && shop.state === regionFilter) ||
+            (shop.shop_state && shop.shop_state === regionFilter) ||
+            (shop.region && shop.region.includes(regionFilter));
+        
+        // Status filter
+        const matchesStatus = !statusFilter || 
+            (shop.status === statusFilter);
+        
+        return matchesSearch && matchesRegion && matchesStatus;
+    });
+    
+    displayShops(filteredShops);
+    
+    // Update results count
+    updateShopFilterResults(filteredShops.length, allShops.length);
 }
 
 // Update filter results display
@@ -3719,7 +3358,6 @@ function clearShopFilters() {
     document.getElementById('shop-search').value = '';
     document.getElementById('shop-region-filter').value = '';
     document.getElementById('shop-status-filter').value = '';
-    document.getElementById('shop-type-filter').value = ''; // v2.8.13.6.140: 샵 타입 필터 초기화 추가
     
     // Remove results counter
     const existingCounter = document.getElementById('shop-filter-results');
@@ -3727,9 +3365,8 @@ function clearShopFilters() {
         existingCounter.remove();
     }
     
-    // 서버에서 전체 데이터 다시 로딩 - v2.8.13.6.136
-    console.log('🔄 필터 초기화 - 전체 데이터 로딩');
-    loadShops(true);
+    // Show all shops
+    displayShops(allShops);
 }
 
 // Toggle representative shop status
@@ -4058,7 +3695,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 🗺️ 신규 샵 등록 모달용 updateDistricts 함수 (v2.8.13.6.115)
-function updateDistrictsForNew() {
+function updateDistricts() {
     const stateSelect = document.getElementById('new-shop-state');
     const districtSelect = document.getElementById('new-shop-district');
     
@@ -4092,10 +3729,8 @@ function updateDistrictsForNew() {
     }
 }
 
-// Make functions globally accessible
-window.updateDistricts = updateDistrictsForNew;
-window.updateDistrictsForEdit = updateDistrictsForEdit;
-window.updateDistrictsForNew = updateDistrictsForNew;
+// Make updateDistricts globally accessible
+window.updateDistricts = updateDistricts;
 
 // Close modal on ESC key
 document.addEventListener('keydown', function(e) {
