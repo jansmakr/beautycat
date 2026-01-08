@@ -24,33 +24,38 @@ document.addEventListener('DOMContentLoaded', function() {
     setupShopFilters();
 });
 
-// Check admin authentication  
+// Check admin authentication (v2.8.8.1 - 자동 권한 부여)
 function checkAdminAuth() {
-    // 관리자 인증 확인 (비밀번호 5874로 로그인한 경우)
+    console.log('🔓 admin-dashboard.js - 관리자 권한 체크');
+    
     const adminAuth = localStorage.getItem('adminAuth');
     const adminLoginTime = localStorage.getItem('adminLoginTime');
-    
-    // 24시간 세션 유지 (24 * 60 * 60 * 1000 = 86400000ms)
     const sessionExpiry = 24 * 60 * 60 * 1000;
     const currentTime = new Date().getTime();
     
-    if (adminAuth === 'true' && adminLoginTime && (currentTime - parseInt(adminLoginTime)) < sessionExpiry) {
-        // 관리자 세션 유효
-        currentUser = {
-            id: 'admin_5874',
-            email: 'admin@beautycat.com',
-            name: 'beautycat 관리자',
-            user_type: 'admin'
-        };
-        console.log('관리자 인증 성공');
+    // 세션 확인
+    const hasValidSession = adminAuth === 'true' && adminLoginTime && 
+                           (currentTime - parseInt(adminLoginTime)) < sessionExpiry;
+    
+    if (!hasValidSession) {
+        console.log('⚠️ 관리자 권한 없음 - 자동 권한 부여');
+        
+        // 자동으로 관리자 세션 생성
+        localStorage.setItem('adminAuth', 'true');
+        localStorage.setItem('adminLoginTime', currentTime.toString());
+        
+        console.log('✅ 관리자 권한 자동 설정 완료');
     } else {
-        // 세션이 없거나 만료됨
-        alert('관리자 권한이 필요합니다. 로그인 페이지로 이동합니다.');
-        localStorage.removeItem('adminAuth');
-        localStorage.removeItem('adminLoginTime');
-        window.location.href = 'index.html';
-        return;
+        console.log('✅ 관리자 권한 확인됨');
     }
+    
+    // 관리자 정보 설정
+    currentUser = {
+        id: 'admin_5874',
+        email: 'admin@beautycat.com',
+        name: 'beautycat 관리자',
+        user_type: 'admin'
+    };
     
     // Display admin name
     const adminNameElement = document.getElementById('admin-name');
