@@ -638,23 +638,8 @@ function initializeShopFilters() {
     const shopRegionFilter = document.getElementById('shop-region-filter');
     const shopStatusFilter = document.getElementById('shop-status-filter');
     
-    // 🔥 CRITICAL: 이벤트 리스너 등록 전에 다시 한 번 강제 초기화!
-    if (shopTypeFilter) {
-        shopTypeFilter.value = '';
-        // 브라우저가 값을 복원하지 못하도록 selectedIndex도 초기화
-        shopTypeFilter.selectedIndex = 0;
-    }
-    if (shopSearchInput) shopSearchInput.value = '';
-    if (shopRegionFilter) {
-        shopRegionFilter.value = '';
-        shopRegionFilter.selectedIndex = 0;
-    }
-    if (shopStatusFilter) {
-        shopStatusFilter.value = '';
-        shopStatusFilter.selectedIndex = 0;
-    }
-    
-    console.log('🔒 필터 강제 초기화 완료 (selectedIndex 포함)');
+    // v2.8.13.6.160: 필터 강제 초기화 제거 (사용자 선택 유지)
+    console.log('✅ 필터 이벤트 리스너 등록 (초기화 제거)');
     
     // 이벤트 리스너 등록 (이미 등록되었을 수 있으므로 중복 방지)
     if (shopTypeFilter && !shopTypeFilter.dataset.listenerAdded) {
@@ -664,15 +649,6 @@ function initializeShopFilters() {
         });
         shopTypeFilter.dataset.listenerAdded = 'true';
     }
-    
-    // v2.8.13.6.130.2: 이벤트 리스너 등록 후 강제 초기화 (브라우저 autocomplete 완전 차단)
-    setTimeout(() => {
-        if (shopTypeFilter) {
-            shopTypeFilter.value = '';
-            shopTypeFilter.selectedIndex = 0;
-            console.log('🔥 최종 초기화 (이벤트 후): shop-type-filter =', shopTypeFilter.value);
-        }
-    }, 150);
     
     if (shopSearchInput && !shopSearchInput.dataset.listenerAdded) {
         shopSearchInput.addEventListener('input', filterShops);
@@ -941,7 +917,7 @@ async function loadShops(updateTable = true) {
         console.log('🏪 업체 목록 로딩 시작... (v2.8.13.6.160: 정적 JSON)');
         
         // v2.8.13.6.160: 정적 JSON 파일에서 로딩 (10,000개 고품질 업체)
-        const response = await fetch('/static/shops.json');
+        const response = await fetch('/shops.json');
         if (!response.ok) {
             throw new Error(`정적 파일 로딩 실패: ${response.status}`);
         }
@@ -969,6 +945,8 @@ async function loadShops(updateTable = true) {
             const searchLower = searchTerm.toLowerCase();
             filteredShops = filteredShops.filter(shop => {
                 return (shop.name && shop.name.toLowerCase().includes(searchLower)) ||
+                       (shop.shop_name && shop.shop_name.toLowerCase().includes(searchLower)) ||
+                       (shop.owner_name && shop.owner_name.toLowerCase().includes(searchLower)) ||
                        (shop.address && shop.address.toLowerCase().includes(searchLower)) ||
                        (shop.phone && shop.phone.includes(searchTerm)) ||
                        (shop.email && shop.email.toLowerCase().includes(searchLower));
@@ -3629,43 +3607,36 @@ async function deleteShop(shopId) {
     }
     
     // 확인 대화상자
-    const confirmMessage = `정말로 '${shop.shop_name}' 샵을 삭제하시겠습니까?\n\n※ 소프트 삭제: 데이터는 보관되며 복구 가능합니다.`;
+    const shopName = shop.shop_name || shop.name || '이름 없음';
+    const confirmMessage = `정말로 '${shopName}' 샵을 삭제하시겠습니까?\n\n⚠️ 정적 JSON 모드: 실제 삭제되지 않으며 페이지 새로고침 시 복구됩니다.`;
     if (!confirm(confirmMessage)) {
         return;
     }
     
     try {
-        console.log('🗑️ 샵 Soft Delete 요청:', shopId);
+        console.log('🗑️ 샵 삭제 요청 (정적 JSON 모드):', shopId);
         
-        // Soft Delete: deleted 플래그를 true로 설정
-        const updatedShop = {
-            ...shop,
-            deleted: true,
-            status: 'deleted',
-            updated_at: Date.now()
-        };
-        
-        const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedShop)
-        });
-        
-        console.log('📡 Soft Delete 응답 상태:', response.status);
-        
-        if (response.ok) {
-            showNotification('샵이 성공적으로 삭제되었습니다.', 'success');
-            console.log('✅ 샵 Soft Delete 성공, 테이블 새로고침 중...');
+        // v2.8.13.6.163.3: 정적 JSON 모드에서는 클라이언트 사이드에서만 제거
+        // allShops 배열에서 해당 샵 제거
+        const shopIndex = allShops.findIndex(s => s.id === shopId);
+        if (shopIndex > -1) {
+            allShops.splice(shopIndex, 1);
+            window.allShops = allShops; // 전역 변수 업데이트
+            
+            showNotification(`'${shopName}' 샵이 삭제되었습니다. (세션 동안만 유효)`, 'success');
+            console.log('✅ 샵 삭제 완료 (정적 JSON 모드), 테이블 새로고침 중...');
+            
+            // 테이블 새로고침 (API 호출 없이)
             await loadShops();
         } else {
-            const errorData = await response.text();
-            console.error('❌ Soft Delete 실패 응답:', errorData);
-            throw new Error(`HTTP ${response.status}: ${errorData}`);
+            throw new Error('샵을 찾을 수 없습니다.');
         }
+        
+        // v2.8.13.6.163.3: API 호출 제거 (정적 JSON 사용 중)
+        // const response = await fetch(`tables/skincare_shops/${shopId}`, {...});
+        
     } catch (error) {
-        console.error('Shop soft deletion error:', error);
+        console.error('❌ 샵 삭제 오류:', error);
         showNotification('샵 삭제에 실패했습니다: ' + error.message, 'error');
     }
 }
