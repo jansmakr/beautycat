@@ -5,9 +5,37 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.2 ⚡
+## 🚀 현재 버전: v2.8.8.2.1 ⚡
 
-### 🔧 구/군 선택 문제 해결 + 코드 검증 (2026-01-09)
+### 🔴 긴급 핫픽스 (2026-01-09)
+
+**v2.8.8.2.1 긴급 배포 필요**
+- 🔴 **Critical Bug Fix**: public-data-manager.js 누락 문제 해결
+- ✅ **구/군 선택 복구**: 드롭다운 정상 작동
+- ✅ **샵 등록 복구**: 신규 샵 등록 기능 정상화
+- ✅ **샵 수정 복구**: 샵 정보 수정 기능 정상화
+- 📦 **긴급 수정**: HOTFIX_v2.8.8.2.1.md 참고
+
+**문제 원인**:
+- v2.8.8.2 배포 시 public-data-manager.js 누락
+- 신규 샵 등록 폼의 시/도 옵션 약어 사용 (서울, 부산)
+- 샵 수정 폼의 일부 시/도 옵션 불일치 (강원도, 전라북도)
+
+**수정 내용**:
+- public-data-manager.js 재추가
+- 시/도 옵션 전체 이름으로 수정 (17개)
+- admin-dashboard.js 버전 업데이트 (v2.8.13.6.161)
+
+**긴급 배포 명령어**:
+```bash
+git add admin-dashboard.html HOTFIX_v2.8.8.2.1.md README.md
+git commit -m "hotfix: public-data-manager.js 재추가 및 시/도 옵션 수정 (v2.8.8.2.1)"
+git push origin main
+```
+
+---
+
+### 🔧 구/군 선택 문제 해결 + 코드 검증 (2026-01-09 - v2.8.8.2)
 
 **v2.8.8.2 배포 준비 완료**
 - ✅ **구/군 선택 문제 해결**: admin-dashboard.html 중복 KOREA_TOWN_DATA 제거
