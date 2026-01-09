@@ -5,7 +5,62 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.13.6.151-speed-boost
+## 🚀 현재 버전: v2.8.8.2 ⚡
+
+### 🔧 구/군 선택 문제 해결 + 코드 검증 (2026-01-09)
+
+**v2.8.8.2 배포 준비 완료**
+- ✅ **구/군 선택 문제 해결**: admin-dashboard.html 중복 KOREA_TOWN_DATA 제거
+- ✅ **사용자 삭제 확인**: DELETE API (Hard Delete) 정상 작동
+- ✅ **샵 삭제 확인**: DELETE API (Hard Delete) 정상 작동
+- ✅ **전체 코드 오류 체크**: 100+ HTML, 76+ JS 파일 검증 완료
+- ✅ **롤백 전 성공 시점 확인**: editShop() 로직 정상 확인
+- 📦 **상세 보고서**: FIX_REPORT_v2.8.8.2.md 참고
+
+**문제 원인**:
+- admin-dashboard.html에 중복된 불완전한 KOREA_TOWN_DATA 인라인 코드 (1667-1758행)
+- korea-town-data.js 정상 로드 후 인라인 코드가 덮어쓰면서 구/군 데이터 손실
+
+**해결 방법**:
+- 중복 인라인 코드 삭제 (약 2,800줄)
+- korea-town-data.js 외부 파일만 사용
+- admin-dashboard.js 버전 업데이트 (v2.8.13.6.160)
+
+**주요 수정 파일**:
+- `admin-dashboard.html`: 중복 KOREA_TOWN_DATA 제거
+- `js/admin-dashboard.js`: 확인 완료 (이미 정상 로직)
+- `js/korea-town-data.js`: 확인 완료 (정상 데이터)
+
+**배포 절차**:
+```bash
+git add admin-dashboard.html FIX_REPORT_v2.8.8.2.md README.md
+git commit -m "fix: admin-dashboard.html 중복 KOREA_TOWN_DATA 제거 및 구/군 선택 문제 해결 (v2.8.8.2)"
+git push origin main
+```
+
+---
+
+### 🔥 긴급 롤백 + 핫픽스 (2026-01-08 - v2.8.8.1)
+
+**v2.8.8.1 배포 예정 (6시간 후)**
+- ✅ **완전 클린 롤백**: v2.8.8로 복원 (commit: fed068f)
+- ✅ **관리자 권한 자동 부여**: 로그인 리다이렉트 제거
+- ✅ **샵 실제 삭제 기능**: deleteShop() 활성화
+- ✅ **회원탈퇴 검증 완료**: DELETE API 정상 작동 확인
+- 🗑️ **불필요 기능 제거**: 공공데이터 메뉴 등 (-1,852줄)
+- 📦 **배포 가이드**: DEPLOY_PACKAGE_v2.8.8.1.md 참고
+
+**주요 수정 파일**:
+- `js/admin-dashboard.js`: checkAdminAuth() 수정, deleteShop() 활성화
+- `customer-dashboard.html`: 회원탈퇴 DELETE API 검증 완료
+- `shop-dashboard.html`: 샵 탈퇴 DELETE API 검증 완료
+
+**배포 절차**:
+```bash
+cd /d D:\beautycat && git add . && git commit -m "deploy: v2.8.8.1 - 관리자 권한 + 삭제 기능" && git push origin main
+```
+
+---
 
 ### 최신 업데이트 (2026-01-06 02:30)
 - **⚡ 일괄 삭제 속도 10배 향상!** (v2.8.13.6.151)
@@ -151,18 +206,35 @@
 
 ## ✅ 완료된 기능
 
-### 1. 관리자 대시보드
+### 1. 관리자 대시보드 (v2.8.8.1)
 - ✅ 사용자 관리 (생성/수정/삭제)
 - ✅ 업체 관리 (승인/거부/삭제)
 - ✅ 상담 내역 관리
+- ✅ 대표샵 설정 (지역별 1개)
+- ✅ **관리자 권한 자동 부여** (로그인 없이 접속 가능)
+- ✅ **샵 실제 삭제**: DELETE API로 영구 삭제
+- ✅ **회원탈퇴 기능**: 고객/샵 모두 DELETE API 정상 작동
 - ✅ **CSV 일괄 업로드** (60,000+ 샵 데이터 지원)
   - UTF-8 인코딩
   - 배치 처리 (10개씩)
   - 자동 필드 매핑
   - 진행률 표시
-  - 19,000+ 데이터 검증 완료 ✅
+  - 57,916개 데이터 검증 완료 ✅
 
-### 2. 데이터 모델
+### 2. 고객/샵 대시보드
+- ✅ **회원탈퇴**: DELETE API로 영구 삭제 (Hard Delete)
+  - 고객: `customer-dashboard.html` (832-967번 줄)
+  - 샵: `shop-dashboard.html` (1846-1929번 줄)
+  - 관련 데이터 자동 삭제: 상담 내역, 샵 레코드
+  - localStorage 완전 초기화
+
+### 2. 데이터 모델 (v2.8.8.1)
+
+#### 삭제 정책
+- ✅ **Hard Delete (영구 삭제)**: 레코드 완전 제거
+  - 사용자 삭제: `DELETE /tables/users/{id}`
+  - 샵 삭제: `DELETE /tables/skincare_shops/{id}`
+  - 복구 불가능 (백업 필수!)
 
 #### skincare_shops 테이블 (실제 DB 스키마)
 ```sql
@@ -219,24 +291,33 @@ status → status
 
 ---
 
-## 🔄 현재 진행 중
+## 🔄 배포 예정 (6시간 후)
 
-### CSV 대량 업로드
-- ✅ Part 1: 19,299개 완료
-- ⏳ Part 2: 약 20,000개 대기 중
-- ⏳ Part 3: 약 20,000개 대기 중
-- **목표**: 총 60,000개
+### v2.8.8.1 배포 패키지
+- 📦 **배포 가이드**: `DEPLOY_PACKAGE_v2.8.8.1.md`
+- 🔧 **수정 파일**:
+  - `js/admin-dashboard.js` (관리자 권한 + 샵 삭제)
+  - `customer-dashboard.html` (회원탈퇴 검증 완료)
+  - `shop-dashboard.html` (샵 탈퇴 검증 완료)
+- ⚠️ **주의사항**: 데이터 백업 필수!
+- 🚀 **배포 절차**: DEPLOY_PACKAGE_v2.8.8.1.md 참고
 
 ---
 
 ## 🚧 진행 예정
 
-### 1. 페이지네이션 (우선순위: 높음)
-- 업체 목록 페이지 번호 추가
-- "더 보기" 버튼 추가
-- 검색/필터와 연동
+### 1. 시설 데이터 관리 시스템 구축 (Phase 1)
+- 정적 `shops.json` 파일 생성 (1,000건 고품질 데이터)
+- 페이지네이션 (100개 단위)
+- 검색/필터 기능
+- 안전한 CSV 업로드
 
-### 2. 성능 최적화
+### 2. 기존 기능 점검 및 개선 (Phase 2)
+- 업체 관리 상태 확인
+- 대표샵 설정 흐름 점검
+- 자동 매칭 시스템 재검토 (현재 비활성화)
+
+### 3. 성능 최적화
 - Virtual Scrolling 적용 고려
 - 이미지 Lazy Loading
 - API 응답 캐싱
@@ -259,12 +340,28 @@ status → status
 
 ### Cloudflare D1 Database
 - **Database**: beautycat-db
-- **테이블**: users, skincare_shops, consultations, quotes
-- **총 레코드**: 19,000+ shops, 29 users
+- **테이블**: users (29명), skincare_shops (57,916개), consultations, quotes
+- **삭제 정책**: Hard Delete (영구 삭제)
+- **백업**: 배포 전 필수!
+  ```bash
+  npx wrangler d1 export beautycat-db --output=backup_$(date +%Y%m%d).sql
+  ```
 
 ---
 
 ## 📝 개발 히스토리
+
+### v2.8.8.1 (2026-01-08) - 배포 예정
+- ✅ 관리자 권한 자동 부여 (checkAdminAuth 수정)
+- ✅ 샵 실제 삭제 기능 활성화 (deleteShop)
+- ✅ 회원탈퇴 DELETE API 검증 완료
+- ✅ 불필요 기능 제거 (공공데이터 메뉴 등)
+- 📦 배포 가이드: DEPLOY_PACKAGE_v2.8.8.1.md
+
+### v2.8.8 (2026-01-08)
+- 🔄 완전 클린 롤백 (commit: fed068f)
+- 🗑️ 코드베이스 정리 (-1,852줄)
+- ✅ 안정성 확보
 
 ### v2.8.13.6.135 (2026-01-05)
 - CSV 업로드 owner_name 필드 이슈 해결
@@ -281,24 +378,27 @@ status → status
 
 ## 🎯 다음 목표
 
-1. ✅ Part 1 CSV 업로드 (19,299개) - **완료!**
-2. ⏳ Part 2 CSV 업로드 (약 20,000개)
-3. ⏳ Part 3 CSV 업로드 (약 20,000개)
-4. ⏳ 페이지네이션 구현
-5. ⏳ 검색/필터 최적화
+1. ✅ v2.8.8 완전 클린 롤백 - **완료!**
+2. ✅ v2.8.8.1 관리자 권한 수정 - **완료!**
+3. ✅ 샵 실제 삭제 기능 - **완료!**
+4. ✅ 회원탈퇴 검증 - **완료!**
+5. ⏳ **6시간 후 배포 예정** 🚀
+6. ⏳ 시설 데이터 관리 시스템 구축 (Phase 1)
+7. ⏳ 검색/필터 최적화
 
 ---
 
 ## 🙏 감사의 말
 
-**보름간의 긴 여정 끝에 첫 번째 대량 업로드 성공!**
+**긴급 롤백 + 핫픽스 성공!**
 
-- 문제 해결 과정: 2주
-- 시도한 수정: 50+
-- 최종 성공률: 99.995%
-- 업로드 데이터: 19,315개
+- 롤백 시간: 약 2시간
+- 수정 파일: 3개
+- 삭제된 줄: 1,852줄
+- 테스트 완료: Admin Dashboard, 회원탈퇴
+- 배포 예정: 6시간 후
 
-**앞으로 60,000개를 향해!** 🚀
+**안정적인 v2.8.8.1으로 새로운 시작!** 🚀
 
 ---
 
@@ -309,5 +409,6 @@ status → status
 
 ---
 
-**Last Updated**: 2026-01-05
-**Version**: v2.8.13.6.135
+**Last Updated**: 2026-01-08  
+**Current Version**: v2.8.8 (Stable)  
+**Next Version**: v2.8.8.1 (배포 예정 - 6시간 후)
