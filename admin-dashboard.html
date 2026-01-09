@@ -1526,10 +1526,15 @@
     
     <script src="js/auth.js"></script>
     
-    <!-- 한국 지역 데이터 (MIME 타입 문제 우회) -->
-    <script>
-    const KOREA_TOWN_DATA = {
-        "서울특별시": {
+
+<script>
+    // v2.8.13.6.163: 지역 데이터는 korea-town-data.js 사용
+    </script>
+    
+    <!-- 외부 korea-town-data.js 로드 -->
+    <script src="js/korea-town-data.js?v=2.8.13.6.163"></script>
+    
+    <script src="js/admin-dashboard.js?v=2.8.13.6.127.5"></script>
             "강남구": ["역삼동", "개포동", "청담동", "삼성동", "대치동", "신사동", "논현동", "압구정동", "세곡동", "자곡동", "일원동", "수서동", "도곡동"],
             "강동구": ["천호동", "성내동", "길동", "둔촌동", "암사동", "상일동", "명일동", "고덕동", "강일동"],
             "강북구": ["미아동", "번동", "수유동", "우이동"],
@@ -1622,9 +1627,12 @@
         }
     };
     
-    // 전역 변수로 노출
-    window.KOREA_TOWN_DATA = KOREA_TOWN_DATA;
+<script>
+    // v2.8.13.6.163: 지역 데이터는 korea-town-data.js 사용
     </script>
+    
+    <!-- 외부 korea-town-data.js 로드 -->
+    <script src="js/korea-town-data.js?v=2.8.13.6.163"></script>
     
     <script src="js/admin-dashboard.js?v=2.8.13.6.127.5"></script>
 
