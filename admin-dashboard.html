@@ -1869,8 +1869,13 @@ async function handleNewShopSubmit(event) {
 
 // 신규 샵 등록 폼: 시/도 선택 시 구/군 업데이트
 function updateDistricts() {
+    console.log('🔧 updateDistricts() 호출됨');
+    
     const stateSelect = document.getElementById('new-shop-state');
     const districtSelect = document.getElementById('new-shop-district');
+    
+    console.log('📍 stateSelect:', stateSelect);
+    console.log('📍 districtSelect:', districtSelect);
     
     if (!stateSelect || !districtSelect) {
         console.error('❌ 시/도 또는 구/군 select 요소를 찾을 수 없음');
@@ -1878,7 +1883,7 @@ function updateDistricts() {
     }
     
     const selectedState = stateSelect.value;
-    console.log('🏙️ 시/도 선택됨:', selectedState);
+    console.log('🏙️ 시/도 선택됨:', selectedState, '(type:', typeof selectedState, ')');
     
     // 구/군 초기화
     districtSelect.innerHTML = '<option value="">선택하세요</option>';
@@ -1894,6 +1899,8 @@ function updateDistricts() {
         console.error('❌ KOREA_TOWN_DATA가 로드되지 않음');
         return;
     }
+    
+    console.log('✅ KOREA_TOWN_DATA 존재:', Object.keys(window.KOREA_TOWN_DATA).length, '개 시/도');
     
     // 시/도 매핑 (약어 → 전체 이름)
     const stateMapping = {
@@ -1918,16 +1925,20 @@ function updateDistricts() {
     
     const fullStateName = stateMapping[selectedState] || selectedState;
     console.log('🗺️ 전체 시/도명:', fullStateName);
+    console.log('🔍 KOREA_TOWN_DATA 키 목록:', Object.keys(window.KOREA_TOWN_DATA));
     
     const districts = window.KOREA_TOWN_DATA[fullStateName];
     
     if (!districts) {
         console.error('❌ 해당 시/도의 구/군 데이터가 없음:', fullStateName);
+        console.error('   사용 가능한 키:', Object.keys(window.KOREA_TOWN_DATA));
         return;
     }
     
     // 구/군 옵션 추가
     const districtNames = Object.keys(districts);
+    console.log('📋 구/군 목록:', districtNames);
+    
     districtNames.forEach(district => {
         const option = document.createElement('option');
         option.value = district;
