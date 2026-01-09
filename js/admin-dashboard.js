@@ -923,7 +923,7 @@ async function handleCSVUpload(event) {
 // Load shops
 async function loadShops(updateTable = true) {
     try {
-        console.log('🏪 업체 목록 로딩 시작... (v2.8.8.1: API + Filters)');
+        console.log('🏪 업체 목록 로딩 시작... (v2.8.8.1: 클라이언트 필터링)');
         
         // 필터 값 가져오기
         const searchQuery = document.getElementById('shop-search')?.value.trim().toLowerCase() || '';
@@ -933,23 +933,8 @@ async function loadShops(updateTable = true) {
         
         console.log('🔍 필터 값:', { searchQuery, regionFilter, statusFilter, shopTypeFilter });
         
-        // API 쿼리 파라미터 구성
-        let apiUrl = 'tables/skincare_shops?limit=10000&sort=-created_at';
-        
-        // 검색어 추가
-        if (searchQuery) {
-            apiUrl += `&search=${encodeURIComponent(searchQuery)}`;
-        }
-        
-        // 지역 필터 추가
-        if (regionFilter) {
-            apiUrl += `&state=${encodeURIComponent(regionFilter)}`;
-        }
-        
-        // 상태 필터 추가
-        if (statusFilter) {
-            apiUrl += `&status=${encodeURIComponent(statusFilter)}`;
-        }
+        // API에서 전체 데이터 로드 (필터링은 클라이언트에서)
+        const apiUrl = 'tables/skincare_shops?limit=10000&sort=-created_at';
         
         console.log('📡 API URL:', apiUrl);
         
@@ -966,9 +951,40 @@ async function loadShops(updateTable = true) {
         
         console.log('📊 API에서 로딩된 업체 수:', allShops.length);
         
-        // 클라이언트 사이드 필터링 (샵 타입)
+        // 클라이언트 사이드 필터링 (검색 + 지역 + 상태 + 샵 타입)
         let filteredShops = [...allShops];
         
+        // 1️⃣ 검색 필터
+        if (searchQuery) {
+            filteredShops = filteredShops.filter(shop => {
+                const searchFields = [
+                    shop.name || '',
+                    shop.shop_name || '',
+                    shop.owner_name || '',
+                    shop.address || '',
+                    shop.phone || '',
+                    shop.email || ''
+                ].join(' ').toLowerCase();
+                
+                return searchFields.includes(searchQuery);
+            });
+        }
+        
+        // 2️⃣ 지역 필터 (시/도)
+        if (regionFilter) {
+            filteredShops = filteredShops.filter(shop => 
+                (shop.state || shop.region || '').includes(regionFilter)
+            );
+        }
+        
+        // 3️⃣ 상태 필터
+        if (statusFilter) {
+            filteredShops = filteredShops.filter(shop => 
+                shop.status === statusFilter
+            );
+        }
+        
+        // 4️⃣ 샵 타입 필터
         if (shopTypeFilter) {
             if (shopTypeFilter === 'verified') {
                 // 인증샵: status=active AND email이 있고 @example.com이 아님
@@ -991,7 +1007,12 @@ async function loadShops(updateTable = true) {
             }
         }
         
-        console.log('📋 필터링 후 업체 수:', filteredShops.length);
+        console.log('📋 필터링 후 업체 수:', filteredShops.length, {
+            검색: searchQuery || '없음',
+            지역: regionFilter || '전체',
+            상태: statusFilter || '전체',
+            샵타입: shopTypeFilter || '전체'
+        });
         
         if (updateTable) {
             console.log('🖼️ 테이블 렌더링 시작... (최대 100개)');

@@ -5,64 +5,28 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.2.2 ⚡
+## 🚀 현재 버전: v2.8.8.1.2 ⚡
 
-### 🔴 긴급 핫픽스 (2026-01-09)
+### ✅ 신규 샵 등록 버튼 추가 완료 (2026-01-09)
 
-**v2.8.8.2.2 긴급 배포 필요**
-- 🔴 **Critical Bug Fix**: 공공데이터 구/군 선택 문제 완전 해결
-- ✅ **구/군 선택 복구**: 드롭다운 100% 정상 작동
-- ✅ **샵 등록 복구**: 신규 샵 등록 기능 정상화
-- ✅ **샵 수정 복구**: 샵 정보 수정 기능 정상화
-- ✅ **공공데이터 지원**: 구/군으로 시작하는 주소 형식 지원
-- 📦 **긴급 수정**: HOTFIX_v2.8.8.2.2.md 참고
+**v2.8.8.1.2 핫픽스**
+- ✅ **"신규 샵 등록" 버튼** 추가 (업체 관리 페이지) - **새로 추가!**
+- ✅ **샵 등록 모달** 열기/닫기 함수 추가
+- ✅ **신규 샵 등록** 처리 함수 추가 (사용자 + 샵 동시 등록)
+- ✅ **미료쿠 샵 등록** 이제 가능! 🎉
+- 📦 **상세 문서**: HOTFIX_NEW_SHOP_BUTTON_v2.8.8.1.2.md 참고
 
-**문제 원인**:
-- v2.8.8.2: admin-dashboard.html에 중복된 불완전한 KOREA_TOWN_DATA
-- v2.8.8.2.1: public-data-manager.js 누락, 시/도 옵션 약어 사용
-- v2.8.8.2.2: 주소 파싱이 시/도로 시작하는 주소만 인식
+**v2.8.8.1.1 클라이언트 필터링**
+- ✅ **검색 필터**: 샵명, 주소, 전화, 이메일, 대표자명 (6개 필드) - **복구 완료!**
+- ✅ **지역 필터**: 17개 시/도 선택 시 즉시 필터링 - **복구 완료!**
+- ✅ **상태 필터**: 활성/비활성/대기 선택 시 즉시 필터링 - **복구 완료!**
+- ✅ **샵 타입 필터**: 인증샵/공공데이터/신규등록 필터링 - **정상 작동!**
+- ✅ **복합 필터**: 모든 필터 동시 적용 가능 - **정상 작동!**
+- 📦 **상세 문서**: HOTFIX_CLIENT_FILTERS_v2.8.8.1.1.md 참고
 
-**수정 내용**:
-- v2.8.8.2: 중복 KOREA_TOWN_DATA 제거 (약 2,800줄)
-- v2.8.8.2.1: public-data-manager.js 재추가, 시/도 옵션 전체 이름 변경 (17개)
-- v2.8.8.2.2: 주소 파싱 패턴 3 추가 (구/군으로 시작하는 공공데이터 형식 지원)
-
-**긴급 배포 명령어**:
+**배포 명령어**:
 ```bash
-git add admin-dashboard.html js/admin-dashboard.js HOTFIX_v2.8.8.2.1.md HOTFIX_v2.8.8.2.2.md USER_TYPE_CHANGE_GUIDE.md README.md FIX_REPORT_v2.8.8.2.md FINAL_COMPLETION_v2.8.8.2.md PUSH_v2.8.8.2.md FINAL_PUSH_GUIDE_v2.8.8.2.2.md && git commit -m "hotfix: v2.8.8.2.2 - 구/군 선택 완전 복구 (공공데이터 지원)" && git push origin main
-```
-
----
-
-### 🔧 구/군 선택 문제 해결 + 코드 검증 (2026-01-09 - v2.8.8.2)
-
-**v2.8.8.2 배포 준비 완료**
-- ✅ **구/군 선택 문제 해결**: admin-dashboard.html 중복 KOREA_TOWN_DATA 제거
-- ✅ **사용자 삭제 확인**: DELETE API (Hard Delete) 정상 작동
-- ✅ **샵 삭제 확인**: DELETE API (Hard Delete) 정상 작동
-- ✅ **전체 코드 오류 체크**: 100+ HTML, 76+ JS 파일 검증 완료
-- ✅ **롤백 전 성공 시점 확인**: editShop() 로직 정상 확인
-- 📦 **상세 보고서**: FIX_REPORT_v2.8.8.2.md 참고
-
-**문제 원인**:
-- admin-dashboard.html에 중복된 불완전한 KOREA_TOWN_DATA 인라인 코드 (1667-1758행)
-- korea-town-data.js 정상 로드 후 인라인 코드가 덮어쓰면서 구/군 데이터 손실
-
-**해결 방법**:
-- 중복 인라인 코드 삭제 (약 2,800줄)
-- korea-town-data.js 외부 파일만 사용
-- admin-dashboard.js 버전 업데이트 (v2.8.13.6.160)
-
-**주요 수정 파일**:
-- `admin-dashboard.html`: 중복 KOREA_TOWN_DATA 제거
-- `js/admin-dashboard.js`: 확인 완료 (이미 정상 로직)
-- `js/korea-town-data.js`: 확인 완료 (정상 데이터)
-
-**배포 절차**:
-```bash
-git add admin-dashboard.html FIX_REPORT_v2.8.8.2.md README.md
-git commit -m "fix: admin-dashboard.html 중복 KOREA_TOWN_DATA 제거 및 구/군 선택 문제 해결 (v2.8.8.2)"
-git push origin main
+git add admin-dashboard.html HOTFIX_NEW_SHOP_BUTTON_v2.8.8.1.2.md README.md && git commit -m "fix: 신규 샵 등록 버튼 및 기능 추가" && git push origin main
 ```
 
 ---
