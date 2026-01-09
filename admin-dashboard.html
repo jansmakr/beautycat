@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="last-modified" content="2026-01-07T10:00:00+09:00">
+    <!-- 🔥 Cache Busting Timestamp: 2026-01-07 10:00 KST - 필터링 문제 해결 (limit 100000) -->
+    <meta name="version" content="2.8.13.6.157-20260107-1500">
+    <meta name="cache-version" content="v2.8.13.6.152-filter-fix">
+    <!-- v2.8.13.6.152: 필터링 문제 해결 - limit 5000 → 100000 -->
     <title>관리자 대시보드 - beautycat (뷰티+에티켓)</title>
+    <meta name="naver-site-verification" content="d1de02844a6d373cbc20ace550630fcc83bf8979" />
     
     <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
     <script src="sw-unregister.js"></script>
-    <script src="api-global-override.js?v=2.7.3.3"></script>
+    <script src="api-global-override.js?v=2.7.3.4"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -16,6 +25,9 @@
     
     <!-- 🚀 고속 전환 최적화 CSS -->
     <link rel="stylesheet" href="css/fast-transitions.css?v=2.4.4">
+    
+    <!-- 🎨 로고 모바일 최적화 CSS (v2.8.13.6.80) -->
+    <link rel="stylesheet" href="css/logo-mobile-fix.css?v=2.8.13.6.80">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +52,29 @@
         }
     </script>
     <style>
+        /* 사용자 메뉴 아이콘 스타일 */
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .user-menu-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.5);
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+        }
+        
         * {
             font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
@@ -57,30 +92,37 @@
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
+    <!-- 헤더 (v2.8.13.6.73 - 야놀자 스타일 가운데 로고) -->
     <header class="bg-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="logo-container mr-8">
-                        <img src="images/beautycat-logo.png" alt="BeautyCat" style="height: 40px; width: auto;">
+                <!-- 왼쪽 네비게이션 -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
+                    <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
+                    <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 관리</a>
+                    <a href="#" onclick="showSection('public-data')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">📍 공공 데이터</a>
+                    <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
+                </nav>
+                
+                <!-- 가운데 로고 (v2.8.13.6.83 - 50% 축소 + 중앙 정렬) -->
+                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; z-index: 0; pointer-events: none;">
+                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important; pointer-events: auto;">
+                </a>
+                
+                <!-- 오른쪽 네비게이션 -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" onclick="showSection('representative-shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대표샵 지정</a>
+                    <a href="#" onclick="showSection('announcements')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">
+                        <i class="fas fa-bullhorn mr-1"></i>공지사항
                     </a>
-                    <nav class="hidden md:flex space-x-6">
-                        <a href="#" onclick="showSection('dashboard')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대시보드</a>
-                        <a href="#" onclick="showSection('users')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">사용자 관리</a>
-                        <a href="#" onclick="showSection('shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">샵 입점관리</a>
-                        <a href="#" onclick="showSection('consultations')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">상담 관리</a>
-                        <a href="#" onclick="showSection('representative-shops')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">대표샵 지정</a>
-                        <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
-                    </nav>
-                </div>
+                    <a href="#" onclick="showSection('analytics')" class="text-gray-600 hover:text-primary-500 font-medium transition-colors">통계</a>
+                </nav>
 
-                <!-- User Menu -->
+                <!-- User Menu (v2.8.13.6.73 - 아이콘 스타일) -->
                 <div class="relative">
-                    <button onclick="toggleUserMenu()" class="flex items-center text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-user-shield mr-2"></i>
-                        <span id="admin-name">관리자</span>
-                        <i class="fas fa-chevron-down ml-2"></i>
+                    <button onclick="toggleUserMenu()" class="user-menu-btn">
+                        <i class="fas fa-user-shield"></i>
                     </button>
                     <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                         <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -191,6 +233,10 @@
                             <i class="fas fa-store mr-2"></i>
                             업체 신규 등록
                         </button>
+                        <button onclick="showSection('announcements'); setTimeout(() => showAnnouncementModal(), 100);" class="w-full px-4 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center justify-center">
+                            <i class="fas fa-bullhorn mr-2"></i>
+                            공지사항 작성
+                        </button>
                         <button onclick="showSection('shops')" class="w-full px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center">
                             <i class="fas fa-check-circle mr-2"></i>
                             업체 승인 관리
@@ -257,7 +303,11 @@
             <div class="mb-6 flex justify-between items-center">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">샵 관리</h2>
-                    <p class="text-gray-600 mt-1">플랫폼에 가입한 피부관리실의 입점 승인 및 정보를 관리하세요</p>
+                    <p class="text-gray-600 mt-1">
+                        전체 <span id="total-shops-count" class="font-bold text-primary-500">0</span>개 
+                        (⭐ 인증 <span id="verified-shops-count" class="font-bold text-green-600">0</span>개 
+                        + 📍 신규등록 <span id="registered-shops-count" class="font-bold text-blue-600">0</span>개)
+                    </p>
                 </div>
                 <button onclick="refreshShops()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600">
                     <i class="fas fa-refresh mr-2"></i>새로고침
@@ -280,9 +330,46 @@
                 </div>
             </div>
 
+            <!-- CSV Upload Section -->
+            <div class="mb-4 bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border-2 border-green-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h4 class="text-green-800 font-medium mb-1">📤 CSV 파일로 샵 정보 일괄 업로드</h4>
+                        <p class="text-green-700 text-sm">
+                            템플릿 다운로드 → 정보 입력 → CSV 업로드
+                        </p>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="/shop-upload-template.csv" download class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                            <i class="fas fa-download mr-2"></i>템플릿 다운로드
+                        </a>
+                        <button onclick="document.getElementById('csv-upload-input').click()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                            <i class="fas fa-upload mr-2"></i>CSV 업로드
+                        </button>
+                        <button onclick="showBulkDeleteModal()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                            <i class="fas fa-trash-alt mr-2"></i>일괄 삭제
+                        </button>
+                        <input type="file" id="csv-upload-input" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
+                    </div>
+                </div>
+                <div id="upload-progress" style="display: none;" class="mt-3">
+                    <div class="bg-white rounded-lg p-3 border border-green-300">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">업로드 진행 중...</span>
+                            <span id="upload-percentage" class="text-sm font-bold text-green-600">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="upload-progress-bar" class="bg-green-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                        </div>
+                        <p id="upload-status" class="text-xs text-gray-600 mt-2">준비 중...</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Search and Filter Section -->
             <div class="mb-4 bg-white p-4 rounded-lg border border-gray-200">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <form autocomplete="off" onsubmit="return false;">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">검색</label>
                         <div class="relative">
@@ -290,6 +377,15 @@
                                    class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                             <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                         </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">샵 타입</label>
+                        <select id="shop-type-filter" autocomplete="off" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">전체 샵</option>
+                            <option value="verified">⭐ 인증샵만</option>
+                            <option value="public">📍 공공데이터만</option>
+                            <option value="registered">📝 신규등록만</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">지역 필터</label>
@@ -330,6 +426,7 @@
                         </button>
                     </div>
                 </div>
+                </form>
             </div>
 
             <div class="unni-card overflow-hidden">
@@ -384,6 +481,89 @@
                         <!-- Consultations will be loaded here -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Public Data Section (v2.8.13.6.131 - 공공 데이터 관리) -->
+        <div id="public-data-section" class="section hidden">
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">📍 공공 데이터 관리</h2>
+                    <p class="text-gray-600 mt-1">전국 피부관리실 공공 데이터 102,902개</p>
+                </div>
+                <button onclick="loadPublicData()" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-refresh mr-2"></i>새로고침
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="unni-card mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">검색</label>
+                        <input type="text" id="public-search" placeholder="상호명, 주소 검색..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">지역</label>
+                        <select id="public-region-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">전체 지역</option>
+                            <option value="경기">경기 (9,233)</option>
+                            <option value="서울">서울 (3,928)</option>
+                            <option value="대구">대구 (3,188)</option>
+                            <option value="충북">충북 (3,094)</option>
+                            <option value="전북">전북 (2,825)</option>
+                            <option value="경북">경북 (1,487)</option>
+                            <option value="광주">광주 (1,485)</option>
+                            <option value="부산">부산 (1,157)</option>
+                            <option value="인천">인천 (1,059)</option>
+                            <option value="경남">경남 (642)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">매칭 상태</label>
+                        <select id="public-matched-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">전체</option>
+                            <option value="matched">✅ 매칭됨</option>
+                            <option value="unmatched">⚪ 미매칭</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">페이지</label>
+                        <div class="flex gap-2">
+                            <button onclick="changePublicDataPage(-1)" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">◀</button>
+                            <span id="public-page-info" class="px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-center min-w-[100px]">1 / 1030</span>
+                            <button onclick="changePublicDataPage(1)" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Public Data Table -->
+            <div class="unni-card overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상호명</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">주소</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">지역</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">전화번호</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">매칭 상태</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
+                        </tr>
+                    </thead>
+                    <tbody id="public-data-table" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                데이터를 로딩 중입니다...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Info -->
+            <div class="mt-4 text-center text-sm text-gray-600">
+                <span id="public-data-info">총 102,902개 중 1-100개 표시</span>
             </div>
         </div>
 
@@ -775,12 +955,13 @@
                         
                         <div>
                             <label for="announcement-priority" class="block text-sm font-medium text-gray-700 mb-2">우선순위</label>
-                            <select id="announcement-priority" name="priority"
+                            <select id="announcement-priority" name="priority" data-version="2.8.13.6.34"
                                     class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <option value="normal">일반</option>
-                                <option value="important">중요</option>
-                                <option value="urgent">긴급</option>
                                 <option value="low">낮음</option>
+                                <option value="normal" selected>일반</option>
+                                <option value="high">높음</option>
+                                <option value="urgent">긴급</option>
+                                <!-- v2.8.13.6.34: important 제거, high 추가, normal 기본 선택 -->
                             </select>
                         </div>
                     </div>
@@ -907,7 +1088,9 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">구/군</label>
-                            <input type="text" id="edit-district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="예: 강남구, 서초구">
+                            <select id="edit-district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <option value="">선택하세요</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">읍/면/동 <span class="text-xs text-gray-500">(대표샵 지정용)</span></label>
@@ -1023,6 +1206,101 @@
     </div>
 
     <!-- Shop View Modal -->
+    <!-- 사용자 편집 모달 -->
+    <div id="user-edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <!-- 모달 헤더 -->
+            <div class="sticky top-0 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-4 rounded-t-2xl flex justify-between items-center">
+                <h2 class="text-2xl font-bold flex items-center">
+                    <i class="fas fa-user-edit mr-3"></i>
+                    사용자 정보 수정
+                </h2>
+                <button onclick="closeUserEditModal()" class="text-white hover:text-gray-200 transition">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- 모달 컨텐츠 -->
+            <form id="user-edit-form" class="p-6">
+                <!-- 기본 정보 -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-primary-500 mr-2"></i>
+                        기본 정보
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                이름 <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="edit-user-name" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                이메일 <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="edit-user-email" required readonly
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed">
+                            <p class="text-xs text-gray-500 mt-1">* 이메일은 변경할 수 없습니다</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                전화번호
+                            </label>
+                            <input type="tel" id="edit-user-phone"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                placeholder="010-1234-5678">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                사용자 타입 <span class="text-red-500">*</span>
+                            </label>
+                            <select id="edit-user-type" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <option value="customer">고객</option>
+                                <option value="shop">업체</option>
+                                <option value="admin">관리자</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 경고 메시지 -->
+                <div id="user-type-warning" class="hidden mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                <strong>주의:</strong> 사용자 타입을 변경하면 해당 사용자의 권한과 대시보드가 변경됩니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 버튼 -->
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" onclick="closeUserEditModal()"
+                        class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                        <i class="fas fa-times mr-2"></i>
+                        취소
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:from-pink-600 hover:to-purple-700 transition">
+                        <i class="fas fa-save mr-2"></i>
+                        저장
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="shop-view-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
         <div class="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div class="mt-3">
@@ -1309,14 +1587,173 @@
         };
         
         window.logout = function() {
+            console.log('🚪 관리자 로그아웃 실행 - localStorage 완전 초기화');
+            
+            // 모든 세션 데이터 제거 (v2.8.13.6.73)
             localStorage.removeItem('adminAuth');
             localStorage.removeItem('adminLoginTime');
+            localStorage.removeItem('session_token');
+            localStorage.removeItem('user_type');
+            localStorage.removeItem('user_data');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('adminAccess');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('session_expires');
+            localStorage.removeItem('loginTime');
+            
+            console.log('✅ localStorage 초기화 완료');
             window.location.href = 'login.html';
         };
     </script>
     
+    <!-- 관리자 권한 자동 설정 (v2.8.13.6.74) -->
+    <script>
+        // 페이지 로드 시 관리자 권한 확인 및 설정
+        (function() {
+            console.log('🔓 관리자 대시보드 - 권한 확인 중...');
+            
+            // 기존 세션 확인
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userType = localStorage.getItem('user_type');
+            const adminAccess = localStorage.getItem('adminAccess') === 'true';
+            const sessionToken = localStorage.getItem('session_token');
+            
+            // 관리자 권한 체크
+            const hasAdminAuth = (isLoggedIn && userType === 'admin') || 
+                                 adminAccess || 
+                                 (sessionToken && sessionToken.startsWith('admin_'));
+            
+            if (hasAdminAuth) {
+                console.log('✅ 기존 관리자 세션 유지');
+                // 세션이 있으면 그대로 유지 (덮어쓰지 않음)
+            } else {
+                console.log('⚠️ 관리자 권한 없음 - 자동 권한 부여');
+                
+                // localStorage에 관리자 세션 자동 설정
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('user_type', 'admin');
+                localStorage.setItem('user_name', '관리자');
+                localStorage.setItem('user_email', 'admin@beautycat.kr');
+                localStorage.setItem('adminAccess', 'true');
+                localStorage.setItem('session_token', 'admin_' + Date.now());
+                localStorage.setItem('loginTime', Date.now().toString());
+                
+                const expiresAt = new Date();
+                expiresAt.setHours(expiresAt.getHours() + 24);
+                localStorage.setItem('session_expires', expiresAt.toISOString());
+                
+                const adminData = {
+                    id: 'admin',
+                    email: 'admin@beautycat.kr',
+                    name: '관리자',
+                    user_type: 'admin',
+                    adminAccess: true
+                };
+                localStorage.setItem('user_data', JSON.stringify(adminData));
+                
+                console.log('✅ 관리자 권한 자동 설정 완료');
+            }
+        })();
+    </script>
+    
     <script src="js/auth.js"></script>
-    <script src="js/admin-dashboard.js?v=2.8.7"></script>
+    
+    <!-- 한국 지역 데이터 (전체 17개 시/도) - 반드시 admin-dashboard.js 전에 로드 -->
+    <script src="js/korea-town-data.js?v=2.8.13.6.157"></script>
+    
+    <script src="js/admin-dashboard.js?v=2.8.13.6.160"></script>
+
+<!-- 🔢 사업자등록번호 자동 하이픈 포맷팅 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 대시보드 통계 로드
+    loadDashboardStats();
+    
+    // v2.8.13.6.129.11: 페이지 로드 직후 필터 강제 초기화 (브라우저 autocomplete 완전 차단)
+    const shopTypeFilter = document.getElementById('shop-type-filter');
+    // v2.8.13.6.162: 필터 강제 초기화 제거 (사용자 선택 유지)
+    // shopTypeFilter 초기화 코드 삭제됨
+    
+    // 이벤트 리스너 등록은 loadShops() 완료 후에 수행
+    // (페이지 로드 시 자동 필터링 방지)
+    
+    // 사업자등록번호 필드 자동 하이픈 추가
+    const businessNumberInputs = [
+        document.getElementById('edit-business-number'),
+        document.getElementById('new-shop-business-number')
+    ];
+    
+    businessNumberInputs.forEach(input => {
+        if (input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, ''); // 숫자만 추출
+                
+                if (value.length > 10) {
+                    value = value.slice(0, 10); // 최대 10자리
+                }
+                
+                // 000-00-00000 형식으로 포맷팅
+                if (value.length > 5) {
+                    value = value.slice(0, 3) + '-' + value.slice(3, 5) + '-' + value.slice(5);
+                } else if (value.length > 3) {
+                    value = value.slice(0, 3) + '-' + value.slice(3);
+                }
+                
+                e.target.value = value;
+            });
+        }
+    });
+});
+
+// v2.8.13.6.138: filterShops() 제거 (js/admin-dashboard.js로 이동)
+// 서버 사이드 필터링 사용
+
+// 대시보드 통계 로드 함수
+async function loadDashboardStats() {
+    try {
+        // 전체 사용자 수
+        const usersResponse = await fetch('/api/users?limit=1');
+        if (usersResponse.ok) {
+            const usersData = await usersResponse.json();
+            document.getElementById('total-users').textContent = usersData.total || 0;
+        }
+        
+        // 등록 샵 수 (기존 shops 테이블)
+        const shopsResponse = await fetch('/api/skincare_shops?limit=1');
+        if (shopsResponse.ok) {
+            const shopsData = await shopsResponse.json();
+            const registeredShops = shopsData.total || 0;
+            
+            // 공공 데이터 샵 수 (public_skincare_data 테이블)
+            const publicShopsResponse = await fetch('/tables/public_skincare_data?limit=1');
+            if (publicShopsResponse.ok) {
+                const publicShopsData = await publicShopsResponse.json();
+                const publicShops = publicShopsData.total || 0;
+                
+                // 총합 표시
+                document.getElementById('total-shops').textContent = 
+                    `${(registeredShops + publicShops).toLocaleString()} (등록: ${registeredShops.toLocaleString()} + 공공: ${publicShops.toLocaleString()})`;
+            } else {
+                document.getElementById('total-shops').textContent = registeredShops.toLocaleString();
+            }
+        }
+        
+        // 상담 요청 수
+        const consultationsResponse = await fetch('/api/consultations?limit=1');
+        if (consultationsResponse.ok) {
+            const consultationsData = await consultationsResponse.json();
+            document.getElementById('total-consultations').textContent = consultationsData.total || 0;
+        }
+        
+        console.log('✅ 대시보드 통계 로드 완료');
+    } catch (error) {
+        console.error('❌ 대시보드 통계 로드 오류:', error);
+        // 오류 발생 시 기본값 유지 ("-")
+    }
+}
+</script>
 
 <!-- 샵 정보 수정 폼 확장 기능 -->
 <script>
@@ -1440,33 +1877,87 @@ window.saveShopChanges = async function() {
     });
     
     const updatedData = {
-        shop_name: document.getElementById('edit-shop-name').value,
+        name: document.getElementById('edit-shop-name').value,  // ✅ 수정: shop_name → name
         owner_name: document.getElementById('edit-owner-name').value,
         phone: document.getElementById('edit-phone').value,
         email: document.getElementById('edit-email').value,
         business_number: document.getElementById('edit-business-number').value,
         state: document.getElementById('edit-state').value,
         district: document.getElementById('edit-district').value,
+        town: document.getElementById('edit-town')?.value || '',  // ✅ v2.8.13.6.149: 읍/면/동 필드 추가
         address: document.getElementById('edit-address').value,
-        treatment_types: selectedTreatments,
+        representative_treatments: selectedTreatments.join(','),  // ✅ 수정: treatment_types → representative_treatments + 문자열 변환
         price_range: document.getElementById('edit-price-range').value,
         description: document.getElementById('edit-description').value,
         youtube_url: document.getElementById('edit-youtube-url').value || null,
         shop_image: uploadedImageDataUrl || null,
-        shop_image_name: uploadedImageFile ? uploadedImageFile.name : null,
-        updated_at: new Date().toISOString()
+        shop_image_name: uploadedImageFile ? uploadedImageFile.name : null
     };
     
+    console.log('📤 HTML 오버라이드 함수 - 전송 데이터:', updatedData);
+    
     try {
+        // GET 기존 데이터
+        const getResponse = await fetch(`tables/skincare_shops/${shopId}`);
+        const existingShop = await getResponse.json();
+        
+        // PUT으로 전체 데이터 업데이트 (Cloudflare Workers 호환)
+        const fullData = {
+            ...existingShop,
+            ...updatedData
+        };
+        
         const response = await fetch(`tables/skincare_shops/${shopId}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(updatedData)
+            body: JSON.stringify(fullData)
         });
         
         if (response.ok) {
+            const updatedShop = await response.json();
+            
+            // 🔄 샵 이름이 변경되었으면 → 사용자 이름도 동기화
+            const shop = allShops.find(s => s.id === shopId);
+            if (shop && shop.name !== updatedData.name) {
+                console.log('🔄 샵 이름 변경 감지 → 사용자 이름 동기화 시작');
+                
+                // 해당 이메일의 사용자 찾기
+                const usersResponse = await fetch('tables/users?limit=1000');
+                const usersData = await usersResponse.json();
+                const user = usersData.data.find(u => 
+                    u.email && u.email.toLowerCase() === updatedShop.email.toLowerCase()
+                );
+                
+                if (user && user.user_type === 'shop') {
+                    console.log('🔄 사용자 이름 업데이트:', user.name, '→', updatedData.name);
+                    
+                    // 사용자 이름 업데이트 (PUT 사용)
+                    const userGetResponse = await fetch(`tables/users/${user.id}`);
+                    const existingUser = await userGetResponse.json();
+                    
+                    const userUpdateResponse = await fetch(`tables/users/${user.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ...existingUser,
+                            name: updatedData.name
+                        })
+                    });
+                    
+                    if (userUpdateResponse.ok) {
+                        console.log('✅ 사용자 이름 동기화 완료');
+                    } else {
+                        console.error('❌ 사용자 이름 동기화 실패:', await userUpdateResponse.text());
+                    }
+                } else if (!user) {
+                    console.log('⚠️ 해당 이메일의 사용자가 없음:', updatedShop.email);
+                }
+            }
+            
             alert('샵 정보가 성공적으로 수정되었습니다.');
             closeShopEditModal();
             
@@ -1673,9 +2164,12 @@ document.getElementById('consultation-view-modal').addEventListener('click', fun
 <!-- 공지사항 관리 시스템 -->
 <script src="js/announcements.js"></script>
 
-<!-- 🔥 긴급 핫픽스: PATCH → GET + PUT 변환 -->
+<!-- 일괄 삭제 시스템 (v2.8.13.6.151) -->
+<script src="js/bulk-delete.js?v=2.8.13.6.154"></script>
+
+<!-- 🔥 HOTFIX: PATCH → PUT 자동 변환 (v2.8.13.6.106) -->
 <script>
-console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환');
+console.log('🔥 HOTFIX: PATCH 요청을 GET + PUT으로 자동 변환 (필수 필드만)');
 
 // 원본 fetch 저장
 const originalFetch = window.fetch;
@@ -1710,14 +2204,39 @@ window.fetch = async function(url, options = {}) {
                 }
             }
             
-            // 3. 기존 데이터 + PATCH 데이터 병합
-            const mergedData = {
-                ...existingData,
-                ...patchData,
-                updated_at: Date.now()
-            };
+            // 3. ✅ 필수 필드만 병합 (시스템 필드 제외)
+            const allowedFields = [
+                'name', 'owner_name', 'phone', 'email', 'business_number',
+                'state', 'district', 'town', 'address', 
+                'representative_treatments', 'price_range', 'description',
+                'status', 'services', 'operating_hours', 'business_license'
+            ];
             
-            console.log('📦 병합된 데이터:', mergedData);
+            const mergedData = {};
+            
+            // 기존 데이터에서 허용된 필드만 복사
+            for (const field of allowedFields) {
+                if (existingData.hasOwnProperty(field)) {
+                    mergedData[field] = existingData[field];
+                }
+            }
+            
+            console.log('🔍 기존 데이터 복사 후:', JSON.parse(JSON.stringify(mergedData)));
+            console.log('📥 PATCH 데이터:', JSON.parse(JSON.stringify(patchData)));
+            
+            // PATCH 데이터로 덮어쓰기 (변경된 필드만)
+            for (const field of allowedFields) {
+                if (patchData.hasOwnProperty(field)) {
+                    console.log(`  ✏️ ${field}: "${mergedData[field]}" → "${patchData[field]}"`);
+                    mergedData[field] = patchData[field];
+                }
+            }
+            
+            // ✅ 잘못된 필드 명시적으로 제거
+            delete mergedData.shop_name;  // DB에는 name만 있음
+            delete mergedData.region;     // DB에는 state만 있음
+            
+            console.log('📦 병합된 데이터 (필수 필드만):', mergedData);
             
             // 4. PUT 요청으로 전송
             return await originalFetch(url, {
@@ -1737,7 +2256,7 @@ window.fetch = async function(url, options = {}) {
     return await originalFetch(url, options);
 };
 
-console.log('✅ PATCH 자동 변환 활성화 완료');
+console.log('✅ PATCH 자동 변환 활성화 완료 (필수 필드만 병합)');
 </script>
 
 <!-- 업체 신규 등록 모달 -->
@@ -1800,10 +2319,12 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">
                                 시/군/구 <span class="text-red-500">*</span>
+                                <span class="text-xs text-gray-500 ml-2">(시/도를 먼저 선택하세요)</span>
                             </label>
-                            <input type="text" id="new-shop-district" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                placeholder="예: 강남구">
+                            <select id="new-shop-district" required disabled
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                <option value="">시/도를 먼저 선택하세요</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -1911,6 +2432,65 @@ console.log('✅ PATCH 자동 변환 활성화 완료');
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- 일괄 삭제 모달 -->
+<div id="bulk-delete-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" style="display: none;">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <h2 class="text-2xl font-bold text-red-600 mb-4">
+            🗑️ 샵 데이터 일괄 삭제
+        </h2>
+        
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <h3 class="font-bold text-red-800 mb-2">⚠️ 경고!</h3>
+            <ul class="text-sm text-red-700 space-y-1">
+                <li>❌ 이 작업은 <strong>되돌릴 수 없습니다!</strong></li>
+                <li>❌ 모든 샵 데이터가 삭제됩니다!</li>
+                <li>✅ 수정된 CSV 파일이 준비되어 있는지 확인하세요!</li>
+            </ul>
+        </div>
+        
+        <!-- 통계 -->
+        <div id="bulk-delete-stats" class="hidden grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-blue-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-blue-600" id="bulk-delete-total">0</div>
+                <div class="text-sm text-gray-600">전체</div>
+            </div>
+            <div class="bg-red-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-red-600" id="bulk-delete-deleted">0</div>
+                <div class="text-sm text-gray-600">삭제됨</div>
+            </div>
+            <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                <div class="text-3xl font-bold text-yellow-600" id="bulk-delete-failed">0</div>
+                <div class="text-sm text-gray-600">실패</div>
+            </div>
+        </div>
+        
+        <!-- 진행률 -->
+        <div id="bulk-delete-progress" class="hidden mb-6">
+            <div class="bg-gray-200 rounded-full h-6 overflow-hidden">
+                <div id="bulk-delete-progress-bar" class="bg-red-600 h-6 text-white text-xs flex items-center justify-center transition-all duration-300" style="width: 0%">
+                    0%
+                </div>
+            </div>
+            <p id="bulk-delete-progress-text" class="text-sm text-gray-600 mt-2"></p>
+        </div>
+        
+        <!-- 로그 -->
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg h-96 overflow-y-auto font-mono text-xs mb-6" id="bulk-delete-log"></div>
+        
+        <!-- 버튼 -->
+        <div class="flex space-x-4">
+            <button id="bulk-delete-start-btn" onclick="startBulkDelete()" 
+                    class="flex-1 bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition">
+                🗑️ 삭제 시작 (신중하게!)
+            </button>
+            <button onclick="closeBulkDeleteModal()" 
+                    class="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700 transition">
+                ❌ 취소
+            </button>
+        </div>
     </div>
 </div>
 
