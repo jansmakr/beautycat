@@ -1803,28 +1803,49 @@ async function handleNewShopSubmit(event) {
         const licenseNumber = document.getElementById('new-shop-license-number').value.trim();
         const naverId = document.getElementById('new-shop-naver-id').value.trim();
         
-        // 1. Users 테이블에 사용자 등록
-        console.log('👤 사용자 등록 시작...');
-        const userResponse = await fetch('tables/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: ownerName,
-                email: email,
-                password: password,
-                phone: phone,
-                user_type: 'shop'
-            })
-        });
+        // 1. 사용자 존재 확인
+        console.log('👤 사용자 확인 중...', email);
+        const checkUserResponse = await fetch(`tables/users?limit=1000`);
+        const checkUserData = await checkUserResponse.json();
+        const existingUser = checkUserData.data.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
         
-        if (!userResponse.ok) {
-            throw new Error('사용자 등록 실패');
+        let userId;
+        
+        if (existingUser) {
+            console.log('✅ 기존 사용자 발견:', existingUser.id, '- 사용자 등록 건너뛰기');
+            userId = existingUser.id;
+            
+            // 사용자 타입이 'shop'인지 확인
+            if (existingUser.user_type !== 'shop') {
+                console.log('⚠️ 사용자 타입이 "shop"이 아님. 타입 업데이트 필요:', existingUser.user_type);
+                alert(`⚠️ 주의: "${email}"은 "${existingUser.user_type}" 타입으로 등록되어 있습니다.\n\n먼저 사용자 관리에서 타입을 "업체"로 변경해주세요.`);
+                return;
+            }
+        } else {
+            // 사용자가 없으면 신규 등록
+            console.log('👤 신규 사용자 등록 시작...');
+            const userResponse = await fetch('tables/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: ownerName,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                    user_type: 'shop'
+                })
+            });
+            
+            if (!userResponse.ok) {
+                throw new Error('사용자 등록 실패');
+            }
+            
+            const userData = await userResponse.json();
+            userId = userData.id;
+            console.log('✅ 신규 사용자 등록 완료:', userId);
         }
-        
-        const userData = await userResponse.json();
-        console.log('✅ 사용자 등록 완료:', userData.id);
         
         // 2. Skincare_shops 테이블에 샵 등록
         console.log('🏪 샵 등록 시작...');
@@ -1852,9 +1873,9 @@ async function handleNewShopSubmit(event) {
         });
         
         if (!shopResponse.ok) {
-            // 사용자 등록은 성공했지만 샵 등록 실패 시 사용자 삭제
-            await fetch(`tables/users/${userData.id}`, { method: 'DELETE' });
-            throw new Error('샵 등록 실패');
+            const errorText = await shopResponse.text();
+            console.error('❌ 샵 등록 실패:', errorText);
+            throw new Error('샵 등록 실패: ' + errorText);
         }
         
         const shopData = await shopResponse.json();
