@@ -5,32 +5,31 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.2.1 ⚡
+## 🚀 현재 버전: v2.8.8.2.2 ⚡
 
 ### 🔴 긴급 핫픽스 (2026-01-09)
 
-**v2.8.8.2.1 긴급 배포 필요**
-- 🔴 **Critical Bug Fix**: public-data-manager.js 누락 문제 해결
-- ✅ **구/군 선택 복구**: 드롭다운 정상 작동
+**v2.8.8.2.2 긴급 배포 필요**
+- 🔴 **Critical Bug Fix**: 공공데이터 구/군 선택 문제 완전 해결
+- ✅ **구/군 선택 복구**: 드롭다운 100% 정상 작동
 - ✅ **샵 등록 복구**: 신규 샵 등록 기능 정상화
 - ✅ **샵 수정 복구**: 샵 정보 수정 기능 정상화
-- 📦 **긴급 수정**: HOTFIX_v2.8.8.2.1.md 참고
+- ✅ **공공데이터 지원**: 구/군으로 시작하는 주소 형식 지원
+- 📦 **긴급 수정**: HOTFIX_v2.8.8.2.2.md 참고
 
 **문제 원인**:
-- v2.8.8.2 배포 시 public-data-manager.js 누락
-- 신규 샵 등록 폼의 시/도 옵션 약어 사용 (서울, 부산)
-- 샵 수정 폼의 일부 시/도 옵션 불일치 (강원도, 전라북도)
+- v2.8.8.2: admin-dashboard.html에 중복된 불완전한 KOREA_TOWN_DATA
+- v2.8.8.2.1: public-data-manager.js 누락, 시/도 옵션 약어 사용
+- v2.8.8.2.2: 주소 파싱이 시/도로 시작하는 주소만 인식
 
 **수정 내용**:
-- public-data-manager.js 재추가
-- 시/도 옵션 전체 이름으로 수정 (17개)
-- admin-dashboard.js 버전 업데이트 (v2.8.13.6.161)
+- v2.8.8.2: 중복 KOREA_TOWN_DATA 제거 (약 2,800줄)
+- v2.8.8.2.1: public-data-manager.js 재추가, 시/도 옵션 전체 이름 변경 (17개)
+- v2.8.8.2.2: 주소 파싱 패턴 3 추가 (구/군으로 시작하는 공공데이터 형식 지원)
 
 **긴급 배포 명령어**:
 ```bash
-git add admin-dashboard.html HOTFIX_v2.8.8.2.1.md README.md
-git commit -m "hotfix: public-data-manager.js 재추가 및 시/도 옵션 수정 (v2.8.8.2.1)"
-git push origin main
+git add admin-dashboard.html js/admin-dashboard.js HOTFIX_v2.8.8.2.1.md HOTFIX_v2.8.8.2.2.md USER_TYPE_CHANGE_GUIDE.md README.md FIX_REPORT_v2.8.8.2.md FINAL_COMPLETION_v2.8.8.2.md PUSH_v2.8.8.2.md FINAL_PUSH_GUIDE_v2.8.8.2.2.md && git commit -m "hotfix: v2.8.8.2.2 - 구/군 선택 완전 복구 (공공데이터 지원)" && git push origin main
 ```
 
 ---
