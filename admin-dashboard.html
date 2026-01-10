@@ -1730,11 +1730,38 @@ async function handleNewShopSubmit(event) {
             console.log('✅ 기존 사용자 발견:', existingUser.id, '- 사용자 등록 건너뛰기');
             userId = existingUser.id;
             
-            // 사용자 타입이 'shop'인지 확인
+            // v2.8.8.1.13: 사용자 타입이 'shop'이 아니면 자동 변경
             if (existingUser.user_type !== 'shop') {
-                console.log('⚠️ 사용자 타입이 "shop"이 아님. 타입 업데이트 필요:', existingUser.user_type);
-                alert(`⚠️ 주의: "${email}"은 "${existingUser.user_type}" 타입으로 등록되어 있습니다.\n\n먼저 사용자 관리에서 타입을 "업체"로 변경해주세요.`);
-                return;
+                console.log('⚠️ 사용자 타입이 "shop"이 아님. 자동 업데이트 시작:', existingUser.user_type, '→ shop');
+                
+                const confirmChange = confirm(
+                    `⚠️ 주의: "${email}"은 "${existingUser.user_type}" 타입으로 등록되어 있습니다.\n\n` +
+                    `업체로 전환하시겠습니까?\n\n` +
+                    `• 확인: 타입을 "업체"로 변경하고 샵 등록 진행\n` +
+                    `• 취소: 샵 등록 취소`
+                );
+                
+                if (!confirmChange) {
+                    console.log('❌ 사용자가 타입 변경을 취소함');
+                    return;
+                }
+                
+                // 사용자 타입을 'shop'으로 업데이트
+                const updateResponse = await fetch(`tables/users/${existingUser.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_type: 'shop'
+                    })
+                });
+                
+                if (!updateResponse.ok) {
+                    throw new Error('사용자 타입 업데이트 실패');
+                }
+                
+                console.log('✅ 사용자 타입 업데이트 완료:', existingUser.user_type, '→ shop');
             }
         } else {
             // 사용자가 없으면 신규 등록
