@@ -2032,6 +2032,64 @@ function removeLoginStatusBadge() {
     if (badge) badge.remove();
 }
 
+// register.html 호환성을 위한 래퍼 함수 (v2.8.8.1.8 추가)
+async function register(data) {
+    try {
+        console.log('🔄 register() 래퍼 함수 호출:', data);
+        
+        // 비밀번호 확인 없이 기본 저장 (register.html에서 이미 검증함)
+        const registerData = {
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            password: data.password,
+            password_confirm: data.password, // 자동 일치
+            user_type: data.user_type || 'customer',
+            shop_name: data.shop_name || '',
+            business_number: data.business_number || '',
+            business_license: data.business_license || '',
+            naver_cafe_id: data.naver_cafe_id || '',
+            shop_state: data.shop_state || '',
+            shop_district: data.shop_district || '',
+            shop_address: data.shop_address || '',
+            terms_service: true, // register.html에서 이미 검증
+            terms_privacy: true, // register.html에서 이미 검증
+            terms_marketing: data.terms_marketing || false
+        };
+        
+        // processRegister 함수 호출
+        const result = await processRegister(registerData);
+        
+        if (result.success) {
+            // 자동 로그인 및 리다이렉트
+            const sessionToken = generateSessionToken();
+            saveSession(result.user, sessionToken, false);
+            
+            // 추가 호환성 저장
+            localStorage.setItem('user', JSON.stringify(result.user));
+            
+            showNotification(
+                '회원가입이 완료되었습니다! 대시보드로 이동합니다...', 
+                'success'
+            );
+            
+            // 리다이렉트
+            setTimeout(() => {
+                redirectToDashboard(result.user.user_type);
+            }, 1500);
+            
+            return result;
+        } else {
+            throw new Error(result.message || '회원가입에 실패했습니다.');
+        }
+        
+    } catch (error) {
+        console.error('❌ register() 오류:', error);
+        showNotification(error.message || '회원가입 중 오류가 발생했습니다.', 'error');
+        throw error;
+    }
+}
+
 // 전역 함수들
 window.togglePassword = togglePassword;
 window.toggleRegisterPassword = toggleRegisterPassword;
@@ -2043,3 +2101,4 @@ window.getCurrentUser = getCurrentUser;
 window.isLoggedIn = isLoggedIn;
 window.hasPermission = hasPermission;
 window.updateLoginStatusDisplay = updateLoginStatusDisplay; // v2.8.13 추가
+window.register = register; // v2.8.8.1.8 추가: register.html 호환성
