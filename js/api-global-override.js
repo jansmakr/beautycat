@@ -147,9 +147,9 @@
         if (!shop) return shop;
         return {
             ...shop,
-            shop_name: shop.name || shop.shop_name,     // name → shop_name
-            region: shop.state || shop.region,           // state → region
-            name: shop.name || shop.shop_name            // 원본 유지
+            shop_name: shop.name || shop.shop_name || '',  // name → shop_name (빈 문자열 기본값)
+            region: shop.state || shop.region || '',        // state → region (빈 문자열 기본값)
+            name: shop.name || shop.shop_name || ''         // 원본 유지 (빈 문자열 기본값)
         };
     }
 
