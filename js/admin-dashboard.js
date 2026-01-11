@@ -178,7 +178,7 @@ function levenshteinDistance(str1, str2) {
 
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 Admin Dashboard v2.8.13.6.151 초기화');
+    console.log('🎯 Admin Dashboard v2.8.8.1.20 초기화');
     checkAdminAuth();
     loadDashboardData();
     
@@ -937,12 +937,8 @@ async function loadShops(updateTable = true) {
         
         console.log('📡 API URL:', apiUrl);
         
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-            throw new Error(`업체 목록 로딩 실패: ${response.status}`);
-        }
-        
-        const result = await response.json();
+        // ✅ API Global Override 사용 (필드 매핑 적용)
+        const result = await getTableData('skincare_shops', { limit: 10000, sort: '-created_at' });
         const data = result.data || [];
         
         // 삭제된 샵 제외 (Soft Delete 필터링)
