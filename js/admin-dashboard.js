@@ -926,13 +926,14 @@ async function loadShops(updateTable = true) {
         // 필터 값 가져오기
         const searchQuery = document.getElementById('shop-search')?.value.trim().toLowerCase() || '';
         const regionFilter = document.getElementById('shop-region-filter')?.value || '';
+        const districtFilter = document.getElementById('shop-district-filter')?.value.trim().toLowerCase() || '';
         const statusFilter = document.getElementById('shop-status-filter')?.value || '';
         const shopTypeFilter = document.getElementById('shop-type-filter')?.value || '';
         
-        console.log('🔍 필터 값:', { searchQuery, regionFilter, statusFilter, shopTypeFilter });
+        console.log('🔍 필터 값:', { searchQuery, regionFilter, districtFilter, statusFilter, shopTypeFilter });
         
         // API에서 전체 데이터 로드 (필터링은 클라이언트에서)
-        const apiUrl = 'tables/skincare_shops?limit=10000&sort=-created_at';
+        const apiUrl = 'tables/skincare_shops?limit=10000&sort=-created_at';  // 전체 데이터 로드
         
         console.log('📡 API URL:', apiUrl);
         
@@ -962,7 +963,7 @@ async function loadShops(updateTable = true) {
                     shop.address || '',
                     shop.phone || '',
                     shop.email || ''
-                ].join(' ').toLowerCase();
+                ].filter(field => field).join(' ').toLowerCase();  // 빈 문자열 제거
                 
                 return searchFields.includes(searchQuery);
             });
@@ -973,6 +974,15 @@ async function loadShops(updateTable = true) {
             filteredShops = filteredShops.filter(shop => 
                 (shop.state || shop.region || '').includes(regionFilter)
             );
+        }
+        
+        // 2-1️⃣ 시/구/군 필터
+        if (districtFilter) {
+            filteredShops = filteredShops.filter(shop => {
+                const address = (shop.address || '').toLowerCase();
+                const district = (shop.district || '').toLowerCase();
+                return address.includes(districtFilter) || district.includes(districtFilter);
+            });
         }
         
         // 3️⃣ 상태 필터
@@ -1008,6 +1018,7 @@ async function loadShops(updateTable = true) {
         console.log('📋 필터링 후 업체 수:', filteredShops.length, {
             검색: searchQuery || '없음',
             지역: regionFilter || '전체',
+            시구군: districtFilter || '전체',
             상태: statusFilter || '전체',
             샵타입: shopTypeFilter || '전체'
         });
@@ -3708,6 +3719,7 @@ function updateShopFilterResults(filtered, total) {
 function clearShopFilters() {
     document.getElementById('shop-search').value = '';
     document.getElementById('shop-region-filter').value = '';
+    document.getElementById('shop-district-filter').value = '';  // 시/구/군 필터 초기화
     document.getElementById('shop-status-filter').value = '';
     document.getElementById('shop-type-filter').value = ''; // v2.8.13.6.140: 샵 타입 필터 초기화 추가
     

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 해올토탈뷰티 찾기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+        .loading:before {
+            content: "🔄 ";
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        .result-item {
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .result-item:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+        .result-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            transform: translateX(5px);
+        }
+        .result-item.highlight {
+            background: linear-gradient(to right, #fff3e0, #ffffff);
+            border-color: #FF9800;
+            border-width: 3px;
+        }
+        .result-item.highlight:before {
+            background: linear-gradient(180deg, #FF9800 0%, #F57C00 100%);
+            width: 8px;
+        }
+        .shop-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .shop-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .badge-target {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .badge-active {
+            background: #4CAF50;
+            color: white;
+        }
+        .badge-verified {
+            background: #2196F3;
+            color: white;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .info-icon {
+            font-size: 20px;
+            margin-right: 10px;
+            min-width: 30px;
+        }
+        .info-content {
+            flex: 1;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        .info-value {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .info-value.empty {
+            color: #999;
+            font-style: italic;
+        }
+        .search-string {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .search-string summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            padding: 5px;
+        }
+        .search-string pre {
+            margin-top: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .no-results-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 해올토탈뷰티 찾기</h1>
+        <div class="subtitle">BeautyCat 업체 검색 시스템</div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (예: 해올, 해올토탈뷰티)" value="해올">
+            <button onclick="searchShops()">🔍 검색</button>
+            <button onclick="searchById()">🎯 대상 샵 조회</button>
+        </div>
+
+        <div id="stats" class="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">전체 업체</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="resultCount">0</div>
+                <div class="stat-label">검색 결과</div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            데이터 로딩 중...
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const TARGET_SHOP_ID = 'cf_1768091748044_ncgq6sdq7';
+
+        async function searchById() {
+            showLoading();
+            hideError();
+            clearResults();
+
+            try {
+                console.log('🎯 대상 샵 ID로 직접 조회:', TARGET_SHOP_ID);
+                
+                const response = await fetch(`tables/skincare_shops/${TARGET_SHOP_ID}`);
+                
+                if (!response.ok) {
+                    throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+                }
+                
+                const shop = await response.json();
+                console.log('✅ 샵 정보:', shop);
+                
+                hideLoading();
+                displayResults([shop], 1);
+                
+            } catch (err) {
+                console.error('❌ 조회 실패:', err);
+                hideLoading();
+                showError(`조회 실패: ${err.message}`);
+            }
+        }
+
+        async function searchShops() {
+            const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            if (!searchQuery) {
+                alert('검색어를 입력하세요!');
+                return;
+            }
+
+            showLoading();
+            hideError();
+            clearResults();
+
+            try {
+                console.log('🔍 검색 시작:', searchQuery);
+                
+                const response = await fetch('tables/skincare_shops?limit=5000&sort=-created_at');
+                
+                if (!response.ok) {
+                    throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                const allShops = result.data || [];
+                
+                console.log('📊 전체 업체 수:', allShops.length);
+                
+                const activeShops = allShops.filter(shop => !shop.deleted);
+                console.log('📊 활성 업체 수:', activeShops.length);
+                
+                const filteredShops = activeShops.filter(shop => {
+                    const searchFields = [
+                        shop.name || '',
+                        shop.shop_name || '',
+                        shop.owner_name || '',
+                        shop.address || '',
+                        shop.phone || '',
+                        shop.email || ''
+                    ].filter(field => field).join(' ').toLowerCase();
+                    
+                    return searchFields.includes(searchQuery);
+                });
+                
+                console.log('✅ 검색 결과:', filteredShops.length + '개');
+                
+                hideLoading();
+                updateStats(activeShops.length, filteredShops.length);
+                displayResults(filteredShops, activeShops.length);
+                
+            } catch (err) {
+                console.error('❌ 검색 실패:', err);
+                hideLoading();
+                showError(`검색 실패: ${err.message}`);
+            }
+        }
+
+        function displayResults(shops, totalCount) {
+            const results = document.getElementById('results');
+            
+            if (shops.length === 0) {
+                results.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">😢</div>
+                        <div>검색 결과가 없습니다.</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            results.innerHTML = shops.map(shop => {
+                const isTarget = shop.id === TARGET_SHOP_ID;
+                const createdDate = new Date(shop.created_at).toLocaleString('ko-KR');
+                
+                const searchFields = [
+                    shop.name || '',
+                    shop.shop_name || '',
+                    shop.owner_name || '',
+                    shop.address || '',
+                    shop.phone || '',
+                    shop.email || ''
+                ].filter(field => field).join(' ');
+                
+                return `
+                    <div class="result-item ${isTarget ? 'highlight' : ''}">
+                        <div class="shop-header">
+                            <div class="shop-name">
+                                ${shop.name || '이름 없음'}
+                            </div>
+                            <div class="badges">
+                                ${isTarget ? '<span class="badge badge-target">🎯 대상 샵</span>' : ''}
+                                ${shop.status === 'active' ? '<span class="badge badge-active">✓ 활성</span>' : ''}
+                                ${shop.email && !shop.email.includes('@example.com') ? '<span class="badge badge-verified">🔒 인증샵</span>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">🆔</div>
+                                <div class="info-content">
+                                    <div class="info-label">샵 ID</div>
+                                    <div class="info-value">${shop.id}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">🏪</div>
+                                <div class="info-content">
+                                    <div class="info-label">샵명</div>
+                                    <div class="info-value ${!shop.shop_name ? 'empty' : ''}">${shop.shop_name || '등록되지 않음'}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">👤</div>
+                                <div class="info-content">
+                                    <div class="info-label">대표자</div>
+                                    <div class="info-value ${!shop.owner_name ? 'empty' : ''}">${shop.owner_name || '등록되지 않음'}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">📧</div>
+                                <div class="info-content">
+                                    <div class="info-label">이메일</div>
+                                    <div class="info-value ${!shop.email ? 'empty' : ''}">${shop.email || '등록되지 않음'}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">📍</div>
+                                <div class="info-content">
+                                    <div class="info-label">주소</div>
+                                    <div class="info-value ${!shop.address ? 'empty' : ''}">${shop.address || '등록되지 않음'}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">📞</div>
+                                <div class="info-content">
+                                    <div class="info-label">전화번호</div>
+                                    <div class="info-value ${!shop.phone ? 'empty' : ''}">${shop.phone || '등록되지 않음'}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">🌏</div>
+                                <div class="info-content">
+                                    <div class="info-label">지역</div>
+                                    <div class="info-value ${!shop.state && !shop.region ? 'empty' : ''}">${shop.state || shop.region || '등록되지 않음'}</div>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">📅</div>
+                                <div class="info-content">
+                                    <div class="info-label">등록일</div>
+                                    <div class="info-value">${createdDate}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="search-string">
+                            <details>
+                                <summary>🔍 검색 문자열 확인</summary>
+                                <pre>${searchFields || '(비어있음)'}</pre>
+                            </details>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            if (shops.some(shop => shop.id === TARGET_SHOP_ID)) {
+                setTimeout(() => {
+                    const targetElement = document.querySelector('.result-item.highlight');
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = `❌ ${message}`;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('stats').style.display = 'none';
+        }
+
+        function updateStats(total, filtered) {
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('resultCount').textContent = filtered;
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchShops();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 해올토탈뷰티 찾기 페이지 로드 완료');
+            console.log('🎯 대상 샵 ID:', TARGET_SHOP_ID);
+            searchShops();
+        });
+    </script>
+</body>
+</html>
