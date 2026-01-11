@@ -316,8 +316,10 @@ async function loginUser(user, kakaoInfo) {
         }
         
         // 기본 대시보드 이동 (사용자 타입에 따라 분기)
-        if (userType === 'shop_owner') {
+        if (userType === 'shop' || userType === 'shop_owner') {
             window.location.href = '/shop-dashboard.html';
+        } else if (userType === 'admin') {
+            window.location.href = '/admin-dashboard.html';
         } else {
             window.location.href = '/customer-dashboard.html';
         }
