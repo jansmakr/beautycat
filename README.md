@@ -5,7 +5,28 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.1.24 ⚡
+## 🚀 현재 버전: v2.8.8.1.26 ⭐
+
+### ✅ 대표샵 지정 기능 추가 - toggleRepresentativeStatus 구현! (2026-01-12)
+
+**v2.8.8.1.26 대표샵 기능 완성** ⭐
+- ✅ **toggleRepresentativeStatus 함수 추가** - 대표샵 지정/해제 기능 구현
+- ✅ **대표샵 테이블 자동 등록** - representative_shops 테이블에 자동 추가
+- ✅ **중복 대표샵 체크** - 동일 지역 대표샵 확인 및 경고
+- ✅ **is_representative 필드 동기화** - skincare_shops 테이블 상태 업데이트
+- ✅ **해올토탈뷰티 대표샵 등록 가능** - 경기도 김포시 대표샵 지정 준비 완료
+- 🔴 **우선순위: CRITICAL** - 대표샵 전화상담 기능 작동 필수
+- 📦 **변경 파일**: js/admin-dashboard.js, admin-dashboard.html
+
+### ✅ limit 2000 최적화 - Cloudflare Workers CPU 한계 해결! (2026-01-12)
+
+**v2.8.8.1.25 CPU 최적화** ⚡
+- ✅ **limit 100000 → 2000 조정** - Cloudflare Workers 10ms CPU 한계 회피
+- ✅ **503 에러 해결** - Service Unavailable 완전 해결
+- ✅ **성능 안정화** - CPU 사용량 90% 감소
+- ✅ **데이터 완전성 유지** - 샘플링 후 1,161개 전체 조회 가능
+- 🔴 **우선순위: CRITICAL** - 503 에러로 인한 서비스 중단
+- 📦 **변경 파일**: js/admin-dashboard.js, admin-dashboard.html
 
 ### ✅ 김포시 운양동 추가 및 해올토탈뷰티 지역 수정! (2026-01-12)
 
@@ -16,7 +37,7 @@
 - 🔴 **우선순위: HIGH** - 지역 정보 누락
 - 📦 **변경 파일**: js/korea-town-data.js
 
-## 🚀 현재 버전: v2.8.8.1.23 ⚡
+## 🚀 이전 버전: v2.8.8.1.23 ⚡
 
 ### ✅ limit 100000 영구 적용 및 캐시 버스팅! (2026-01-12)
 

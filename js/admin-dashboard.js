@@ -2763,6 +2763,152 @@ async function revokeRepresentativeShop(shopId) {
     }
 }
 
+// Toggle representative shop status
+async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
+    try {
+        console.log('🔄 대표샵 상태 변경 시작:', shopId, setAsRepresentative);
+        
+        // 업체 정보 가져오기
+        const shopResponse = await fetch(`tables/skincare_shops/${shopId}`);
+        if (!shopResponse.ok) {
+            throw new Error('업체 정보를 가져올 수 없습니다.');
+        }
+        const shop = await shopResponse.json();
+        
+        console.log('🏪 업체 정보:', shop);
+        
+        if (setAsRepresentative) {
+            // 대표샵으로 지정
+            if (!shop.state || !shop.district) {
+                showNotification('대표샵으로 지정하려면 시/도와 구/군 정보가 필요합니다.', 'error');
+                return;
+            }
+            
+            // 이미 해당 지역에 대표샵이 있는지 확인
+            const checkResponse = await fetch(
+                `tables/representative_shops?state=${encodeURIComponent(shop.state)}&district=${encodeURIComponent(shop.district)}&limit=10`
+            );
+            
+            if (checkResponse.ok) {
+                const existingData = await checkResponse.json();
+                const existingShops = (existingData.data || []).filter(s => s.approved === true || s.status === 'approved');
+                
+                if (existingShops.length > 0) {
+                    const existingShop = existingShops[0];
+                    if (!confirm(`이미 '${existingShop.shop_name}'이(가) ${shop.state} ${shop.district}의 대표샵입니다.\n\n계속 진행하시겠습니까?`)) {
+                        return;
+                    }
+                }
+            }
+            
+            // 대표샵 등록 데이터 생성
+            const repShopData = {
+                shop_id: shop.id,
+                shop_name: shop.shop_name || shop.name,
+                owner_name: shop.owner_name || '',
+                phone: shop.phone || '',
+                email: shop.email || '',
+                address: shop.address || '',
+                state: shop.state || '',
+                region: shop.state || '',
+                district: shop.district || '',
+                city: shop.district || '',
+                town: shop.town || '',
+                representative_treatments: shop.representative_treatments || [],
+                status: 'approved',
+                approved: true,
+                approved_at: new Date().toISOString(),
+                naver_cafe_id: shop.naver_cafe_id || ''
+            };
+            
+            console.log('📝 대표샵 등록 데이터:', repShopData);
+            
+            // 대표샵 테이블에 등록
+            const response = await fetch('tables/representative_shops', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(repShopData)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ 대표샵 등록 성공:', result);
+                
+                // skincare_shops 테이블의 is_representative 필드 업데이트
+                await fetch(`tables/skincare_shops/${shopId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        is_representative: true
+                    })
+                });
+                
+                showNotification(`'${shop.shop_name || shop.name}'이(가) ${shop.state} ${shop.district}의 대표샵으로 지정되었습니다.`, 'success');
+                
+                // 목록 새로고침
+                await loadShops();
+                await loadRepresentativeShops();
+            } else {
+                throw new Error('대표샵 등록 실패');
+            }
+        } else {
+            // 대표샵 해제
+            // representative_shops 테이블에서 찾기
+            const searchResponse = await fetch(
+                `tables/representative_shops?shop_id=${encodeURIComponent(shopId)}&limit=10`
+            );
+            
+            if (searchResponse.ok) {
+                const searchData = await searchResponse.json();
+                const repShops = searchData.data || [];
+                
+                if (repShops.length > 0) {
+                    const repShop = repShops[0];
+                    
+                    // 대표샵 등록 삭제
+                    const deleteResponse = await fetch(`tables/representative_shops/${repShop.id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (deleteResponse.ok || deleteResponse.status === 204) {
+                        console.log('✅ 대표샵 해제 성공');
+                        
+                        // skincare_shops 테이블의 is_representative 필드 업데이트
+                        await fetch(`tables/skincare_shops/${shopId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                is_representative: false
+                            })
+                        });
+                        
+                        showNotification(`'${shop.shop_name || shop.name}'의 대표샵 지정이 해제되었습니다.`, 'info');
+                        
+                        // 목록 새로고침
+                        await loadShops();
+                        await loadRepresentativeShops();
+                    } else {
+                        throw new Error('대표샵 해제 실패');
+                    }
+                } else {
+                    showNotification('대표샵 등록 정보를 찾을 수 없습니다.', 'warning');
+                }
+            }
+        }
+    } catch (error) {
+        console.error('❌ 대표샵 상태 변경 오류:', error);
+        showNotification('대표샵 상태 변경 중 오류가 발생했습니다: ' + error.message, 'error');
+    }
+}
+
+window.toggleRepresentativeStatus = toggleRepresentativeStatus;
+
 // Delete representative shop
 async function deleteRepresentativeShop(shopId) {
     const shop = allRepresentativeShops.find(s => s.id === shopId);
