@@ -5,7 +5,18 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.1.26 ⭐
+## 🚀 현재 버전: v2.8.8.1.27 ⭐
+
+### ✅ representative_treatments JSON 파싱 수정! (2026-01-12)
+
+**v2.8.8.1.27 대표샵 표시 오류 수정** 🔧
+- ✅ **JSON 파싱 로직 추가** - representative_treatments 문자열 자동 파싱
+- ✅ **타입 체크 강화** - 문자열/배열 타입 자동 감지 및 처리
+- ✅ **에러 핸들링 추가** - 파싱 실패 시 빈 배열로 처리
+- ✅ **해올토탈뷰티 대표샵 정상 표시** - 경기도 김포시 대표샵 전화상담 활성화
+- 🔴 **우선순위: CRITICAL** - 대표샵 전화상담 기능 작동 필수
+- 🐛 **버그 수정**: `shop.representative_treatments.forEach is not a function`
+- 📦 **변경 파일**: js/main.js
 
 ### ✅ 대표샵 지정 기능 추가 - toggleRepresentativeStatus 구현! (2026-01-12)
 
@@ -14,7 +25,7 @@
 - ✅ **대표샵 테이블 자동 등록** - representative_shops 테이블에 자동 추가
 - ✅ **중복 대표샵 체크** - 동일 지역 대표샵 확인 및 경고
 - ✅ **is_representative 필드 동기화** - skincare_shops 테이블 상태 업데이트
-- ✅ **해올토탈뷰티 대표샵 등록 가능** - 경기도 김포시 대표샵 지정 준비 완료
+- ✅ **해올토탈뷰티 대표샵 등록 성공** - 경기도 김포시 대표샵 지정 완료
 - 🔴 **우선순위: CRITICAL** - 대표샵 전화상담 기능 작동 필수
 - 📦 **변경 파일**: js/admin-dashboard.js, admin-dashboard.html
 

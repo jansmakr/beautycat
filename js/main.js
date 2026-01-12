@@ -2633,8 +2633,19 @@ function displayRepresentativeShop(shop) {
     const treatmentsContainer = document.getElementById('rep-shop-treatments');
     treatmentsContainer.innerHTML = '';
     
-    if (shop.representative_treatments && shop.representative_treatments.length > 0) {
-        shop.representative_treatments.forEach(treatment => {
+    // representative_treatments가 JSON 문자열이면 파싱
+    let treatments = shop.representative_treatments;
+    if (typeof treatments === 'string') {
+        try {
+            treatments = JSON.parse(treatments);
+        } catch (e) {
+            console.warn('⚠️ representative_treatments 파싱 실패:', e);
+            treatments = [];
+        }
+    }
+    
+    if (treatments && Array.isArray(treatments) && treatments.length > 0) {
+        treatments.forEach(treatment => {
             const tag = document.createElement('span');
             tag.className = 'inline-block bg-primary-100 text-primary-700 text-xs px-2 py-1 rounded-full';
             tag.textContent = treatment;
