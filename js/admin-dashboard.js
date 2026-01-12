@@ -178,7 +178,7 @@ function levenshteinDistance(str1, str2) {
 
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 Admin Dashboard v2.8.8.1.23 초기화 - limit 100000 영구 적용');
+    console.log('🎯 Admin Dashboard v2.8.8.1.25 초기화 - limit 2000 최적화 (Cloudflare CPU 한계)');
     checkAdminAuth();
     loadDashboardData();
     
@@ -921,7 +921,7 @@ async function handleCSVUpload(event) {
 // Load shops
 async function loadShops(updateTable = true) {
     try {
-        console.log('🏪 업체 목록 로딩 시작... (v2.8.8.1.23: limit 100000 영구 적용)');
+        console.log('🏪 업체 목록 로딩 시작... (v2.8.8.1.25: limit 2000 최적화)');
         
         // 필터 값 가져오기
         const searchQuery = document.getElementById('shop-search')?.value.trim().toLowerCase() || '';
@@ -932,10 +932,10 @@ async function loadShops(updateTable = true) {
         
         console.log('🔍 필터 값:', { searchQuery, regionFilter, districtFilter, statusFilter, shopTypeFilter });
         
-        // ✅ v2.8.8.1.23: API에서 전체 데이터 로드 (limit 100000 영구 적용)
-        // 전체 데이터 로드 후 클라이언트에서 필터링 (샘플링 후 1,161개 활성 데이터)
-        const result = await getTableData('skincare_shops', { limit: 100000, sort: '-created_at' });
-        console.log('📡 API 요청 완료 - limit: 100000, 전체:', result.data?.length || 0, '개');
+        // ✅ v2.8.8.1.25: limit 2000으로 최적화 (Cloudflare Workers CPU 10ms 한계 회피)
+        // 샘플링 후 활성 데이터 1,161개 + 여유분 = 2000으로 충분
+        const result = await getTableData('skincare_shops', { limit: 2000, sort: '-created_at' });
+        console.log('📡 API 요청 완료 - limit: 2000, 전체:', result.data?.length || 0, '개');
         const data = result.data || [];
         
         // 삭제된 샵 제외 (Soft Delete 필터링)
