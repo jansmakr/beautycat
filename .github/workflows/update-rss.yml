@@ -42,7 +42,7 @@ jobs:
               <lastBuildDate>$(date -R)</lastBuildDate>
               <atom:link href="https://beautyket.kr/rss.xml" rel="self" type="application/rss+xml" />
               <image>
-                <url>https://beautyket.kr/images/beautyket-logo-v3.png</url>
+                <url>https://beautyket.kr/images/beautyket-logo-full.png</url>
                 <title>Beautyket</title>
                 <link>https://beautyket.kr/</link>
               </image>
