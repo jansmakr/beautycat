@@ -262,16 +262,19 @@ async function updateRecord(env, tableName, recordId, data, corsHeaders) {
 }
 
 /**
- * 레코드 삭제 (소프트 삭제)
+ * 레코드 삭제 (하드 삭제)
+ * ⚠️ 주의: 이 작업은 되돌릴 수 없습니다!
  */
 async function deleteRecord(env, tableName, recordId, corsHeaders) {
-    const timestamp = Date.now();
+    // ✅ 하드 삭제 로직 (DB에서 완전히 제거)
+    console.log(`[Hard Delete] 테이블: ${tableName}, ID: ${recordId}, 시각: ${new Date().toISOString()}`);
     
     const result = await env.BEAUTYCAT_DB.prepare(`
-        UPDATE ${tableName} SET deleted = 1, updated_at = ? WHERE id = ?
-    `).bind(timestamp, recordId).run();
+        DELETE FROM ${tableName} WHERE id = ?
+    `).bind(recordId).run();
     
     if (result.changes === 0) {
+        console.warn(`[Hard Delete] 레코드 없음 - 테이블: ${tableName}, ID: ${recordId}`);
         return new Response(JSON.stringify({
             error: 'Record not found'
         }), {
@@ -279,6 +282,8 @@ async function deleteRecord(env, tableName, recordId, corsHeaders) {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
     }
+    
+    console.log(`[Hard Delete] 성공 - 테이블: ${tableName}, ID: ${recordId}`);
     
     return new Response(null, {
         status: 204,
