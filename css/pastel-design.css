@@ -1,0 +1,379 @@
+/* ========================================
+   Beautyket Pastel Design (No Characters)
+   v1.0.0 - 2026-01-13
+   기존 구조 유지 + 파스텔 색상만 적용
+   캐릭터 없이 부드러운 파스텔 톤
+   ======================================== */
+
+/* 🎨 파스텔 색상 팔레트 */
+:root {
+    /* 파스텔 그라데이션 색상 */
+    --pastel-gradient-start: #FFE8F0;
+    --pastel-gradient-mid: #F5E8FF;
+    --pastel-gradient-end: #E8F4FF;
+    
+    /* 파스텔 강조 색상 */
+    --pastel-pink: #FFD6E8;
+    --pastel-purple: #EDD6FF;
+    --pastel-blue: #D6EAFF;
+    --pastel-peach: #FFE4D6;
+    --pastel-mint: #D6FFE8;
+    
+    /* 부드러운 그림자 */
+    --pastel-shadow-soft: 0 4px 20px rgba(255, 182, 217, 0.12);
+    --pastel-shadow-medium: 0 8px 30px rgba(255, 182, 217, 0.18);
+    --pastel-shadow-strong: 0 12px 40px rgba(255, 182, 217, 0.24);
+    
+    /* 파스텔 텍스트 그라데이션 */
+    --pastel-text-gradient: linear-gradient(135deg, #FF6B9D 0%, #C239D3 50%, #667EEA 100%);
+}
+
+/* 📐 전체 배경 - 부드러운 파스텔 그라데이션 */
+body {
+    background: linear-gradient(135deg, 
+        var(--pastel-gradient-start) 0%, 
+        var(--pastel-gradient-mid) 50%, 
+        var(--pastel-gradient-end) 100%);
+    background-attachment: fixed;
+}
+
+/* 🎯 CTA 버튼 파스텔 스타일 */
+.cta-button-phone,
+.cta-button-quote {
+    background: linear-gradient(135deg, #FFB6D9 0%, #E8B4E8 50%, #B6D9FF 100%);
+    box-shadow: var(--pastel-shadow-medium);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.cta-button-phone:hover,
+.cta-button-quote:hover {
+    background: linear-gradient(135deg, #FFA3CC 0%, #D9A3D9 50%, #A3C7FF 100%);
+    box-shadow: var(--pastel-shadow-strong);
+    transform: translateY(-5px) scale(1.01);
+}
+
+/* 💎 카드 디자인 - 부드러운 파스텔 */
+.card-soft,
+.section-card {
+    box-shadow: var(--pastel-shadow-soft);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 182, 217, 0.2);
+    transition: all 0.3s ease;
+}
+
+.card-soft:hover,
+.section-card:hover {
+    box-shadow: var(--pastel-shadow-medium);
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.96);
+}
+
+/* 🌈 히어로 섹션 - 부드러운 파스텔 그라데이션 */
+.hero-section {
+    background: linear-gradient(135deg, 
+        #FFE0EB 0%, 
+        #F5E0FF 25%,
+        #E0EBFF 50%,
+        #E0F5FF 75%,
+        #E0FFE8 100%);
+    box-shadow: var(--pastel-shadow-medium);
+    filter: saturate(0.9) brightness(1.05);
+}
+
+/* ✨ 텍스트 그라데이션 - 파스텔 톤 */
+.section-title-soft,
+.hero-title {
+    background: var(--pastel-text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* 🎨 부가서비스 버튼 - 파스텔 */
+.beautyket-sub-btn {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--pastel-shadow-soft);
+    border: 1px solid rgba(255, 182, 217, 0.3);
+    transition: all 0.3s ease;
+}
+
+.beautyket-sub-btn:hover {
+    box-shadow: var(--pastel-shadow-medium);
+    transform: translateY(-3px) scale(1.01);
+    background: rgba(255, 245, 250, 1);
+    border-color: rgba(255, 182, 217, 0.5);
+}
+
+/* 📝 입력 필드 - 파스텔 */
+.input-field-new,
+.form-input {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 182, 217, 0.2);
+    box-shadow: var(--pastel-shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.input-field-new:focus,
+.form-input:focus {
+    background: white;
+    border-color: #FF6B9D;
+    box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.15);
+}
+
+/* 🎭 체크박스 옵션 - 파스텔 */
+.checkbox-option {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--pastel-shadow-soft);
+    border: 2px solid rgba(255, 182, 217, 0.15);
+    transition: all 0.3s ease;
+}
+
+.checkbox-option:hover {
+    background: rgba(255, 245, 250, 1);
+    border-color: #FFB6D9;
+    box-shadow: var(--pastel-shadow-medium);
+    transform: scale(1.02);
+}
+
+.checkbox-option.selected {
+    background: linear-gradient(135deg, #FFE8F0, #FFF0F5);
+    border-color: #FF6B9D;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.25);
+}
+
+/* 🌟 상단 띠 배너 - 파스텔 */
+.announcement-marquee {
+    background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(255, 182, 217, 0.25);
+    box-shadow: 0 2px 10px rgba(255, 182, 217, 0.15);
+}
+
+/* 🎪 후기 카드 - 파스텔 */
+.card-soft.p-8 {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.92) 0%, 
+        rgba(255, 250, 253, 0.92) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 182, 217, 0.25);
+}
+
+/* 🎯 제출 버튼 - 파스텔 그라데이션 */
+.submit-btn,
+button[type="submit"] {
+    background: linear-gradient(135deg, #FF6B9D 0%, #C239D3 50%, #667EEA 100%);
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+    border: none;
+    transition: all 0.3s ease;
+    filter: saturate(0.95);
+}
+
+.submit-btn:hover,
+button[type="submit"]:hover {
+    box-shadow: 0 12px 35px rgba(255, 107, 157, 0.4);
+    transform: translateY(-3px) scale(1.01);
+    filter: saturate(1.05) brightness(1.08);
+}
+
+/* 🎨 섹션 배경 - 파스텔 */
+.section-consultation {
+    background: linear-gradient(135deg, 
+        rgba(255, 248, 250, 0.92) 0%, 
+        rgba(255, 245, 247, 0.92) 100%);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 182, 217, 0.2);
+    box-shadow: var(--pastel-shadow-medium);
+}
+
+.section-representative {
+    background: linear-gradient(135deg, 
+        rgba(245, 250, 255, 0.92) 0%, 
+        rgba(240, 248, 255, 0.92) 100%);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(186, 217, 253, 0.2);
+    box-shadow: var(--pastel-shadow-medium);
+}
+
+/* 🌸 지역 카드 - 파스텔 */
+.region-card,
+.shop-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 182, 217, 0.2);
+    box-shadow: var(--pastel-shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.region-card:hover,
+.shop-card:hover {
+    background: rgba(255, 250, 253, 1);
+    border-color: #FFB6D9;
+    box-shadow: var(--pastel-shadow-medium);
+    transform: translateY(-3px);
+}
+
+/* 💫 배지 & 태그 - 파스텔 */
+.badge,
+.tag {
+    background: linear-gradient(135deg, #FFE8F0, #FFD6E8);
+    color: #C239D3;
+    border: 1px solid rgba(255, 107, 157, 0.2);
+    box-shadow: var(--pastel-shadow-soft);
+}
+
+/* 🎀 링크 & 버튼 파스텔 호버 */
+a:hover,
+.link:hover {
+    color: #FF6B9D;
+    text-decoration-color: #FFB6D9;
+}
+
+/* 💝 선택된 요소 - 파스텔 강조 */
+.selected,
+.active {
+    background: linear-gradient(135deg, #FFE8F0, #FFF0F5);
+    border-color: #FF6B9D;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.25);
+}
+
+/* 🌈 드롭다운 & 모달 - 파스텔 */
+.dropdown,
+.modal {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 182, 217, 0.25);
+    box-shadow: var(--pastel-shadow-medium);
+}
+
+/* 📱 모바일 최적화 - 파스텔 유지 */
+@media (max-width: 768px) {
+    .cta-button-phone:hover,
+    .cta-button-quote:hover {
+        transform: translateY(-3px) scale(1.01);
+    }
+    
+    .beautyket-sub-btn:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+    
+    .card-soft:hover,
+    .section-card:hover {
+        transform: translateY(-2px);
+    }
+}
+
+/* 🌐 부드러운 전환 효과 */
+* {
+    transition-timing-function: ease;
+}
+
+/* ✨ 파스텔 글로우 효과 */
+.cta-button-phone:hover,
+.cta-button-quote:hover,
+.submit-btn:hover,
+button[type="submit"]:hover {
+    filter: brightness(1.08);
+}
+
+/* 🎭 텍스트 가독성 개선 */
+.hero-title,
+.section-title-soft,
+h1, h2, h3 {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 💖 스크롤바 파스텔 */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 245, 250, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FFB6D9, #E8B4E8);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #FFA3CC, #D9A3D9);
+}
+
+/* 🌟 선택 영역 파스텔 */
+::selection {
+    background: rgba(255, 182, 217, 0.3);
+    color: #C239D3;
+}
+
+::-moz-selection {
+    background: rgba(255, 182, 217, 0.3);
+    color: #C239D3;
+}
+
+/* 🎨 플레이스홀더 파스텔 */
+::placeholder {
+    color: rgba(194, 57, 211, 0.5);
+}
+
+::-moz-placeholder {
+    color: rgba(194, 57, 211, 0.5);
+}
+
+/* 💫 포커스 아웃라인 파스텔 */
+*:focus {
+    outline-color: #FF6B9D;
+}
+
+/* 🌸 추가 파스텔 요소들 */
+.button,
+.btn {
+    background: linear-gradient(135deg, #FFE8F0, #FFD6E8);
+    border: 1px solid rgba(255, 107, 157, 0.2);
+    color: #C239D3;
+    box-shadow: var(--pastel-shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.button:hover,
+.btn:hover {
+    background: linear-gradient(135deg, #FFD6E8, #FFC7DB);
+    box-shadow: var(--pastel-shadow-medium);
+    transform: translateY(-2px);
+}
+
+/* 🎀 테두리 파스텔 */
+.border,
+hr {
+    border-color: rgba(255, 182, 217, 0.25);
+}
+
+/* 💕 로딩 애니메이션 파스텔 */
+.loading,
+.spinner {
+    border-color: rgba(255, 182, 217, 0.2);
+    border-top-color: #FF6B9D;
+}
+
+/* 🌈 프로그레스 바 파스텔 */
+.progress-bar {
+    background: linear-gradient(90deg, #FFB6D9, #E8B4E8, #B6D9FF);
+}
+
+/* ✨ 툴팁 파스텔 */
+.tooltip {
+    background: rgba(255, 245, 250, 0.95);
+    border: 1px solid rgba(255, 182, 217, 0.3);
+    color: #C239D3;
+    box-shadow: var(--pastel-shadow-medium);
+}
