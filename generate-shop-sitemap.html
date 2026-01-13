@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautyket - 샵 사이트맵 생성기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+        }
+
+        .status {
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .status-value {
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .output {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 20px;
+        }
+
+        .output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .output::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 4px;
+        }
+
+        .output::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .instructions {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .instructions h3 {
+            color: #c53030;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .success {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            color: #22543d;
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Beautyket 샵 사이트맵 생성기</h1>
+        <p class="subtitle">검색 엔진 최적화(SEO)를 위한 자동 사이트맵 생성</p>
+
+        <div class="status">
+            <div class="status-item">
+                <span class="status-label">📊 등록된 샵 수</span>
+                <span class="status-value" id="shopCount">로딩 중...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">🌐 생성될 URL 수</span>
+                <span class="status-value" id="urlCount">계산 중...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">📅 마지막 업데이트</span>
+                <span class="status-value" id="lastUpdate">2026-01-13</span>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateSitemap()">
+                🚀 사이트맵 생성하기
+            </button>
+            <button class="btn btn-secondary" onclick="downloadSitemap()">
+                💾 다운로드 (XML)
+            </button>
+            <button class="btn btn-secondary" onclick="copyToClipboard()">
+                📋 복사하기
+            </button>
+        </div>
+
+        <div class="output" id="output">여기에 생성된 사이트맵이 표시됩니다...</div>
+
+        <div class="instructions">
+            <h3>📌 사용 방법</h3>
+            <ol>
+                <li><strong>"사이트맵 생성하기"</strong> 버튼을 클릭하여 XML 생성</li>
+                <li><strong>"다운로드"</strong> 버튼으로 <code>shop-sitemap.xml</code> 파일 저장</li>
+                <li>저장한 파일을 프로젝트 루트 폴더에 추가</li>
+                <li>GitHub에 Push: <code>git add shop-sitemap.xml</code></li>
+                <li><strong>네이버 서치어드바이저</strong> 또는 <strong>Google Search Console</strong>에서 사이트맵 제출</li>
+                <li>URL: <code>https://beautyket.kr/shop-sitemap.xml</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        let generatedXML = '';
+        let shopData = [];
+
+        // API에서 샵 데이터 가져오기
+        async function loadShops() {
+            try {
+                const response = await fetch('tables/skincare_shops?limit=10000&deleted=false');
+                const data = await response.json();
+                shopData = data.data || [];
+                
+                document.getElementById('shopCount').textContent = shopData.length + '개';
+                document.getElementById('urlCount').textContent = (shopData.length + 8) + '개';
+                
+                console.log('✅ 샵 데이터 로드 완료:', shopData.length, '개');
+            } catch (error) {
+                console.error('❌ 샵 데이터 로드 실패:', error);
+                document.getElementById('shopCount').textContent = '로드 실패';
+                document.getElementById('urlCount').textContent = '-';
+            }
+        }
+
+        // 사이트맵 생성
+        function generateSitemap() {
+            if (shopData.length === 0) {
+                alert('샵 데이터를 먼저 로드해주세요!');
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            
+            let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- 메인 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- 지역별 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/region.html</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- 샵 등록 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/shop-registration.html</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+`;
+
+            // 각 샵별 URL 추가
+            shopData.forEach(shop => {
+                const shopUrl = `https://beautyket.kr/shop-detail.html?id=${shop.id}`;
+                const shopName = shop.shop_name || '피부관리실';
+                const state = shop.state || '서울특별시';
+                const district = shop.district || '강남구';
+                
+                xml += `    <!-- ${shopName} (${state} ${district}) -->
+    <url>
+        <loc>${shopUrl}</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+`;
+            });
+
+            xml += `</urlset>`;
+
+            generatedXML = xml;
+            document.getElementById('output').textContent = xml;
+            
+            // 성공 메시지
+            const successMsg = document.createElement('div');
+            successMsg.className = 'success';
+            successMsg.textContent = `✅ ${shopData.length}개 샵의 사이트맵이 생성되었습니다!`;
+            document.querySelector('.container').appendChild(successMsg);
+            
+            setTimeout(() => successMsg.remove(), 3000);
+            
+            console.log('✅ 사이트맵 생성 완료!');
+        }
+
+        // 다운로드
+        function downloadSitemap() {
+            if (!generatedXML) {
+                alert('먼저 사이트맵을 생성해주세요!');
+                return;
+            }
+
+            const blob = new Blob([generatedXML], { type: 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'shop-sitemap.xml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ shop-sitemap.xml 파일이 다운로드되었습니다!');
+        }
+
+        // 클립보드에 복사
+        function copyToClipboard() {
+            if (!generatedXML) {
+                alert('먼저 사이트맵을 생성해주세요!');
+                return;
+            }
+
+            navigator.clipboard.writeText(generatedXML).then(() => {
+                alert('✅ 사이트맵이 클립보드에 복사되었습니다!');
+            }).catch(err => {
+                console.error('복사 실패:', err);
+                alert('❌ 복사에 실패했습니다. 수동으로 복사해주세요.');
+            });
+        }
+
+        // 페이지 로드 시 샵 데이터 로드
+        window.addEventListener('DOMContentLoaded', () => {
+            loadShops();
+        });
+    </script>
+</body>
+</html>

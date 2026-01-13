@@ -1,2 +1,47 @@
+# Beautyket 크롤러 설정
+# 업데이트: 2026-01-13
+
+User-agent: *
+Allow: /
+
+# 주요 페이지
+Allow: /index.html
+Allow: /region.html
+Allow: /shop-detail.html
+Allow: /shop-registration.html
+
+# CSS, JS, 이미지 허용
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /icons/
+
+# 크롤링 제외 페이지
+Disallow: /admin-dashboard.html
+Disallow: /shop-dashboard.html
+Disallow: /customer-dashboard.html
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /_archive/
+Disallow: /_NEW_FILES/
+Disallow: /migrations/
+Disallow: /scripts/
+
+# 사이트맵 위치
+Sitemap: https://beautyket.kr/sitemap.xml
+Sitemap: https://beautyket.kr/shop-sitemap.xml
+
+# 크롤 딜레이 (서버 부하 방지)
+Crawl-delay: 1
+
+# 네이버 봇
 User-agent: Yeti
-Allow:/
+Allow: /
+
+# 구글 봇
+User-agent: Googlebot
+Allow: /
+
+# 다음 봇
+User-agent: Daumoa
+Allow: /

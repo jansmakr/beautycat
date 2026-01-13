@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+    
+    <!-- 메인 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- 샵 등록 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/shop-registration.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- 지역별 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/region.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- 샵 상세 페이지 -->
+    <url>
+        <loc>https://beautyket.kr/shop-detail.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- 고객 대시보드 -->
+    <url>
+        <loc>https://beautyket.kr/customer-dashboard.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- 샵 대시보드 -->
+    <url>
+        <loc>https://beautyket.kr/shop-dashboard.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- 로그인 -->
+    <url>
+        <loc>https://beautyket.kr/login.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- 회원가입 -->
+    <url>
+        <loc>https://beautyket.kr/register.html</loc>
+        <lastmod>2026-01-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+</urlset>
