@@ -1,8 +1,11 @@
-# Beautyket 크롤러 설정
+# Beautyket 로봇 크롤러 설정
 # 업데이트: 2026-01-13
 
 User-agent: *
 Allow: /
+Disallow: /admin-dashboard.html
+Disallow: /shop-dashboard.html
+Disallow: /customer-dashboard.html
 
 # 주요 페이지
 Allow: /index.html
