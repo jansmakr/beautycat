@@ -853,6 +853,55 @@ async function processRegister(registerData) {
         
         // 피부관리실인 경우 추가 처리
         if (registerData.user_type === 'shop') {
+            // 💡 v2.8.8.1.26: 이메일 중복 샵 체크 추가
+            console.log('🔍 기존 샵 존재 여부 확인 중...');
+            const existingShopResponse = await fetch(
+                `tables/skincare_shops?search=${encodeURIComponent(registerData.email)}&limit=10`
+            );
+            const existingShopsData = await existingShopResponse.json();
+            const existingShop = (existingShopsData.data || []).find(s => 
+                !s.deleted && s.email && s.email.toLowerCase() === registerData.email.toLowerCase()
+            );
+            
+            if (existingShop) {
+                console.log('✅ 기존 샵 발견, 재사용:', existingShop.id);
+                
+                // 사용자에 기존 샵 ID 연결
+                const linkResponse = await fetch(`/tables/users/${newUser.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shop_id: existingShop.id })
+                });
+                
+                if (linkResponse.ok) {
+                    console.log('✅ 사용자-기존샵 연결 성공');
+                } else {
+                    const linkError = await linkResponse.text();
+                    console.error('❌ 사용자-기존샵 연결 실패:', linkError);
+                }
+                
+                // 기존 샵 정보만 업데이트 (덮어쓰기 방지)
+                const updateShopResponse = await fetch(`tables/skincare_shops/${existingShop.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        owner_name: registerData.name,
+                        phone: registerData.phone,
+                        business_number: registerData.business_number || existingShop.business_number,
+                        business_license: registerData.business_license || existingShop.business_license
+                    })
+                });
+                
+                if (updateShopResponse.ok) {
+                    console.log('✅ 기존 샵 정보 업데이트 성공');
+                }
+                
+                return {
+                    success: true,
+                    user: newUser
+                };
+            }
+            
             // 피부관리실 정보 생성 (스키마에 맞게)
             const shopData = {
                 name: registerData.shop_name || registerData.name + '의 샵', // shop_name -> name
@@ -862,6 +911,8 @@ async function processRegister(registerData) {
                 state: registerData.shop_state,
                 district: registerData.shop_district,
                 address: registerData.shop_address,
+                business_number: registerData.business_number || '정보 없음',
+                business_license: registerData.business_license || '정보 없음',
                 services: [], // specialties -> services
                 description: '', // rich_text 필드
                 status: 'pending' // is_active -> status (승인 대기)

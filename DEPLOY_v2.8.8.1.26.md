@@ -1,377 +1,233 @@
-# 🚀 배포 가이드: v2.8.8.1.26 - 대표샵 지정 기능 추가
+# 배포 가이드 v2.8.8.1.26
 
-## 📋 배포 요약
+## 📦 배포할 파일
 
-### 버전 정보
-- **버전**: v2.8.8.1.26
-- **배포 날짜**: 2026-01-12
-- **우선순위**: 🔴 CRITICAL
-- **배포 타입**: 긴급 핫픽스
-- **영향 범위**: 대표샵 전화상담 기능
+### 신규 파일
+- `check-member-data.html` - 회원 데이터 검증 도구
+- `MEMBER_DATA_FIX_v2.8.8.1.26.md` - 회원 데이터 수정 문서
 
-### 주요 변경 사항
-1. ✅ **toggleRepresentativeStatus 함수 구현** (150줄)
-2. ✅ **대표샵 테이블 자동 등록 기능**
-3. ✅ **중복 대표샵 체크 및 경고**
-4. ✅ **is_representative 필드 동기화**
-5. ✅ **해올토탈뷰티 대표샵 등록 가능**
-
----
-
-## 📦 변경된 파일
-
-### 1. js/admin-dashboard.js (✅ 수정됨)
-- ✅ `toggleRepresentativeStatus` 함수 추가 (2766번째 줄 이전)
-- ✅ 대표샵 지정/해제 로직 구현
-- ✅ `window.toggleRepresentativeStatus` 전역 함수 노출
-
-### 2. admin-dashboard.html (✅ 수정됨)
-- ✅ `korea-town-data.js?v=2.8.8.1.26` (캐시 버스팅)
-- ✅ `admin-dashboard.js?v=2.8.8.1.26` (캐시 버스팅)
-
-### 3. README.md (✅ 수정됨)
-- ✅ v2.8.8.1.26 버전 정보 추가
-- ✅ 대표샵 기능 완성 섹션 추가
-
-### 4. 문서 (✅ 신규 생성)
-- ✅ HOTFIX_REPRESENTATIVE_SHOP_v2.8.8.1.26.md
-- ✅ DEPLOY_v2.8.8.1.26.md (현재 문서)
+### 수정 파일
+- `js/auth.js` - 신규 가입 시 중복 샵 방지 로직 추가
+- `README.md` - v2.8.8.1.26 버전 정보 추가
 
 ---
 
 ## 🚀 배포 절차
 
-### Step 1: GitHub 커밋 & 푸시
+### 1. GitHub 커밋 & 푸시
+```bash
+# 1-1. GitHub Desktop에서 변경사항 확인
+# Changes 탭에 4개 파일 확인:
+#   - check-member-data.html (NEW)
+#   - MEMBER_DATA_FIX_v2.8.8.1.26.md (NEW)
+#   - js/auth.js (MODIFIED)
+#   - README.md (MODIFIED)
 
-#### 1-1. GitHub Desktop 열기
-1. ✅ GitHub Desktop 실행
-2. ✅ **Changes** 탭 확인
-3. ✅ 변경된 파일 확인 (4개 파일)
+# 1-2. 커밋 메시지 작성
+feat: 회원 데이터 검증 및 신규 가입 로직 개선 v2.8.8.1.26
 
-#### 1-2. 커밋 메시지 작성
-```
-제목:
-fix: 대표샵 지정 기능 추가 - toggleRepresentativeStatus 구현 v2.8.8.1.26
+- 회원 데이터 검증 도구 추가 (check-member-data.html)
+  - 5단계 자동 검증: user_type, shop_id, 샵 존재, 이메일, 필수정보
+  - 자동 수정 기능: user_type, shop_id, 이메일 불일치
+  - 검증 보고서 JSON 다운로드
+- 신규 가입 로직 개선 (js/auth.js)
+  - 중복 샵 생성 방지 (이메일 기반)
+  - 기존 샵 재사용 및 자동 연결
+  - 정보 업데이트 (덮어쓰기 방지)
+- 문서화: MEMBER_DATA_FIX_v2.8.8.1.26.md
+- README 업데이트: v2.8.8.1.26
 
-설명:
-- toggleRepresentativeStatus 함수 구현
-- 대표샵 테이블 자동 등록 기능
-- 중복 대표샵 체크 및 경고
-- is_representative 필드 동기화
-- 해올토탈뷰티 대표샵 등록 가능
-- 우선순위: CRITICAL - 대표샵 전화상담 필수 기능
-```
+우선순위: HIGH - 데이터 정합성 보장
 
-#### 1-3. 커밋 & 푸시
-1. ✅ **"Commit to main"** 클릭
-2. ✅ **"Push origin"** 클릭
-3. ✅ 푸시 완료 대기 (수초)
-
----
-
-### Step 2: Cloudflare 배포 확인 (3-5분)
-
-#### 2-1. Cloudflare 대시보드 접속
-1. ✅ https://dash.cloudflare.com 접속
-2. ✅ Workers & Pages 클릭
-3. ✅ **beautycat** 프로젝트 클릭
-
-#### 2-2. 배포 상태 확인
-1. ✅ **Deployments** 탭 클릭
-2. ✅ 최신 배포 확인
-   - Commit: "fix: 대표샵 지정 기능 추가..."
-   - Status: ⏳ Building... → ✅ Success
-   - Date: 방금 전
-
-#### 2-3. 배포 완료 대기
-- ⏳ **3-5분** 소요
-- ✅ Status가 **Success**로 변경될 때까지 대기
-
----
-
-### Step 3: 캐시 무효화 (Purge Everything)
-
-#### 3-1. 캐시 메뉴 접속
-1. ✅ Cloudflare 대시보드 → **beautycat.kr** 도메인 클릭
-2. ✅ 왼쪽 메뉴 → **Caching** 클릭
-
-#### 3-2. 캐시 삭제
-1. ✅ **"Purge Everything"** 버튼 클릭
-2. ✅ 확인 팝업 → **"Purge"** 클릭
-3. ✅ 성공 메시지 확인
-
----
-
-### Step 4: 브라우저 검증
-
-#### 4-1. 강제 새로고침
-1. ✅ https://beautycat.kr/admin-dashboard.html 접속
-2. ✅ 브라우저 강제 새로고침
-   - **Windows**: `Ctrl + Shift + R`
-   - **Mac**: `Cmd + Shift + R`
-
-#### 4-2. 콘솔 버전 확인 (F12)
-```javascript
-// 콘솔에서 버전 확인
-console.log('현재 버전:', '2.8.8.1.26');
-
-// 예상 로그:
-// 🎯 Admin Dashboard v2.8.8.1.26 초기화
+# 1-3. Commit to main 클릭
+# 1-4. Push origin 클릭
 ```
 
-#### 4-3. 대표샵 지정 버튼 테스트
-1. ✅ 관리자 대시보드 → 업체 관리 섹션
-2. ✅ "해올" 검색
-3. ✅ **"대표샵 지정"** 버튼 클릭
-4. ✅ 성공 메시지 확인:
-   ```
-   '해올토탈뷰티'이(가) 경기도 김포시의 대표샵으로 지정되었습니다.
-   ```
+### 2. Cloudflare 배포 확인
+```
+1. Cloudflare 대시보드 접속
+   URL: https://dash.cloudflare.com/
 
----
+2. Workers & Pages → beautycat 선택
 
-## 🧪 검증 방법
+3. Deployments 탭 확인
+   - 최신 배포 상태: Success
+   - 배포 시간: ~5분 소요
 
-### 검증 1: 콘솔 스크립트로 대표샵 확인
-
-#### 스크립트 실행
-1. ✅ https://beautycat.kr/admin-dashboard.html 접속
-2. ✅ F12 키 누르기 (개발자 도구)
-3. ✅ Console 탭 클릭
-4. ✅ 아래 스크립트 복사 & 붙여넣기 & 실행
-
-```javascript
-(async function() {
-    console.log('🔍 대표샵 데이터 확인 시작...\n');
-    
-    try {
-        const response = await fetch('tables/representative_shops?limit=1000&sort=created_at');
-        const result = await response.json();
-        const allRepShops = result.data || [];
-        
-        const haeolRep = allRepShops.filter(shop => 
-            (shop.shop_name || '').includes('해올') || 
-            (shop.shop_name || '').includes('토탈뷰티')
-        );
-        
-        const approvedShops = allRepShops.filter(s => s.approved === true || s.status === 'approved');
-        const gimpoShops = allRepShops.filter(s => 
-            (s.state || '').includes('경기') && 
-            (s.district || '').includes('김포')
-        );
-        
-        console.log('📊 대표샵 데이터 요약');
-        console.log('─'.repeat(50));
-        console.log('🏪 전체 대표샵:', allRepShops.length);
-        console.log('⭐ 해올토탈뷰티 관련 대표샵:', haeolRep.length);
-        console.log('✅ 승인된 대표샵:', approvedShops.length);
-        console.log('📍 경기도 김포시 대표샵:', gimpoShops.length);
-        console.log('─'.repeat(50));
-        
-        if (haeolRep.length > 0) {
-            console.log('\n✅ 해올토탈뷰티가 대표샵으로 등록되었습니다!\n');
-            haeolRep.forEach((shop, index) => {
-                console.log(`대표샵 ${index + 1}:`);
-                console.log('  - 상호명:', shop.shop_name);
-                console.log('  - 지역:', shop.state, shop.district, shop.town);
-                console.log('  - 전화:', shop.phone);
-                console.log('  - 이메일:', shop.email);
-                console.log('  - 승인 상태:', shop.status, '/', 'approved:', shop.approved);
-                console.log('  - 승인일:', shop.approved_at);
-                console.log('─'.repeat(50));
-            });
-        } else {
-            console.log('\n❌ 해올토탈뷰티가 대표샵 테이블에 없습니다!');
-            console.log('해결 방법: 관리자 대시보드에서 대표샵으로 지정해야 합니다.\n');
-        }
-        
-    } catch (error) {
-        console.error('❌ 오류 발생:', error);
-    }
-})();
+4. 배포 URL 확인
+   Production: https://beautycat.kr
 ```
 
-#### 예상 결과 (배포 전)
+### 3. Cloudflare 캐시 무효화
 ```
-📊 대표샵 데이터 요약
-──────────────────────────────────────────────────
-🏪 전체 대표샵: 2
-⭐ 해올토탈뷰티 관련 대표샵: 0
-✅ 승인된 대표샵: 0
-📍 경기도 김포시 대표샵: 0
-──────────────────────────────────────────────────
+1. Cloudflare 대시보드 → Caching 탭
 
-❌ 해올토탈뷰티가 대표샵 테이블에 없습니다!
+2. "Purge Everything" 클릭
+
+3. 확인 대화상자에서 "Purge Everything" 클릭
+
+4. 완료 메시지 확인: "Success! Cache cleared successfully."
 ```
 
-#### 예상 결과 (배포 후 - 대표샵 지정 완료)
+### 4. 브라우저 캐시 초기화
 ```
-📊 대표샵 데이터 요약
-──────────────────────────────────────────────────
-🏪 전체 대표샵: 3
-⭐ 해올토탈뷰티 관련 대표샵: 1
-✅ 승인된 대표샵: 1
-📍 경기도 김포시 대표샵: 1
-──────────────────────────────────────────────────
-
-✅ 해올토탈뷰티가 대표샵으로 등록되었습니다!
-
-대표샵 1:
-  - 상호명: 해올토탈뷰티
-  - 지역: 경기도 김포시 운양동
-  - 전화: (전화번호)
-  - 이메일: taerang0428@naver.com
-  - 승인 상태: approved / approved: true
-  - 승인일: 2026-01-12...
-──────────────────────────────────────────────────
+Windows: Ctrl + Shift + R
+Mac: Cmd + Shift + R
 ```
 
 ---
 
-### 검증 2: 메인 페이지에서 확인
+## ✅ 배포 확인 체크리스트
 
-#### 2-1. 메인 페이지 접속
-1. ✅ https://beautycat.kr 접속
-2. ✅ 페이지 로딩 완료 대기
-
-#### 2-2. 지역 선택
-1. ✅ **시/도 선택**: **경기도** 선택
-2. ✅ **구/군 선택**: **김포시** 선택
-
-#### 2-3. 대표샵 전화상담 섹션 확인
+### 1. 회원 데이터 검증 도구 접근
 ```
-✅ "대표샵 전화상담" 섹션에 표시되어야 할 내용:
+URL: https://beautycat.kr/check-member-data.html
 
-🏪 해올토탈뷰티
-📍 경기도 김포시 운양동
-📞 [전화번호]
-✉️ taerang0428@naver.com
-
-[📞 전화상담 버튼]
+✅ 페이지 로드 확인
+✅ "전체 검증 시작" 버튼 동작 확인
+✅ 통계 표시 확인
+✅ 로그 영역 표시 확인
 ```
 
----
-
-## 📊 배포 타임라인
-
-| 시간 | 작업 | 상태 | 소요 시간 |
-|------|------|------|-----------|
-| 0분 | GitHub 커밋 & 푸시 | ⏳ 진행 중 | 1분 |
-| +1분 | Cloudflare 배포 시작 | ⏳ 대기 | 3-5분 |
-| +5분 | 배포 완료 확인 | ⏳ 대기 | 1분 |
-| +6분 | Purge Everything (캐시 삭제) | ⏳ 대기 | 1분 |
-| +7분 | 브라우저 검증 | ⏳ 대기 | 2분 |
-| +9분 | 대표샵 지정 실행 | ⏳ 대기 | 1분 |
-| +10분 | **배포 완료** ✅ | ✅ 완료 | - |
-
----
-
-## ✅ 체크리스트
-
-### 배포 전
-- [ ] GitHub Desktop에서 변경 파일 확인 (4개 파일)
-- [ ] 커밋 메시지 작성
-- [ ] "Commit to main" 클릭
-- [ ] "Push origin" 클릭
-
-### 배포 중
-- [ ] Cloudflare 대시보드 접속
-- [ ] Deployments 탭에서 배포 상태 확인
-- [ ] Status: Success ✅ 확인
-
-### 배포 후
-- [ ] Cloudflare Caching → Purge Everything 실행
-- [ ] 브라우저 강제 새로고침 (Ctrl+Shift+R / Cmd+Shift+R)
-- [ ] 콘솔에서 버전 v2.8.8.1.26 확인
-- [ ] 대표샵 지정 버튼 작동 확인
-- [ ] 해올토탈뷰티 대표샵 지정 실행
-- [ ] 콘솔 스크립트로 대표샵 데이터 확인
-- [ ] 메인 페이지에서 대표샵 전화상담 노출 확인
-
----
-
-## 🎉 최종 결과
-
-### 배포 완료 후 예상 상태
-
-#### 1. 대표샵 테이블
+### 2. 신규 가입 로직 검증
 ```
-✅ 총 대표샵: 3개 (기존 2개 + 해올토탈뷰티 1개)
-✅ 해올토탈뷰티 관련 대표샵: 1개
-✅ 승인된 대표샵: 1개
-✅ 경기도 김포시 대표샵: 1개
+테스트 시나리오 1: 신규 업체 가입
+1. 회원가입 페이지 접속
+2. user_type: shop 선택
+3. 신규 이메일 입력
+4. 회원가입 완료
+5. 확인: users와 skincare_shops 모두 생성
+
+테스트 시나리오 2: 기존 이메일 재가입
+1. 회원가입 페이지 접속
+2. user_type: shop 선택
+3. 기존 샵 이메일 입력 (예: taerang0428@naver.com)
+4. 회원가입 완료
+5. 확인: 
+   - users만 생성
+   - skincare_shops는 기존 것 재사용
+   - users.shop_id = 기존 샵 ID
 ```
 
-#### 2. 관리자 대시보드
+### 3. 관리자 대시보드 검증
 ```
-✅ "대표샵 지정" 버튼 정상 작동
-✅ 해올토탈뷰티 대표샵 상태 표시
-✅ 대표샵 목록에 해올토탈뷰티 표시
-```
+URL: https://beautycat.kr/admin-dashboard.html
 
-#### 3. 메인 페이지
-```
-✅ 경기도 김포시 선택 시 해올토탈뷰티 표시
-✅ 대표샵 전화상담 섹션 정상 노출
-✅ 전화번호 및 이메일 표시
+✅ 로그인 후 대시보드 로드 확인
+✅ 업체 목록 표시 확인 (74개 → 1,161개)
+✅ 고객 → 업체 전환 기능 동작 확인
 ```
 
 ---
 
-## 🚨 문제 해결 (Troubleshooting)
+## 🔍 즉시 실행할 검증
 
-### 문제 1: "대표샵 지정" 버튼이 작동하지 않음
+### 배포 후 바로 실행
 ```
-원인: 브라우저 캐시가 남아있음
-해결: Ctrl+Shift+R (Windows) / Cmd+Shift+R (Mac) 강제 새로고침
-```
+1. https://beautycat.kr/check-member-data.html 접속
 
-### 문제 2: 콘솔에 v2.8.8.1.25가 표시됨
-```
-원인: Cloudflare 캐시가 남아있음
-해결:
-1. Cloudflare 대시보드 → Caching → Purge Everything
-2. 브라우저 강제 새로고침
-```
+2. "전체 검증 시작" 버튼 클릭
 
-### 문제 3: 대표샵 지정 후 메인 페이지에 노출되지 않음
-```
-원인: 대표샵 데이터가 아직 로드되지 않음
-해결:
-1. 메인 페이지 새로고침 (F5)
-2. 시/도, 구/군 다시 선택
-3. 콘솔 스크립트로 데이터 확인
+3. 검증 결과 확인:
+   - 전체 회원: 32명 (예상)
+   - 업체 회원: ?명
+   - 전체 샵: 1,161개
+   - 발견된 이슈: ?개
+
+4. 이슈 확인 후:
+   - 자동 수정 가능: "모든 이슈 자동 수정" 클릭
+   - 수동 수정 필요: 관리자 대시보드에서 수정
+
+5. "보고서 다운로드" 클릭하여 백업
 ```
 
 ---
 
-## 📚 참고 문서
-- **HOTFIX_REPRESENTATIVE_SHOP_v2.8.8.1.26.md**: 기술적 상세 정보
-- **README.md**: v2.8.8.1.26 버전 정보
+## 📊 예상 결과
+
+### Before (v2.8.8.1.22)
+- 전체 데이터: 59,264개
+- 활성 데이터: 1,161개
+- 샘플링 완료: ✅
+- 해올토탈뷰티: 1개 (김포점)
+
+### After (v2.8.8.1.26)
+- 회원 데이터 검증: ✅ 자동화
+- 중복 샵 방지: ✅ 로직 적용
+- 기존 샵 재사용: ✅ 자동 연결
+- 데이터 정합성: ✅ 보장
 
 ---
 
-## 📝 배포 완료 보고
+## 🚨 트러블슈팅
 
-### 배포 후 아래 정보를 공유해주세요:
+### 문제 1: check-member-data.html 404 에러
+**원인**: 파일 미배포 또는 Cloudflare 캐시
+**해결**: 
+1. GitHub에 파일 존재 확인
+2. Cloudflare 캐시 무효화
+3. 브라우저 강제 새로고침
 
-1. ✅ **GitHub 커밋 완료 여부**
-   - [ ] 커밋 완료
-   - [ ] 푸시 완료
+### 문제 2: 검증 도구에서 데이터 로드 안 됨
+**원인**: API 엔드포인트 오류
+**해결**:
+1. 브라우저 콘솔(F12) 확인
+2. 네트워크 탭에서 API 요청 확인
+3. 403/401 에러 → 로그인 확인
+4. 500 에러 → API 서버 상태 확인
 
-2. ✅ **Cloudflare 배포 상태**
-   - [ ] Status: Success
-   - [ ] 배포 시간: (예: 2026-01-12 14:30)
+### 문제 3: 신규 가입 시 여전히 중복 샵 생성
+**원인**: js/auth.js 미배포 또는 캐시
+**해결**:
+1. Cloudflare 배포 완료 확인
+2. 캐시 무효화
+3. 브라우저 강제 새로고침
+4. 콘솔에서 "🔍 기존 샵 존재 여부 확인 중..." 로그 확인
 
-3. ✅ **검증 결과**
-   - [ ] 버전 v2.8.8.1.26 확인
-   - [ ] 대표샵 지정 버튼 작동
-   - [ ] 해올토탈뷰티 대표샵 등록 완료
-   - [ ] 콘솔 스크립트 결과: 해올토탈뷰티 대표샵 1개 확인
-   - [ ] 메인 페이지 대표샵 전화상담 노출 확인
+---
+
+## 📝 배포 후 작업
+
+### 즉시 (배포 후 10분 이내)
+- [ ] 회원 데이터 검증 실행
+- [ ] 이슈 자동 수정
+- [ ] 검증 보고서 다운로드
+
+### 24시간 이내
+- [ ] 신규 가입 테스트 (실제 이메일)
+- [ ] 고객 → 업체 전환 테스트
+- [ ] 관리자 대시보드 동작 확인
+
+### 1주일 이내
+- [ ] 정기 검증 일정 수립
+- [ ] 업체 회원 온보딩 프로세스 개선
+- [ ] 관리자 매뉴얼 작성
+
+---
+
+## 🎯 성공 기준
+
+- ✅ check-member-data.html 정상 접근
+- ✅ 검증 도구 5단계 검증 성공
+- ✅ 발견된 이슈 자동 수정 완료
+- ✅ 신규 가입 시 중복 샵 생성 안 함
+- ✅ 기존 샵 자동 연결 성공
+- ✅ README v2.8.8.1.26 표시
+
+---
+
+## 📞 지원
+
+이슈 발생 시:
+1. 브라우저 콘솔(F12) 스크린샷
+2. 네트워크 탭 API 요청/응답
+3. 재현 단계 상세 기록
+
+**배포 완료 시간**: 약 15분 소요 예상  
+**총 작업 시간**: 약 2시간 (코딩 + 테스트 + 문서화)
 
 ---
 
 **작성일**: 2026-01-12  
-**작성자**: BeautyCat Development Team  
-**상태**: ✅ 배포 준비 완료
+**작성자**: AI Assistant  
+**버전**: v2.8.8.1.26

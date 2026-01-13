@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 데이터 검증 도구</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-align: center;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .log-area {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .issue-card {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        .issue-card.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        
+        .issue-card.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .fix-btn {
+            background: #28a745;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 회원 데이터 검증 도구</h1>
+        
+        <div class="section">
+            <h2>📊 데이터 통계</h2>
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <h3>전체 회원</h3>
+                    <div class="value" id="total-users">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>고객 회원</h3>
+                    <div class="value" id="customer-users">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>업체 회원</h3>
+                    <div class="value" id="shop-users">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>관리자</h3>
+                    <div class="value" id="admin-users">-</div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>전체 샵</h3>
+                    <div class="value" id="total-shops">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>shop_id 연결됨</h3>
+                    <div class="value" id="linked-shops">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>shop_id 미연결</h3>
+                    <div class="value" id="unlinked-shops">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>발견된 이슈</h3>
+                    <div class="value" id="total-issues">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🚀 실행</h2>
+            <button onclick="runFullCheck()" id="check-btn">전체 검증 시작</button>
+            <button onclick="fixAllIssues()" id="fix-btn" disabled>모든 이슈 자동 수정</button>
+            <button onclick="downloadReport()" id="report-btn" disabled>보고서 다운로드</button>
+            
+            <div class="progress-bar" id="progress-container" style="display: none;">
+                <div class="progress-fill" id="progress-bar">0%</div>
+            </div>
+        </div>
+        
+        <div class="section" id="issues-section" style="display: none;">
+            <h2>⚠️ 발견된 이슈</h2>
+            <div id="issues-list"></div>
+        </div>
+        
+        <div class="section">
+            <h2>📝 실행 로그</h2>
+            <div class="log-area" id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        let allUsers = [];
+        let allShops = [];
+        let issues = [];
+        
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString('ko-KR');
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logArea.innerHTML += `[${timestamp}] ${prefix} ${message}\n`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+        function updateProgress(percent, text) {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = text || (percent + '%');
+        }
+        
+        async function runFullCheck() {
+            const checkBtn = document.getElementById('check-btn');
+            const fixBtn = document.getElementById('fix-btn');
+            const reportBtn = document.getElementById('report-btn');
+            const progressContainer = document.getElementById('progress-container');
+            
+            checkBtn.disabled = true;
+            fixBtn.disabled = true;
+            reportBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            issues = [];
+            
+            log('=== 회원 데이터 전체 검증 시작 ===', 'info');
+            
+            try {
+                // 1. 사용자 데이터 로드
+                updateProgress(10, '사용자 데이터 로딩...');
+                log('📡 사용자 데이터 로딩 중...');
+                const usersResponse = await fetch('tables/users?limit=1000&sort=-created_at');
+                const usersData = await usersResponse.json();
+                allUsers = (usersData.data || []).filter(u => !u.deleted);
+                log(`✅ 사용자 데이터 로드 완료: ${allUsers.length}명`);
+                
+                // 2. 샵 데이터 로드
+                updateProgress(20, '샵 데이터 로딩...');
+                log('📡 샵 데이터 로딩 중...');
+                const shopsResponse = await fetch('tables/skincare_shops?limit=100000&sort=-created_at');
+                const shopsData = await shopsResponse.json();
+                allShops = (shopsData.data || []).filter(s => !s.deleted);
+                log(`✅ 샵 데이터 로드 완료: ${allShops.length}개`);
+                
+                // 3. 통계 업데이트
+                updateProgress(30, '통계 계산 중...');
+                updateStats();
+                
+                // 4. 검증 시작
+                updateProgress(40, '검증 1/5: user_type 검증...');
+                await checkUserTypes();
+                
+                updateProgress(50, '검증 2/5: shop_id 연결 검증...');
+                await checkShopLinks();
+                
+                updateProgress(60, '검증 3/5: 업체 회원 샵 존재 검증...');
+                await checkShopUserShopExists();
+                
+                updateProgress(70, '검증 4/5: 이메일 일치 검증...');
+                await checkEmailMatching();
+                
+                updateProgress(80, '검증 5/5: 필수 정보 검증...');
+                await checkRequiredFields();
+                
+                // 5. 결과 표시
+                updateProgress(100, '검증 완료!');
+                log(`\n=== 검증 완료 ===`, 'success');
+                log(`총 ${issues.length}개의 이슈 발견`, issues.length > 0 ? 'warning' : 'success');
+                
+                displayIssues();
+                
+                if (issues.length > 0) {
+                    fixBtn.disabled = false;
+                }
+                reportBtn.disabled = false;
+                
+            } catch (error) {
+                log(`❌ 오류 발생: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                checkBtn.disabled = false;
+            }
+        }
+        
+        function updateStats() {
+            const customerUsers = allUsers.filter(u => u.user_type === 'customer');
+            const shopUsers = allUsers.filter(u => u.user_type === 'shop');
+            const adminUsers = allUsers.filter(u => u.user_type === 'admin');
+            const linkedShops = shopUsers.filter(u => u.shop_id);
+            
+            document.getElementById('total-users').textContent = allUsers.length;
+            document.getElementById('customer-users').textContent = customerUsers.length;
+            document.getElementById('shop-users').textContent = shopUsers.length;
+            document.getElementById('admin-users').textContent = adminUsers.length;
+            document.getElementById('total-shops').textContent = allShops.length;
+            document.getElementById('linked-shops').textContent = linkedShops.length;
+            document.getElementById('unlinked-shops').textContent = shopUsers.length - linkedShops.length;
+        }
+        
+        async function checkUserTypes() {
+            log('\n🔍 1. user_type 검증 중...');
+            const validTypes = ['customer', 'shop', 'admin'];
+            
+            allUsers.forEach(user => {
+                if (!user.user_type) {
+                    issues.push({
+                        type: 'missing_user_type',
+                        severity: 'error',
+                        user: user,
+                        message: `user_type이 없음`,
+                        fix: () => fixMissingUserType(user)
+                    });
+                } else if (!validTypes.includes(user.user_type)) {
+                    issues.push({
+                        type: 'invalid_user_type',
+                        severity: 'error',
+                        user: user,
+                        message: `잘못된 user_type: ${user.user_type}`,
+                        fix: () => fixInvalidUserType(user)
+                    });
+                }
+            });
+            
+            log(`✅ user_type 검증 완료 (이슈: ${issues.length}개)`);
+        }
+        
+        async function checkShopLinks() {
+            log('\n🔍 2. shop_id 연결 검증 중...');
+            
+            const shopUsers = allUsers.filter(u => u.user_type === 'shop');
+            
+            shopUsers.forEach(user => {
+                if (!user.shop_id || user.shop_id === '') {
+                    const matchingShop = allShops.find(s => 
+                        s.email && user.email && 
+                        s.email.toLowerCase() === user.email.toLowerCase()
+                    );
+                    
+                    issues.push({
+                        type: 'missing_shop_id',
+                        severity: 'error',
+                        user: user,
+                        shop: matchingShop,
+                        message: `업체 회원이지만 shop_id가 없음${matchingShop ? ' (매칭 가능한 샵 발견)' : ''}`,
+                        fix: () => fixMissingShopId(user, matchingShop)
+                    });
+                }
+            });
+            
+            log(`✅ shop_id 연결 검증 완료`);
+        }
+        
+        async function checkShopUserShopExists() {
+            log('\n🔍 3. 업체 회원 샵 존재 검증 중...');
+            
+            const shopUsers = allUsers.filter(u => u.user_type === 'shop');
+            
+            shopUsers.forEach(user => {
+                const hasShop = allShops.some(s => 
+                    s.email && user.email && 
+                    s.email.toLowerCase() === user.email.toLowerCase()
+                );
+                
+                if (!hasShop) {
+                    issues.push({
+                        type: 'shop_not_exists',
+                        severity: 'error',
+                        user: user,
+                        message: `업체 회원이지만 skincare_shops에 샵이 없음`,
+                        fix: () => createShopForUser(user)
+                    });
+                }
+            });
+            
+            log(`✅ 업체 회원 샵 존재 검증 완료`);
+        }
+        
+        async function checkEmailMatching() {
+            log('\n🔍 4. 이메일 일치 검증 중...');
+            
+            const shopUsers = allUsers.filter(u => u.user_type === 'shop' && u.shop_id);
+            
+            shopUsers.forEach(user => {
+                const linkedShop = allShops.find(s => s.id === user.shop_id);
+                
+                if (linkedShop && linkedShop.email) {
+                    if (linkedShop.email.toLowerCase() !== user.email.toLowerCase()) {
+                        issues.push({
+                            type: 'email_mismatch',
+                            severity: 'warning',
+                            user: user,
+                            shop: linkedShop,
+                            message: `이메일 불일치 (사용자: ${user.email}, 샵: ${linkedShop.email})`,
+                            fix: () => fixEmailMismatch(user, linkedShop)
+                        });
+                    }
+                }
+            });
+            
+            log(`✅ 이메일 일치 검증 완료`);
+        }
+        
+        async function checkRequiredFields() {
+            log('\n🔍 5. 필수 정보 검증 중...');
+            
+            allShops.forEach(shop => {
+                const missingFields = [];
+                
+                if (!shop.state || shop.state === '' || shop.state === '정보 미등록') {
+                    missingFields.push('시/도');
+                }
+                if (!shop.district || shop.district === '' || shop.district === '정보 미등록') {
+                    missingFields.push('구/군');
+                }
+                if (!shop.address || shop.address === '' || shop.address === '주소 미등록') {
+                    missingFields.push('주소');
+                }
+                
+                if (missingFields.length > 0) {
+                    issues.push({
+                        type: 'missing_required_fields',
+                        severity: 'warning',
+                        shop: shop,
+                        message: `필수 정보 누락: ${missingFields.join(', ')}`,
+                        fix: null // 수동 입력 필요
+                    });
+                }
+            });
+            
+            log(`✅ 필수 정보 검증 완료`);
+        }
+        
+        function displayIssues() {
+            const issuesSection = document.getElementById('issues-section');
+            const issuesList = document.getElementById('issues-list');
+            
+            if (issues.length === 0) {
+                issuesSection.style.display = 'none';
+                return;
+            }
+            
+            issuesSection.style.display = 'block';
+            issuesList.innerHTML = '';
+            
+            document.getElementById('total-issues').textContent = issues.length;
+            
+            issues.forEach((issue, index) => {
+                const card = document.createElement('div');
+                card.className = `issue-card ${issue.severity}`;
+                
+                let content = `<strong>#${index + 1} [${issue.type}]</strong><br>`;
+                content += `${issue.message}<br>`;
+                
+                if (issue.user) {
+                    content += `<small>사용자: ${issue.user.name} (${issue.user.email})</small><br>`;
+                }
+                if (issue.shop) {
+                    content += `<small>샵: ${issue.shop.name || issue.shop.shop_name} (ID: ${issue.shop.id})</small><br>`;
+                }
+                
+                if (issue.fix) {
+                    content += `<button class="fix-btn" onclick="fixIssue(${index})">🔧 수정</button>`;
+                }
+                
+                card.innerHTML = content;
+                issuesList.appendChild(card);
+            });
+        }
+        
+        async function fixIssue(index) {
+            const issue = issues[index];
+            if (!issue.fix) {
+                alert('이 이슈는 자동 수정할 수 없습니다. 수동으로 처리해주세요.');
+                return;
+            }
+            
+            try {
+                log(`\n🔧 이슈 #${index + 1} 수정 중...`);
+                await issue.fix();
+                log(`✅ 이슈 #${index + 1} 수정 완료`, 'success');
+                
+                // 이슈 목록에서 제거
+                issues.splice(index, 1);
+                displayIssues();
+                
+            } catch (error) {
+                log(`❌ 이슈 #${index + 1} 수정 실패: ${error.message}`, 'error');
+            }
+        }
+        
+        async function fixAllIssues() {
+            if (!confirm(`${issues.length}개의 이슈를 자동으로 수정하시겠습니까?\n\n⚠️ 주의: 이 작업은 되돌릴 수 없습니다.`)) {
+                return;
+            }
+            
+            log('\n🔧 모든 이슈 자동 수정 시작...', 'info');
+            
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (let i = issues.length - 1; i >= 0; i--) {
+                const issue = issues[i];
+                
+                if (!issue.fix) {
+                    log(`⏭️ 이슈 #${i + 1} 건너뛰기 (수동 처리 필요)`, 'warning');
+                    continue;
+                }
+                
+                try {
+                    log(`🔧 이슈 #${i + 1} 수정 중...`);
+                    await issue.fix();
+                    log(`✅ 이슈 #${i + 1} 수정 완료`, 'success');
+                    successCount++;
+                    issues.splice(i, 1);
+                    
+                    // API 부하 방지
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                } catch (error) {
+                    log(`❌ 이슈 #${i + 1} 수정 실패: ${error.message}`, 'error');
+                    failCount++;
+                }
+            }
+            
+            log(`\n📊 자동 수정 완료: 성공 ${successCount}개, 실패 ${failCount}개`, 'success');
+            displayIssues();
+            
+            if (issues.length === 0) {
+                document.getElementById('fix-btn').disabled = true;
+            }
+        }
+        
+        // 수정 함수들
+        async function fixMissingUserType(user) {
+            // 이메일이나 이름으로 유추
+            const newType = user.email.includes('shop') || user.name.includes('샵') ? 'shop' : 'customer';
+            
+            const response = await fetch(`tables/users/${user.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_type: newType })
+            });
+            
+            if (!response.ok) throw new Error(`API 오류: ${response.status}`);
+            log(`  → user_type을 '${newType}'로 설정`);
+        }
+        
+        async function fixInvalidUserType(user) {
+            const newType = 'customer'; // 기본값
+            
+            const response = await fetch(`tables/users/${user.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_type: newType })
+            });
+            
+            if (!response.ok) throw new Error(`API 오류: ${response.status}`);
+            log(`  → user_type을 '${newType}'로 수정`);
+        }
+        
+        async function fixMissingShopId(user, matchingShop) {
+            if (!matchingShop) {
+                throw new Error('매칭 가능한 샵이 없습니다. 먼저 샵을 생성해주세요.');
+            }
+            
+            const response = await fetch(`tables/users/${user.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ shop_id: matchingShop.id })
+            });
+            
+            if (!response.ok) throw new Error(`API 오류: ${response.status}`);
+            log(`  → shop_id를 '${matchingShop.id}'로 연결`);
+        }
+        
+        async function createShopForUser(user) {
+            const shopData = {
+                name: user.name + '의 샵',
+                owner_name: user.name,
+                email: user.email,
+                phone: user.phone || '정보 없음',
+                state: user.state || '정보 미등록',
+                district: user.district || '정보 미등록',
+                address: user.detail_address || '주소 미등록',
+                business_number: '정보 없음',
+                business_license: '정보 없음',
+                status: 'pending'
+            };
+            
+            const response = await fetch('tables/skincare_shops', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(shopData)
+            });
+            
+            if (!response.ok) throw new Error(`샵 생성 실패: ${response.status}`);
+            
+            const newShop = await response.json();
+            log(`  → 새 샵 생성: ${newShop.id}`);
+            
+            // shop_id 연결
+            await fixMissingShopId(user, newShop);
+        }
+        
+        async function fixEmailMismatch(user, shop) {
+            // 샵의 이메일을 사용자의 이메일로 동기화
+            const response = await fetch(`tables/skincare_shops/${shop.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user.email })
+            });
+            
+            if (!response.ok) throw new Error(`API 오류: ${response.status}`);
+            log(`  → 샵 이메일을 '${user.email}'로 동기화`);
+        }
+        
+        function downloadReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                stats: {
+                    totalUsers: allUsers.length,
+                    customerUsers: allUsers.filter(u => u.user_type === 'customer').length,
+                    shopUsers: allUsers.filter(u => u.user_type === 'shop').length,
+                    adminUsers: allUsers.filter(u => u.user_type === 'admin').length,
+                    totalShops: allShops.length
+                },
+                issues: issues.map(issue => ({
+                    type: issue.type,
+                    severity: issue.severity,
+                    message: issue.message,
+                    user: issue.user ? { id: issue.user.id, name: issue.user.name, email: issue.user.email } : null,
+                    shop: issue.shop ? { id: issue.shop.id, name: issue.shop.name || issue.shop.shop_name } : null
+                })),
+                logs: document.getElementById('log').textContent
+            };
+            
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `member-data-report-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            log('📥 보고서 다운로드 완료', 'success');
+        }
+        
+        // 페이지 로드 시
+        window.addEventListener('DOMContentLoaded', () => {
+            log('🚀 회원 데이터 검증 도구 준비 완료');
+            log('ℹ️ "전체 검증 시작" 버튼을 클릭하여 시작하세요.\n');
+        });
+    </script>
+</body>
+</html>
