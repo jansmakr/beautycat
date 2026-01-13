@@ -352,6 +352,86 @@ h1, h2, h3 {
     transform: translateY(-2px);
 }
 
+/* 🎀 지역별 대표샵 & 전국 샵 찾기 섹션 강화 */
+.section-representative {
+    background: linear-gradient(135deg, 
+        rgba(255, 245, 250, 0.95) 0%, 
+        rgba(255, 240, 245, 0.95) 100%) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 2px solid rgba(255, 182, 217, 0.3) !important;
+    box-shadow: 0 8px 30px rgba(255, 182, 217, 0.18) !important;
+}
+
+/* 🔍 전국 샵 찾기 섹션 스타일 */
+.nationwide-shop-section {
+    background: linear-gradient(135deg, 
+        rgba(240, 248, 255, 0.95) 0%, 
+        rgba(245, 240, 255, 0.95) 100%) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 2px solid rgba(186, 217, 253, 0.3) !important;
+    box-shadow: 0 8px 30px rgba(167, 139, 250, 0.18) !important;
+}
+
+/* 🎯 Select 필드 파스텔 스타일 */
+select {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 182, 217, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 182, 217, 0.12);
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    background: white;
+    border-color: #FF6B9D;
+    box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.15);
+    outline: none;
+}
+
+/* 💝 대표샵 정보 카드 파스텔 */
+.representative-info-card {
+    background: linear-gradient(135deg, 
+        rgba(255, 245, 250, 0.95) 0%, 
+        rgba(255, 240, 245, 0.95) 100%);
+    border: 1px solid rgba(255, 182, 217, 0.3);
+    box-shadow: var(--pastel-shadow-soft);
+}
+
+/* 📞 전화하기 버튼 파스텔 */
+.call-button {
+    background: linear-gradient(135deg, #FF6B9D 0%, #C239D3 50%, #667EEA 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3);
+    transition: all 0.3s ease;
+    padding: 12px 24px;
+}
+
+.call-button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(255, 107, 157, 0.4);
+    filter: brightness(1.08);
+}
+
+/* 🔎 샵 찾기 버튼 파스텔 */
+.find-shops-button {
+    background: linear-gradient(135deg, #667EEA 0%, #A78BFA 50%, #C4B5FD 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+}
+
+.find-shops-button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    filter: brightness(1.08);
+}
+
 /* 🎀 테두리 파스텔 */
 .border,
 hr {

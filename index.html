@@ -6,11 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="last-modified" content="2026-01-13T12:00:00+09:00">
-    <!-- 🌸 Cache Busting Timestamp: 2026-01-13 12:00 KST - Beautyket Pastel Design -->
-    <meta name="version" content="2.8.8.1.31-20260113-1200">
-    <meta name="cache-version" content="v2.8.8.1.31-pastel-design">
-    <!-- v2.8.8.1.31: Beautyket 파스텔 디자인 적용 (캐릭터 제외) -->
+    <meta name="last-modified" content="2026-01-13T14:00:00+09:00">
+    <!-- 🌸 Cache Busting Timestamp: 2026-01-13 14:00 KST - Region/Shop Section Pastel Design -->
+    <meta name="version" content="2.8.8.1.32-20260113-1400">
+    <meta name="cache-version" content="v2.8.8.1.32-pastel-sections">
+    <!-- v2.8.8.1.32: 지역별/전국샵 섹션 파스텔 디자인 + 가독성 개선 -->
     <title>피부관리실 견적비교 예약 플랫폼 | beautyket - 강남 홍대 피부관리</title>
     <meta name="description" content="✨ 전국 피부관리실 견적을 무료로 비교하세요! 강남·홍대·잠실 인증된 피부관리 전문샵 1초 매칭 | 여드름·모공·미백 케어 | 최대 30% 할인 | 100% 무료 상담">    
     <meta name="keywords" content="피부관리실, 피부관리실 추천, 피부관리 견적, 피부관리 가격비교, 강남 피부관리, 홍대 피부관리, 잠실 피부관리, 서울 피부관리, 근처 피부관리실, 피부관리 예약, 피부케어, 여드름 관리, 모공관리, 미백케어, 피부관리 할인, 뷰티샵, 스킨케어 샵, 피부관리 전문, 저렴한 피부관리, 피부과 vs 피부관리실, beautyket, 뷰티캣">
@@ -580,10 +580,10 @@
     <link rel="preload" href="css/logo-mobile-fix.css?v=2.8.13.6.80" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/logo-mobile-fix.css?v=2.8.13.6.80"></noscript>
     
-    <!-- 🌸 Pastel Design CSS (v1.0.0 - No Characters, Soft Colors) -->
+    <!-- 🌸 Pastel Design CSS (v1.0.1 - Enhanced Sections) -->
     <!-- 이전: css/premium-design.css?v=2.8.8.1.30 -->
-    <link rel="preload" href="css/pastel-design.css?v=1.0.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="css/pastel-design.css?v=1.0.0"></noscript>
+    <link rel="preload" href="css/pastel-design.css?v=1.0.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/pastel-design.css?v=1.0.1"></noscript>
     
     <!-- 🚨 Workbox Service Worker 즉시 제거 (최우선 실행) -->
     <script>
@@ -2728,26 +2728,26 @@
             
             <!-- 지역별 대표샵 전화 상담 전용 섹션 (v2.8.13) -->
             <div id="simpleForm" class="space-y-4">
-                <!-- 지역별 대표샵 전화 상담 섹션 -->
-                <div class="mt-6 border-t-0 pt-6 -mx-6 px-6 pb-6 rounded-2xl section-representative">
+                <!-- 지역별 대표샵 전화 상담 섹션 (파스텔 디자인) -->
+                <div class="mt-6 border-t-0 pt-6 -mx-6 px-6 pb-6 rounded-2xl" style="background: linear-gradient(135deg, rgba(255, 245, 250, 0.95) 0%, rgba(255, 240, 245, 0.95) 100%); backdrop-filter: blur(12px); border: 2px solid rgba(255, 182, 217, 0.3); box-shadow: 0 8px 30px rgba(255, 182, 217, 0.18);">
                     <div class="text-center mb-4">
                         <div class="flex items-center justify-center mb-2">
-                            <i class="fas fa-phone text-blue-600 mr-2 text-lg"></i>
-                            <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                            <i class="fas fa-phone mr-2 text-lg" style="color: #FF6B9D;"></i>
+                            <h3 class="text-base sm:text-lg font-extrabold" style="color: #C239D3; letter-spacing: -0.02em;">
                                 지역별 대표샵 전화 상담
                             </h3>
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
+                        <p class="text-xs sm:text-sm leading-relaxed font-semibold" style="color: #666666;">
                             우리 동네 대표 피부관리실과<br class="sm:hidden">
                             바로 전화 상담하세요
                         </p>
                     </div>
                     
-                    <!-- 지역 선택 -->
+                    <!-- 지역 선택 (파스텔) -->
                     <div class="grid grid-cols-2 gap-3 mb-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">시/도</label>
-                            <select id="representative-state" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm">
+                            <label class="block text-sm font-bold mb-1" style="color: #333333;">시/도</label>
+                            <select id="representative-state" class="w-full px-3 py-2 rounded-lg text-sm" style="background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border: 2px solid rgba(255, 182, 217, 0.2); box-shadow: 0 4px 20px rgba(255, 182, 217, 0.12); transition: all 0.3s ease;" onfocus="this.style.background='white'; this.style.borderColor='#FF6B9D'; this.style.boxShadow='0 0 0 4px rgba(255, 107, 157, 0.15)';" onblur="this.style.background='rgba(255, 255, 255, 0.92)'; this.style.borderColor='rgba(255, 182, 217, 0.2)'; this.style.boxShadow='0 4px 20px rgba(255, 182, 217, 0.12)';">
                                 <option value="">시/도 선택</option>
                                 <option value="서울특별시">서울특별시</option>
                                 <option value="부산광역시">부산광역시</option>
@@ -2769,8 +2769,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">시/군/구</label>
-                            <select id="representative-district" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm" disabled>
+                            <label class="block text-sm font-bold mb-1" style="color: #333333;">시/군/구</label>
+                            <select id="representative-district" class="w-full px-3 py-2 rounded-lg text-sm" style="background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border: 2px solid rgba(255, 182, 217, 0.2); box-shadow: 0 4px 20px rgba(255, 182, 217, 0.12); transition: all 0.3s ease;" onfocus="this.style.background='white'; this.style.borderColor='#FF6B9D'; this.style.boxShadow='0 0 0 4px rgba(255, 107, 157, 0.15)';" onblur="this.style.background='rgba(255, 255, 255, 0.92)'; this.style.borderColor='rgba(255, 182, 217, 0.2)'; this.style.boxShadow='0 4px 20px rgba(255, 182, 217, 0.12)';" disabled>
                                 <option value="">먼저 시/도를 선택하세요</option>
                             </select>
                         </div>
@@ -2799,7 +2799,7 @@
                                     <i class="fas fa-phone text-primary-500 mr-2"></i>
                                     <span id="rep-shop-phone" class="font-medium">-</span>
                                 </div>
-                                <button id="call-representative-shop" class="btn-soft-primary touch-feedback" style="padding: 10px 20px; font-size: 14px;">
+                                <button id="call-representative-shop" class="touch-feedback" style="padding: 12px 24px; font-size: 14px; background: linear-gradient(135deg, #FF6B9D 0%, #C239D3 50%, #667EEA 100%); color: white; border: none; border-radius: 12px; font-weight: 700; box-shadow: 0 8px 25px rgba(255, 107, 157, 0.3); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px) scale(1.05)'; this.style.boxShadow='0 12px 35px rgba(255, 107, 157, 0.4)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 25px rgba(255, 107, 157, 0.3)';">
                                     <i class="fas fa-phone mr-1"></i>
                                     전화하기
                                 </button>
@@ -2826,25 +2826,25 @@
                     </div>
                 </div>
                 
-                <!-- 🆕 전국 샵 찾기 섹션 -->
-                <div class="mt-6 border-t border-gray-200 pt-6 -mx-6 px-6 pb-6 rounded-2xl bg-gradient-to-br from-blue-50 to-purple-50">
+                <!-- 🆕 전국 샵 찾기 섹션 (파스텔 디자인) -->
+                <div class="mt-6 pt-6 -mx-6 px-6 pb-6 rounded-2xl" style="background: linear-gradient(135deg, rgba(240, 248, 255, 0.95) 0%, rgba(245, 240, 255, 0.95) 100%); backdrop-filter: blur(12px); border: 2px solid rgba(186, 217, 253, 0.3); box-shadow: 0 8px 30px rgba(167, 139, 250, 0.18);">
                     <div class="text-center mb-4">
                         <div class="flex items-center justify-center mb-2">
-                            <i class="fas fa-search text-purple-600 mr-2 text-lg"></i>
-                            <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                            <i class="fas fa-search mr-2 text-lg" style="color: #667EEA;"></i>
+                            <h3 class="text-base sm:text-lg font-extrabold" style="color: #667EEA; letter-spacing: -0.02em;">
                                 전국 30,000개 샵 찾기
                             </h3>
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-medium">
+                        <p class="text-xs sm:text-sm leading-relaxed font-semibold" style="color: #666666;">
                             우리 동네 피부관리실을<br class="sm:hidden">
                             직접 찾아보세요
                         </p>
                     </div>
                     
-                    <!-- 지역 선택 -->
+                    <!-- 지역 선택 (파스텔) -->
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2 text-center">지역을 선택하세요</label>
-                        <select id="nationwide-region-select" class="w-full px-4 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm bg-white">
+                        <label class="block text-sm font-bold mb-2 text-center" style="color: #333333;">지역을 선택하세요</label>
+                        <select id="nationwide-region-select" class="w-full px-4 py-3 rounded-lg text-sm" style="background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border: 2px solid rgba(102, 126, 234, 0.2); box-shadow: 0 4px 20px rgba(102, 126, 234, 0.12); transition: all 0.3s ease;" onfocus="this.style.background='white'; this.style.borderColor='#667EEA'; this.style.boxShadow='0 0 0 4px rgba(102, 126, 234, 0.15)';" onblur="this.style.background='rgba(255, 255, 255, 0.92)'; this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.boxShadow='0 4px 20px rgba(102, 126, 234, 0.12)';">
                             <option value="">시/도 선택</option>
                             <option value="서울">서울특별시</option>
                             <option value="부산">부산광역시</option>
@@ -2866,8 +2866,8 @@
                         </select>
                     </div>
                     
-                    <!-- 샵 찾기 버튼 -->
-                    <button id="find-nationwide-shops-btn" class="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <!-- 샵 찾기 버튼 (파스텔) -->
+                    <button id="find-nationwide-shops-btn" class="w-full py-3 px-6 rounded-lg font-bold" style="background: linear-gradient(135deg, #667EEA 0%, #A78BFA 50%, #C4B5FD 100%); color: white; border: none; font-size: 15px; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); transition: all 0.3s ease; cursor: pointer; letter-spacing: -0.01em;" onmouseover="this.style.transform='translateY(-3px) scale(1.02)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.4)'; this.style.filter='brightness(1.08)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.3)'; this.style.filter='brightness(1)';">
                         <i class="fas fa-search mr-2"></i>
                         샵 찾기
                     </button>
