@@ -1,0 +1,217 @@
+/* ========================================
+   Beautyket Premium Design Enhancement
+   v1.0.0 - 2026-01-13
+   기존 틀 유지 + 고급스러운 스타일 추가
+   ======================================== */
+
+/* 🎨 색상 팔레트 개선 - 선명도 강화 */
+:root {
+    /* 기존 변수 유지하면서 추가 - 채도 증가 */
+    --premium-gradient-start: #FFD6E8;
+    --premium-gradient-mid: #EDD6FF;
+    --premium-gradient-end: #D6EAFF;
+    
+    --premium-shadow-soft: 0 4px 20px rgba(255, 45, 146, 0.15);
+    --premium-shadow-medium: 0 8px 30px rgba(255, 45, 146, 0.22);
+    --premium-shadow-strong: 0 12px 40px rgba(255, 45, 146, 0.30);
+    
+    --premium-text-gradient: linear-gradient(135deg, #5B6FE6 0%, #6B3FA2 100%);
+}
+
+/* 📐 전체 배경 그라데이션 개선 */
+body {
+    background: linear-gradient(135deg, 
+        var(--premium-gradient-start) 0%, 
+        var(--premium-gradient-mid) 50%, 
+        var(--premium-gradient-end) 100%);
+    background-attachment: fixed;
+}
+
+/* 🎯 CTA 버튼 고급화 */
+.cta-button-phone,
+.cta-button-quote {
+    box-shadow: var(--premium-shadow-medium);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cta-button-phone:hover,
+.cta-button-quote:hover {
+    box-shadow: var(--premium-shadow-strong);
+    transform: translateY(-8px) scale(1.02);
+}
+
+/* 💎 카드 디자인 고급화 */
+.card-soft,
+.section-card {
+    box-shadow: var(--premium-shadow-soft);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.card-soft:hover,
+.section-card:hover {
+    box-shadow: var(--premium-shadow-medium);
+    transform: translateY(-6px);
+}
+
+/* 🌈 히어로 섹션 고급화 - 선명도 강화 */
+.hero-section {
+    background: linear-gradient(135deg, 
+        #FF99CC 0%, 
+        #E699E6 25%,
+        #B899FF 50%,
+        #99B3FF 75%,
+        #99CCFF 100%);
+    box-shadow: var(--premium-shadow-medium);
+    filter: saturate(1.2) contrast(1.05);
+}
+
+/* ✨ 텍스트 그라데이션 강화 */
+.section-title-soft,
+.hero-title {
+    background: var(--premium-text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+}
+
+/* 🎨 부가서비스 버튼 고급화 */
+.beautyket-sub-btn {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--premium-shadow-soft);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.beautyket-sub-btn:hover {
+    box-shadow: var(--premium-shadow-medium);
+    transform: translateY(-4px) scale(1.02);
+    background: rgba(255, 255, 255, 1);
+}
+
+/* 📝 입력 필드 고급화 */
+.input-field-new,
+.form-input {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(229, 231, 235, 0.8);
+    box-shadow: var(--premium-shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.input-field-new:focus,
+.form-input:focus {
+    background: white;
+    border-color: #FF2D92;
+    box-shadow: 0 0 0 4px rgba(255, 45, 146, 0.2);
+}
+
+/* 🎭 체크박스 옵션 고급화 */
+.checkbox-option {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--premium-shadow-soft);
+    border: 2px solid rgba(229, 231, 235, 0.5);
+}
+
+.checkbox-option:hover {
+    background: rgba(255, 240, 245, 1);
+    border-color: #FF99CC;
+    box-shadow: var(--premium-shadow-medium);
+}
+
+.checkbox-option.selected {
+    background: linear-gradient(135deg, #FFD6E8, #FFEEF5);
+    border-color: #FF2D92;
+    box-shadow: 0 4px 15px rgba(255, 45, 146, 0.3);
+}
+
+/* 🌟 상단 띠 배너 고급화 - 선명도 강화 */
+.announcement-marquee {
+    background: linear-gradient(135deg, #FFD6E8 0%, #FFE8F0 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(255, 45, 146, 0.2);
+    box-shadow: 0 2px 10px rgba(255, 45, 146, 0.12);
+}
+
+/* 🎪 후기 카드 고급화 */
+.card-soft.p-8 {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(255, 250, 253, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* 🎯 제출 버튼 고급화 - 선명도 강화 */
+.submit-btn,
+button[type="submit"] {
+    background: linear-gradient(135deg, #5B6FE6 0%, #6B3FA2 100%);
+    box-shadow: 0 8px 25px rgba(91, 111, 230, 0.4);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: saturate(1.15);
+}
+
+.submit-btn:hover,
+button[type="submit"]:hover {
+    box-shadow: 0 12px 35px rgba(91, 111, 230, 0.5);
+    transform: translateY(-4px) scale(1.02);
+    filter: saturate(1.2) brightness(1.05);
+}
+
+/* 🎨 섹션 배경 고급화 */
+.section-consultation {
+    background: linear-gradient(135deg, 
+        rgba(255, 245, 247, 0.95) 0%, 
+        rgba(255, 240, 245, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(254, 215, 226, 0.5);
+    box-shadow: var(--premium-shadow-medium);
+}
+
+.section-representative {
+    background: linear-gradient(135deg, 
+        rgba(240, 249, 255, 0.95) 0%, 
+        rgba(224, 242, 254, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(186, 230, 253, 0.5);
+    box-shadow: var(--premium-shadow-medium);
+}
+
+/* 📱 모바일 최적화 */
+@media (max-width: 768px) {
+    .cta-button-phone:hover,
+    .cta-button-quote:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+    
+    .beautyket-sub-btn:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+}
+
+/* 🌐 부드러운 전환 효과 */
+* {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ✨ 글로우 효과 (호버 시) */
+.cta-button-phone:hover,
+.cta-button-quote:hover {
+    filter: brightness(1.05);
+}
+
+/* 🎭 텍스트 가독성 개선 */
+.hero-title,
+.section-title-soft,
+h1, h2, h3 {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

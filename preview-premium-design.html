@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyCat 프리미엄 디자인 미리보기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-pink: #FF2D92;
+            --gradient-pink-start: #FFB6D9;
+            --gradient-pink-mid: #E8B4E8;
+            --gradient-purple: #C8B6FF;
+            --gradient-blue: #B6D9FF;
+            
+            --premium-gradient-start: #FFE8F0;
+            --premium-gradient-mid: #F5E8FF;
+            --premium-gradient-end: #E8F4FF;
+            
+            --premium-shadow-soft: 0 4px 20px rgba(255, 107, 157, 0.08);
+            --premium-shadow-medium: 0 8px 30px rgba(255, 107, 157, 0.12);
+            --premium-shadow-strong: 0 12px 40px rgba(255, 107, 157, 0.16);
+            
+            --premium-text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, 
+                var(--premium-gradient-start) 0%, 
+                var(--premium-gradient-mid) 50%, 
+                var(--premium-gradient-end) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 헤더 */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, var(--primary-pink), #FF6B9D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #B6D9FF, #89C4FF);
+            color: white;
+        }
+
+        .btn-signup {
+            background: linear-gradient(135deg, #FFB6D9, #FF8FB8);
+            color: white;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 상단 띠 배너 */
+        .announcement-banner {
+            background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 107, 157, 0.1);
+            box-shadow: 0 2px 10px rgba(255, 107, 157, 0.05);
+            padding: 12px;
+            text-align: center;
+            color: #2C3E50;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        /* CTA 버튼 섹션 */
+        .cta-section {
+            margin-bottom: 50px;
+        }
+
+        .cta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa3c0 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--premium-shadow-medium);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .cta-button.purple {
+            background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--premium-shadow-strong);
+            filter: brightness(1.05);
+        }
+
+        .cta-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .cta-text h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .cta-text p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+        }
+
+        /* 히어로 섹션 */
+        .hero-section {
+            background: linear-gradient(135deg, 
+                #FFB6D9 0%, 
+                #E8B4E8 25%,
+                #C8B6FF 50%,
+                #A8C4FF 75%,
+                #B6D9FF 100%);
+            border-radius: 30px;
+            padding: 60px 40px;
+            margin-bottom: 50px;
+            box-shadow: var(--premium-shadow-medium);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 16px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -0.02em;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2C3E50;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 부가서비스 섹션 */
+        .services-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title h2 {
+            background: var(--premium-text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            font-size: 28px;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .section-title p {
+            color: #6B7280;
+            font-size: 15px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--premium-shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--premium-shadow-medium);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .service-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2C3E50;
+        }
+
+        /* 카드 섹션 */
+        .cards-section {
+            margin-bottom: 50px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--premium-shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .info-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--premium-shadow-medium);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #FFE8F0, #FFF5F7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2C3E50;
+        }
+
+        .card-content {
+            color: #6B7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 입력 필드 샘플 */
+        .form-section {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--premium-shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(229, 231, 235, 0.8);
+            box-shadow: var(--premium-shadow-soft);
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: white;
+            border-color: #FF6B9D;
+            box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            border: none;
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .cta-grid,
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🐱</span>
+                <span class="logo-text">BeautyCat</span>
+            </a>
+            <div class="auth-buttons">
+                <button class="auth-btn btn-login">로그인</button>
+                <button class="auth-btn btn-signup">회원가입</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 상단 띠 배너 -->
+    <div class="announcement-banner">
+        🎉 신규 회원 첫 시술 20% 할인 이벤트 진행 중!
+    </div>
+
+    <!-- 메인 컨테이너 -->
+    <div class="container">
+        <!-- CTA 버튼 -->
+        <section class="cta-section">
+            <div class="cta-grid">
+                <div class="cta-button">
+                    <div class="cta-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="cta-text">
+                        <h3>지역별 대표샵 전화상담</h3>
+                        <p>⚡ 5분 안에 전문가와 직접 통화</p>
+                    </div>
+                </div>
+                <div class="cta-button purple">
+                    <div class="cta-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="cta-text">
+                        <h3>여러 뷰티샵 견적 비교</h3>
+                        <p>💰 3~5곳 비교해서 최저가 찾기</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 히어로 섹션 -->
+        <section class="hero-section">
+            <h1 class="hero-title">피부관리실<br>견적 무료비교</h1>
+            <p class="hero-subtitle">전국 피부관리실 견적을 한눈에 비교하세요</p>
+            <div class="hero-badges">
+                <span class="badge">✨ 검증된 업체</span>
+                <span class="badge">⚡ 빠른 매칭</span>
+                <span class="badge">💯 무료 상담</span>
+            </div>
+        </section>
+
+        <!-- 부가서비스 -->
+        <section class="services-section">
+            <div class="section-title">
+                <h2>무료 자가진단</h2>
+                <p>전문가 수준의 진단 도구를 무료로 이용하세요</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">✨</div>
+                    <div class="service-name">피부진단</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🧴</div>
+                    <div class="service-name">성분분석</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💅</div>
+                    <div class="service-name">나의컬러</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🍵</div>
+                    <div class="service-name">이너케어</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">⏳</div>
+                    <div class="service-name">타임머신</div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📝</div>
+                    <div class="service-name">건강일기</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 카드 섹션 -->
+        <section class="cards-section">
+            <div class="section-title">
+                <h2>피부관리 고객 후기</h2>
+                <p>고객님들의 생생한 이야기</p>
+            </div>
+            <div class="cards-grid">
+                <div class="info-card">
+                    <div class="card-header">
+                        <div class="card-icon">⭐</div>
+                        <div class="card-title">김○○님</div>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #FFB800; margin-bottom: 8px;">★★★★★</p>
+                        "집 근처 샵을 쉽게 찾을 수 있어서 너무 편리해요!"
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="card-header">
+                        <div class="card-icon">⭐</div>
+                        <div class="card-title">이○○님</div>
+                    </div>
+                    <div class="card-content">
+                        <p style="color: #FFB800; margin-bottom: 8px;">★★★★★</p>
+                        "여러 샵 견적을 한 번에 받아볼 수 있어 좋아요!"
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 입력 필드 샘플 -->
+        <section class="form-section">
+            <div class="section-title" style="text-align: left; margin-bottom: 20px;">
+                <h2 style="font-size: 24px;">상담 신청</h2>
+                <p>맞춤 피부케어 견적을 무료로 받아보세요</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">이름</label>
+                <input type="text" class="form-input" placeholder="이름을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label class="form-label">전화번호</label>
+                <input type="tel" class="form-input" placeholder="010-1234-5678">
+            </div>
+            <div class="form-group">
+                <label class="form-label">관심 관리</label>
+                <input type="text" class="form-input" placeholder="트러블관리, 리프팅 등">
+            </div>
+            <button class="submit-btn">
+                <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>
+                상담 신청하기
+            </button>
+        </section>
+    </div>
+
+    <script>
+        // 간단한 인터랙션
+        document.querySelectorAll('.cta-button, .service-card, .info-card').forEach(el => {
+            el.addEventListener('click', function() {
+                console.log('클릭됨:', this.querySelector('h3, .service-name, .card-title')?.textContent);
+            });
+        });
+
+        // 폼 제출
+        document.querySelector('.submit-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('상담 신청이 완료되었습니다!\n(미리보기 모드)');
+        });
+    </script>
+</body>
+</html>
