@@ -62,7 +62,7 @@ class CouponSystem {
             {
                 code: 'FIRST5K',
                 name: '첫 방문 고객 5천원 할인',
-                description: '처음 beautycat을 이용하는 고객을 위한 웰컴 쿠폰',
+                description: '처음 Beautyket을 이용하는 고객을 위한 웰컴 쿠폰',
                 discountType: 'fixed',
                 discountValue: 5000,
                 minAmount: 25000,
@@ -498,4 +498,4 @@ function issueReferralCoupon(referrerUserId, newUserId) {
     }
 }
 
-console.log('🎫 BeautyCat 쿠폰 시스템 로드 완료!');
+console.log('🎫 Beautyket 쿠폰 시스템 로드 완료!');

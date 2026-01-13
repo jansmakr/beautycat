@@ -215,7 +215,7 @@ if (typeof window !== 'undefined') {
     // 자동 초기화
     GlobalErrorHandler.initialize();
     
-    console.log(`🌍 BeautyCat API 오류 처리기 로드됨 (${Environment.getEnvironmentName()})`);
+    console.log(`🌍 Beautyket API 오류 처리기 로드됨 (${Environment.getEnvironmentName()})`);
 }
 
 // ES6 모듈로도 사용 가능

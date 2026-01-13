@@ -375,5 +375,5 @@ if (typeof document !== 'undefined') {
     document.head.appendChild(style);
 }
 
-console.log('✅ BeautyCat API Helper 로드 완료');
+console.log('✅ Beautyket API Helper 로드 완료');
 console.log('📡 API Base URL:', API.BASE_URL);

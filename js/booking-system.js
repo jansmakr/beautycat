@@ -503,4 +503,4 @@ document.addEventListener('DOMContentLoaded', function() {
     window.bookingSystem = bookingSystem; // 전역 접근 가능
 });
 
-console.log('📅 BeautyCat 예약 시스템 로드 완료!');
+console.log('📅 Beautyket 예약 시스템 로드 완료!');

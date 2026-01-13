@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         if (notificationSystem && !localStorage.getItem('welcomeNotificationShown')) {
             notificationSystem.showToast(
-                '🐱 beautycat에 오신 것을 환영합니다!',
+                '🐱 Beautyket에 오신 것을 환영합니다!',
                 '베타 테스트 기간 중 특별 혜택을 놓치지 마세요. 전문가 맞춤 케어!',
                 'success',
                 8000
@@ -462,4 +462,4 @@ async function requestNotificationPermission() {
     return false;
 }
 
-console.log('🔔 BeautyCat 알림 시스템 로드 완료!');
+console.log('🔔 Beautyket 알림 시스템 로드 완료!');
