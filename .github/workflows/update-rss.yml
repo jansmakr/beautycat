@@ -35,43 +35,43 @@ jobs:
           <?xml version="1.0" encoding="UTF-8"?>
           <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
-              <title>BeautyCat - 전국 피부관리실 정보</title>
-              <link>https://beautycat.kr/</link>
+              <title>Beautyket - 전국 피부관리실 정보</title>
+              <link>https://beautyket.kr/</link>
               <description>전국 피부관리실 정보, 견적 비교, 예약 서비스. 강남, 홍대, 부산, 대구 등 전국 30,000개 피부관리실 데이터베이스</description>
               <language>ko</language>
               <lastBuildDate>$(date -R)</lastBuildDate>
-              <atom:link href="https://beautycat.kr/rss.xml" rel="self" type="application/rss+xml" />
+              <atom:link href="https://beautyket.kr/rss.xml" rel="self" type="application/rss+xml" />
               <image>
-                <url>https://beautycat.kr/images/beautycat-logo-v3.png</url>
-                <title>BeautyCat</title>
-                <link>https://beautycat.kr/</link>
+                <url>https://beautyket.kr/images/beautyket-logo-v3.png</url>
+                <title>Beautyket</title>
+                <link>https://beautyket.kr/</link>
               </image>
 
               <!-- 최신 업데이트 -->
               <item>
-                <title>BeautyCat 일일 업데이트 - $(date +%Y년\ %m월\ %d일)</title>
-                <link>https://beautycat.kr/</link>
+                <title>Beautyket 일일 업데이트 - $(date +%Y년\ %m월\ %d일)</title>
+                <link>https://beautyket.kr/</link>
                 <description>전국 피부관리실 데이터베이스 최신 업데이트. 신규 등록 샵 정보 및 서비스 개선 사항.</description>
                 <pubDate>$(date -R)</pubDate>
-                <guid>https://beautycat.kr/#update-$(date +%Y-%m-%d)</guid>
+                <guid>https://beautyket.kr/#update-$(date +%Y-%m-%d)</guid>
               </item>
 
               <!-- 서비스 소개 -->
               <item>
-                <title>BeautyCat - 전국 피부관리실 견적 비교 서비스</title>
-                <link>https://beautycat.kr/</link>
+                <title>Beautyket - 전국 피부관리실 견적 비교 서비스</title>
+                <link>https://beautyket.kr/</link>
                 <description>피부관리실 찾기가 쉬워집니다. 지역별 피부관리실 정보, 실시간 견적 비교, 고객 리뷰 확인.</description>
                 <pubDate>$(date -R)</pubDate>
-                <guid>https://beautycat.kr/#service-intro</guid>
+                <guid>https://beautyket.kr/#service-intro</guid>
               </item>
 
               <!-- 샵 등록 안내 -->
               <item>
                 <title>피부관리실 업주님께 - 무료 샵 등록 혜택</title>
-                <link>https://beautycat.kr/shop-registration.html</link>
-                <description>BeautyCat에 샵을 무료로 등록하고 지역 고객에게 노출하세요. 견적 신청 자동 매칭, 고객 관리 대시보드 제공.</description>
+                <link>https://beautyket.kr/shop-registration.html</link>
+                <description>Beautyket에 샵을 무료로 등록하고 지역 고객에게 노출하세요. 견적 신청 자동 매칭, 고객 관리 대시보드 제공.</description>
                 <pubDate>$(date -R)</pubDate>
-                <guid>https://beautycat.kr/shop-registration.html</guid>
+                <guid>https://beautyket.kr/shop-registration.html</guid>
               </item>
 
             </channel>
@@ -103,7 +103,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- 🕐 Update Time: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "- 📄 File Size: $(du -h rss.xml | cut -f1)" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔗 RSS URL: https://beautycat.kr/rss.xml" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔗 RSS URL: https://beautyket.kr/rss.xml" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
           if [ "${{ steps.check_changes.outputs.changed }}" == "true" ]; then
