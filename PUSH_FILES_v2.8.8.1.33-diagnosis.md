@@ -25,17 +25,27 @@
 - 🔒 **로그인 상태**: 클릭 시 바로 진단 페이지 새 창 열림
 - 🔓 **비로그인 상태**: 로그인 안내 → 로그인 페이지 → 로그인 후 진단 페이지 자동 열림
 
+### 4️⃣ 대시보드 UI 개선
+- 🎨 **대시보드 헤더 로고 제거**: 가운데 로고가 메뉴를 가리는 문제 해결
+- ✅ **메뉴 가시성 향상**: 왼쪽/오른쪽 메뉴 버튼 접근성 개선
+- 📱 **대시보드 3종 적용**: admin, customer, shop 대시보드 모두 업데이트
+- 🏠 **메인 페이지 로고 유지**: index.html 상단 중앙 로고 복원
+
 ## 📦 Push 대상 파일
 
-### 필수 파일 (2개)
+### 필수 파일 (5개)
 ```bash
-index.html              # 무료 자가진단 클릭 핸들러 추가
-login.html              # 로그인 후 진단 리다이렉트 로직 추가
+index.html                    # 무료 자가진단 클릭 핸들러 추가
+login.html                    # 로그인 후 진단 리다이렉트 로직 추가
+admin-dashboard.html          # 헤더 로고 제거 (메뉴 가시성 향상)
+customer-dashboard.html       # 헤더 로고 제거 (메뉴 가시성 향상)
+shop-dashboard.html           # 헤더 로고 제거 (메뉴 가시성 향상)
 ```
 
-### 문서 파일 (1개)
+### 문서 파일 (2개)
 ```bash
 PUSH_FILES_v2.8.8.1.33-diagnosis.md   # 이 파일
+README.md                              # 버전 업데이트
 ```
 
 ## 🚀 Git Push 명령어
@@ -44,15 +54,25 @@ PUSH_FILES_v2.8.8.1.33-diagnosis.md   # 이 파일
 # 1. 파일 추가
 git add index.html
 git add login.html
+git add admin-dashboard.html
+git add customer-dashboard.html
+git add shop-dashboard.html
+git add README.md
 git add PUSH_FILES_v2.8.8.1.33-diagnosis.md
 
 # 2. 커밋
-git commit -m "🎯 v2.8.8.1.33: 무료 자가진단 pposhop.kr 연동
+git commit -m "🎯 v2.8.8.1.33: 무료 자가진단 pposhop.kr 연동 + 대시보드 로고 제거
 
+✅ 무료 자가진단 pposhop.kr 연동:
 - 로그인 상태 확인 및 자동 처리
 - 6개 진단 타입별 pposhop.kr URL 매핑
 - 사용자 정보 전달 (세션 스토리지)
-- 로그인 후 자동 진단 페이지 리다이렉트"
+- 로그인 후 자동 진단 페이지 리다이렉트
+
+✅ 대시보드 UI 개선:
+- 헤더 가운데 로고 제거 (메뉴 가림 문제 해결)
+- admin/customer/shop 대시보드 메뉴 가시성 향상
+- 왼쪽/오른쪽 메뉴 버튼 접근성 개선"
 
 # 3. 푸시
 git push origin main

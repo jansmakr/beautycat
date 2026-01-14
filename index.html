@@ -1992,12 +1992,17 @@
 <body style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
     <!-- 로딩 화면 제거 (v2.8.13.6.21 - 모바일 최적화) -->
 
-    <!-- 심플 헤더 (로고 제거 - 공지배너 가시성 향상) -->
+    <!-- 심플 헤더 (v2.8.8.1.33 - 로고 복원) -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-7xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- 왼쪽 공간 -->
                 <div style="flex: 1;"></div>
+                
+                <!-- 가운데 로고 -->
+                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center;">
+                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket - 피부관리실 견적비교 플랫폼" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
+                </a>
                 
                 <!-- 오른쪽 로그인/프로필 아이콘 -->
                 <nav style="display: flex; justify-content: flex-end; align-items: center;" role="navigation" aria-label="사용자 메뉴">
