@@ -117,10 +117,7 @@
                 <!-- 왼쪽 공간 (v2.8.13.6.73 - 야놀자 스타일) -->
                 <div style="flex: 1;"></div>
                 
-                <!-- 가운데 로고 (v2.8.13.6.83 - 50% 축소 + 중앙 정렬) -->
-                <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center;">
-                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
-                </a>
+                <!-- 로고 제거 (v2.8.8.1.33 - 메뉴 가시성 향상) -->
                 
                 <div class="flex items-center space-x-3">
                     <!-- 홈으로 가기 버튼 -->
@@ -849,6 +846,12 @@ async function confirmDeleteAccount() {
 
     try {
         console.log('🗑️ 회원 탈퇴 시작:', currentUser.id);
+        console.log('👤 탈퇴 대상 사용자:', {
+            id: currentUser.id,
+            email: currentUser.email,
+            name: currentUser.name,
+            user_type: currentUser.user_type
+        });
         
         // 탈퇴 확인 (2차 확인)
         const finalConfirm = confirm(
@@ -872,14 +875,15 @@ async function confirmDeleteAccount() {
             if (consultationsResponse.ok) {
                 const consultationsData = await consultationsResponse.json();
                 const userConsultations = consultationsData.data.filter(c => 
-                    c.user_id === currentUser.id
+                    c.user_id === currentUser.id || c.customer_email === currentUser.email
                 );
                 
                 console.log(`📝 상담 내역 ${userConsultations.length}건 삭제 중...`);
                 for (const consultation of userConsultations) {
-                    await fetch(`tables/consultations/${consultation.id}`, {
+                    const deleteConsultationResponse = await fetch(`tables/consultations/${consultation.id}`, {
                         method: 'DELETE'
                     });
+                    console.log(`  - 상담 ${consultation.id} 삭제:`, deleteConsultationResponse.status);
                 }
                 console.log('✅ 상담 내역 삭제 완료');
             }
@@ -887,18 +891,39 @@ async function confirmDeleteAccount() {
             console.warn('⚠️ 상담 내역 삭제 오류 (계속 진행):', error);
         }
 
-        // 2) 사용자 레코드 삭제 (Soft Delete)
-        console.log('🗑️ 사용자 레코드 삭제:', currentUser.id);
+        // 2) 사용자 레코드 삭제 (핵심!)
+        console.log('🗑️ 사용자 레코드 DELETE API 호출:', currentUser.id);
+        console.log('📡 API Endpoint:', `tables/users/${currentUser.id}`);
+        
         const deleteUserResponse = await fetch(`tables/users/${currentUser.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         
-        if (!deleteUserResponse.ok) {
-            throw new Error('사용자 삭제 실패');
-        }
-        console.log('✅ 사용자 레코드 삭제 완료');
+        console.log('📥 DELETE 응답 상태:', deleteUserResponse.status, deleteUserResponse.statusText);
         
-        // 3) 로컬 스토리지 완전 초기화
+        // HTTP 200 OK 또는 204 No Content 모두 허용
+        if (!deleteUserResponse.ok && deleteUserResponse.status !== 204) {
+            const errorText = await deleteUserResponse.text();
+            console.error('❌ DELETE 실패 응답:', errorText);
+            throw new Error(`사용자 삭제 실패 (HTTP ${deleteUserResponse.status}): ${errorText}`);
+        }
+        
+        console.log('✅ 사용자 레코드 DELETE 성공');
+        
+        // 3) 응답 본문 확인 (있을 경우)
+        try {
+            if (deleteUserResponse.status !== 204) {
+                const responseData = await deleteUserResponse.json();
+                console.log('📊 DELETE 응답 데이터:', responseData);
+            }
+        } catch (e) {
+            console.log('ℹ️ 응답 본문 없음 (정상 - 204 No Content)');
+        }
+        
+        // 4) 로컬 스토리지 완전 초기화
         console.log('🧹 로컬 데이터 초기화 중...');
         localStorage.removeItem('user_data');
         localStorage.removeItem('session_token');
@@ -906,26 +931,32 @@ async function confirmDeleteAccount() {
         localStorage.removeItem('user_type');
         localStorage.removeItem('currentUser');
         localStorage.removeItem('userSession');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('user_name');
         sessionStorage.clear();
         console.log('✅ 로컬 데이터 초기화 완료');
         
-        // 4) 탈퇴 완료 알림
+        // 5) 탈퇴 완료 알림
         alert(
             '✅ 회원 탈퇴가 완료되었습니다.\n\n' +
             '그동안 beautycat을 이용해 주셔서 감사합니다.\n' +
             '더 나은 서비스로 다시 찾아뵙겠습니다.'
         );
         
-        // 5) 메인 페이지로 이동
+        // 6) 메인 페이지로 이동
         console.log('🏠 메인 페이지로 이동');
         window.location.href = 'index.html';
         
     } catch (error) {
         console.error('❌ 회원 탈퇴 오류:', error);
+        console.error('❌ 오류 스택:', error.stack);
         alert(
             '❌ 회원 탈퇴 처리 중 오류가 발생했습니다.\n\n' +
             `오류 내용: ${error.message}\n\n` +
-            '관리자에게 문의해주세요.\n' +
+            'F12 개발자 도구를 열어 콘솔을 확인해주세요.\n\n' +
+            '문제가 계속되면 관리자에게 문의해주세요.\n' +
             '이메일: admin@beautycat.kr'
         );
         closeDeleteAccountModal();

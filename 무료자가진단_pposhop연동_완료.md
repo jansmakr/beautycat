@@ -70,17 +70,16 @@ sessionStorage.setItem('beautyket_token', token);
 
 ## 📦 Git Push 준비 완료
 
-### Push 대상 파일 (3개)
+### Push 대상 파일 (8개)
 
 ```bash
 index.html                                # handleDiagnosisClick 함수 추가
 login.html                                # 진단 리다이렉트 로직 추가
-PUSH_FILES_v2.8.8.1.33-diagnosis.md      # Push 가이드 문서
-```
-
-### 추가 문서 (2개)
-```bash
+admin-dashboard.html                      # 헤더 로고 제거 (메뉴 가시성 향상)
+customer-dashboard.html                   # 헤더 로고 제거 (메뉴 가시성 향상)
+shop-dashboard.html                       # 헤더 로고 제거 (메뉴 가시성 향상)
 README.md                                 # 버전 업데이트
+PUSH_FILES_v2.8.8.1.33-diagnosis.md      # Push 가이드 문서
 무료자가진단_pposhop연동_완료.md           # 이 파일
 ```
 
@@ -92,26 +91,26 @@ README.md                                 # 버전 업데이트
 # 1. 파일 추가
 git add index.html
 git add login.html
-git add PUSH_FILES_v2.8.8.1.33-diagnosis.md
+git add admin-dashboard.html
+git add customer-dashboard.html
+git add shop-dashboard.html
 git add README.md
+git add PUSH_FILES_v2.8.8.1.33-diagnosis.md
 git add 무료자가진단_pposhop연동_완료.md
 
 # 2. 커밋
-git commit -m "🎯 v2.8.8.1.33: 무료 자가진단 pposhop.kr 연동
+git commit -m "🎯 v2.8.8.1.33: 무료 자가진단 pposhop.kr 연동 + 대시보드 로고 제거
 
-✅ 주요 기능:
+✅ 무료 자가진단 pposhop.kr 연동:
 - 로그인 상태 자동 확인 및 처리
-- 6개 진단 타입별 pposhop.kr URL 매핑
+- 6개 진단 타입별 pposhop.kr URL 매핑 (피부진단/성분분석/나의컬러/이너케어/타임머신/건강일기)
 - 사용자 정보 전달 (세션 스토리지)
 - 로그인 후 자동 진단 페이지 리다이렉트
 
-📊 진단 타입:
-- 피부진단, 성분분석, 나의컬러
-- 이너케어, 타임머신, 건강일기
-
-🎨 UX 개선:
-- 로그인 사용자: 클릭 즉시 진단 페이지 열림
-- 비로그인: 로그인 안내 → 로그인 → 자동 진단 페이지 열림"
+✅ 대시보드 UI 개선:
+- 헤더 가운데 로고 제거 (메뉴 가림 문제 해결)
+- admin/customer/shop 대시보드 메뉴 가시성 향상
+- 왼쪽/오른쪽 메뉴 버튼 접근성 개선"
 
 # 3. 푸시
 git push origin main
