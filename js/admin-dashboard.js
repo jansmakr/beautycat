@@ -2822,25 +2822,22 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 }
             }
             
-            // 대표샵 등록 데이터 생성
+            // 대표샵 등록 데이터 생성 (representative_shops 스키마에 맞춤)
             const repShopData = {
                 shop_id: normalizedShop.id,
-                shop_name: normalizedShop.name,
-                name: normalizedShop.name,
+                shop_name: normalizedShop.name,  // ✅ shop_name 필드만 사용 (name 컬럼 없음)
                 owner_name: normalizedShop.owner_name || '',
                 phone: normalizedShop.phone || '',
-                email: normalizedShop.email || '',
+                business_number: normalizedShop.business_number || '',
                 address: normalizedShop.address || '',
                 state: normalizedShop.state,
-                region: normalizedShop.state,
                 district: normalizedShop.district || '',
-                city: normalizedShop.district || '',
-                town: normalizedShop.town || '',
                 representative_treatments: normalizedShop.representative_treatments || [],
                 status: 'approved',
                 approved: true,
                 approved_at: new Date().toISOString(),
-                naver_cafe_id: normalizedShop.naver_cafe_id || ''
+                application_date: new Date().toISOString(),
+                kakao_channel_url: normalizedShop.kakao_channel_url || ''
             };
             
             console.log('📝 대표샵 등록 데이터:', repShopData);
