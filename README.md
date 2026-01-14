@@ -5,7 +5,41 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.1.29 ⭐ ✅ HARD DELETE 성공!
+## 🚀 현재 버전: v2.8.8.1.33 🎯 무료 자가진단 pposhop.kr 연동 완료!
+
+### 🎉 v2.8.8.1.33: 무료 자가진단 pposhop.kr 연동 (2026-01-14) ✅
+
+**진단 서비스 통합으로 사용자 경험 대폭 개선!** 🎨
+
+#### ✅ 주요 기능
+- **로그인 상태 자동 확인**: 로그인 여부에 따른 스마트 처리
+- **6개 진단 타입 연동**: 피부진단, 성분분석, 나의컬러, 이너케어, 타임머신, 건강일기
+- **pposhop.kr URL 매핑**: 각 버튼별 맞춤 진단 페이지 연결
+- **사용자 정보 전달**: 세션 스토리지를 통한 매끄러운 서비스 통합
+- **로그인 후 자동 리다이렉트**: 로그인 완료 시 진단 페이지 자동 오픈
+
+#### 📊 진단 타입 매핑
+| 버튼 | 아이콘 | pposhop.kr URL |
+|-----|------|----------------|
+| 피부진단 | ✨ | https://pposhop.kr/diagnosis#skin-test |
+| 성분분석 | 🧴 | https://pposhop.kr/diagnosis#ingredient |
+| 나의컬러 | 💅 | https://pposhop.kr/diagnosis#personal-color |
+| 이너케어 | 🍵 | https://pposhop.kr/diagnosis#inner-care |
+| 타임머신 | ⏳ | https://pposhop.kr/diagnosis#time-machine |
+| 건강일기 | 📝 | https://pposhop.kr/diagnosis#health-diary |
+
+#### 🎨 사용자 경험
+- 🔒 **로그인 상태**: 클릭 시 즉시 진단 페이지 새 창 오픈
+- 🔓 **비로그인**: 로그인 안내 → 로그인 → 자동으로 진단 페이지 오픈
+
+#### 📦 변경된 파일
+- `index.html` - handleDiagnosisClick 함수 추가
+- `login.html` - 진단 리다이렉트 로직 추가
+- `PUSH_FILES_v2.8.8.1.33-diagnosis.md` - Push 가이드
+
+---
+
+## 🚀 이전 버전: v2.8.8.1.29 ⭐ ✅ HARD DELETE 성공!
 
 ### 🎉 Hard Delete 실행 완료! (2026-01-13) ✅
 

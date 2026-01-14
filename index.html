@@ -6,11 +6,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta name="last-modified" content="2026-01-13T14:00:00+09:00">
-    <!-- 🌸 Cache Busting Timestamp: 2026-01-13 14:00 KST - Region/Shop Section Pastel Design -->
-    <meta name="version" content="2.8.8.1.32-20260113-1400">
-    <meta name="cache-version" content="v2.8.8.1.32-pastel-sections">
-    <!-- v2.8.8.1.32: 지역별/전국샵 섹션 파스텔 디자인 + 가독성 개선 -->
+    <meta name="last-modified" content="2026-01-13T16:00:00+09:00">
+    <!-- 🌸 Cache Busting Timestamp: 2026-01-13 16:00 KST - Header Logo Removed -->
+    <meta name="version" content="2.8.8.1.33-20260113-1600">
+    <meta name="cache-version" content="v2.8.8.1.33-header-simplified">
+    <!-- v2.8.8.1.33: 헤더 로고 제거 (공지배너 가시성 향상) -->
     <title>피부관리실 견적비교 예약 플랫폼 | beautyket - 강남 홍대 피부관리</title>
     <meta name="description" content="✨ 전국 피부관리실 견적을 무료로 비교하세요! 강남·홍대·잠실 인증된 피부관리 전문샵 1초 매칭 | 여드름·모공·미백 케어 | 최대 30% 할인 | 100% 무료 상담">    
     <meta name="keywords" content="피부관리실, 피부관리실 추천, 피부관리 견적, 피부관리 가격비교, 강남 피부관리, 홍대 피부관리, 잠실 피부관리, 서울 피부관리, 근처 피부관리실, 피부관리 예약, 피부케어, 여드름 관리, 모공관리, 미백케어, 피부관리 할인, 뷰티샵, 스킨케어 샵, 피부관리 전문, 저렴한 피부관리, 피부과 vs 피부관리실, beautyket, 뷰티캣">
@@ -1992,29 +1992,15 @@
 <body style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
     <!-- 로딩 화면 제거 (v2.8.13.6.21 - 모바일 최적화) -->
 
-    <!-- 심플 헤더 -->
+    <!-- 심플 헤더 (로고 제거 - 공지배너 가시성 향상) -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div class="max-w-7xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
-                <!-- 왼쪽 공간 (균형을 위한) -->
+                <!-- 왼쪽 공간 -->
                 <div style="flex: 1;"></div>
                 
-                <!-- 로고 (v2.8.13.6.86 - SEO 최적화: h1 + alt + width/height) -->
-                <h1 style="margin: 0; padding: 0; display: flex;">
-                    <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center;" title="Beautyket 홈으로 이동 - 프리미엄 뷰티 플랫폼">
-                        <img src="images/beautyket-logo-full.png?v=2025122404" 
-                             alt="Beautyket - 피부관리실 견적비교 플랫폼" 
-                             width="120" 
-                             height="40"
-                             class="beautyket-main-logo" 
-                             loading="eager" 
-                             decoding="async" 
-                             style="height: 40px !important; width: auto !important;">
-                    </a>
-                </h1>
-                
-                <!-- 오른쪽 로그인/프로필 아이콘 (v2.8.13.6.86 - SEO: nav + nofollow) -->
-                <nav style="flex: 1; display: flex; justify-content: flex-end; align-items: center;" role="navigation" aria-label="사용자 메뉴">
+                <!-- 오른쪽 로그인/프로필 아이콘 -->
+                <nav style="display: flex; justify-content: flex-end; align-items: center;" role="navigation" aria-label="사용자 메뉴">
                     <!-- 로그인 전 -->
                     <a href="login.html" id="loginIconBtn" class="login-icon-btn" title="로그인" rel="nofollow">
                         <i class="fas fa-user-circle"></i>
@@ -2498,17 +2484,17 @@
                 
                 <!-- 2줄: 피부진단, 성분분석, 나의컬러 (야놀자 최소 사이즈) -->
                 <div class="beautyket-sub-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px;">
-                    <div class="beautyket-sub-btn beautyket-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                    <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('skin')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">✨</div>
                         <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">피부진단</span>
                     </div>
                     
-                    <div class="beautyket-sub-btn beautyket-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                    <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('ingredient')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">🧴</div>
                         <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">성분분석</span>
                     </div>
                     
-                    <div class="beautyket-sub-btn beautyket-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                    <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('color')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">💅</div>
                         <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">나의컬러</span>
                     </div>
@@ -2516,17 +2502,17 @@
                 
                 <!-- 3줄: 이너케어, 타임머신, 건강일기 (야놀자 최소 사이즈) -->
                 <div class="beautyket-sub-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
-                    <div class="beautyket-sub-btn beautyket-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                    <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('inner')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">🍵</div>
                         <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">이너케어</span>
                     </div>
                     
-                    <div class="beautyket-sub-btn beautyket-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                    <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('timemachine')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">⏳</div>
                         <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">타임머신</span>
                     </div>
                     
-                    <div class="beautyket-sub-btn beautyket-sub-btn-disabled" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: not-allowed; position: relative;">
+                    <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('diary')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">📝</div>
                         <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">건강일기</span>
                     </div>
@@ -3765,6 +3751,58 @@
         // 터치 이벤트 최적화
         document.addEventListener('touchstart', function() {}, { passive: true });
         document.addEventListener('touchmove', function() {}, { passive: true });
+        
+        // 🎯 무료 자가진단 버튼 클릭 핸들러 (v2.8.8.1.33 - pposhop.kr 진단 연동)
+        function handleDiagnosisClick(diagnosisType) {
+            console.log('🎯 자가진단 클릭:', diagnosisType);
+            
+            // 로그인 상태 확인
+            const token = localStorage.getItem('session_token') || localStorage.getItem('beautyket_token');
+            const userDataStr = localStorage.getItem('user_data') || localStorage.getItem('beautyket_user');
+            const userType = localStorage.getItem('user_type');
+            
+            const isLoggedIn = token && userDataStr && userType;
+            
+            // 진단 타입별 pposhop.kr URL 매핑
+            const diagnosisUrlMap = {
+                'skin': 'https://pposhop.kr/diagnosis#skin-test',           // 피부진단
+                'ingredient': 'https://pposhop.kr/diagnosis#ingredient',    // 성분분석
+                'color': 'https://pposhop.kr/diagnosis#personal-color',     // 나의컬러 (퍼스널컬러)
+                'inner': 'https://pposhop.kr/diagnosis#inner-care',         // 이너케어
+                'timemachine': 'https://pposhop.kr/diagnosis#time-machine', // 타임머신
+                'diary': 'https://pposhop.kr/diagnosis#health-diary'        // 건강일기
+            };
+            
+            const targetUrl = diagnosisUrlMap[diagnosisType] || 'https://pposhop.kr/diagnosis';
+            
+            if (isLoggedIn) {
+                // 로그인 상태: 바로 pposhop.kr 진단 페이지로 이동
+                console.log('✅ 로그인 상태 - 진단 페이지 이동:', targetUrl);
+                
+                // 사용자 정보를 pposhop.kr에 전달하기 위해 세션 스토리지에 저장
+                try {
+                    const userData = JSON.parse(userDataStr);
+                    sessionStorage.setItem('beautyket_referrer', 'beautyket.kr');
+                    sessionStorage.setItem('beautyket_user_email', userData.email || '');
+                    sessionStorage.setItem('beautyket_token', token);
+                } catch (e) {
+                    console.error('사용자 정보 저장 실패:', e);
+                }
+                
+                // 새 창에서 열기
+                window.open(targetUrl, '_blank');
+            } else {
+                // 비로그인 상태: 로그인 안내 후 로그인 페이지로 이동
+                console.log('❌ 비로그인 상태 - 로그인 안내');
+                
+                // 로그인 후 돌아올 URL 저장
+                sessionStorage.setItem('diagnosis_redirect_type', diagnosisType);
+                sessionStorage.setItem('diagnosis_redirect_url', targetUrl);
+                
+                alert('무료 자가진단 서비스는 로그인 후 이용하실 수 있습니다.\n로그인 페이지로 이동합니다.');
+                window.location.href = 'login.html?redirect=diagnosis&type=' + diagnosisType;
+            }
+        }
         
         // 🔥 로그인 상태 확인 및 메뉴 표시
         function checkLoginStatus() {

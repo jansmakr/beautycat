@@ -648,16 +648,41 @@
                 hideLoading();
                 alert(`${user.name}님, 환영합니다!`);
                 
-                // 대시보드로 리다이렉트
-                setTimeout(() => {
-                    if (user.user_type === 'admin') {
-                        window.location.href = '/admin-dashboard.html';
-                    } else if (user.user_type === 'shop') {
-                        window.location.href = '/shop-dashboard.html';
-                    } else {
-                        window.location.href = '/customer-dashboard.html';
-                    }
-                }, 500);
+                // 진단 리다이렉트 확인 (v2.8.8.1.33 - pposhop.kr 진단 연동)
+                const diagnosisRedirectUrl = sessionStorage.getItem('diagnosis_redirect_url');
+                const diagnosisRedirectType = sessionStorage.getItem('diagnosis_redirect_type');
+                
+                if (diagnosisRedirectUrl && diagnosisRedirectType) {
+                    // 진단 페이지로 리다이렉트
+                    console.log('🎯 진단 리다이렉트:', diagnosisRedirectUrl);
+                    
+                    // 세션 스토리지 정리
+                    sessionStorage.removeItem('diagnosis_redirect_url');
+                    sessionStorage.removeItem('diagnosis_redirect_type');
+                    
+                    // 사용자 정보를 pposhop.kr에 전달
+                    sessionStorage.setItem('beautyket_referrer', 'beautyket.kr');
+                    sessionStorage.setItem('beautyket_user_email', user.email || '');
+                    sessionStorage.setItem('beautyket_token', localStorage.getItem('session_token'));
+                    
+                    // 진단 페이지로 이동
+                    setTimeout(() => {
+                        window.open(diagnosisRedirectUrl, '_blank');
+                        // 메인 페이지로도 이동
+                        window.location.href = 'index.html';
+                    }, 500);
+                } else {
+                    // 대시보드로 리다이렉트
+                    setTimeout(() => {
+                        if (user.user_type === 'admin') {
+                            window.location.href = '/admin-dashboard.html';
+                        } else if (user.user_type === 'shop') {
+                            window.location.href = '/shop-dashboard.html';
+                        } else {
+                            window.location.href = '/customer-dashboard.html';
+                        }
+                    }, 500);
+                }
                 
             } catch (error) {
                 console.error('로그인 오류:', error);
