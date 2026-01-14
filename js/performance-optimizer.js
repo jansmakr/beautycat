@@ -8,6 +8,8 @@
 
     // 1. 이미지 Lazy Loading
     function initLazyLoading() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
         // 네이티브 lazy loading 지원 확인
         if ('loading' in HTMLImageElement.prototype) {
             // 브라우저가 지원하면 모든 이미지에 loading="lazy" 추가
@@ -15,7 +17,7 @@
             images.forEach(img => {
                 img.loading = 'lazy';
             });
-            console.log('✅ 네이티브 Lazy Loading 활성화:', images.length, '개 이미지');
+            if (isDev) console.log('✅ 네이티브 Lazy Loading 활성화:', images.length, '개 이미지');
         } else {
             // Intersection Observer로 폴백
             initIntersectionObserver();
@@ -24,6 +26,7 @@
 
     // 2. Intersection Observer 폴백
     function initIntersectionObserver() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const images = document.querySelectorAll('img[data-src]');
         
         if (images.length === 0) return;
@@ -43,19 +46,23 @@
         });
 
         images.forEach(img => imageObserver.observe(img));
-        console.log('✅ Intersection Observer Lazy Loading:', images.length, '개 이미지');
+        if (isDev) console.log('✅ Intersection Observer Lazy Loading:', images.length, '개 이미지');
     }
 
     // 3. 폰트 최적화 - Font Display Swap
     function optimizeFonts() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         // CSS에서 이미 font-display: swap 사용 중
         // 추가 최적화: 폰트 프리로드 확인
         const fontPreloads = document.querySelectorAll('link[rel="preload"][as="font"]');
-        console.log('✅ 폰트 프리로드:', fontPreloads.length, '개');
+        if (isDev) console.log('✅ 폰트 프리로드:', fontPreloads.length, '개');
     }
 
     // 4. CSS 최적화 - Critical CSS 체크
     function checkCriticalCSS() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         const stylesheets = document.querySelectorAll('link[rel="stylesheet"]');
         const preloadStyles = document.querySelectorAll('link[rel="preload"][as="style"]');
         
@@ -66,6 +73,9 @@
 
     // 5. JavaScript 최적화 체크
     function checkJavaScriptLoading() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         const scripts = document.querySelectorAll('script[src]');
         const deferScripts = document.querySelectorAll('script[defer]');
         const asyncScripts = document.querySelectorAll('script[async]');
@@ -79,6 +89,9 @@
 
     // 6. 이미지 WebP 변환 체크
     function checkWebPSupport() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         const img = new Image();
         img.onload = function() {
             console.log('✅ WebP 지원됨');
@@ -91,6 +104,9 @@
 
     // 7. 캐싱 상태 체크
     function checkCacheStatus() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         if ('caches' in window) {
             caches.keys().then(keys => {
                 console.log('📦 캐시 현황:', keys.length, '개 캐시');
@@ -101,6 +117,9 @@
 
     // 8. Performance API로 LCP 측정
     function measureLCP() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         if ('PerformanceObserver' in window) {
             try {
                 const observer = new PerformanceObserver((list) => {
@@ -122,13 +141,16 @@
                 
                 observer.observe({ type: 'largest-contentful-paint', buffered: true });
             } catch (e) {
-                console.log('PerformanceObserver 지원 안 됨');
+                // 무시
             }
         }
     }
 
     // 9. FCP 측정
     function measureFCP() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         if ('PerformanceObserver' in window) {
             try {
                 const observer = new PerformanceObserver((list) => {
@@ -146,13 +168,16 @@
                 
                 observer.observe({ type: 'paint', buffered: true });
             } catch (e) {
-                console.log('Paint timing 지원 안 됨');
+                // 무시
             }
         }
     }
 
     // 10. CLS 측정
     function measureCLS() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         if ('PerformanceObserver' in window) {
             try {
                 let clsValue = 0;
@@ -175,13 +200,16 @@
                 
                 observer.observe({ type: 'layout-shift', buffered: true });
             } catch (e) {
-                console.log('Layout Shift 측정 지원 안 됨');
+                // 무시
             }
         }
     }
 
     // 11. 전체 성능 리포트
     function generatePerformanceReport() {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (!isDev) return;
+        
         console.log('');
         console.log('='.repeat(50));
         console.log('🚀 Beautyket 성능 리포트');
@@ -203,9 +231,13 @@
         console.log('='.repeat(50));
     }
 
-    // 초기화
+    // 초기화 (✨ v2.8.8.1.37 - 프로덕션 로그 최소화)
     function init() {
-        console.log('⚡ 성능 최적화 스크립트 로드됨');
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        if (isDev) {
+            console.log('⚡ 성능 최적화 스크립트 로드됨');
+        }
         
         // DOMContentLoaded 이후 실행
         if (document.readyState === 'loading') {
@@ -233,10 +265,12 @@
             measureCLS();
         }
         
-        // 페이지 완전 로드 후 리포트
-        window.addEventListener('load', function() {
-            setTimeout(generatePerformanceReport, 1000);
-        });
+        // 페이지 완전 로드 후 리포트 (프로덕션에서는 생략)
+        if (isDev) {
+            window.addEventListener('load', function() {
+                setTimeout(generatePerformanceReport, 1000);
+            });
+        }
     }
 
     // 실행
@@ -253,4 +287,8 @@
 
 })();
 
-console.log('✅ Beautyket 성능 최적화 모듈 로드 완료');
+// ✨ v2.8.8.1.37 - 프로덕션에서는 로그 최소화
+const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+if (isDev) {
+    console.log('✅ Beautyket 성능 최적화 모듈 로드 완료');
+}

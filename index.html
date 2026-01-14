@@ -701,13 +701,19 @@
                 };
             });
             
-            // 즉시 환영 메시지 출력
+            // 즉시 환영 메시지 출력 (✨ v2.8.8.1.37 - 콘솔 정리)
             setTimeout(() => {
-                console.clear();
-                console.log('🐱 beautyket 플랫폼 시작!');
-                console.log('✨ 깔끔한 콘솔 모드 활성화');
                 if (isDev) {
+                    // 개발 모드: 모든 로그 표시
+                    console.clear();
+                    console.log('🐱 beautyket 플랫폼 시작!');
+                    console.log('✨ 깔끔한 콘솔 모드 활성화');
                     console.log('🛠️ 개발 환경: 데모 데이터 사용 중');
+                } else {
+                    // 프로덕션 모드: 심플 로그만
+                    console.clear();
+                    console.log('%c🐱 Beautyket', 'font-size: 20px; font-weight: bold; color: #ec4899;');
+                    console.log('%cv2.8.8.1.37 - 대표샵 시스템', 'color: #6b7280;');
                 }
             }, 50);
             

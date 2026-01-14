@@ -1156,26 +1156,28 @@ function displayShops(shops, append = false) {
         const isRepresentative = shop.is_representative === true || shop.is_representative === 'true';
         const repStatus = shop.representative_status || 'none';
         
-        // 대표샵 상태 표시
+        // 대표샵 상태 표시 (✨ v2.8.8.1.37 - 시각적 피드백 개선)
         let repStatusHtml = '';
         if (isRepresentative && repStatus === 'approved') {
+            // ✅ 대표샵 지정됨 - 파란색 배경 + 노란 별
             repStatusHtml = `
                 <div class="flex items-center">
-                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        <i class="fas fa-star mr-1"></i>대표샵
+                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
+                        <i class="fas fa-star mr-1 text-yellow-300" style="filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.8));"></i>대표샵
                     </span>
                     <button onclick="toggleRepresentativeStatus('${shop.id}', false)" 
-                            class="ml-2 text-red-600 hover:text-red-800" title="대표샵 해제">
+                            class="ml-2 text-red-600 hover:text-red-800 hover:scale-110 transition-transform" title="대표샵 해제">
                         <i class="fas fa-times-circle"></i>
                     </button>
                 </div>
             `;
         } else {
+            // ⭐ 미지정 - 회색 배경 + 회색 별
             repStatusHtml = `
                 <button onclick="toggleRepresentativeStatus('${shop.id}', true)" 
-                        class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-blue-100 hover:text-blue-700"
+                        class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-blue-700 transition-all"
                         title="대표샵으로 지정">
-                    <i class="fas fa-star mr-1"></i>대표샵 지정
+                    <i class="far fa-star mr-1"></i>대표샵 지정
                 </button>
             `;
         }
