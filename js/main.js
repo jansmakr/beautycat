@@ -2599,20 +2599,31 @@ function findAndDisplayRepresentativeShop(state, district) {
     const shopsData = window.representativeShopsData || representativeShopsData || [];
     console.log('🔍 [대표샵] 검색 대상 데이터:', shopsData.length, '개');
     
-    const representativeShop = shopsData.find(shop => 
-        shop.state === normalizedState && 
-        shop.district === district && 
-        (shop.status === 'approved' || shop.approved === 1)
-    );
+    // ✅ API Override 매핑 대응: state/region 모두 지원
+    const representativeShop = shopsData.find(shop => {
+        const shopState = shop.region || shop.state || '';
+        const shopDistrict = shop.district || '';
+        const isApproved = shop.status === 'approved' || shop.approved === 1 || shop.approved === true;
+        
+        const matches = shopState === normalizedState && shopDistrict === district && isApproved;
+        
+        if (shopState === normalizedState) {
+            console.log(`🔍 [대표샵] 체크: ${shop.shop_name || shop.name} - 시/도 일치, 구/군=${shopDistrict} (${shopDistrict === district ? '일치' : '불일치'}), 승인=${isApproved}`);
+        }
+        
+        return matches;
+    });
     
     if (representativeShop) {
-        console.log('✅ [대표샵] 검색 성공:', representativeShop.shop_name);
+        console.log('✅ [대표샵] 검색 성공:', representativeShop.shop_name || representativeShop.name);
+        console.log('✅ [대표샵] 상세 정보:', representativeShop);
         displayRepresentativeShop(representativeShop);
     } else {
         console.warn('⚠️ [대표샵] 검색 실패: 해당 지역에 대표샵 없음');
         console.log('🔍 [대표샵] 검색 조건:', { normalizedState, district, dataCount: shopsData.length });
         if (shopsData.length > 0) {
-            console.log('🔍 [대표샵] 등록된 지역:', [...new Set(shopsData.map(s => `${s.state} ${s.district}`))]);
+            console.log('🔍 [대표샵] 등록된 지역:', [...new Set(shopsData.map(s => `${s.region || s.state || '?'} ${s.district || '?'} (승인=${s.status}/${s.approved})`))].slice(0, 10));
+            console.log('🔍 [대표샵] 첫 번째 샵 예시:', shopsData[0]);
         }
         showNoRepresentativeShop();
     }
@@ -2624,9 +2635,15 @@ window.representativeShopsData = representativeShopsData;
 
 // 대표샵 정보 표시
 function displayRepresentativeShop(shop) {
+    // ✅ API Override 매핑 대응: name/shop_name 모두 지원
+    const shopName = shop.name || shop.shop_name || '업체명 없음';
+    const shopState = shop.region || shop.state || '';
+    
+    console.log('📊 [대표샵 표시] 정보:', { shopName, shopState, district: shop.district });
+    
     // 기본 정보 설정
-    document.getElementById('rep-shop-name').textContent = shop.shop_name;
-    document.getElementById('rep-shop-location').textContent = shop.address || `${shop.state} ${shop.district}`;
+    document.getElementById('rep-shop-name').textContent = shopName;
+    document.getElementById('rep-shop-location').textContent = shop.address || `${shopState} ${shop.district}`;
     document.getElementById('rep-shop-phone').textContent = shop.phone;
     
     // 대표 관리 태그 표시

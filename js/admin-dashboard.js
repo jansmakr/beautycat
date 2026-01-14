@@ -178,7 +178,7 @@ function levenshteinDistance(str1, str2) {
 
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 Admin Dashboard v2.8.8.1.25 초기화 - limit 2000 최적화 (Cloudflare CPU 한계)');
+    console.log('🎯 Admin Dashboard v2.8.8.1.26 초기화 - limit 10000 (전체 1,161개 로드)');
     checkAdminAuth();
     loadDashboardData();
     
@@ -921,7 +921,7 @@ async function handleCSVUpload(event) {
 // Load shops
 async function loadShops(updateTable = true) {
     try {
-        console.log('🏪 업체 목록 로딩 시작... (v2.8.8.1.25: limit 2000 최적화)');
+        console.log('🏪 업체 목록 로딩 시작... (v2.8.8.1.26: limit 10000)');
         
         // 필터 값 가져오기
         const searchQuery = document.getElementById('shop-search')?.value.trim().toLowerCase() || '';
@@ -932,10 +932,10 @@ async function loadShops(updateTable = true) {
         
         console.log('🔍 필터 값:', { searchQuery, regionFilter, districtFilter, statusFilter, shopTypeFilter });
         
-        // ✅ v2.8.8.1.25: limit 2000으로 최적화 (Cloudflare Workers CPU 10ms 한계 회피)
-        // 샘플링 후 활성 데이터 1,161개 + 여유분 = 2000으로 충분
-        const result = await getTableData('skincare_shops', { limit: 2000, sort: '-created_at' });
-        console.log('📡 API 요청 완료 - limit: 2000, 전체:', result.data?.length || 0, '개');
+        // ✅ v2.8.8.1.26: limit 10000으로 증가 (샘플링 후 활성 1,161개 전체 로드)
+        // 샘플링 후 활성 데이터 1,161개 전체 조회를 위해 limit 10000 필요
+        const result = await getTableData('skincare_shops', { limit: 10000, sort: '-created_at' });
+        console.log('📡 API 요청 완료 - limit: 10000, 전체:', result.data?.length || 0, '개');
         const data = result.data || [];
         
         // 삭제된 샵 제외 (Soft Delete 필터링)
@@ -2775,27 +2775,46 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
         }
         const shop = await shopResponse.json();
         
-        console.log('🏪 업체 정보:', shop);
+        console.log('🏪 업체 정보 (원본):', shop);
+        
+        // ✅ API Override 매핑 처리: shop_name, region 필드 정규화
+        const normalizedShop = {
+            ...shop,
+            name: shop.name || shop.shop_name,
+            shop_name: shop.name || shop.shop_name,
+            state: shop.region || shop.state || shop.state_original,
+            region: shop.region || shop.state || shop.state_original
+        };
+        
+        console.log('🏪 정규화된 업체 정보:', normalizedShop);
         
         if (setAsRepresentative) {
             // 대표샵으로 지정
-            if (!shop.state || !shop.district) {
-                showNotification('대표샵으로 지정하려면 시/도와 구/군 정보가 필요합니다.', 'error');
+            if (!normalizedShop.state || !normalizedShop.district) {
+                showNotification(
+                    `대표샵으로 지정하려면 시/도와 구/군 정보가 필요합니다.\n\n현재: 시/도=${normalizedShop.state || '없음'}, 구/군=${normalizedShop.district || '없음'}`,
+                    'error'
+                );
                 return;
             }
             
             // 이미 해당 지역에 대표샵이 있는지 확인
+            console.log(`🔍 대표샵 중복 체크: ${normalizedShop.state} ${normalizedShop.district}`);
+            
             const checkResponse = await fetch(
-                `tables/representative_shops?state=${encodeURIComponent(shop.state)}&district=${encodeURIComponent(shop.district)}&limit=10`
+                `tables/representative_shops?state=${encodeURIComponent(normalizedShop.state)}&district=${encodeURIComponent(normalizedShop.district)}&limit=10`
             );
             
             if (checkResponse.ok) {
                 const existingData = await checkResponse.json();
                 const existingShops = (existingData.data || []).filter(s => s.approved === true || s.status === 'approved');
                 
+                console.log(`📊 기존 대표샵 수: ${existingShops.length}개`);
+                
                 if (existingShops.length > 0) {
                     const existingShop = existingShops[0];
-                    if (!confirm(`이미 '${existingShop.shop_name}'이(가) ${shop.state} ${shop.district}의 대표샵입니다.\n\n계속 진행하시겠습니까?`)) {
+                    console.log('⚠️ 기존 대표샵 발견:', existingShop);
+                    if (!confirm(`이미 '${existingShop.shop_name || existingShop.name}'이(가) ${normalizedShop.state} ${normalizedShop.district}의 대표샵입니다.\n\n계속 진행하시겠습니까?`)) {
                         return;
                     }
                 }
@@ -2803,22 +2822,23 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             
             // 대표샵 등록 데이터 생성
             const repShopData = {
-                shop_id: shop.id,
-                shop_name: shop.shop_name || shop.name,
-                owner_name: shop.owner_name || '',
-                phone: shop.phone || '',
-                email: shop.email || '',
-                address: shop.address || '',
-                state: shop.state || '',
-                region: shop.state || '',
-                district: shop.district || '',
-                city: shop.district || '',
-                town: shop.town || '',
-                representative_treatments: shop.representative_treatments || [],
+                shop_id: normalizedShop.id,
+                shop_name: normalizedShop.name,
+                name: normalizedShop.name,
+                owner_name: normalizedShop.owner_name || '',
+                phone: normalizedShop.phone || '',
+                email: normalizedShop.email || '',
+                address: normalizedShop.address || '',
+                state: normalizedShop.state,
+                region: normalizedShop.state,
+                district: normalizedShop.district || '',
+                city: normalizedShop.district || '',
+                town: normalizedShop.town || '',
+                representative_treatments: normalizedShop.representative_treatments || [],
                 status: 'approved',
                 approved: true,
                 approved_at: new Date().toISOString(),
-                naver_cafe_id: shop.naver_cafe_id || ''
+                naver_cafe_id: normalizedShop.naver_cafe_id || ''
             };
             
             console.log('📝 대표샵 등록 데이터:', repShopData);
@@ -2837,17 +2857,25 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 console.log('✅ 대표샵 등록 성공:', result);
                 
                 // skincare_shops 테이블의 is_representative 필드 업데이트
-                await fetch(`tables/skincare_shops/${shopId}`, {
+                const updateResponse = await fetch(`tables/skincare_shops/${shopId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        is_representative: true
+                        is_representative: true,
+                        representative_status: 'approved',
+                        representative_approved_at: new Date().toISOString()
                     })
                 });
                 
-                showNotification(`'${shop.shop_name || shop.name}'이(가) ${shop.state} ${shop.district}의 대표샵으로 지정되었습니다.`, 'success');
+                if (updateResponse.ok) {
+                    console.log('✅ skincare_shops 테이블 is_representative 업데이트 성공');
+                } else {
+                    console.warn('⚠️ skincare_shops 테이블 업데이트 실패:', await updateResponse.text());
+                }
+                
+                showNotification(`'${normalizedShop.name}'이(가) ${normalizedShop.state} ${normalizedShop.district}의 대표샵으로 지정되었습니다.`, 'success');
                 
                 // 목록 새로고침
                 await loadShops();
@@ -2878,17 +2906,25 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                         console.log('✅ 대표샵 해제 성공');
                         
                         // skincare_shops 테이블의 is_representative 필드 업데이트
-                        await fetch(`tables/skincare_shops/${shopId}`, {
+                        const unsetResponse = await fetch(`tables/skincare_shops/${shopId}`, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
-                                is_representative: false
+                                is_representative: false,
+                                representative_status: 'none',
+                                representative_approved_at: null
                             })
                         });
                         
-                        showNotification(`'${shop.shop_name || shop.name}'의 대표샵 지정이 해제되었습니다.`, 'info');
+                        if (unsetResponse.ok) {
+                            console.log('✅ skincare_shops 테이블 is_representative 해제 성공');
+                        } else {
+                            console.warn('⚠️ skincare_shops 테이블 해제 실패:', await unsetResponse.text());
+                        }
+                        
+                        showNotification(`'${normalizedShop.name}'의 대표샵 지정이 해제되었습니다.`, 'info');
                         
                         // 목록 새로고침
                         await loadShops();
