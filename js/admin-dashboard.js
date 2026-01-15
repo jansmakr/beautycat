@@ -2803,13 +2803,18 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             // 이미 해당 지역에 대표샵이 있는지 확인
             console.log(`🔍 대표샵 중복 체크: ${normalizedShop.state} ${normalizedShop.district}`);
             
-            const checkResponse = await fetch(
-                `tables/representative_shops?state=${encodeURIComponent(normalizedShop.state)}&district=${encodeURIComponent(normalizedShop.district)}&limit=10`
-            );
+            // ⚠️ API가 쿼리 파라미터를 무시하므로 전체 데이터를 가져온 후 클라이언트에서 필터링
+            const checkResponse = await fetch('tables/representative_shops?limit=100');
             
             if (checkResponse.ok) {
                 const existingData = await checkResponse.json();
-                const existingShops = (existingData.data || []).filter(s => s.approved === true || s.status === 'approved');
+                
+                // 클라이언트 측에서 필터링: 같은 지역 + 승인된 대표샵만
+                const existingShops = (existingData.data || []).filter(s => 
+                    s.state === normalizedShop.state && 
+                    s.district === normalizedShop.district && 
+                    (s.approved === true || s.status === 'approved')
+                );
                 
                 console.log(`📊 기존 대표샵 수: ${existingShops.length}개`);
                 
