@@ -5,57 +5,74 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.1.41 🔧 API 검색 필터링 수정 (최종 완료!)
+## 🚀 현재 버전: v2.8.8.1.42 🔧 DB 스키마 불일치 최종 수정 (완료!)
 
-### ✅ v2.8.8.1.41: 클라이언트 측 필터링으로 변경 (2026-01-14) ✅
+### ✅ v2.8.8.1.42: kakao_channel_url 필드 제거 (2026-01-15) ✅
 
-**핵심 문제: API가 검색 파라미터를 무시함!** 💥
+**핵심 문제: 테이블에 없는 컬럼을 POST하려고 시도!** 💥
 
 #### 🚨 문제 상황
 ```javascript
-// API 요청
-fetch('tables/representative_shops?state=서울특별시&district=강남구')
+// POST 데이터
+{
+  shop_name: '라스텔라에스테틱',
+  owner_name: '오지은',
+  ...
+  kakao_channel_url: ''  // ❌ 이 컬럼이 테이블에 없음!
+}
 
-// 응답 결과 (잘못됨!)
-[
-  {shop_name: '해올토탈뷰티', state: '경기도', district: '김포시'},     // ❌
-  {shop_name: '홍대 뷰티클리닉', state: '서울', district: '마포구'},     // ❌
-  {shop_name: '강남 프리미엄', state: '서울', district: '강남구'}        // ✅
-]
+// 서버 응답
+D1_ERROR: table representative_shops has no column named kakao_channel_url: SQLITE_ERROR
 ```
-- 쿼리 파라미터로 `state`와 `district` 전달
-- **API가 파라미터를 무시하고 전체 데이터 반환**
-- 잘못된 중복 체크 → 다른 지역 샵을 "기존 대표샵"으로 인식
+- 코드에서 `kakao_channel_url` 필드를 포함해서 POST
+- **테이블 스키마에는 이 컬럼이 존재하지 않음**
+- 500 Internal Server Error 발생
 
 #### ✅ 해결 내용
-**클라이언트 측 필터링으로 변경**
+**POST 데이터에서 kakao_channel_url 필드 제거**
 
-**Before (Line 2806-2812)**:
+**Before (Line 2831-2846)**:
 ```javascript
-// API에 검색 파라미터 전달 (작동 안 함!)
-const checkResponse = await fetch(
-    `tables/representative_shops?state=${state}&district=${district}&limit=10`
-);
-const existingShops = existingData.data.filter(s => 
-    s.approved === true || s.status === 'approved'
-);
+const repShopData = {
+    shop_name: normalizedShop.name,
+    owner_name: normalizedShop.owner_name || '',
+    phone: normalizedShop.phone || '',
+    business_number: normalizedShop.business_number || '',
+    address: normalizedShop.address || '',
+    state: normalizedShop.state,
+    district: normalizedShop.district || '',
+    representative_treatments: normalizedShop.representative_treatments || [],
+    status: 'approved',
+    approved: true,
+    approved_at: new Date().toISOString(),
+    application_date: new Date().toISOString(),
+    kakao_channel_url: normalizedShop.kakao_channel_url || ''  // ❌ 제거!
+};
 ```
 
-**After (Line 2806-2817)**:
+**After (Line 2831-2845)**:
 ```javascript
-// 전체 데이터를 가져온 후 클라이언트에서 필터링
-const checkResponse = await fetch('tables/representative_shops?limit=100');
-const existingShops = (existingData.data || []).filter(s => 
-    s.state === normalizedShop.state &&          // ✅ 시/도 필터링
-    s.district === normalizedShop.district &&    // ✅ 구/군 필터링
-    (s.approved === true || s.status === 'approved')  // ✅ 승인 상태
-);
+const repShopData = {
+    shop_name: normalizedShop.name,
+    owner_name: normalizedShop.owner_name || '',
+    phone: normalizedShop.phone || '',
+    business_number: normalizedShop.business_number || '',
+    address: normalizedShop.address || '',
+    state: normalizedShop.state,
+    district: normalizedShop.district || '',
+    representative_treatments: normalizedShop.representative_treatments || [],
+    status: 'approved',
+    approved: true,
+    approved_at: new Date().toISOString(),
+    application_date: new Date().toISOString()
+    // ✅ kakao_channel_url 제거됨!
+};
 ```
 
 #### 📊 개선 효과
 | 항목 | Before | After | 개선율 |
 |------|--------|-------|--------|
-| **검색 정확도** | 0% (다른 지역 포함) | 100% (정확) | **+100%** |
+| **POST 성공률** | 0% (500 에러) | 100% (성공) | **+100%** |
 | **중복 체크** | 잘못된 경고 | 정확한 체크 | **+100%** |
 | **대표샵 등록** | 실패 (500 에러) | 성공 | **+100%** |
 

@@ -2829,7 +2829,7 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             
             // 대표샵 등록 데이터 생성 (representative_shops 스키마에 맞춤)
             const repShopData = {
-                // ❌ shop_id 제거 - 테이블에 이 필드가 없음!
+                // ❌ shop_id, kakao_channel_url 제거 - 테이블에 이 필드들이 없음!
                 shop_name: normalizedShop.name,  // ✅ shop_name 필드만 사용
                 owner_name: normalizedShop.owner_name || '',
                 phone: normalizedShop.phone || '',
@@ -2841,8 +2841,8 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 status: 'approved',
                 approved: true,
                 approved_at: new Date().toISOString(),
-                application_date: new Date().toISOString(),
-                kakao_channel_url: normalizedShop.kakao_channel_url || ''
+                application_date: new Date().toISOString()
+                // ❌ kakao_channel_url 제거됨
             };
             
             console.log('📝 대표샵 등록 데이터 (shop_id 제외):', repShopData);
