@@ -2824,8 +2824,8 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             
             // 대표샵 등록 데이터 생성 (representative_shops 스키마에 맞춤)
             const repShopData = {
-                shop_id: normalizedShop.id,
-                shop_name: normalizedShop.name,  // ✅ shop_name 필드만 사용 (name 컬럼 없음)
+                // ❌ shop_id 제거 - 테이블에 이 필드가 없음!
+                shop_name: normalizedShop.name,  // ✅ shop_name 필드만 사용
                 owner_name: normalizedShop.owner_name || '',
                 phone: normalizedShop.phone || '',
                 business_number: normalizedShop.business_number || '',
@@ -2840,7 +2840,7 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 kakao_channel_url: normalizedShop.kakao_channel_url || ''
             };
             
-            console.log('📝 대표샵 등록 데이터:', repShopData);
+            console.log('📝 대표샵 등록 데이터 (shop_id 제외):', repShopData);
             
             // 대표샵 테이블에 등록
             const response = await fetch('tables/representative_shops', {
@@ -2884,9 +2884,9 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             }
         } else {
             // 대표샵 해제
-            // representative_shops 테이블에서 찾기
+            // representative_shops 테이블에서 찾기 (shop_name으로 검색)
             const searchResponse = await fetch(
-                `tables/representative_shops?shop_id=${encodeURIComponent(shopId)}&limit=10`
+                `tables/representative_shops?shop_name=${encodeURIComponent(normalizedShop.name)}&limit=10`
             );
             
             if (searchResponse.ok) {
