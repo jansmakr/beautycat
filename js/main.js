@@ -2605,9 +2605,11 @@ function findAndDisplayRepresentativeShop(state, district) {
         const shopDistrict = shop.district || '';
         const isApproved = shop.status === 'approved' || shop.approved === 1 || shop.approved === true;
         
-        const matches = shopState === normalizedState && shopDistrict === district && isApproved;
+        // ✅ shopState도 정규화하여 비교
+        const normalizedShopState = normalizeStateName(shopState);
+        const matches = normalizedShopState === normalizedState && shopDistrict === district && isApproved;
         
-        if (shopState === normalizedState) {
+        if (normalizedShopState === normalizedState) {
             console.log(`🔍 [대표샵] 체크: ${shop.shop_name || shop.name} - 시/도 일치, 구/군=${shopDistrict} (${shopDistrict === district ? '일치' : '불일치'}), 승인=${isApproved}`);
         }
         
