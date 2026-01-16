@@ -449,6 +449,9 @@ function displayQuotesList() {
                                 <strong>추가사항:</strong> ${quote.additional_notes}
                             </div>
                         ` : ''}
+                        <div class="text-xs text-blue-600 mt-2">
+                            <i class="fas fa-credit-card mr-1"></i>방문 시 현장 결제 (현금/카드/계좌이체)
+                        </div>
                     </div>
                     <div class="flex flex-col space-y-2">
                         <button onclick="window.showQuoteDetail('${quote.id || ''}')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" data-quote-id="${quote.id || ''}">
@@ -732,6 +735,20 @@ function showQuoteDetail(quoteId) {
                     <p class="text-gray-700">${quote.additional_notes}</p>
                 </div>
             ` : ''}
+            
+            <!-- v2.8.8.1.48: 결제 안내 추가 -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 class="font-semibold text-gray-900 mb-2">💳 결제 방법</h4>
+                <div class="text-sm text-gray-700 space-y-1">
+                    <p class="font-medium">방문 시 피부관리실에서 직접 결제</p>
+                    <ul class="ml-4 space-y-1">
+                        <li>✓ 현금 결제 가능</li>
+                        <li>✓ 카드 결제 가능</li>
+                        <li>✓ 계좌이체 가능</li>
+                    </ul>
+                    <p class="text-xs text-gray-600 mt-2">※ 예약금은 별도로 필요하지 않습니다</p>
+                </div>
+            </div>
         </div>
     `;
     

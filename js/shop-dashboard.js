@@ -1011,6 +1011,7 @@ async function handleQuoteSubmit(e) {
             duration: parseInt(duration) || 60, // INTEGER, 기본값 60분
             available_dates: JSON.stringify([availableDates]), // TEXT (JSON 문자열)
             additional_notes: additionalNotes || '',
+            payment_note: '💳 결제 방법: 방문 시 현장에서 결제 (현금/카드/계좌이체)', // v2.8.8.1.48: 결제 안내
             status: 'sent',
             valid_until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
             updated_at: Date.now()  // INTEGER 필수
@@ -1048,7 +1049,7 @@ async function handleQuoteSubmit(e) {
             sender_type: 'shop',
             sender_id: currentShop?.id || currentUser.id,
             receiver_id: 'customer', // TODO: 실제 고객 ID
-            message: `[견적서가 전송되었습니다]\n\n관리 내용: ${treatmentDetails}\n가격: ${price.toLocaleString()}원\n소요시간: ${duration}\n예약 가능일: ${availableDates}${additionalNotes ? `\n\n추가사항: ${additionalNotes}` : ''}`,
+            message: `[견적서가 전송되었습니다]\n\n관리 내용: ${treatmentDetails}\n가격: ${price.toLocaleString()}원\n소요시간: ${duration}\n예약 가능일: ${availableDates}${additionalNotes ? `\n\n추가사항: ${additionalNotes}` : ''}\n\n💳 결제 방법: 방문 시 현장에서 결제 (현금/카드/계좌이체)`,
             is_read: 0, // INTEGER
             created_at: Date.now(), // INTEGER 필수
             updated_at: Date.now()  // INTEGER 필수
