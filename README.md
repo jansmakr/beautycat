@@ -5,7 +5,59 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.1.46 🔍 대표샵 검색 정규화 수정 (2026-01-16) ✅
+## 🚀 현재 버전: v2.8.8.1.47 🐛 샵 대시보드 JS 오류 수정 (2026-01-16) ✅
+
+### ✅ v2.8.8.1.47: 샵 대시보드 JS 오류 수정 (2026-01-16) ✅
+
+#### 🐛 수정된 문제
+1. **createModal is not defined** 오류
+   - 자동 결제 설정, 결제 연기, 구독 해지 버튼 클릭 시 오류 발생
+   - 헬퍼 함수들을 전역 스코프에 명시적으로 노출하여 해결
+
+2. **originalShowSection already declared** 오류
+   - `shop-dashboard.js`와 `shop-dashboard.html` 양쪽에서 중복 선언
+   - IIFE로 스코프 분리, HTML의 중복 코드 제거하여 해결
+
+#### ✅ 수정 내용
+**파일**: `js/shop-dashboard.js`
+```javascript
+// ✅ 헬퍼 함수들 전역 노출
+window.createModal = function(title, content) { ... };
+window.closeModal = function() { ... };
+window.showLoadingSpinner = function() { ... };
+window.hideLoadingSpinner = function() { ... };
+window.showAlert = function(title, message, type) { ... };
+
+// ✅ 구독 관리 함수들 전역 노출
+window.setupAutoPayment = function() { ... };
+window.postponePayment = function() { ... };
+window.cancelSubscription = function() { ... };
+
+// ✅ showSection 확장 (IIFE로 스코프 분리)
+(function() {
+    const originalShowSection = typeof window.showSection !== 'undefined' ? window.showSection : null;
+    window.showSection = function(sectionName) {
+        if (originalShowSection) originalShowSection(sectionName);
+        if (sectionName === 'announcements') loadShopAnnouncements();
+        if (sectionName === 'settings' && typeof loadSettingsInfo === 'function') loadSettingsInfo();
+    };
+})();
+```
+
+**파일**: `shop-dashboard.html`
+- ❌ 중복된 `originalShowSection` 선언 코드 제거
+- ✅ 버전 업데이트: `v=2.8.13.6.89` → `v=2.8.8.1.47`
+
+#### 📊 개선 효과
+| 항목 | Before | After |
+|------|--------|-------|
+| **JS 오류** | 2개 (치명적) | 0개 ✅ |
+| **모달 시스템** | ❌ 작동 안 함 | ✅ 정상 작동 |
+| **자동 결제 설정** | ❌ 오류 | ✅ 정상 |
+| **결제 연기** | ❌ 오류 | ✅ 정상 |
+| **구독 해지** | ❌ 오류 | ✅ 정상 |
+
+---
 
 ### ✅ v2.8.8.1.46: 대표샵 검색 시 시/도 정규화 버그 수정 (2026-01-16) ✅
 

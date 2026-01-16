@@ -1786,7 +1786,7 @@
     <!-- <script src="js/firebase-api.js"></script> -->
     <!-- <script src="js/api-bridge.js"></script> -->
     <script src="js/auth.js"></script>
-    <script src="js/shop-dashboard.js?v=2.8.13.6.89"></script>
+    <script src="js/shop-dashboard.js?v=2.8.8.1.47"></script>
     <script src="js/slots-info-toggle.js"></script>
     <script src="js/deposit-system.js"></script>
 
@@ -1925,19 +1925,7 @@ async function confirmDeleteAccount() {
     }
 }
 
-// 📝 showSection 함수 확장 (설정 섹션 지원)
-const originalShowSection = window.showSection;
-window.showSection = function(sectionName) {
-    // 기존 함수 실행
-    if (originalShowSection) {
-        originalShowSection(sectionName);
-    }
-    
-    // 설정 섹션이면 정보 로드
-    if (sectionName === 'settings') {
-        loadSettingsInfo();
-    }
-};
+// ✅ showSection 함수 확장은 shop-dashboard.js에서 처리됩니다 (v2.8.8.1.47)
 </script>
 
 <!-- 로그아웃 함수 (v2.8.13.6.73 - 완전 초기화) -->

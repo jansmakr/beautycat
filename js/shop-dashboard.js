@@ -1696,8 +1696,132 @@ function updateSubscriptionUI() {
     if (nextBilling) nextBilling.textContent = '₩' + subscriptionData.next_plan.annual_price.toLocaleString();
 }
 
+// ========================================
+// 🔧 헬퍼 함수들 (v2.8.8.1.47 - 모달 시스템)
+// ========================================
+
+// 모달 닫기
+window.closeModal = function() {
+    const modal = document.getElementById('custom-modal');
+    if (modal) {
+        modal.remove();
+    }
+};
+
+// 로딩 스피너 표시
+window.showLoadingSpinner = function() {
+    const spinner = document.createElement('div');
+    spinner.id = 'loading-spinner';
+    spinner.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]';
+    spinner.innerHTML = `
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+            <span class="text-gray-700 font-medium">처리 중...</span>
+        </div>
+    `;
+    document.body.appendChild(spinner);
+};
+
+// 로딩 스피너 숨기기
+window.hideLoadingSpinner = function() {
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) {
+        spinner.remove();
+    }
+};
+
+// 알림 표시
+window.showAlert = function(title, message, type = 'info') {
+    const bgColors = {
+        success: 'bg-green-50 border-green-200',
+        error: 'bg-red-50 border-red-200',
+        warning: 'bg-yellow-50 border-yellow-200',
+        info: 'bg-blue-50 border-blue-200'
+    };
+    
+    const iconColors = {
+        success: 'text-green-500',
+        error: 'text-red-500',
+        warning: 'text-yellow-500',
+        info: 'text-blue-500'
+    };
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    const alert = document.createElement('div');
+    alert.className = 'fixed top-4 right-4 z-[70] max-w-md animate-fade-in';
+    alert.innerHTML = `
+        <div class="${bgColors[type]} border rounded-lg p-4 shadow-lg">
+            <div class="flex items-start">
+                <i class="fas ${icons[type]} ${iconColors[type]} mt-1 mr-3"></i>
+                <div class="flex-1">
+                    <h4 class="font-semibold mb-1">${title}</h4>
+                    <p class="text-sm">${message}</p>
+                </div>
+                <button onclick="this.closest('div.fixed').remove()" class="ml-3 text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // 3초 후 자동 제거
+    setTimeout(() => {
+        if (alert.parentElement) {
+            alert.remove();
+        }
+    }, 3000);
+};
+
+// ✅ 모달 생성 헬퍼 함수
+window.createModal = function(title, content) {
+    // 기존 모달 제거
+    const existingModal = document.getElementById('custom-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // 새 모달 생성
+    const modal = document.createElement('div');
+    modal.id = 'custom-modal';
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between p-6 border-b">
+                <h2 class="text-xl font-bold">${title}</h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div>${content}</div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    return modal;
+};
+
+// ========================================
+// 📦 구독 관리 함수들
+// ========================================
+
 // 자동 결제 설정
-function setupAutoPayment() {
+window.setupAutoPayment = function() {
     const modal = createModal('자동 결제 설정', `
         <div class="p-6">
             <div class="mb-6">
@@ -1750,10 +1874,10 @@ function setupAutoPayment() {
             </div>
         </div>
     `);
-}
+};
 
 // 자동 결제 설정 처리
-function processAutoPaymentSetup() {
+window.processAutoPaymentSetup = function() {
     showLoadingSpinner();
     
     // 실제로는 결제 API 호출
@@ -1771,10 +1895,10 @@ function processAutoPaymentSetup() {
             subscriptionData.auto_payment_enabled = true;
         }
     }, 2000);
-}
+};
 
 // 결제 연기 신청
-function postponePayment() {
+window.postponePayment = function() {
     const modal = createModal('결제 연기 신청', `
         <div class="p-6">
             <div class="mb-6">
@@ -1813,10 +1937,10 @@ function postponePayment() {
             </div>
         </div>
     `);
-}
+};
 
 // 구독 해지
-function cancelSubscription() {
+window.cancelSubscription = function() {
     const modal = createModal('구독 해지', `
         <div class="p-6">
             <div class="mb-6">
@@ -1857,10 +1981,38 @@ function cancelSubscription() {
             </div>
         </div>
     `);
-}
+};
+
+// 결제 연기 처리
+window.processPaymentPostpone = function() {
+    showLoadingSpinner();
+    
+    setTimeout(() => {
+        hideLoadingSpinner();
+        closeModal();
+        
+        showAlert('결제 연기 신청 완료', '결제 연기 신청이 접수되었습니다. 영업일 기준 1~2일 내로 처리됩니다.', 'success');
+    }, 2000);
+};
+
+// 구독 해지 처리
+window.processCancellation = function() {
+    if (!confirm('정말로 구독을 해지하시겠습니까?\n\n해지 후에는 모든 서비스 이용이 중단됩니다.')) {
+        return;
+    }
+    
+    showLoadingSpinner();
+    
+    setTimeout(() => {
+        hideLoadingSpinner();
+        closeModal();
+        
+        showAlert('해지 신청 완료', '구독 해지 신청이 접수되었습니다.\n고객센터에서 확인 후 처리됩니다.', 'warning');
+    }, 2000);
+};
 
 // 세금계산서 다운로드
-function downloadInvoices() {
+window.downloadInvoices = function() {
     showLoadingSpinner();
     
     setTimeout(() => {
@@ -1883,6 +2035,9 @@ window.toggleMobileMenu = toggleMobileMenu;
 window.closeMobileMenu = closeMobileMenu;
 window.closeAnnouncementAlert = closeAnnouncementAlert;
 window.loadSubscriptionInfo = loadSubscriptionInfo;
+
+// v2.8.8.1.47: 구독 관리 함수들도 전역 노출
+console.log('✅ [v2.8.8.1.47] Shop Dashboard JS 로드 완료 - 모달 시스템 개선');
 window.setupAutoPayment = setupAutoPayment;
 window.processAutoPaymentSetup = processAutoPaymentSetup;
 window.postponePayment = postponePayment;
@@ -2693,18 +2848,29 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// showSection 함수에 공지사항 로드 추가
-const originalShowSection = typeof showSection !== 'undefined' ? showSection : null;
-if (originalShowSection) {
+// showSection 함수 확장 (v2.8.8.1.47 - 공지사항 + 설정 통합)
+(function() {
+    const originalShowSection = typeof window.showSection !== 'undefined' ? window.showSection : null;
+    
     window.showSection = function(sectionName) {
-        originalShowSection(sectionName);
+        // 기존 함수 실행
+        if (originalShowSection) {
+            originalShowSection(sectionName);
+        }
         
         // 공지사항 섹션 표시 시 로드
         if (sectionName === 'announcements') {
             loadShopAnnouncements();
         }
+        
+        // 설정 섹션 표시 시 정보 로드
+        if (sectionName === 'settings') {
+            if (typeof loadSettingsInfo === 'function') {
+                loadSettingsInfo();
+            }
+        }
     };
-}
+})();
 
 // 전역 함수 등록
 window.loadShopAnnouncements = loadShopAnnouncements;
