@@ -2829,8 +2829,8 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             
             // 대표샵 등록 데이터 생성 (representative_shops 스키마에 맞춤)
             const repShopData = {
-                // ❌ shop_id, kakao_channel_url 제거 - 테이블에 이 필드들이 없음!
-                shop_name: normalizedShop.name,  // ✅ shop_name 필드만 사용
+                shop_id: normalizedShop.id,  // ✅ shop_id는 NOT NULL 필수 필드!
+                shop_name: normalizedShop.name,
                 owner_name: normalizedShop.owner_name || '',
                 phone: normalizedShop.phone || '',
                 business_number: normalizedShop.business_number || '',
@@ -2842,10 +2842,10 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 approved: true,
                 approved_at: new Date().toISOString(),
                 application_date: new Date().toISOString()
-                // ❌ kakao_channel_url 제거됨
+                // ❌ kakao_channel_url은 테이블에 없으므로 제거
             };
             
-            console.log('📝 대표샵 등록 데이터 (shop_id 제외):', repShopData);
+            console.log('📝 대표샵 등록 데이터:', repShopData);
             
             // 대표샵 테이블에 등록
             const response = await fetch('tables/representative_shops', {
@@ -2860,13 +2860,17 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 const result = await response.json();
                 console.log('✅ 대표샵 등록 성공:', result);
                 
-                // skincare_shops 테이블의 is_representative 필드 업데이트
+                // skincare_shops 테이블의 is_representative 필드 업데이트 (PUT 방식)
+                const currentShopResponse = await fetch(`tables/skincare_shops/${shopId}`);
+                const currentShop = await currentShopResponse.json();
+                
                 const updateResponse = await fetch(`tables/skincare_shops/${shopId}`, {
-                    method: 'PATCH',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        ...currentShop,
                         is_representative: true,
                         representative_status: 'approved',
                         representative_approved_at: new Date().toISOString()
@@ -2875,6 +2879,14 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                 
                 if (updateResponse.ok) {
                     console.log('✅ skincare_shops 테이블 is_representative 업데이트 성공');
+                    
+                    // ✅ 로컬 캐시도 즉시 업데이트
+                    const shopIndex = allShops.findIndex(s => s.id === shopId);
+                    if (shopIndex !== -1) {
+                        allShops[shopIndex].is_representative = true;
+                        allShops[shopIndex].representative_status = 'approved';
+                        allShops[shopIndex].representative_approved_at = new Date().toISOString();
+                    }
                 } else {
                     console.warn('⚠️ skincare_shops 테이블 업데이트 실패:', await updateResponse.text());
                 }
@@ -2889,9 +2901,9 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
             }
         } else {
             // 대표샵 해제
-            // representative_shops 테이블에서 찾기 (shop_name으로 검색)
+            // representative_shops 테이블에서 찾기 (shop_id로 검색)
             const searchResponse = await fetch(
-                `tables/representative_shops?shop_name=${encodeURIComponent(normalizedShop.name)}&limit=10`
+                `tables/representative_shops?shop_id=${encodeURIComponent(shopId)}&limit=10`
             );
             
             if (searchResponse.ok) {
@@ -2909,13 +2921,17 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                     if (deleteResponse.ok || deleteResponse.status === 204) {
                         console.log('✅ 대표샵 해제 성공');
                         
-                        // skincare_shops 테이블의 is_representative 필드 업데이트
+                        // skincare_shops 테이블의 is_representative 필드 업데이트 (PUT 방식)
+                        const currentShopResponse2 = await fetch(`tables/skincare_shops/${shopId}`);
+                        const currentShop2 = await currentShopResponse2.json();
+                        
                         const unsetResponse = await fetch(`tables/skincare_shops/${shopId}`, {
-                            method: 'PATCH',
+                            method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
+                                ...currentShop2,
                                 is_representative: false,
                                 representative_status: 'none',
                                 representative_approved_at: null
@@ -2924,6 +2940,14 @@ async function toggleRepresentativeStatus(shopId, setAsRepresentative) {
                         
                         if (unsetResponse.ok) {
                             console.log('✅ skincare_shops 테이블 is_representative 해제 성공');
+                            
+                            // ✅ 로컬 캐시도 즉시 업데이트
+                            const shopIndex = allShops.findIndex(s => s.id === shopId);
+                            if (shopIndex !== -1) {
+                                allShops[shopIndex].is_representative = false;
+                                allShops[shopIndex].representative_status = 'none';
+                                allShops[shopIndex].representative_approved_at = null;
+                            }
                         } else {
                             console.warn('⚠️ skincare_shops 테이블 해제 실패:', await unsetResponse.text());
                         }

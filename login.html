@@ -100,24 +100,50 @@
         /* 사용자 유형 버튼 */
         .user-type-btn {
             background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 20px;
+            border: 3px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 28px 20px;
             transition: all 0.3s ease;
             cursor: pointer;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .user-type-btn:hover {
             border-color: #ec4899;
             background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.15);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 28px rgba(236, 72, 153, 0.2);
         }
         
         .user-type-btn.selected {
             border-color: #ec4899;
-            background: linear-gradient(135deg, #fdf2f8 0%, #fae8ff 100%);
-            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+            border-width: 5px;
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #fae8ff 100%);
+            box-shadow: 0 12px 32px rgba(236, 72, 153, 0.45), 0 0 0 4px rgba(236, 72, 153, 0.1);
+            transform: translateY(-4px) scale(1.05);
+            position: relative;
+        }
+        
+        .user-type-btn.selected::before {
+            content: '✓ 선택됨';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+        }
+        
+        .user-type-btn.selected:hover {
+            transform: translateY(-6px) scale(1.06);
+            box-shadow: 0 16px 40px rgba(236, 72, 153, 0.5), 0 0 0 4px rgba(236, 72, 153, 0.15);
         }
 
         /* 소셜 로그인 버튼 */
@@ -345,6 +371,14 @@
 
             .user-type-btn {
                 padding: 16px;
+                min-height: 160px;
+            }
+            
+            .user-type-btn.selected::before {
+                font-size: 10px;
+                padding: 3px 8px;
+                top: 8px;
+                right: 8px;
             }
 
             h2 {
@@ -390,21 +424,24 @@
                 <p class="text-gray-600">피부관리의 새로운 시작</p>
             </div>
 
-            <!-- 사용자 유형 선택 -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-3">
-                    <i class="fas fa-user-circle mr-1 text-primary-500"></i>
-                    로그인 유형
+            <!-- 사용자 유형 선택 - 강조 -->
+            <div class="mb-8 p-6 bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl border-2 border-pink-200">
+                <label class="block text-lg font-bold text-gray-900 mb-2 text-center">
+                    <i class="fas fa-user-circle mr-2 text-pink-500"></i>
+                    먼저 선택해주세요! 👇
                 </label>
-                <div class="grid grid-cols-2 gap-3">
+                <p class="text-center text-sm text-gray-600 mb-4 font-medium">
+                    고객이신가요? 피부관리실 운영자이신가요?
+                </p>
+                <div class="grid grid-cols-2 gap-4">
                     <button type="button" 
                             class="user-type-btn selected" 
                             data-type="customer"
                             onclick="selectUserType('customer', this)">
                         <div class="text-center">
-                            <i class="fas fa-user text-3xl mb-2" style="color: #ec4899;"></i>
-                            <div class="font-semibold text-gray-900">고객</div>
-                            <div class="text-xs text-gray-500 mt-1">일반 사용자</div>
+                            <i class="fas fa-user text-4xl mb-3" style="color: #ec4899;"></i>
+                            <div class="text-lg font-bold text-gray-900">🙋‍♀️ 고객</div>
+                            <div class="text-sm text-gray-600 mt-2 font-medium">피부관리를<br>받고 싶어요</div>
                         </div>
                     </button>
                     <button type="button" 
@@ -412,9 +449,9 @@
                             data-type="shop"
                             onclick="selectUserType('shop', this)">
                         <div class="text-center">
-                            <i class="fas fa-store text-3xl mb-2" style="color: #a855f7;"></i>
-                            <div class="font-semibold text-gray-900">피부관리실</div>
-                            <div class="text-xs text-gray-500 mt-1">업체 회원</div>
+                            <i class="fas fa-store text-4xl mb-3" style="color: #a855f7;"></i>
+                            <div class="text-lg font-bold text-gray-900">🏪 피부관리실</div>
+                            <div class="text-sm text-gray-600 mt-2 font-medium">피부관리실을<br>운영해요</div>
                         </div>
                     </button>
                 </div>
