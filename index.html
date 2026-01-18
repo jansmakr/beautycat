@@ -2199,6 +2199,56 @@
         </div>
     </header>
 
+    <!-- ========== 🖼️ 메인 이미지 배너 (v2.8.8.1.50 - 비디오→이미지 교체) ========== -->
+    <section class="image-banner-section" style="width: 100%; overflow: hidden; position: relative;">
+        <img 
+            id="homepage-banner-image"
+            src="images/homepage-banner.jpg"
+            alt="합리적 견적! 피부관리실 바로 찾기 - Beautyket"
+            loading="eager"
+            decoding="async"
+            style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
+    </section>
+    
+    <style>
+        /* 이미지 배너 스타일 (v2.8.8.1.50) */
+        .image-banner-section {
+            position: relative;
+            z-index: 1;
+            background: #f8f9fa;
+        }
+        
+        #homepage-banner-image {
+            will-change: auto;
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+            #homepage-banner-image {
+                max-height: 250px !important;
+            }
+        }
+        
+        /* 태블릿 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            #homepage-banner-image {
+                max-height: 300px !important;
+            }
+        }
+        
+        /* 이미지 로드 효과 */
+        #homepage-banner-image {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+
     <!-- ========== 상단 띠 배너 (v2.8.13.6.62 - Phase 1: 속도 조정) ========== -->
     <div class="announcement-marquee" data-version="v2.8.13.6.62" onclick="window.location.href='announcements.html'" style="background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%); border-bottom: 1px solid #FFD4E5; padding: 10px 0; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
         <div class="marquee-content" style="display: flex; animation: marqueeScroll 60s linear infinite; white-space: nowrap;">
@@ -5159,6 +5209,23 @@
                 node.remove();
                 console.log('🗑️ 불필요한 텍스트 노드 제거됨');
             });
+        });
+    </script>
+
+    <!-- 🖼️ 이미지 배너 로드 확인 (v2.8.8.1.50) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const image = document.getElementById('homepage-banner-image');
+            
+            if (image) {
+                image.addEventListener('load', () => {
+                    console.log('✅ 이미지 배너 로드 완료');
+                });
+                
+                image.addEventListener('error', () => {
+                    console.error('❌ 이미지 로드 오류');
+                });
+            }
         });
     </script>
 

@@ -1,0 +1,648 @@
+/* ==========================================
+   BeautyCat.kr Design System v2.8.8.1.52
+   파스텔 라벤더 & 블러쉬 디자인 시스템
+   ========================================== */
+
+/* ==========================================
+   1. CSS Variables (Global Design Tokens)
+   ========================================== */
+
+:root {
+  /* ===== Colors ===== */
+  
+  /* Primary Colors */
+  --primary-lavender: #E0D7E6;
+  --primary-lavender-dark: #C8B8D6;
+  --primary-lavender-light: #F0EBF4;
+  
+  --primary-blush: #F3E6E6;
+  --primary-blush-dark: #E8CFCF;
+  --primary-blush-light: #FAF3F3;
+  
+  /* Secondary Colors */
+  --secondary-purple: #D0C7E8;
+  --secondary-purple-dark: #B8A8D6;
+  
+  --secondary-pink: #F8D7DC;
+  --secondary-pink-dark: #F0BFC7;
+  
+  /* Background Colors */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F9F7FB;
+  --bg-tertiary: #F3F0F6;
+  --bg-overlay: rgba(0, 0, 0, 0.05);
+  
+  /* Text Colors */
+  --text-primary: #2D2D2D;
+  --text-secondary: #6B6B6B;
+  --text-muted: #A0A0A0;
+  --text-link: #8B7BB8;
+  --text-white: #FFFFFF;
+  
+  /* Accent Colors */
+  --accent-success: #B8E0B8;
+  --accent-warning: #FFE5B4;
+  --accent-error: #FFD4D4;
+  --accent-info: #D4E5FF;
+  
+  /* ===== Typography ===== */
+  --font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  
+  /* ===== Spacing ===== */
+  --spacing-0: 0px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  
+  /* ===== Border Radius ===== */
+  --radius-small: 12px;
+  --radius-medium: 16px;
+  --radius-large: 20px;
+  --radius-xl: 24px;
+  --radius-full: 50%;
+  
+  /* ===== Shadows ===== */
+  --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-button: 0 2px 8px rgba(224, 215, 230, 0.4);
+  --shadow-fab: 0 4px 16px rgba(224, 215, 230, 0.5);
+  
+  /* ===== Transitions ===== */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ==========================================
+   2. Base Styles
+   ========================================== */
+
+* {
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   3. Typography Classes
+   ========================================== */
+
+/* Headings */
+.heading-1 {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.heading-2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.heading-3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.heading-4 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Body Text */
+.body-large {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.body-regular {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.body-small {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Caption & Label */
+.caption {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+/* Text Colors */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-link { color: var(--text-link); }
+.text-white { color: var(--text-white); }
+
+/* ==========================================
+   4. Layout Classes
+   ========================================== */
+
+.container {
+  max-width: 100%;
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 960px;
+    padding-left: var(--spacing-8);
+    padding-right: var(--spacing-8);
+  }
+}
+
+.section {
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-8);
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: var(--spacing-12);
+    padding-bottom: var(--spacing-12);
+  }
+}
+
+/* ==========================================
+   5. Button Components
+   ========================================== */
+
+/* Base Button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-large);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  min-height: 44px; /* Touch target size */
+}
+
+/* Primary Button */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-lavender) 0%, var(--primary-blush) 100%);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-button);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-lavender-dark) 0%, var(--primary-blush-dark) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(224, 215, 230, 0.5);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(224, 215, 230, 0.3);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: transparent;
+  color: var(--text-link);
+  border: 2px solid var(--primary-lavender);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-lavender-light);
+  border-color: var(--primary-lavender-dark);
+}
+
+/* Small Button (Chip/Tag) */
+.btn-small {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-medium);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.btn-small:hover {
+  background: var(--primary-lavender);
+  color: var(--text-primary);
+}
+
+.btn-small.active {
+  background: var(--secondary-purple);
+  color: var(--text-white);
+}
+
+/* ==========================================
+   6. Card Components
+   ========================================== */
+
+.card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-soft);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+/* Shop Card */
+.shop-card {
+  overflow: hidden;
+}
+
+.shop-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-medium);
+  margin-bottom: var(--spacing-3);
+}
+
+/* ==========================================
+   7. Input Field Components
+   ========================================== */
+
+.input-field {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--primary-lavender);
+  border-radius: var(--radius-medium);
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--primary-lavender-dark);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 3px rgba(224, 215, 230, 0.2);
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+/* ==========================================
+   8. Badge/Chip Components
+   ========================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  background: var(--secondary-pink);
+  color: var(--text-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-small);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-success {
+  background: var(--accent-success);
+}
+
+.badge-warning {
+  background: var(--accent-warning);
+}
+
+.badge-error {
+  background: var(--accent-error);
+}
+
+.badge-info {
+  background: var(--accent-info);
+}
+
+/* Filter Chip */
+.filter-chip {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: var(--radius-large);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.filter-chip.active {
+  background: var(--secondary-purple);
+  color: var(--text-white);
+  border-color: var(--secondary-purple-dark);
+  box-shadow: 0 2px 8px rgba(208, 199, 232, 0.4);
+}
+
+/* ==========================================
+   9. Navigation Components
+   ========================================== */
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--bg-tertiary);
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  min-height: 56px;
+  min-width: 56px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bottom-nav-item.active {
+  color: var(--text-link);
+}
+
+.bottom-nav-item:hover {
+  color: var(--text-primary);
+}
+
+/* Floating Action Button (FAB) */
+.fab {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--primary-lavender) 0%, var(--primary-blush) 100%);
+  color: var(--text-primary);
+  border-radius: var(--radius-full);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-fab);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  z-index: 999;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(224, 215, 230, 0.6);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+/* FAB Center (Bottom Nav) */
+.fab-center {
+  position: relative;
+  top: -20px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary-lavender) 0%, var(--primary-blush) 100%);
+  border-radius: var(--radius-full);
+  border: none;
+  box-shadow: var(--shadow-fab);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.fab-center:hover {
+  transform: scale(1.05);
+}
+
+/* ==========================================
+   10. Utility Classes
+   ========================================== */
+
+/* Spacing Utilities */
+.mt-1 { margin-top: var(--spacing-1); }
+.mt-2 { margin-top: var(--spacing-2); }
+.mt-3 { margin-top: var(--spacing-3); }
+.mt-4 { margin-top: var(--spacing-4); }
+.mt-6 { margin-top: var(--spacing-6); }
+
+.mb-1 { margin-bottom: var(--spacing-1); }
+.mb-2 { margin-bottom: var(--spacing-2); }
+.mb-3 { margin-bottom: var(--spacing-3); }
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mb-6 { margin-bottom: var(--spacing-6); }
+
+.p-2 { padding: var(--spacing-2); }
+.p-3 { padding: var(--spacing-3); }
+.p-4 { padding: var(--spacing-4); }
+.p-6 { padding: var(--spacing-6); }
+
+/* Display Utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+
+/* Border Radius Utilities */
+.rounded-small { border-radius: var(--radius-small); }
+.rounded-medium { border-radius: var(--radius-medium); }
+.rounded-large { border-radius: var(--radius-large); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Shadow Utilities */
+.shadow-soft { box-shadow: var(--shadow-soft); }
+.shadow-card { box-shadow: var(--shadow-card); }
+.shadow-button { box-shadow: var(--shadow-button); }
+
+/* ==========================================
+   11. Animation & Transitions
+   ========================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+/* ==========================================
+   12. Responsive Design
+   ========================================== */
+
+/* Mobile First (375px - 768px) */
+@media (max-width: 767px) {
+  .heading-1 { font-size: 24px; }
+  .heading-2 { font-size: 20px; }
+  .heading-3 { font-size: 16px; }
+  
+  .card {
+    padding: var(--spacing-3);
+  }
+}
+
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) {
+  .container {
+    padding-left: var(--spacing-6);
+    padding-right: var(--spacing-6);
+  }
+  
+  .card {
+    padding: var(--spacing-5);
+  }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 960px;
+  }
+  
+  .bottom-nav {
+    display: none; /* Hide on desktop */
+  }
+  
+  .fab {
+    bottom: 24px;
+    right: 24px;
+  }
+}
+
+/* ==========================================
+   13. Print Styles
+   ========================================== */
+
+@media print {
+  .bottom-nav,
+  .fab {
+    display: none;
+  }
+}

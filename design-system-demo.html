@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디자인 시스템 컴포넌트 - BeautyCat</title>
+    
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="css/design-system.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            padding: 24px;
+            padding-bottom: 100px;
+        }
+        
+        .demo-section {
+            margin-bottom: 48px;
+        }
+        
+        .demo-section h2 {
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bg-tertiary);
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .demo-item {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-medium);
+        }
+        
+        .demo-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="heading-1 mb-6">BeautyCat 디자인 시스템 컴포넌트</h1>
+        <p class="body-regular text-secondary mb-6">v2.8.8.1.52 - 파스텔 라벤더 & 블러쉬 디자인</p>
+        
+        <!-- 1. 버튼 컴포넌트 -->
+        <section class="demo-section">
+            <h2 class="heading-2">1. 버튼 (Buttons)</h2>
+            
+            <div class="demo-grid">
+                <!-- Primary Button -->
+                <div class="demo-item">
+                    <h3>Primary Button</h3>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-check"></i>
+                        확인
+                    </button>
+                </div>
+                
+                <!-- Secondary Button -->
+                <div class="demo-item">
+                    <h3>Secondary Button</h3>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-times"></i>
+                        취소
+                    </button>
+                </div>
+                
+                <!-- Small Button -->
+                <div class="demo-item">
+                    <h3>Small Button (Chip)</h3>
+                    <button class="btn-small">전체</button>
+                    <button class="btn-small active">인기</button>
+                    <button class="btn-small">신규</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 2. 카드 컴포넌트 -->
+        <section class="demo-section">
+            <h2 class="heading-2">2. 카드 (Cards)</h2>
+            
+            <div class="demo-grid">
+                <!-- Shop Card -->
+                <div class="card shop-card">
+                    <img src="https://via.placeholder.com/400x225" alt="샵 이미지" class="shop-image">
+                    <div class="card-content">
+                        <h3 class="heading-3">샵 이름</h3>
+                        <div class="card-meta">
+                            <span class="badge badge-info">
+                                <i class="fas fa-location-dot"></i>
+                                1.2km
+                            </span>
+                            <span class="body-small text-secondary">₩50,000~</span>
+                        </div>
+                        <p class="body-small text-secondary">피부관리 전문샵입니다.</p>
+                    </div>
+                </div>
+                
+                <!-- Info Card -->
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="heading-3">정보 카드</h3>
+                        <p class="body-regular">이 카드는 일반적인 정보를 표시합니다.</p>
+                        <button class="btn btn-primary">자세히 보기</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 3. 입력 필드 -->
+        <section class="demo-section">
+            <h2 class="heading-2">3. 입력 필드 (Input Fields)</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3>일반 입력 필드</h3>
+                    <input type="text" class="input-field" placeholder="이름을 입력하세요">
+                </div>
+                
+                <div class="demo-item">
+                    <h3>이메일 입력 필드</h3>
+                    <input type="email" class="input-field" placeholder="example@beautycat.kr">
+                </div>
+                
+                <div class="demo-item">
+                    <h3>비밀번호 입력 필드</h3>
+                    <input type="password" class="input-field" placeholder="비밀번호">
+                </div>
+            </div>
+        </section>
+        
+        <!-- 4. 배지/칩 -->
+        <section class="demo-section">
+            <h2 class="heading-2">4. 배지 & 칩 (Badges & Chips)</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3>기본 배지</h3>
+                    <span class="badge">기본</span>
+                    <span class="badge badge-success">성공</span>
+                    <span class="badge badge-warning">경고</span>
+                    <span class="badge badge-error">에러</span>
+                    <span class="badge badge-info">정보</span>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>필터 칩</h3>
+                    <button class="filter-chip">전체</button>
+                    <button class="filter-chip active">인기</button>
+                    <button class="filter-chip">신규</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 5. 타이포그래피 -->
+        <section class="demo-section">
+            <h2 class="heading-2">5. 타이포그래피 (Typography)</h2>
+            
+            <div class="demo-item mb-4">
+                <h1 class="heading-1 mb-3">Heading 1 - 메인 제목</h1>
+                <h2 class="heading-2 mb-3">Heading 2 - 섹션 제목</h2>
+                <h3 class="heading-3 mb-3">Heading 3 - 카드 제목</h3>
+                <h4 class="heading-4 mb-3">Heading 4 - 서브 제목</h4>
+            </div>
+            
+            <div class="demo-item">
+                <p class="body-large mb-2">Body Large - 큰 본문 텍스트</p>
+                <p class="body-regular mb-2">Body Regular - 일반 본문 텍스트</p>
+                <p class="body-small mb-2">Body Small - 작은 본문 텍스트</p>
+                <p class="caption mb-2">Caption - 캡션 텍스트</p>
+                <p class="label">Label - 라벨 텍스트</p>
+            </div>
+        </section>
+        
+        <!-- 6. 컬러 팔레트 -->
+        <section class="demo-section">
+            <h2 class="heading-2">6. 컬러 팔레트 (Color Palette)</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3>Primary Lavender</h3>
+                    <div style="background: var(--primary-lavender); height: 60px; border-radius: 12px; margin-bottom: 8px;"></div>
+                    <code>#E0D7E6</code>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Primary Blush</h3>
+                    <div style="background: var(--primary-blush); height: 60px; border-radius: 12px; margin-bottom: 8px;"></div>
+                    <code>#F3E6E6</code>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Secondary Purple</h3>
+                    <div style="background: var(--secondary-purple); height: 60px; border-radius: 12px; margin-bottom: 8px;"></div>
+                    <code>#D0C7E8</code>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Secondary Pink</h3>
+                    <div style="background: var(--secondary-pink); height: 60px; border-radius: 12px; margin-bottom: 8px;"></div>
+                    <code>#F8D7DC</code>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 7. 네비게이션 -->
+        <section class="demo-section">
+            <h2 class="heading-2">7. 네비게이션 (Navigation)</h2>
+            
+            <div class="demo-item">
+                <p class="body-regular text-secondary mb-4">하단 네비게이션 바는 화면 아래에 고정됩니다.</p>
+                <p class="body-small text-muted">이 데모에서는 상대 위치로 표시됩니다.</p>
+            </div>
+        </section>
+        
+        <!-- 8. 애니메이션 -->
+        <section class="demo-section">
+            <h2 class="heading-2">8. 애니메이션 (Animations)</h2>
+            
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <h3>Fade In</h3>
+                    <div class="card animate-fade-in">
+                        <p class="body-regular">페이드 인 애니메이션</p>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Fade In Up</h3>
+                    <div class="card animate-fade-in-up">
+                        <p class="body-regular">페이드 인 업 애니메이션</p>
+                    </div>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Slide In Right</h3>
+                    <div class="card animate-slide-in-right">
+                        <p class="body-regular">슬라이드 인 라이트 애니메이션</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <button class="bottom-nav-item active">
+            <i class="fas fa-home" style="font-size: 20px;"></i>
+            홈
+        </button>
+        <button class="bottom-nav-item">
+            <i class="fas fa-map-marker-alt" style="font-size: 20px;"></i>
+            지역
+        </button>
+        <button class="fab-center">
+            <i class="fas fa-balance-scale" style="font-size: 16px;"></i>
+        </button>
+        <button class="bottom-nav-item">
+            <i class="fas fa-gift" style="font-size: 20px;"></i>
+            혜택
+        </button>
+        <button class="bottom-nav-item">
+            <i class="fas fa-user" style="font-size: 20px;"></i>
+            내정보
+        </button>
+    </nav>
+    
+    <!-- Floating Action Button -->
+    <button class="fab" title="견적 요청">
+        <i class="fas fa-plus" style="font-size: 24px;"></i>
+    </button>
+</body>
+</html>
