@@ -2199,7 +2199,7 @@
         </div>
     </header>
 
-    <!-- ========== 🖼️ 메인 이미지 배너 (v2.8.8.1.50 - 비디오→이미지 교체) ========== -->
+    <!-- ========== 🖼️ 메인 이미지 배너 (v2.8.8.1.53 - 모바일 최적화) ========== -->
     <section class="image-banner-section" style="width: 100%; overflow: hidden; position: relative;">
         <img 
             id="homepage-banner-image"
@@ -2207,25 +2207,36 @@
             alt="합리적 견적! 피부관리실 바로 찾기 - Beautyket"
             loading="eager"
             decoding="async"
-            style="width: 100%; height: auto; display: block; max-height: 400px; object-fit: cover;">
+            style="width: 100%; height: auto; display: block; max-width: 100%; object-fit: cover;">
     </section>
     
     <style>
-        /* 이미지 배너 스타일 (v2.8.8.1.50) */
+        /* 이미지 배너 스타일 (v2.8.8.1.53 - 모바일 이미지 깨짐 수정) */
         .image-banner-section {
             position: relative;
             z-index: 1;
-            background: #f8f9fa;
+            background: #ffffff; /* 흰색 배경 */
         }
         
         #homepage-banner-image {
             will-change: auto;
+            max-width: 100%;
+            height: auto !important;
+            object-fit: contain; /* 이미지 비율 유지 */
         }
         
-        /* 모바일 최적화 */
+        /* 모바일 최적화 (이미지 깨짐 방지) */
         @media (max-width: 768px) {
             #homepage-banner-image {
                 max-height: 250px !important;
+                object-fit: contain !important; /* 비율 유지 + 전체 보이기 */
+                width: 100% !important;
+            }
+            
+            .image-banner-section {
+                background: #ffffff; /* 여백 흰색 */
+                padding: 0;
+                margin: 0;
             }
         }
         
@@ -2233,6 +2244,15 @@
         @media (min-width: 769px) and (max-width: 1024px) {
             #homepage-banner-image {
                 max-height: 300px !important;
+                object-fit: contain !important;
+            }
+        }
+        
+        /* 데스크탑 */
+        @media (min-width: 1025px) {
+            #homepage-banner-image {
+                max-height: 400px;
+                object-fit: cover; /* 데스크탑은 cover */
             }
         }
         
