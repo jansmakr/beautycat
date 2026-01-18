@@ -2199,52 +2199,56 @@
         </div>
     </header>
 
-    <!-- ========== 🖼️ 메인 이미지 배너 (v2.8.8.1.53 - 모바일 깨짐 수정) ========== -->
+    <!-- ========== 🖼️ 메인 이미지 배너 (v2.8.8.1.55 - 새 배너 이미지 적용) ========== -->
     <section class="image-banner-section" style="width: 100%; overflow: hidden; position: relative; background: #ffffff;">
         <img 
             id="homepage-banner-image"
-            src="images/homepage-banner.jpg"
-            alt="합리적 견적! 피부관리실 바로 찾기 - Beautyket"
+            src="images/homepage-banner-new.jpg"
+            alt="실시간 견적?! 피부관리실 찾기 | 뷰티켓 - Beautyket"
             loading="eager"
             decoding="async"
             style="width: 100%; height: auto; display: block;">
     </section>
     
     <style>
-        /* 이미지 배너 스타일 (v2.8.8.1.53 - 모바일 깨짐 수정) */
+        /* 이미지 배너 스타일 (v2.8.8.1.55 - 새 배너 이미지 적용) */
         .image-banner-section {
             position: relative;
             z-index: 1;
-            background: #ffffff !important;
+            background: linear-gradient(135deg, #FFE8F0 0%, #F3E5F5 100%) !important;
         }
         
         #homepage-banner-image {
             will-change: auto;
             max-width: 100%;
-            object-fit: contain; /* 기본값: contain */
+            width: 100%;
+            object-fit: cover; /* 기본값: cover로 변경 (새 이미지는 가로형) */
         }
         
-        /* 모바일 최적화 (이미지 전체 보이기) */
+        /* 모바일 최적화 (새 배너에 최적화) */
         @media (max-width: 768px) {
             #homepage-banner-image {
-                max-height: 250px !important;
-                object-fit: contain !important;
+                max-height: 200px !important;
+                object-fit: cover !important;
+                object-position: center center;
             }
         }
         
         /* 태블릿 */
         @media (min-width: 769px) and (max-width: 1024px) {
             #homepage-banner-image {
-                max-height: 300px !important;
-                object-fit: contain !important;
+                max-height: 280px !important;
+                object-fit: cover !important;
+                object-position: center center;
             }
         }
         
         /* 데스크탑 (화면 꽉 채우기) */
         @media (min-width: 1025px) {
             #homepage-banner-image {
-                max-height: 400px !important;
+                max-height: 350px !important;
                 object-fit: cover !important;
+                object-position: center center;
             }
         }
         
