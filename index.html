@@ -559,10 +559,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- 폰트 최적화 (비동기 로딩 + font-display: swap + 필수 웨이트만) -->
-    <!-- Pretendard: 400(regular), 600(semibold), 700(bold)만 사용 (300, 500, 800 제거) -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+    <!-- 폰트 최적화 (font-display: swap + 필수 웨이트만) (v2.8.8.1.60 - preload 경고 수정) -->
+    <!-- Pretendard: 400(regular), 600(semibold), 700(bold)만 사용 -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS (비동기 로딩 - 렌더 차단 제거) -->
     <link rel="preload" href="css/tailwind-compiled.css?v=2.6.1.3" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -1998,16 +1997,16 @@
 <body style="background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);">
     <!-- 로딩 화면 제거 (v2.8.13.6.21 - 모바일 최적화) -->
 
-    <!-- 심플 헤더 (v2.8.8.1.33 - 로고 복원) -->
+    <!-- 심플 헤더 (v2.8.8.1.63 - 로고 크기 확대 + 헤더 높이 조정) -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <div class="max-w-7xl mx-auto px-4 py-3">
+        <div class="max-w-7xl mx-auto px-4 py-2">
             <div class="flex items-center justify-between">
                 <!-- 왼쪽 공간 -->
                 <div style="flex: 1;"></div>
                 
                 <!-- 가운데 로고 -->
                 <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center;">
-                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket - 피부관리실 견적비교 플랫폼" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 20px !important; width: auto !important;">
+                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket - 피부관리실 견적비교 플랫폼" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
                 </a>
                 
                 <!-- 오른쪽 로그인/프로필 아이콘 -->
@@ -2151,12 +2150,10 @@
                     }
                 
                 <style>
-                    /* 로고 모바일 최적화 (v2.8.8.1.57 - 높이 50% 축소) */
-                    @media (max-width: 768px) {
-                        .logo-container img {
-                            height: 18px !important;
-                            width: auto !important;
-                        }
+                    /* 로고 크기 통일 (v2.8.8.1.63 - 모바일도 데스크탑과 동일) */
+                    .logo-container img {
+                        height: 40px !important;
+                        width: auto !important;
                     }
                     
                     /* 로고 애니메이션 */
@@ -2164,6 +2161,14 @@
                         transform: scale(1.03);
                         transition: transform 0.2s ease;
                         filter: brightness(1.05);
+                    }
+                    
+                    /* 모바일 헤더 높이 축소 (v2.8.8.1.63) */
+                    @media (max-width: 768px) {
+                        header .max-w-7xl {
+                            padding-top: 0.5rem !important;
+                            padding-bottom: 0.5rem !important;
+                        }
                     }
                 </style>
                 
@@ -2198,6 +2203,68 @@
             </div>
         </div>
     </header>
+
+    <!-- ========== 📜 특허 기반 배지 (v2.8.8.1.62) ========== -->
+    <div class="patent-badge-section" style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-bottom: 2px solid #F59E0B; padding: 12px 0; text-align: center;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; background: white; border-radius: 50px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);">
+            <i class="fas fa-certificate" style="color: #F59E0B; font-size: 20px;"></i>
+            <span style="font-size: 15px; font-weight: 700; color: #92400E; letter-spacing: -0.3px;">
+                특허기반 최적의 피부관리실 매칭
+            </span>
+            <i class="fas fa-shield-alt" style="color: #F59E0B; font-size: 18px;"></i>
+        </div>
+    </div>
+    
+    <style>
+        /* 특허 배지 애니메이션 (v2.8.8.1.62) */
+        .patent-badge-section {
+            animation: fadeInDown 0.6s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .patent-badge-section:hover {
+            background: linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%) !important;
+        }
+        
+        /* 모바일 최적화 */
+        @media (max-width: 768px) {
+            .patent-badge-section {
+                padding: 10px 0;
+            }
+            
+            .patent-badge-section > div {
+                padding: 6px 16px !important;
+                gap: 6px !important;
+            }
+            
+            .patent-badge-section i:first-child,
+            .patent-badge-section i:last-child {
+                font-size: 16px !important;
+            }
+            
+            .patent-badge-section span {
+                font-size: 12px !important;
+                letter-spacing: -0.2px !important;
+            }
+        }
+        
+        /* 태블릿 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .patent-badge-section span {
+                font-size: 14px !important;
+            }
+        }
+    </style>
 
     <!-- ========== 🖼️ 메인 이미지 배너 (v2.8.8.1.55 - 새 배너 이미지 적용) ========== -->
     <section class="image-banner-section" style="width: 100%; overflow: hidden; position: relative; background: #ffffff;">
@@ -2265,8 +2332,8 @@
         }
     </style>
 
-    <!-- ========== 상단 띠 배너 (v2.8.13.6.62 - Phase 1: 속도 조정) ========== -->
-    <div class="announcement-marquee" data-version="v2.8.13.6.62" onclick="window.location.href='announcements.html'" style="background: linear-gradient(135deg, #FFE8F0 0%, #FFF0F5 100%); border-bottom: 1px solid #FFD4E5; padding: 10px 0; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
+    <!-- ========== 상단 띠 배너 (v2.8.8.1.63 - 황금색 배경) ========== -->
+    <div class="announcement-marquee" data-version="v2.8.8.1.63" onclick="window.location.href='announcements.html'" style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-bottom: 2px solid #F59E0B; padding: 10px 0; overflow: hidden; cursor: pointer; transition: all 0.3s ease;">
         <div class="marquee-content" style="display: flex; animation: marqueeScroll 60s linear infinite; white-space: nowrap;">
             <span style="display: inline-block; padding: 0 50px; font-size: 14px; font-weight: 600; color: #2D3748;">
                 🎉 신규 회원 첫 시술 20% 할인 이벤트 진행 중!
@@ -2294,10 +2361,10 @@
             animation-timing-function: linear;
             will-change: transform;
         }
-        /* 마퀴 배너 호버 효과 */
+        /* 마퀴 배너 호버 효과 (v2.8.8.1.63 - 황금색) */
         .announcement-marquee:hover {
-            background: linear-gradient(135deg, #FFD4E5 0%, #FFE8F0 100%) !important;
-            box-shadow: 0 2px 8px rgba(255, 20, 147, 0.2);
+            background: linear-gradient(135deg, #FDE68A 0%, #FCD34D 100%) !important;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
         }
         @media (max-width: 768px) {
             .announcement-marquee {
