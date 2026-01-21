@@ -2996,6 +2996,35 @@
                     </div>
                 </div>
 
+                <!-- 🏆 지역 대표 피부관리실 섹션 (v2.8.8.1.75) -->
+                <div class="space-y-6 sm:space-y-8 mb-12" id="representative-shops">
+                    <div class="text-center">
+                        <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
+                            🏆 지역 대표 피부관리실
+                        </h3>
+                        <p class="text-sm sm:text-base text-gray-600">
+                            Beautyket이 인증한 각 지역 최고의 피부관리실을 만나보세요
+                        </p>
+                    </div>
+
+                    <!-- 대표 샵 리스트 (상위 6개) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" id="shops-grid">
+                        <!-- JavaScript로 동적 로딩 -->
+                        <div class="col-span-full text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-pink-500 text-2xl mb-2"></i>
+                            <p class="text-gray-600">샵 정보를 불러오는 중...</p>
+                        </div>
+                    </div>
+
+                    <!-- 더 보기 버튼 -->
+                    <div class="text-center mt-6">
+                        <a href="region.html" class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
+                            <span>전체 샵 보기</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- 사용 메뉴얼 -->
                 <div class="space-y-4 sm:space-y-6">
                     <h3 class="text-xl sm:text-2xl font-bold text-center text-gray-800 mb-6 sm:mb-8">
@@ -3585,6 +3614,113 @@
     <script src="js/regional-matching.js?v=2.5.4" defer></script>
     <!-- announcement-sidebar.js 제거 (v2.8.13.6.23 - 인라인 슬라이더로 대체) -->
     
+    <script>
+        // 🏪 지역 대표 피부관리실 로딩 (v2.8.8.1.75)
+        async function loadShopsOnIndexPage() {
+            const shopsGrid = document.getElementById('shops-grid');
+            if (!shopsGrid) return;
+
+            try {
+                // shops 테이블에서 대표샵 데이터 불러오기
+                const response = await fetch('tables/shops?limit=6&sort=rating');
+                const result = await response.json();
+                
+                if (result.data && result.data.length > 0) {
+                    const shops = result.data;
+                    
+                    // 샵 카드 HTML 생성
+                    const shopsHTML = shops.map(shop => `
+                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all border border-pink-100 group">
+                            <!-- 샵 이미지 -->
+                            <div class="relative h-48 overflow-hidden bg-gray-100">
+                                <img 
+                                    data-src="${shop.image_url}" 
+                                    alt="${shop.shop_name}"
+                                    class="lazy w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                    onerror="this.src='https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=400'"
+                                >
+                                <div class="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                                    ⭐ ${shop.rating || 4.5}
+                                </div>
+                                ${shop.is_representative ? '<div class="absolute top-3 right-3 bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold">🏆 지역대표</div>' : ''}
+                            </div>
+                            
+                            <!-- 샵 정보 -->
+                            <div class="p-4">
+                                <h4 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1">${shop.shop_name}</h4>
+                                <p class="text-sm text-gray-600 mb-3 flex items-start gap-2">
+                                    <i class="fas fa-map-marker-alt text-pink-500 mt-1"></i>
+                                    <span class="line-clamp-2">${shop.address}</span>
+                                </p>
+                                
+                                <!-- 태그 -->
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    ${(shop.tags || []).slice(0, 3).map(tag => 
+                                        `<span class="bg-pink-50 text-pink-600 px-2 py-1 rounded-full text-xs">#${tag}</span>`
+                                    ).join('')}
+                                </div>
+                                
+                                <!-- 하단 정보 -->
+                                <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                                    <div class="text-xs text-gray-500">
+                                        <i class="fas fa-comment text-pink-400"></i>
+                                        리뷰 ${shop.review_count || 0}개
+                                    </div>
+                                    <a href="tel:${shop.phone}" class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all">
+                                        <i class="fas fa-phone-alt mr-1"></i>
+                                        전화하기
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    shopsGrid.innerHTML = shopsHTML;
+                    
+                    // Lazy loading 이미지 Observer 다시 적용
+                    if ('IntersectionObserver' in window) {
+                        const imageObserver = new IntersectionObserver((entries, observer) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    const img = entry.target;
+                                    if (img.dataset.src) {
+                                        img.src = img.dataset.src;
+                                        img.removeAttribute('data-src');
+                                        observer.unobserve(img);
+                                    }
+                                }
+                            });
+                        });
+                        
+                        shopsGrid.querySelectorAll('img[data-src]').forEach(img => imageObserver.observe(img));
+                    }
+                } else {
+                    // 데이터가 없을 경우
+                    shopsGrid.innerHTML = `
+                        <div class="col-span-full text-center py-8">
+                            <p class="text-gray-600">등록된 샵이 없습니다.</p>
+                            <a href="shop-registration.html" class="inline-block mt-4 text-pink-500 hover:underline">
+                                <i class="fas fa-plus-circle mr-1"></i>
+                                첫 샵 등록하기
+                            </a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('샵 데이터 로딩 실패:', error);
+                shopsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-exclamation-circle text-red-500 text-2xl mb-2"></i>
+                        <p class="text-gray-600">샵 정보를 불러오는 데 실패했습니다.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', loadShopsOnIndexPage);
+    </script>
+
     <script>
         // 🚀 모바일 성능 최적화 스크립트
         

@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- v2.8.8.1.75: Font Awesome 아이콘 추가 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     
     <style>
         * {
@@ -320,15 +322,18 @@
                 } else {
                     console.log('⚠️ 하드코딩 없음, 데이터에서 추출 시도');
                     
-                    const [shopsResponse, publicResponse] = await Promise.all([
+                    // v2.8.8.1.75: shops 테이블 추가
+                    const [shopsResponse, publicResponse, newShopsResponse] = await Promise.all([
                         fetch(`/tables/skincare_shops?limit=50000`),
-                        fetch(`/tables/public_skincare_data?limit=50000`)
+                        fetch(`/tables/public_skincare_data?limit=50000`),
+                        fetch(`/tables/shops?limit=50000`)
                     ]);
                     
                     const shopsData = await shopsResponse.json();
                     const publicData = await publicResponse.json();
+                    const newShopsData = await newShopsResponse.json();
                     
-                    const allShops = [...shopsData.data, ...publicData.data];
+                    const allShops = [...shopsData.data, ...publicData.data, ...newShopsData.data];
                     
                     districts = [...new Set(allShops
                         .filter(shop => {
@@ -397,18 +402,22 @@
                 } else {
                     // 처음에만 API 호출
                     console.log('📡 API에서 데이터 로드 중...');
-                    const [shopsResponse, publicResponse] = await Promise.all([
+                    // v2.8.8.1.75: shops 테이블 추가
+                    const [shopsResponse, publicResponse, newShopsResponse] = await Promise.all([
                         fetch(`/tables/skincare_shops?limit=50000`),
-                        fetch(`/tables/public_skincare_data?limit=50000`)
+                        fetch(`/tables/public_skincare_data?limit=50000`),
+                        fetch(`/tables/shops?limit=50000`)
                     ]);
                     
                     const shopsData = await shopsResponse.json();
                     const publicData = await publicResponse.json();
+                    const newShopsData = await newShopsResponse.json();
                     
                     console.log('📊 일반 샵 수:', shopsData.data.length);
                     console.log('📊 공공 데이터 수:', publicData.data.length);
+                    console.log('📊 신규 샵 수:', newShopsData.data.length);
                     
-                    shops = [...shopsData.data, ...publicData.data];
+                    shops = [...shopsData.data, ...publicData.data, ...newShopsData.data];
                     console.log('📊 병합 후 전체 샵 수:', shops.length);
                     
                     // 중복 제거
@@ -495,12 +504,26 @@
                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">해당 지역에 등록된 샵이 없습니다.</p>';
                 return;
             }
-            
+            // v2.8.8.1.75: 이미지와 태그 추가
             grid.innerHTML = shops.map(shop => `
                 <div class="shop-card" onclick="window.location.href='/shop-detail.html?id=${shop.id}'">
+                    ${shop.image_url ? `
+                    <div class="shop-image" style="width: 100%; height: 200px; overflow: hidden; border-radius: 8px 8px 0 0; margin: -1.5rem -1.5rem 1rem -1.5rem;">
+                        <img src="${shop.image_url}" alt="${escapeHtml(shop.business_name || shop.shop_name || shop.name || '')}" 
+                             style="width: 100%; height: 100%; object-fit: cover;"
+                             onerror="this.style.display='none'">
+                    </div>
+                    ` : ''}
                     <div class="shop-name">${escapeHtml(shop.business_name || shop.shop_name || shop.name || '이름 없음')}</div>
                     <div class="shop-address">${escapeHtml(shop.address || '주소 정보 없음')}</div>
-                    <div class="shop-status">${shop.status || '영업중'}</div>
+                    ${shop.phone ? `<div class="shop-phone" style="color: #ff2d92; margin-top: 0.5rem;"><i class="fas fa-phone"></i> ${escapeHtml(shop.phone)}</div>` : ''}
+                    ${shop.rating ? `<div class="shop-rating" style="color: #ffa500; margin-top: 0.5rem;"><i class="fas fa-star"></i> ${shop.rating} (리뷰 ${shop.review_count || 0})</div>` : ''}
+                    ${shop.tags && shop.tags.length > 0 ? `
+                    <div class="shop-tags" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${shop.tags.slice(0, 3).map(tag => `<span style="background: #fff0f8; color: #ff2d92; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem;">#${tag}</span>`).join('')}
+                    </div>
+                    ` : ''}
+                    <div class="shop-status" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">${shop.status || '영업중'}</div>
                 </div>
             `).join('');
         }
