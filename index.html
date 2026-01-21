@@ -1999,14 +1999,14 @@
 
     <!-- 심플 헤더 (v2.8.8.1.63 - 로고 크기 확대 + 헤더 높이 조정) -->
     <header class="simple-header border-b border-gray-200" style="position: sticky; top: 0; z-index: 1000 !important; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <div class="max-w-7xl mx-auto px-4 py-2">
+        <div class="max-w-7xl mx-auto px-4 py-1">
             <div class="flex items-center justify-between">
                 <!-- 왼쪽 공간 -->
                 <div style="flex: 1;"></div>
                 
                 <!-- 가운데 로고 -->
                 <a href="index.html" class="logo-container" style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center;">
-                    <img src="images/beautyket-logo-full.png?v=2025122404" alt="Beautyket - 피부관리실 견적비교 플랫폼" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important;">
+                    <img src="https://raw.githubusercontent.com/jansmakr/beautyket/main/images/beautyket-logo-full.png" alt="Beautyket - 피부관리실 견적비교 플랫폼" class="beautyket-main-logo" loading="eager" decoding="async" style="height: 40px !important; width: auto !important; onerror="this.style.display='none'">
                 </a>
                 
                 <!-- 오른쪽 로그인/프로필 아이콘 -->
@@ -2163,11 +2163,11 @@
                         filter: brightness(1.05);
                     }
                     
-                    /* 모바일 헤더 높이 축소 (v2.8.8.1.63) */
+                    /* 모바일 헤더 높이 축소 (v2.8.8.1.66 - 반으로 축소) */
                     @media (max-width: 768px) {
                         header .max-w-7xl {
-                            padding-top: 0.5rem !important;
-                            padding-bottom: 0.5rem !important;
+                            padding-top: 0.25rem !important;
+                            padding-bottom: 0.25rem !important;
                         }
                     }
                 </style>
@@ -2274,7 +2274,7 @@
     <section class="image-banner-section" style="width: 100%; overflow: hidden; position: relative; background: #ffffff;">
         <img 
             id="homepage-banner-image"
-            src="images/homepage-banner-new.jpg"
+            src="https://raw.githubusercontent.com/jansmakr/beautyket/main/images/homepage-banner-new.jpg"
             alt="실시간 견적?! 피부관리실 찾기 | 뷰티켓 - Beautyket"
             loading="eager"
             decoding="async"
@@ -2815,7 +2815,7 @@
             
             <div class="max-w-3xl mx-auto" style="margin-left: auto; margin-right: auto;">
                 <img 
-                    src="images/customer-reviews.png" 
+                    src="https://raw.githubusercontent.com/jansmakr/beautyket/main/images/customer-reviews.png" 
                     alt="고객 후기 - 실제 이용 후기" 
                     loading="lazy"
                     decoding="async"
