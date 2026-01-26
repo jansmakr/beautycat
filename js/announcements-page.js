@@ -42,10 +42,9 @@ async function loadAdminAnnouncements() {
         const data = await response.json();
         const announcements = data.data || [];
         
-        // 게시중이고, 고객/전체 대상 공지만 필터링
+        // 게시중이고 (status === 'published') 공지 필터링
         allAdminAnnouncements = announcements.filter(ann => {
-            return ann.is_published && 
-                   (ann.target_audience === 'customers' || ann.target_audience === 'all');
+            return ann.status === 'published';
         });
         
         // 상단 고정 공지가 먼저 오도록 정렬
@@ -87,8 +86,8 @@ async function loadShopAnnouncements() {
         const data = await response.json();
         allShopAnnouncements = data.data || [];
         
-        // 게시중인 것만 필터링
-        allShopAnnouncements = allShopAnnouncements.filter(ann => ann.is_published);
+        // 게시중인 것만 필터링 (status === 'published')
+        allShopAnnouncements = allShopAnnouncements.filter(ann => ann.status === 'published');
         
         console.log(`Loaded ${allShopAnnouncements.length} shop announcements`);
         
@@ -166,7 +165,7 @@ function displayAdminAnnouncements() {
                                 <i class="far fa-calendar mr-1"></i>${createdDate}
                             </span>
                             <span>
-                                <i class="far fa-eye mr-1"></i>조회 ${ann.views || 0}회
+                                <i class="far fa-eye mr-1"></i>조회 ${formatViewCount(ann.view_count || 0)}회
                             </span>
                         </div>
                     </div>
@@ -218,7 +217,7 @@ function displayShopAnnouncements(announcements) {
                                 <i class="far fa-calendar mr-1"></i>${createdDate}
                             </span>
                             <span>
-                                <i class="far fa-eye mr-1"></i>조회 ${ann.views || 0}회
+                                <i class="far fa-eye mr-1"></i>조회 ${formatViewCount(ann.view_count || 0)}회
                             </span>
                         </div>
                     </div>
@@ -249,7 +248,7 @@ async function viewAnnouncement(type, announcementId) {
     document.getElementById('modal-title').textContent = announcement.title;
     document.getElementById('modal-content').textContent = announcement.content;
     document.getElementById('modal-date').textContent = formatDate(announcement.created_at || announcement.publish_date);
-    document.getElementById('modal-views').textContent = announcement.views || 0;
+    document.getElementById('modal-views').textContent = formatViewCount(announcement.view_count || 0);
     
     // 관리자 공지인 경우 우선순위 배지
     if (type === 'admin') {
@@ -383,18 +382,17 @@ async function incrementViews(type, announcementId) {
         }
         
         const announcement = await getResponse.json();
-        const currentViews = announcement.views || 0;
+        const currentViews = announcement.view_count || 0;
         const newViews = currentViews + 1;
         
-        // 2. 조회수 업데이트 (PUT 방식)
+        // 2. 조회수 업데이트 (PATCH 방식 - 부분 업데이트)
         const updateResponse = await fetch(`tables/${tableName}/${announcementId}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ...announcement,
-                views: newViews
+                view_count: newViews
             })
         });
         
@@ -405,12 +403,12 @@ async function incrementViews(type, announcementId) {
             if (type === 'admin') {
                 const index = allAdminAnnouncements.findIndex(a => a.id === announcementId);
                 if (index !== -1) {
-                    allAdminAnnouncements[index].views = newViews;
+                    allAdminAnnouncements[index].view_count = newViews;
                 }
             } else {
                 const index = allShopAnnouncements.findIndex(a => a.id === announcementId);
                 if (index !== -1) {
-                    allShopAnnouncements[index].views = newViews;
+                    allShopAnnouncements[index].view_count = newViews;
                 }
             }
             
@@ -460,6 +458,12 @@ function formatDate(dateString) {
         month: 'long',
         day: 'numeric'
     });
+}
+
+// 조회수 포맷 (v2.8.8.1.77 - 천 단위 구분)
+function formatViewCount(count) {
+    if (!count) return '0';
+    return count.toLocaleString('ko-KR');
 }
 
 // HTML 이스케이프

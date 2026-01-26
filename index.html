@@ -755,6 +755,36 @@
             cursor: pointer;
             transition: transform 0.3s;
         }
+        
+        /* ========== 🔴 데스크탑 → 모바일 스타일 강제 적용 (v2.8.8.1.77) ========== */
+        /* 모든 화면 크기에서 모바일 레이아웃 유지 */
+        @media (min-width: 769px) {
+            body {
+                max-width: 500px !important; /* 모바일 최대 너비 강제 */
+                margin: 0 auto !important; /* 중앙 정렬 */
+                box-shadow: 0 0 20px rgba(0,0,0,0.1) !important; /* 좌우 그림자 효과 */
+            }
+            
+            /* 데스크탑에서도 모바일 글자 크기 사용 */
+            .text-5xl {
+                font-size: 3rem !important; /* 모바일 크기 */
+            }
+            
+            .text-7xl {
+                font-size: 4.5rem !important; /* 모바일 크기 */
+            }
+            
+            /* 모든 섹션 모바일 패딩 강제 */
+            section {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            /* 버튼들도 모바일 스타일 유지 */
+            .cta-button-phone, .cta-button-quote {
+                max-width: 100% !important;
+            }
+        }
     </style>
     
     <!-- 🎨 야놀자 스타일 CSS 추가 -->
@@ -2293,32 +2323,36 @@
             will-change: auto;
             max-width: 100%;
             width: 100%;
-            object-fit: cover; /* 기본값: cover로 변경 (새 이미지는 가로형) */
+            height: auto; /* 이미지 비율 유지 */
+            object-fit: contain; /* contain으로 변경하여 이미지 전체 표시 (잘림 방지) */
         }
         
-        /* 모바일 최적화 (새 배너에 최적화) */
+        /* 모바일 최적화 (새 배너에 최적화 - 잘림 방지) */
         @media (max-width: 768px) {
             #homepage-banner-image {
-                max-height: 200px !important;
-                object-fit: cover !important;
+                max-height: none; /* 높이 제한 제거 */
+                height: auto;
+                object-fit: contain !important; /* 전체 이미지 표시 */
                 object-position: center center;
             }
         }
         
-        /* 태블릿 */
+        /* 태블릿 (잘림 방지) */
         @media (min-width: 769px) and (max-width: 1024px) {
             #homepage-banner-image {
-                max-height: 280px !important;
-                object-fit: cover !important;
+                max-height: none; /* 높이 제한 제거 */
+                height: auto;
+                object-fit: contain !important; /* 전체 이미지 표시 */
                 object-position: center center;
             }
         }
         
-        /* 데스크탑 (화면 꽉 채우기) */
+        /* 데스크탑 (잘림 방지) */
         @media (min-width: 1025px) {
             #homepage-banner-image {
-                max-height: 350px !important;
-                object-fit: cover !important;
+                max-height: none; /* 높이 제한 제거 */
+                height: auto;
+                object-fit: contain !important; /* 전체 이미지 표시 */
                 object-position: center center;
             }
         }
@@ -3609,25 +3643,23 @@
     <script src="js/legal-contents.js?v=2.4.1" defer></script>
     <script src="js/config.js?v=2.5.4" defer></script>
     <script src="js/logger.js?v=2.5.4" defer></script>
+    <script src="js/fallback-data.js?v=2.8.8.1.75" defer></script>
     <script src="js/main.js?v=2.8.8.1.46" defer></script>
     <script src="js/auth.js?v=2.5.4" defer></script>
     <script src="js/regional-matching.js?v=2.5.4" defer></script>
     <!-- announcement-sidebar.js 제거 (v2.8.13.6.23 - 인라인 슬라이더로 대체) -->
     
     <script>
-        // 🏪 지역 대표 피부관리실 로딩 (v2.8.8.1.75)
+        // 🏪 지역 대표 피부관리실 로딩 (v2.8.8.1.76 - Fallback 지원)
         async function loadShopsOnIndexPage() {
             const shopsGrid = document.getElementById('shops-grid');
             if (!shopsGrid) return;
 
             try {
-                // shops 테이블에서 대표샵 데이터 불러오기
-                const response = await fetch('tables/shops?limit=6&sort=rating');
-                const result = await response.json();
+                // Fallback 지원 함수 사용
+                const shops = await window.loadShopsWithFallback(6, 'rating');
                 
-                if (result.data && result.data.length > 0) {
-                    const shops = result.data;
-                    
+                if (shops && shops.length > 0) {
                     // 샵 카드 HTML 생성
                     const shopsHTML = shops.map(shop => `
                         <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all border border-pink-100 group">
@@ -3718,7 +3750,24 @@
         }
 
         // 페이지 로드 시 실행
-        document.addEventListener('DOMContentLoaded', loadShopsOnIndexPage);
+        document.addEventListener('DOMContentLoaded', () => {
+            // fallback-data.js 로드 대기
+            const checkFallback = setInterval(() => {
+                if (window.loadShopsWithFallback) {
+                    clearInterval(checkFallback);
+                    loadShopsOnIndexPage();
+                }
+            }, 100);
+            
+            // 5초 후에도 로드 안되면 강제 실행
+            setTimeout(() => {
+                clearInterval(checkFallback);
+                if (!window.loadShopsWithFallback) {
+                    console.warn('⚠️ Fallback 스크립트 로드 실패, 기본 로직 사용');
+                    loadShopsOnIndexPage();
+                }
+            }, 5000);
+        });
     </script>
 
     <script>
