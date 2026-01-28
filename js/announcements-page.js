@@ -44,10 +44,8 @@ async function loadAdminAnnouncements() {
         
         console.log('📊 원본 공지사항 데이터:', announcements);
         
-        // 게시중이고 (status === 'published') 공지 필터링
-        allAdminAnnouncements = announcements.filter(ann => {
-            return ann.status === 'published';
-        });
+        // 모든 공지 표시 (필터링 제거)
+        allAdminAnnouncements = announcements;
         
         console.log('✅ 필터링된 공지사항:', allAdminAnnouncements);
         
@@ -97,8 +95,8 @@ async function loadShopAnnouncements() {
         
         console.log('📊 원본 업체 공지 데이터:', allShopAnnouncements);
         
-        // 게시중인 것만 필터링 (status === 'published')
-        allShopAnnouncements = allShopAnnouncements.filter(ann => ann.status === 'published');
+        // 모든 공지 표시 (필터링 제거)
+        // allShopAnnouncements는 이미 할당됨
         
         console.log(`Loaded ${allShopAnnouncements.length} shop announcements`);
         
