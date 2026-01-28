@@ -42,10 +42,14 @@ async function loadAdminAnnouncements() {
         const data = await response.json();
         const announcements = data.data || [];
         
+        console.log('📊 원본 공지사항 데이터:', announcements);
+        
         // 게시중이고 (status === 'published') 공지 필터링
         allAdminAnnouncements = announcements.filter(ann => {
             return ann.status === 'published';
         });
+        
+        console.log('✅ 필터링된 공지사항:', allAdminAnnouncements);
         
         // 상단 고정 공지가 먼저 오도록 정렬
         allAdminAnnouncements.sort((a, b) => {
@@ -55,6 +59,11 @@ async function loadAdminAnnouncements() {
         });
         
         console.log(`Loaded ${allAdminAnnouncements.length} admin announcements`);
+        
+        // 첫 번째 공지사항의 view_count 확인
+        if (allAdminAnnouncements.length > 0) {
+            console.log('🔍 첫 번째 공지사항 view_count:', allAdminAnnouncements[0].view_count);
+        }
         
         displayAdminAnnouncements();
         
@@ -86,10 +95,17 @@ async function loadShopAnnouncements() {
         const data = await response.json();
         allShopAnnouncements = data.data || [];
         
+        console.log('📊 원본 업체 공지 데이터:', allShopAnnouncements);
+        
         // 게시중인 것만 필터링 (status === 'published')
         allShopAnnouncements = allShopAnnouncements.filter(ann => ann.status === 'published');
         
         console.log(`Loaded ${allShopAnnouncements.length} shop announcements`);
+        
+        // 첫 번째 업체 공지의 view_count 확인
+        if (allShopAnnouncements.length > 0) {
+            console.log('🔍 첫 번째 업체 공지 view_count:', allShopAnnouncements[0].view_count);
+        }
         
         displayShopAnnouncements(allShopAnnouncements);
         
