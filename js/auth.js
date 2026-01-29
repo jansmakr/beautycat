@@ -299,6 +299,32 @@ async function handleLogin(e) {
         }
         
         if (result.success) {
+            // 🔑 v2.8.8.1.82: 비밀번호 재설정 필요 확인
+            if (result.user.password_reset_required === true) {
+                console.log('⚠️ 비밀번호 재설정 필요:', result.user.email);
+                
+                // 임시 세션 저장 (비밀번호 변경 후 로그인 유지용)
+                const tempSessionData = {
+                    user_id: result.user.id,
+                    user_type: result.user.user_type,
+                    name: result.user.name,
+                    session_token: result.token,
+                    password_reset_required: true,
+                    session_expires: new Date(Date.now() + 10 * 60 * 1000).toISOString() // 10분 (짧게 설정)
+                };
+                
+                localStorage.setItem('temp_session_data', JSON.stringify(tempSessionData));
+                
+                // 비밀번호 변경 페이지로 리다이렉트
+                showNotification('관리자가 비밀번호를 초기화했습니다. 새 비밀번호를 설정해주세요.', 'warning');
+                
+                setTimeout(() => {
+                    window.location.href = 'change-password.html';
+                }, 1500);
+                
+                return; // 일반 로그인 플로우 중단
+            }
+            
             // 세션 저장 (이미 processLogin에서 저장됨)
             // saveSession(result.user, result.token, loginData.remember_me);
             

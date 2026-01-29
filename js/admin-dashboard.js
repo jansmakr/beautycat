@@ -578,11 +578,14 @@ function displayUsers(users) {
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button onclick="viewUser('${user.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2">
+                    <button onclick="viewUser('${user.id}')" class="text-indigo-600 hover:text-indigo-900 mr-2" title="사용자 상세보기">
                         보기
                     </button>
-                    <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900 mr-2">
+                    <button onclick="editUser('${user.id}')" class="text-green-600 hover:text-green-900 mr-2" title="사용자 정보 수정">
                         수정
+                    </button>
+                    <button onclick="resetUserPassword('${user.id}')" class="text-yellow-600 hover:text-yellow-900 mr-2" title="비밀번호 초기화">
+                        <i class="fas fa-key"></i>
                     </button>
                     <button onclick="deleteUser('${user.id}')" class="text-red-600 hover:text-red-900" title="사용자 삭제">
                         삭제
@@ -1757,6 +1760,100 @@ async function deleteUser(userId) {
 }
 
 window.deleteUser = deleteUser;
+
+// Reset user password (v2.8.8.1.82)
+async function resetUserPassword(userId) {
+    try {
+        console.log('🔑 비밀번호 초기화 시작:', userId);
+        
+        const user = allUsers.find(u => u.id === userId);
+        if (!user) {
+            showNotification('사용자를 찾을 수 없습니다.', 'error');
+            return;
+        }
+        
+        // 확인 메시지
+        const confirmed = confirm(`${user.name} (${user.email}) 님의 비밀번호를 초기화하시겠습니까?\n\n초기화된 임시 비밀번호는 화면에 표시됩니다.`);
+        if (!confirmed) {
+            console.log('❌ 비밀번호 초기화 취소됨');
+            return;
+        }
+        
+        // 임시 비밀번호 생성 (8자리: 영문 대소문자 + 숫자)
+        const tempPassword = generateTempPassword();
+        console.log('🔐 임시 비밀번호 생성:', tempPassword);
+        
+        // 비밀번호 해싱
+        const hashedPassword = await window.hashPassword(tempPassword);
+        console.log('🔒 비밀번호 해싱 완료');
+        
+        // 사용자 정보 업데이트
+        const response = await fetch(`tables/users/${userId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                password: hashedPassword,
+                password_reset_required: true,  // 최초 로그인 시 비밀번호 변경 강제
+                password_reset_at: new Date().toISOString()
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('비밀번호 초기화 실패');
+        }
+        
+        const updatedUser = await response.json();
+        console.log('✅ 비밀번호 초기화 완료:', updatedUser);
+        
+        // 임시 비밀번호 표시 (alert)
+        alert(`✅ 비밀번호가 초기화되었습니다.\n\n【 임시 비밀번호 】\n${tempPassword}\n\n⚠️ 이 비밀번호를 사용자에게 안전하게 전달하세요.\n⚠️ 사용자는 다음 로그인 시 비밀번호 변경이 요구됩니다.`);
+        
+        // 클립보드에 복사
+        try {
+            await navigator.clipboard.writeText(tempPassword);
+            console.log('📋 임시 비밀번호 클립보드에 복사됨');
+        } catch (clipboardError) {
+            console.warn('⚠️ 클립보드 복사 실패:', clipboardError);
+        }
+        
+        showNotification(`${user.name} 님의 비밀번호가 초기화되었습니다. 임시 비밀번호가 클립보드에 복사되었습니다.`, 'success');
+        
+        // 사용자 목록 새로고침
+        await loadUsers();
+        
+    } catch (error) {
+        console.error('❌ 비밀번호 초기화 오류:', error);
+        showNotification('비밀번호 초기화 중 오류가 발생했습니다: ' + error.message, 'error');
+    }
+}
+
+// 임시 비밀번호 생성 함수 (8자리: 영문 대소문자 + 숫자)
+function generateTempPassword() {
+    const uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // I, O 제외 (혼동 방지)
+    const lowercase = 'abcdefghijkmnopqrstuvwxyz'; // l 제외 (혼동 방지)
+    const numbers = '23456789'; // 0, 1 제외 (혼동 방지)
+    
+    let password = '';
+    
+    // 최소 1개씩 보장
+    password += uppercase[Math.floor(Math.random() * uppercase.length)];
+    password += lowercase[Math.floor(Math.random() * lowercase.length)];
+    password += numbers[Math.floor(Math.random() * numbers.length)];
+    
+    // 나머지 5자리는 랜덤
+    const allChars = uppercase + lowercase + numbers;
+    for (let i = 0; i < 5; i++) {
+        password += allChars[Math.floor(Math.random() * allChars.length)];
+    }
+    
+    // 랜덤하게 섞기
+    return password.split('').sort(() => Math.random() - 0.5).join('');
+}
+
+window.resetUserPassword = resetUserPassword;
+
 
 // User edit form submission
 document.addEventListener('DOMContentLoaded', function() {
