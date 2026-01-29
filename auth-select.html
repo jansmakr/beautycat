@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시작하기 - BeautyCat | 피부관리실 견적비교 플랫폼</title>
+    
+    <!-- SEO 메타태그 -->
+    <meta name="description" content="BeautyCat 시작하기. 고객으로 시작하시나요? 업체로 시작하시나요? 원하는 서비스를 선택하세요.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://beautyket.kr/auth-select.html">
+    
+    <!-- 🚨 CRITICAL FIX: 최우선 실행 -->
+    <script src="sw-unregister.js"></script>
+    <script src="api-global-override.js?v=2.7.3.4"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/tailwind-production.css">
+    <link rel="stylesheet" href="css/mobile-optimized.css?v=2.1.0">
+    <link rel="stylesheet" href="css/logo-mobile-fix.css?v=2.8.13.6.80">
+    
+    <style>
+        * {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #FFE8F0 0%, #F3E5F5 100%);
+            min-height: 100vh;
+        }
+        
+        .card-soft {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .user-type-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .user-type-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .user-type-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .user-type-card.customer:hover {
+            border-color: #ec4899;
+        }
+        
+        .user-type-card.shop:hover {
+            border-color: #8b5cf6;
+        }
+        
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 48px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-type-card:hover .icon-circle {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .customer .icon-circle {
+            background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+        }
+        
+        .shop .icon-circle {
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            color: #4b5563;
+            font-size: 15px;
+        }
+        
+        .benefit-item i {
+            color: #10b981;
+            font-size: 18px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- 로고 -->
+                <a href="index.html" class="flex items-center space-x-2">
+                    <i class="fas fa-spa text-pink-500 text-2xl"></i>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                        BeautyCat
+                    </span>
+                </a>
+                
+                <!-- 뒤로가기 -->
+                <a href="index.html" class="text-gray-600 hover:text-pink-500 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- 타이틀 -->
+        <div class="text-center mb-12 animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                BeautyCat에 오신 걸<br>환영합니다! 🎉
+            </h1>
+            <p class="text-lg text-gray-600">
+                어떤 서비스를 이용하시나요?
+            </p>
+        </div>
+
+        <!-- 선택 카드 -->
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <!-- 고객 카드 -->
+            <div class="user-type-card customer animate-fade-in-up delay-1">
+                <div class="icon-circle">
+                    🙋‍♀️
+                </div>
+                
+                <h2 class="text-3xl font-bold text-gray-900 text-center mb-3">
+                    고객으로 시작하기
+                </h2>
+                
+                <p class="text-center text-gray-600 mb-6">
+                    피부관리를 받고 싶으신가요?
+                </p>
+                
+                <div class="space-y-2 mb-6">
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>지역별 피부관리실 견적 비교</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>카카오 간편 가입 (3초 완료)</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>실시간 채팅 상담</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>예약 및 리뷰 관리</span>
+                    </div>
+                </div>
+                
+                <button onclick="selectUserType('customer')" class="btn-primary">
+                    <i class="fas fa-user mr-2"></i>
+                    고객으로 시작하기
+                </button>
+            </div>
+
+            <!-- 업체 카드 -->
+            <div class="user-type-card shop animate-fade-in-up delay-2">
+                <div class="icon-circle">
+                    🏪
+                </div>
+                
+                <h2 class="text-3xl font-bold text-gray-900 text-center mb-3">
+                    업체로 시작하기
+                </h2>
+                
+                <p class="text-center text-gray-600 mb-6">
+                    피부관리실을 운영하시나요?
+                </p>
+                
+                <div class="space-y-2 mb-6">
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>타겟 고객 자동 매칭</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>예약 및 상담 관리</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>매출 증대 및 분석</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>업체 프로필 홍보</span>
+                    </div>
+                </div>
+                
+                <button onclick="selectUserType('shop')" class="btn-primary">
+                    <i class="fas fa-store mr-2"></i>
+                    업체로 시작하기
+                </button>
+            </div>
+        </div>
+
+        <!-- 안내 문구 -->
+        <div class="text-center mt-12 animate-fade-in-up delay-3">
+            <p class="text-gray-600 mb-4">
+                이미 계정이 있으신가요?
+            </p>
+            <div class="space-x-4">
+                <a href="login.html?type=customer" class="text-pink-500 font-semibold hover:underline">
+                    고객 로그인
+                </a>
+                <span class="text-gray-400">|</span>
+                <a href="login.html?type=shop" class="text-purple-500 font-semibold hover:underline">
+                    업체 로그인
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fas fa-spa text-pink-500 text-xl mr-2"></i>
+                <h4 class="text-lg font-semibold text-gray-900">BeautyCat</h4>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">
+                피부관리실 견적비교 예약 플랫폼
+            </p>
+            <div class="text-sm text-gray-500">
+                <p>&copy; 2024 BeautyCat. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 사용자 유형 선택 (v2.8.8.1.79)
+        function selectUserType(type) {
+            console.log('선택된 유형:', type);
+            
+            // 회원가입 페이지로 이동
+            window.location.href = `register.html?type=${type}`;
+            
+            // 또는 로그인/가입 선택 모달 표시
+            // showAuthModal(type);
+        }
+        
+        // URL 파라미터에서 action 확인 (login 또는 register)
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        
+        if (action === 'login') {
+            // 로그인 페이지로 직접 이동 요청
+            console.log('로그인 페이지로 이동 준비');
+        }
+    </script>
+</body>
+</html>

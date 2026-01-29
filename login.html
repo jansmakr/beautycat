@@ -905,6 +905,61 @@
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            // 🎯 URL 파라미터 처리 (v2.8.8.1.79)
+            const urlParams = new URLSearchParams(window.location.search);
+            const userTypeParam = urlParams.get('type');
+            
+            if (userTypeParam === 'shop') {
+                // 업체 로그인: 카카오 로그인 및 업체 안내 숨김
+                const kakaoSection = document.querySelector('.mb-6:has(#kakaoLoginBtn)');
+                const shopNotice = document.querySelector('.mb-6.p-4.bg-gradient-to-r');
+                
+                if (kakaoSection) kakaoSection.style.display = 'none';
+                if (shopNotice) shopNotice.style.display = 'none';
+                
+                // 타이틀 변경
+                const titleElement = document.querySelector('h2.text-3xl');
+                if (titleElement) {
+                    titleElement.innerHTML = '<i class="fas fa-store mr-2 text-purple-500"></i>업체 로그인';
+                }
+                
+                // 설명 변경
+                const descElement = document.querySelector('p.text-gray-600');
+                if (descElement) {
+                    descElement.textContent = '피부관리실 업체 회원 로그인';
+                }
+                
+                // 회원가입 링크도 업체용으로 변경
+                const registerLink = document.querySelector('a[href="register.html"]');
+                if (registerLink) {
+                    registerLink.href = 'register.html?type=shop';
+                }
+                
+                console.log('🏪 업체 로그인 모드');
+            } else if (userTypeParam === 'customer') {
+                // 고객 로그인: 기본 표시 (카카오 로그인 표시)
+                
+                // 타이틀 변경
+                const titleElement = document.querySelector('h2.text-3xl');
+                if (titleElement) {
+                    titleElement.innerHTML = '<i class="fas fa-user mr-2 text-pink-500"></i>고객 로그인';
+                }
+                
+                // 설명 변경
+                const descElement = document.querySelector('p.text-gray-600');
+                if (descElement) {
+                    descElement.textContent = '고객 회원 로그인';
+                }
+                
+                // 회원가입 링크도 고객용으로 변경
+                const registerLink = document.querySelector('a[href="register.html"]');
+                if (registerLink) {
+                    registerLink.href = 'register.html?type=customer';
+                }
+                
+                console.log('🙋‍♀️ 고객 로그인 모드');
+            }
+            
             // 이미 로그인된 경우 리다이렉트
             const currentUser = localStorage.getItem('user_data');
             if (currentUser) {

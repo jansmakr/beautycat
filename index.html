@@ -2042,7 +2042,7 @@
                 <!-- 오른쪽 로그인/프로필 아이콘 -->
                 <nav style="display: flex; justify-content: flex-end; align-items: center;" role="navigation" aria-label="사용자 메뉴">
                     <!-- 로그인 전 -->
-                    <a href="login.html" id="loginIconBtn" class="login-icon-btn" title="로그인" rel="nofollow">
+                    <a href="auth-select.html" id="loginIconBtn" class="login-icon-btn" title="로그인" rel="nofollow">
                         <i class="fas fa-user-circle"></i>
                     </a>
                     
@@ -3370,10 +3370,10 @@
                             지금 바로 가입하고 맞춤 견적을 받아보세요!
                         </p>
                         <div class="flex gap-3">
-                            <button type="button" class="flex-1 bg-white text-primary-600 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 transition-all shadow-lg" onclick="location.href='login.html'">
+                            <button type="button" class="flex-1 bg-white text-primary-600 font-semibold py-3 px-6 rounded-lg hover:bg-gray-50 transition-all shadow-lg" onclick="location.href='auth-select.html'">
                                 <i class="fas fa-sign-in-alt mr-2"></i>로그인
                             </button>
-                            <button type="button" class="flex-1 bg-yellow-400 text-gray-900 font-semibold py-3 px-6 rounded-lg hover:bg-yellow-300 transition-all shadow-lg" onclick="location.href='register.html'">
+                            <button type="button" class="flex-1 bg-yellow-400 text-gray-900 font-semibold py-3 px-6 rounded-lg hover:bg-yellow-300 transition-all shadow-lg" onclick="location.href='auth-select.html'">
                                 <i class="fas fa-user-plus mr-2"></i>회원가입
                             </button>
                         </div>
@@ -4730,13 +4730,13 @@
         // authModal 로그인 버튼 (redirectIntent 유지)
         function handleAuthModalLogin() {
             // redirectIntent는 이미 저장되어 있음 (showConsultationForm 또는 showPhoneForm에서)
-            window.location.href = 'login.html';
+            window.location.href = 'auth-select.html';
         }
         
         // authModal 회원가입 버튼 (redirectIntent 유지)
         function handleAuthModalRegister() {
             // redirectIntent는 이미 저장되어 있음
-            window.location.href = 'register.html';
+            window.location.href = 'auth-select.html';
         }
         
         // 모달 외부 클릭 시 닫기
