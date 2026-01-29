@@ -301,24 +301,21 @@ async function loadConsultationRequests() {
             
             console.log(`🏪 ${currentShop.shop_name || '데모 피부관리실'} (${shopState} ${shopDistrict}) - 총 ${data.data.length}개 견적 요청 검토 중...`);
             
+            // 🎯 v2.8.8.1.79: 신규 가입 업체는 지역 정보가 없으면 아무것도 표시하지 않음
+            if (!shopState || !shopDistrict) {
+                console.log('⚠️ 업체 지역 정보 없음 - 견적 요청 표시하지 않음');
+                currentConsultations = [];
+                return; // 조기 종료
+            }
+            
             currentConsultations = data.data.filter(consultation => {
                 // 상담 요청의 지역 정보 (여러 형태 지원)
                 const consultState = consultation.state || consultation.province || '';
                 const consultDistrict = consultation.district || consultation.city || '';
                 
-                // 개발 환경에서는 지역 정보 없어도 표시 (테스트용)
-                const isProduction = window.location.hostname === 'beautycat.kr' || 
-                                    window.location.hostname.includes('beautycat.pages.dev');
-                
-                // 프로덕션: 지역 정보 필수, 개발: 지역 정보 선택
-                if (isProduction && (!consultState || !consultDistrict)) {
-                    return false;
-                }
-                
-                // 지역 정보가 없으면 모든 샵에게 표시 (개발 환경)
+                // 🎯 v2.8.8.1.79: 상담 요청에 지역 정보 없으면 표시하지 않음
                 if (!consultState || !consultDistrict) {
-                    console.log('⚠️ 지역 정보 없는 상담 요청 (테스트 데이터):', consultation.customer_name);
-                    return true;
+                    return false;
                 }
                 
                 // 지역 매칭 로직 개선
