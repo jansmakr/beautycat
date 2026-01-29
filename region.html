@@ -402,23 +402,44 @@
                 } else {
                     // 처음에만 API 호출
                     console.log('📡 API에서 데이터 로드 중...');
-                    // v2.8.8.1.75: shops 테이블 추가
-                    const [shopsResponse, publicResponse, newShopsResponse] = await Promise.all([
-                        fetch(`/tables/skincare_shops?limit=50000`),
-                        fetch(`/tables/public_skincare_data?limit=50000`),
-                        fetch(`/tables/shops?limit=50000`)
-                    ]);
                     
-                    const shopsData = await shopsResponse.json();
-                    const publicData = await publicResponse.json();
-                    const newShopsData = await newShopsResponse.json();
-                    
-                    console.log('📊 일반 샵 수:', shopsData.data.length);
-                    console.log('📊 공공 데이터 수:', publicData.data.length);
-                    console.log('📊 신규 샵 수:', newShopsData.data.length);
-                    
-                    shops = [...shopsData.data, ...publicData.data, ...newShopsData.data];
-                    console.log('📊 병합 후 전체 샵 수:', shops.length);
+                    // 🎯 v2.8.8.1.79.2: 에러 처리 개선
+                    try {
+                        const [shopsResponse, publicResponse, newShopsResponse] = await Promise.all([
+                            fetch(`/tables/skincare_shops?limit=50000`).catch(err => {
+                                console.warn('⚠️ skincare_shops 로드 실패:', err);
+                                return { ok: false };
+                            }),
+                            fetch(`/tables/public_skincare_data?limit=50000`).catch(err => {
+                                console.warn('⚠️ public_skincare_data 로드 실패:', err);
+                                return { ok: false };
+                            }),
+                            fetch(`/tables/shops?limit=50000`).catch(err => {
+                                console.warn('⚠️ shops 로드 실패:', err);
+                                return { ok: false };
+                            })
+                        ]);
+                        
+                        // 각 응답 처리
+                        const shopsData = shopsResponse.ok ? await shopsResponse.json() : { data: [] };
+                        const publicData = publicResponse.ok ? await publicResponse.json() : { data: [] };
+                        const newShopsData = newShopsResponse.ok ? await newShopsResponse.json() : { data: [] };
+                        
+                        console.log('📊 일반 샵 수:', shopsData.data?.length || 0);
+                        console.log('📊 공공 데이터 수:', publicData.data?.length || 0);
+                        console.log('📊 신규 샵 수:', newShopsData.data?.length || 0);
+                        
+                        shops = [
+                            ...(shopsData.data || []), 
+                            ...(publicData.data || []), 
+                            ...(newShopsData.data || [])
+                        ];
+                        console.log('📊 병합 후 전체 샵 수:', shops.length);
+                        
+                    } catch (fetchError) {
+                        console.error('❌ API 호출 실패:', fetchError);
+                        shops = [];
+                    }
                     
                     // 중복 제거
                     const uniqueShops = [];
@@ -491,8 +512,16 @@
                 
                 document.getElementById('loading').style.display = 'none';
             } catch (error) {
-                console.error('샵 로드 오류:', error);
-                document.getElementById('loading').textContent = '데이터 로드 실패';
+                console.error('❌ 샵 로드 오류:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <p style="color: #ef4444; font-weight: 600; margin-bottom: 1rem;">⚠️ 지역별 피부관리실 로드 실패</p>
+                        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem;">일시적인 오류가 발생했습니다.</p>
+                        <button onclick="location.reload()" style="background: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer;">
+                            다시 시도
+                        </button>
+                    </div>
+                `;
             }
         }
         
