@@ -101,6 +101,26 @@ async function checkExistingSession() {
         const token = localStorage.getItem('session_token');
         const userType = localStorage.getItem('user_type');
         
+        // 🔒 보안 개선 v2.8.8.1.80: 세션 만료 확인
+        const sessionData = localStorage.getItem('session_data');
+        if (sessionData) {
+            try {
+                const session = JSON.parse(sessionData);
+                const expiresAt = new Date(session.session_expires);
+                if (expiresAt < new Date()) {
+                    console.log('🔒 세션 만료 - 자동 로그아웃');
+                    clearSession();
+                    if (pathname.includes('dashboard')) {
+                        showNotification('세션이 만료되었습니다. 다시 로그인해주세요.', 'warning');
+                        setTimeout(() => window.location.href = '/login.html?expired=true', 1500);
+                    }
+                    return;
+                }
+            } catch (error) {
+                console.error('세션 데이터 파싱 오류:', error);
+            }
+        }
+        
         if (token && userType) {
             // 세션 유효성 검증
             const isValid = await validateSession(token);
@@ -286,16 +306,31 @@ async function handleLogin(e) {
             const message = result.message || `${result.user.name}님, 환영합니다!`;
             showNotification(message, 'success');
             
-            // 사용자 정보를 localStorage에 저장 (호환성을 위해 두 키 모두 사용)
-            localStorage.setItem('currentUser', JSON.stringify(result.user));
-            localStorage.setItem('user_data', JSON.stringify(result.user));
-            localStorage.setItem('authToken', result.token);
+            // 🔒 보안 개선 v2.8.8.1.80: 최소 정보만 localStorage에 저장
+            // 민감 정보(이메일, 전화번호, 사업자정보)는 서버에서만 관리
+            const sessionData = {
+                user_id: result.user.id,
+                user_type: result.user.user_type,
+                name: result.user.name, // 표시용만 (민감 정보 아님)
+                session_token: result.token,
+                session_expires: new Date(Date.now() + 30 * 60 * 1000).toISOString() // 30분
+            };
             
-            // user_type 별도 저장 (goToDashboard 함수에서 사용)
-            if (result.user.user_type) {
-                localStorage.setItem('user_type', result.user.user_type);
-                console.log('✅ user_type 저장:', result.user.user_type);
-            }
+            // 세션 데이터 저장 (암호화 없이 최소 정보만)
+            localStorage.setItem('session_data', JSON.stringify(sessionData));
+            localStorage.setItem('user_type', result.user.user_type); // 호환성
+            
+            // 민감 정보는 메모리에만 임시 저장 (페이지 새로고침 시 삭제됨)
+            window.currentUser = {
+                id: result.user.id,
+                email: result.user.email,
+                name: result.user.name,
+                phone: result.user.phone,
+                user_type: result.user.user_type
+            };
+            
+            console.log('✅ 보안 세션 저장 완료 (최소 정보만)');
+            console.log('📊 저장된 필드:', Object.keys(sessionData));
             
             console.log('로그인 성공, 리다이렉트:', result.user.user_type);
             
@@ -351,7 +386,9 @@ function validateLoginData(data) {
 // 로그인 처리 (실제 인증)
 async function processLogin(loginData) {
     try {
-        console.log('로그인 시도:', { email: loginData.email, user_type: loginData.user_type });
+        // 🔒 보안: 이메일 마스킹 로그
+        const maskedEmail = loginData.email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+        console.log('로그인 시도:', { email: maskedEmail, user_type: loginData.user_type });
         
         // 보안 매니저로 로그인 시도 제한 확인 (개발 모드에서는 비활성화)
         // if (window.securityManager) {
@@ -408,8 +445,7 @@ async function processLogin(loginData) {
         
         const userData = await response.json();
         console.log('🔍 이메일 검색 결과:', userData.data?.length || 0, '명');
-        console.log('📧 검색한 이메일:', loginData.email);
-        console.log('📊 검색 결과:', userData.data);
+        // 🔒 보안: 검색 결과 로그 제거 (민감 정보 노출 방지)
         
         // 먼저 이메일만으로 찾기
         const userByEmail = userData.data?.find(u => u.email === loginData.email);
@@ -462,9 +498,14 @@ async function processLogin(loginData) {
                 passwordValid = (hashedInput.hash === storedHash);
                 console.log('🔐 해시 비밀번호 검증:', passwordValid);
             } else {
-                // 평문 비밀번호 검증 (보안 취약)
-                passwordValid = (user.password === loginData.password);
-                console.log('🔓 평문 비밀번호 검증:', passwordValid);
+                // 🔒 보안 개선 v2.8.8.1.80: 평문 비밀번호 지원 중단
+                console.error('❌ 보안 위험: 평문 비밀번호 사용 감지');
+                console.warn('⚠️ 해당 계정은 비밀번호 재설정이 필요합니다.');
+                
+                return {
+                    success: false,
+                    message: '보안 업데이트가 필요합니다.\n\n고객센터로 문의하시거나 비밀번호 재설정을 진행해주세요.'
+                };
             }
             
             if (passwordValid) {
@@ -745,7 +786,9 @@ function validateRegisterData(data) {
 async function processRegister(registerData) {
     try {
         console.log('📝 회원가입 프로세스 시작');
-        console.log('📧 입력 데이터:', registerData);
+        // 🔒 보안: 비밀번호 제외하고 로그
+        const { password, password_confirm, ...safeData } = registerData;
+        console.log('📧 입력 데이터:', safeData);
         
         // 이메일 중복 확인 (다시 한 번)
         console.log('🔍 이메일 중복 확인 중...');
@@ -1132,10 +1175,21 @@ function clearSession() {
     currentUser = null;
     sessionToken = null;
     
+    // 🔒 보안 개선 v2.8.8.1.80: 모든 세션 관련 데이터 삭제
+    localStorage.removeItem('session_data');
     localStorage.removeItem('session_token');
     localStorage.removeItem('user_type');
     localStorage.removeItem('user_data');
     localStorage.removeItem('session_expires');
+    localStorage.removeItem('currentUser'); // 레거시
+    localStorage.removeItem('authToken'); // 레거시
+    
+    // 메모리 정리
+    if (window.currentUser) {
+        delete window.currentUser;
+    }
+    
+    console.log('🧹 세션 정리 완료');
 }
 
 // 로그아웃
@@ -1658,7 +1712,24 @@ function updateUserTypeSelection(selectedLabel) {
 // 현재 로그인한 사용자 가져오기
 function getCurrentUser() {
     try {
-        // 여러 키를 확인하여 호환성 보장
+        // 🔒 보안 개선 v2.8.8.1.80: 메모리 우선 확인
+        if (window.currentUser) {
+            return window.currentUser;
+        }
+        
+        // 세션 데이터 확인 (새 방식)
+        const sessionData = localStorage.getItem('session_data');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            // 최소 정보만 반환
+            return {
+                id: session.user_id,
+                user_type: session.user_type,
+                name: session.name
+            };
+        }
+        
+        // 하위 호환성: 기존 방식 지원 (점진적 제거 예정)
         let userData = localStorage.getItem('currentUser') || 
                       localStorage.getItem('user_data') ||
                       sessionStorage.getItem('currentUser');
@@ -1671,6 +1742,9 @@ function getCurrentUser() {
                 user.permissions = ['all'];
                 console.log('🔧 관리자 권한 자동 보정:', user.email);
             }
+            
+            // ⚠️ 레거시 데이터 경고
+            console.warn('⚠️ 레거시 세션 데이터 사용 중 - 재로그인 권장');
             
             return user;
         }
