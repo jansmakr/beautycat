@@ -1,5 +1,7 @@
 // 전역 변수
 let uploadedImages = [];
+let logoImage = null;
+let mainImage = null;
 const maxImages = 5;
 
 // 지역 데이터 (main.js와 동일)
@@ -38,7 +40,9 @@ function setupEventListeners() {
     // 지역 선택 2단계 처리
     setupShopRegionSelection();
 
-    // 이미지 업로드 처리
+    // 이미지 업로드 처리 (로고, 대표 이미지, 추가 이미지)
+    setupLogoUpload();
+    setupMainImageUpload();
     setupImageUpload();
 
     // 등록 폼 처리
@@ -83,6 +87,164 @@ function setupShopRegionSelection() {
             districtSelect.innerHTML = '<option value="">먼저 시/도를 선택해주세요</option>';
         }
     });
+}
+
+// 로고 이미지 업로드 설정
+function setupLogoUpload() {
+    const logoUploadArea = document.getElementById('logo-upload-area');
+    const shopLogo = document.getElementById('shop-logo');
+    const logoPreviewContainer = document.getElementById('logo-preview-container');
+
+    if (!logoUploadArea || !shopLogo || !logoPreviewContainer) return;
+
+    // 클릭으로 파일 선택
+    logoUploadArea.addEventListener('click', function() {
+        shopLogo.click();
+    });
+
+    // 파일 선택 처리
+    shopLogo.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            handleLogoFile(file);
+        }
+    });
+}
+
+// 로고 파일 처리
+function handleLogoFile(file) {
+    // 이미지 파일 검증
+    if (!file.type.startsWith('image/')) {
+        showNotification('이미지 파일만 업로드 가능합니다.', 'error');
+        return;
+    }
+    
+    // 파일 크기 검증 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showNotification('파일 크기는 5MB 이하로 업로드해주세요.', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        logoImage = {
+            file: file,
+            dataUrl: e.target.result,
+            name: file.name
+        };
+        
+        updateLogoPreview();
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// 로고 미리보기 업데이트
+function updateLogoPreview() {
+    const logoPreviewContainer = document.getElementById('logo-preview-container');
+    const logoPreview = document.getElementById('logo-preview');
+    
+    if (!logoImage) {
+        logoPreviewContainer.classList.add('hidden');
+        return;
+    }
+    
+    logoPreviewContainer.classList.remove('hidden');
+    
+    logoPreview.innerHTML = `
+        <img src="${logoImage.dataUrl}" alt="로고 미리보기" class="w-32 h-32 object-cover rounded-lg border">
+        <button type="button" onclick="removeLogo()" 
+                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 text-xs">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+}
+
+// 로고 제거
+function removeLogo() {
+    logoImage = null;
+    document.getElementById('shop-logo').value = '';
+    updateLogoPreview();
+}
+
+// 대표 이미지 업로드 설정
+function setupMainImageUpload() {
+    const mainImageUploadArea = document.getElementById('main-image-upload-area');
+    const shopMainImage = document.getElementById('shop-main-image');
+    const mainImagePreviewContainer = document.getElementById('main-image-preview-container');
+
+    if (!mainImageUploadArea || !shopMainImage || !mainImagePreviewContainer) return;
+
+    // 클릭으로 파일 선택
+    mainImageUploadArea.addEventListener('click', function() {
+        shopMainImage.click();
+    });
+
+    // 파일 선택 처리
+    shopMainImage.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            handleMainImageFile(file);
+        }
+    });
+}
+
+// 대표 이미지 파일 처리
+function handleMainImageFile(file) {
+    // 이미지 파일 검증
+    if (!file.type.startsWith('image/')) {
+        showNotification('이미지 파일만 업로드 가능합니다.', 'error');
+        return;
+    }
+    
+    // 파일 크기 검증 (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showNotification('파일 크기는 5MB 이하로 업로드해주세요.', 'error');
+        return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        mainImage = {
+            file: file,
+            dataUrl: e.target.result,
+            name: file.name
+        };
+        
+        updateMainImagePreview();
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// 대표 이미지 미리보기 업데이트
+function updateMainImagePreview() {
+    const mainImagePreviewContainer = document.getElementById('main-image-preview-container');
+    const mainImagePreview = document.getElementById('main-image-preview');
+    
+    if (!mainImage) {
+        mainImagePreviewContainer.classList.add('hidden');
+        return;
+    }
+    
+    mainImagePreviewContainer.classList.remove('hidden');
+    
+    mainImagePreview.innerHTML = `
+        <img src="${mainImage.dataUrl}" alt="대표 이미지 미리보기" class="w-64 h-40 object-cover rounded-lg border">
+        <button type="button" onclick="removeMainImage()" 
+                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 text-xs">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+}
+
+// 대표 이미지 제거
+function removeMainImage() {
+    mainImage = null;
+    document.getElementById('shop-main-image').value = '';
+    updateMainImagePreview();
 }
 
 // 이미지 업로드 기능 설정
@@ -282,10 +444,25 @@ function collectFormData() {
     const district = formData.get('shop_district');
     const fullRegion = district ? `${province} ${district}` : province;
     
-    // 이미지 URL 처리 (실제로는 서버에 업로드해야 함)
-    const imageUrls = (uploadedImages || []).map(image => 
-        `shop_image_${Date.now()}_${image.name || 'unknown.jpg'}`
+    // 🎯 로고 URL (실제로는 서버에 업로드해야 함 - 지금은 데모)
+    const logoUrl = logoImage ? `logo_${Date.now()}_${logoImage.name}` : '';
+    
+    // 🎯 대표 이미지 URL (실제로는 서버에 업로드해야 함 - 지금은 데모)
+    const mainImageUrl = mainImage ? `main_${Date.now()}_${mainImage.name}` : '';
+    
+    // 추가 이미지 URL 처리 (실제로는 서버에 업로드해야 함)
+    const additionalImageUrls = (uploadedImages || []).map(image => 
+        `shop_image_${Date.now()}_${image.file.name || 'unknown.jpg'}`
     );
+    
+    // images 배열 구성: [추가 이미지들...]
+    const allImages = [...additionalImageUrls];
+    
+    // 메타데이터에 로고와 대표 이미지 저장
+    const metadata = {
+        logo_url: logoUrl,
+        main_image_url: mainImageUrl
+    };
     
     return {
         shop_name: formData.get('shop_name'),
@@ -293,21 +470,37 @@ function collectFormData() {
         phone: formData.get('phone'),
         email: formData.get('email'),
         address: formData.get('address'),
+        state: province, // 시/도
+        district: district, // 구/군
+        detailed_address: formData.get('address'), // 상세 주소
         region: fullRegion,
-        specialties: specialties.join(', '),
+        services: specialties, // 배열로 저장
         business_hours: formData.get('business_hours'),
         price_range: formData.get('price_range'),
         description: formData.get('description'),
-        images: imageUrls.join(', '),
+        images: allImages, // 추가 이미지들 (배열)
+        metadata: JSON.stringify(metadata), // logo_url, main_image_url 포함
         rating: 0, // 초기값
-        is_active: false, // 승인 대기 상태
-        verified: false, // 미인증 상태
+        status: 'pending', // 승인 대기 상태
+        is_verified: false, // 미인증 상태
         created_at: new Date().toISOString()
     };
 }
 
 // 등록 데이터 유효성 검증
 function validateRegistrationData(data) {
+    // 🎯 로고 이미지 필수 체크
+    if (!logoImage) {
+        showNotification('샵 로고 이미지를 업로드해주세요.', 'error');
+        return false;
+    }
+    
+    // 🎯 대표 이미지 필수 체크
+    if (!mainImage) {
+        showNotification('대표 이미지를 업로드해주세요.', 'error');
+        return false;
+    }
+    
     // 필수 필드 검증
     const requiredFields = [
         { field: 'shop_name', name: '피부관리실명' },
@@ -342,7 +535,7 @@ function validateRegistrationData(data) {
     }
     
     // 전문 분야 검증
-    if (!data.specialties || data.specialties.trim().length === 0) {
+    if (!data.services || data.services.length === 0) {
         showNotification('전문 관리 프로그램을 하나 이상 선택해주세요.', 'error');
         return false;
     }

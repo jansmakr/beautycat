@@ -277,8 +277,8 @@
 </head>
 <body>
     <!-- 헤더 -->
-    <!-- 헤더 (v2.8.13.6.73 - 야놀자 스타일 가운데 로고) -->
-    <header class="py-6 px-4 border-b border-gray-100">
+    <!-- 헤더 (v2.8.8.1.59 - 로고 크기 조정 + 헤더 높이 축소) -->
+    <header class="py-3 px-4 border-b border-gray-100">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <!-- 왼쪽 홈 버튼 -->
             <a href="index.html" class="text-gray-600 hover:text-primary-500 transition-colors" rel="nofollow">
@@ -290,12 +290,12 @@
                 <a href="index.html" class="logo-container" style="display: flex; align-items: center; justify-content: center;" title="Beautyket 홈으로 이동">
                     <img src="images/beautyket-logo-full.png?v=2025122404" 
                          alt="Beautyket - 피부관리실 견적비교 플랫폼" 
-                         width="60" 
-                         height="20"
+                         width="96" 
+                         height="32"
                          class="beautyket-main-logo" 
                          loading="eager" 
                          decoding="async" 
-                         style="height: 20px !important; width: auto !important;">
+                         style="height: 32px !important; width: auto !important;">
                 </a>
             </h1>
             
@@ -321,8 +321,8 @@
                 <span id="errorText"></span>
             </div>
 
-            <!-- 카카오 간편가입 -->
-            <div class="mb-8">
+            <!-- 카카오 간편가입 (고객 전용 - v2.8.8.1.78) -->
+            <div id="kakaoRegisterSection" class="mb-8">
                 <button type="button" 
                         id="kakaoRegisterBtn"
                         onclick="registerWithKakao()" 
@@ -331,11 +331,11 @@
                     카카오로 3초 만에 가입하기
                 </button>
                 <p class="text-center text-xs text-gray-500 mt-2">
-                    간편하고 빠르게 가입하세요
+                    💡 카카오 간편가입은 <strong>고객 전용</strong>입니다
                 </p>
             </div>
 
-            <div class="relative mb-8">
+            <div id="orDivider" class="relative mb-8">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-200"></div>
                 </div>
@@ -524,12 +524,12 @@
 
     <!-- JavaScript -->
     <script src="js/config.js?v=2.5.4"></script>
-    <script src="js/auto-matching.js"></script>
+    <!-- auto-matching.js 제거됨 (v2.8.8.1.77.3) -->
     <script src="js/auth.js?v=2.8.13"></script>
     <script src="js/kakao-login.js"></script>
 
     <script>
-        // 사용자 유형 선택
+        // 사용자 유형 선택 (v2.8.8.1.78 업데이트)
         function selectUserType(type, button) {
             document.getElementById('userType').value = type;
             document.querySelectorAll('.user-type-btn').forEach(btn => {
@@ -537,6 +537,20 @@
             });
             if (button) {
                 button.classList.add('selected');
+            }
+            
+            // 🎯 카카오 간편가입 표시/숨김 처리
+            const kakaoSection = document.getElementById('kakaoRegisterSection');
+            const orDivider = document.getElementById('orDivider');
+            
+            if (type === 'customer') {
+                // 고객: 카카오 간편가입 표시
+                kakaoSection.style.display = 'block';
+                orDivider.style.display = 'block';
+            } else {
+                // 업체: 카카오 간편가입 숨김
+                kakaoSection.style.display = 'none';
+                orDivider.style.display = 'none';
             }
         }
 
