@@ -3643,21 +3643,37 @@
     <script src="js/legal-contents.js?v=2.4.1" defer></script>
     <script src="js/config.js?v=2.5.4" defer></script>
     <script src="js/logger.js?v=2.5.4" defer></script>
-    <script src="js/fallback-data.js?v=2.8.8.1.75" defer></script>
+    <script src="js/fallback-data.js?v=2.8.8.1.82" defer></script>
     <script src="js/main.js?v=2.8.8.1.46" defer></script>
     <script src="js/auth.js?v=2.5.4" defer></script>
     <script src="js/regional-matching.js?v=2.5.4" defer></script>
     <!-- announcement-sidebar.js 제거 (v2.8.13.6.23 - 인라인 슬라이더로 대체) -->
     
     <script>
-        // 🏪 지역 대표 피부관리실 로딩 (v2.8.8.1.76 - Fallback 지원)
+        // 🏪 지역 대표 피부관리실 로딩 (v2.8.8.1.82 - API 개선)
         async function loadShopsOnIndexPage() {
             const shopsGrid = document.getElementById('shops-grid');
-            if (!shopsGrid) return;
+            if (!shopsGrid) {
+                console.log('⚠️ shops-grid 요소를 찾을 수 없습니다.');
+                return;
+            }
+
+            console.log('🏪 지역 대표 피부관리실 로딩 시작...');
 
             try {
-                // Fallback 지원 함수 사용
-                const shops = await window.loadShopsWithFallback(6, 'rating');
+                // 대표샵 데이터 로드
+                const response = await fetch('tables/representative_shops?limit=20&sort=created_at');
+                
+                if (!response.ok) {
+                    throw new Error(`API 응답 실패: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📊 대표샵 데이터:', data);
+                
+                const shops = (data.data || []).filter(shop => {
+                    return shop && !shop.deleted && shop.status === 'approved';
+                }).slice(0, 6);
                 
                 if (shops && shops.length > 0) {
                     // 샵 카드 HTML 생성
@@ -3739,34 +3755,30 @@
                     `;
                 }
             } catch (error) {
-                console.error('샵 데이터 로딩 실패:', error);
+                console.error('❌ 샵 데이터 로딩 실패:', error);
+                console.error('에러 상세:', error.message, error.stack);
+                
                 shopsGrid.innerHTML = `
                     <div class="col-span-full text-center py-8">
                         <i class="fas fa-exclamation-circle text-red-500 text-2xl mb-2"></i>
-                        <p class="text-gray-600">샵 정보를 불러오는 데 실패했습니다.</p>
+                        <p class="text-gray-600 mb-2">샵 정보를 불러오는 데 실패했습니다.</p>
+                        <p class="text-sm text-gray-500">잠시 후 다시 시도해주세요.</p>
+                        <button onclick="loadShopsOnIndexPage()" class="mt-4 bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600">
+                            <i class="fas fa-redo mr-1"></i>다시 시도
+                        </button>
                     </div>
                 `;
             }
         }
 
-        // 페이지 로드 시 실행
+        // 페이지 로드 시 실행 (v2.8.8.1.82 - 단순화)
         document.addEventListener('DOMContentLoaded', () => {
-            // fallback-data.js 로드 대기
-            const checkFallback = setInterval(() => {
-                if (window.loadShopsWithFallback) {
-                    clearInterval(checkFallback);
-                    loadShopsOnIndexPage();
-                }
-            }, 100);
+            console.log('📄 DOMContentLoaded - 대표샵 로딩 시작');
             
-            // 5초 후에도 로드 안되면 강제 실행
+            // 즉시 실행 (fallback-data.js 의존성 제거)
             setTimeout(() => {
-                clearInterval(checkFallback);
-                if (!window.loadShopsWithFallback) {
-                    console.warn('⚠️ Fallback 스크립트 로드 실패, 기본 로직 사용');
-                    loadShopsOnIndexPage();
-                }
-            }, 5000);
+                loadShopsOnIndexPage();
+            }, 500);
         });
     </script>
 
