@@ -5,7 +5,6 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-# 403 에러 해결을 위해 필수 추가
 permissions:
   contents: write
 
@@ -19,14 +18,11 @@ jobs:
         with:
           fetch-depth: 0
       
-      # Node.js 설정 단계는 현재 Bash로만 생성하므로 삭제해도 무방하지만, 
-      # 나중에 확장성을 고려한다면 유지하셔도 됩니다.
-
       - name: Generate RSS Feed
         run: |
           echo "📡 RSS 피드 생성 시작..."
           
-          # 'EOF'에서 따옴표를 제거하여 내부 변수($(date))가 해석되도록 수정
+          # 'EOF'에 따옴표를 제거하여 날짜 변수가 작동하게 합니다.
           cat > rss.xml << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -71,7 +67,6 @@ jobs:
           EOF
           
           echo "✅ RSS 피드 생성 완료"
-          ls -lh rss.xml
       
       - name: Check for changes
         id: check_changes
@@ -85,6 +80,7 @@ jobs:
           git config user.email "actions@github.com"
           git add rss.xml
           git commit -m "🔄 Auto-update RSS feed - $(date +%Y-%m-%d)"
+          # 이 부분이 핵심입니다: 강제로(force) 최신본을 밀어넣습니다.
           git push origin main --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,7 +92,6 @@ jobs:
           echo "- 🕐 Update Time: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "- 📄 File Size: $(du -h rss.xml | cut -f1)" >> $GITHUB_STEP_SUMMARY
           echo "- 🔗 RSS URL: https://beautyket.kr/rss.xml" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
           
           if [ "${{ steps.check_changes.outputs.changed }}" == "true" ]; then
             echo "✅ RSS feed updated and pushed" >> $GITHUB_STEP_SUMMARY
