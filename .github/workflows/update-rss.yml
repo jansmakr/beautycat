@@ -1,15 +1,13 @@
 name: Update RSS Feed
 
-# RSS 피드 자동 갱신 워크플로우
-# 매일 오전 9시(KST)에 최신 샵 정보로 RSS 업데이트
-
 on:
   schedule:
-    # 매일 오전 9시 (UTC 0시 = KST 9시)
     - cron: '0 0 * * *'
-  
-  # 수동 실행 가능
   workflow_dispatch:
+
+# 403 에러 해결을 위해 필수 추가
+permissions:
+  contents: write
 
 jobs:
   update-rss:
@@ -21,17 +19,15 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-      
+      # Node.js 설정 단계는 현재 Bash로만 생성하므로 삭제해도 무방하지만, 
+      # 나중에 확장성을 고려한다면 유지하셔도 됩니다.
+
       - name: Generate RSS Feed
         run: |
           echo "📡 RSS 피드 생성 시작..."
           
-          # RSS XML 생성 (Node.js 없이 bash로 직접 생성)
-          cat > rss.xml << 'EOF'
+          # 'EOF'에서 따옴표를 제거하여 내부 변수($(date))가 해석되도록 수정
+          cat > rss.xml << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
             <channel>
@@ -47,25 +43,22 @@ jobs:
                 <link>https://beautyket.kr/</link>
               </image>
 
-              <!-- 최신 업데이트 -->
               <item>
-                <title>Beautyket 일일 업데이트 - $(date +%Y년\ %m월\ %d일)</title>
+                <title>Beautyket 일일 업데이트 - $(date +'%Y년 %m월 %d일')</title>
                 <link>https://beautyket.kr/</link>
                 <description>전국 피부관리실 데이터베이스 최신 업데이트. 신규 등록 샵 정보 및 서비스 개선 사항.</description>
                 <pubDate>$(date -R)</pubDate>
-                <guid>https://beautyket.kr/#update-$(date +%Y-%m-%d)</guid>
+                <guid isPermaLink="false">https://beautyket.kr/#update-$(date +%Y-%m-%d)</guid>
               </item>
 
-              <!-- 서비스 소개 -->
               <item>
                 <title>Beautyket - 전국 피부관리실 견적 비교 서비스</title>
                 <link>https://beautyket.kr/</link>
                 <description>피부관리실 찾기가 쉬워집니다. 지역별 피부관리실 정보, 실시간 견적 비교, 고객 리뷰 확인.</description>
                 <pubDate>$(date -R)</pubDate>
-                <guid>https://beautyket.kr/#service-intro</guid>
+                <guid isPermaLink="false">https://beautyket.kr/#service-intro</guid>
               </item>
 
-              <!-- 샵 등록 안내 -->
               <item>
                 <title>피부관리실 업주님께 - 무료 샵 등록 혜택</title>
                 <link>https://beautyket.kr/shop-registration.html</link>
@@ -73,7 +66,6 @@ jobs:
                 <pubDate>$(date -R)</pubDate>
                 <guid>https://beautyket.kr/shop-registration.html</guid>
               </item>
-
             </channel>
           </rss>
           EOF
