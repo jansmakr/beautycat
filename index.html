@@ -3010,19 +3010,19 @@
                         </div>
                     </div>
                     
-                    <!-- 핵심 특징 -->
+                    <!-- 핵심 특징 (v2.8.8.1.82.5 - 가운데 정렬) -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6">
-                        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-pink-200">
+                        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-pink-200 text-center">
                             <div class="text-2xl mb-2">✨</div>
                             <div class="font-semibold text-gray-800 text-sm sm:text-base mb-1">100% 무료</div>
                             <div class="text-xs sm:text-sm text-gray-600">견적 비교 및 상담</div>
                         </div>
-                        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-purple-200">
+                        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-purple-200 text-center">
                             <div class="text-2xl mb-2">🔒</div>
                             <div class="font-semibold text-gray-800 text-sm sm:text-base mb-1">인증된 샵</div>
                             <div class="text-xs sm:text-sm text-gray-600">검증된 전문 업체만</div>
                         </div>
-                        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-pink-200">
+                        <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-pink-200 text-center">
                             <div class="text-2xl mb-2">⚡</div>
                             <div class="font-semibold text-gray-800 text-sm sm:text-base mb-1">빠른 매칭</div>
                             <div class="text-xs sm:text-sm text-gray-600">3분 안에 견적 확인</div>
@@ -3059,23 +3059,16 @@
                     </div>
                 </div>
 
-                <!-- 🎯 지역별 대표샵 전화상담 배너 (v2.8.8.1.82.3) -->
+                <!-- 🎯 지역별 대표샵 상담 배너 (v2.8.8.1.82.5) -->
                 <div class="space-y-6 sm:space-y-8 mb-12">
-                    <a href="tel:070-7004-5902" class="block hover:scale-105 transition-transform duration-300">
+                    <a href="#regional-consultation" class="block hover:scale-105 transition-transform duration-300" onclick="scrollToRegionalConsultation(event)">
                         <img 
-                            src="https://www.genspark.ai/api/files/s/Y1Oeg2DB" 
-                            alt="지역별 대표샵 전화상담 - 070-7004-5902" 
+                            src="images/consultation-banner.png" 
+                            alt="지역별 대표샵 상담 - Beautyket" 
                             class="w-full rounded-2xl shadow-lg hover:shadow-2xl transition-shadow"
                             loading="lazy"
                         >
                     </a>
-                    <div class="text-center">
-                        <p class="text-gray-600 text-sm mb-2">지금 바로 전화 상담하세요!</p>
-                        <a href="tel:070-7004-5902" class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
-                            <i class="fas fa-phone-alt"></i>
-                            <span>070-7004-5902</span>
-                        </a>
-                    </div>
                 </div>
 
                 <!-- 🌟 서비스 특징 배너 (v2.8.8.1.82.4) -->
@@ -3817,6 +3810,23 @@
                 loadShopsOnIndexPage();
             }, 500);
         });
+
+        // 🎯 지역별 상담 탭으로 스크롤 (v2.8.8.1.82.5)
+        function scrollToRegionalConsultation(event) {
+            event.preventDefault();
+            const consultationSection = document.getElementById('consultation');
+            if (consultationSection) {
+                consultationSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+                
+                // 지역별 전화상담 탭 활성화
+                setTimeout(() => {
+                    const regionalTab = document.querySelector('[data-tab="regional"]');
+                    if (regionalTab && !regionalTab.classList.contains('active')) {
+                        regionalTab.click();
+                    }
+                }, 600);
+            }
+        }
     </script>
 
     <script>
