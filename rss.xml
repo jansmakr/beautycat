@@ -1,65 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>BeautyCat - 전국 피부관리실 정보</title>
-    <link>https://beautycat.kr/</link>
+    <title>Beautyket - 전국 피부관리실 정보</title>
+    <link>https://beautyket.kr/</link>
     <description>전국 피부관리실 정보, 견적 비교, 예약 서비스. 강남, 홍대, 부산, 대구 등 전국 30,000개 피부관리실 데이터베이스</description>
     <language>ko</language>
-    <lastBuildDate>Mon, 30 Dec 2025 00:00:00 +0900</lastBuildDate>
-    <atom:link href="https://beautycat.kr/rss.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 Feb 2026 02:28:57 +0000</lastBuildDate>
+    <atom:link href="https://beautyket.kr/rss.xml" rel="self" type="application/rss+xml" />
     <image>
-      <url>https://beautycat.kr/images/beautycat-logo-v3.png</url>
-      <title>BeautyCat</title>
-      <link>https://beautycat.kr/</link>
+      <url>https://beautyket.kr/images/beautyket-logo-full.png</url>
+      <title>Beautyket</title>
+      <link>https://beautyket.kr/</link>
     </image>
 
-    <!-- 최신 업데이트: 성능 최적화 -->
     <item>
-      <title>BeautyCat 성능 최적화 완료 - 로딩 속도 개선</title>
-      <link>https://beautycat.kr/</link>
-      <description>렌더링 차단 리소스 최적화로 3,110ms 절감, 폰트 로딩 최적화로 810ms 절감. FCP 6.0s → 2.5s 목표 달성.</description>
-      <pubDate>Mon, 30 Dec 2025 00:00:00 +0900</pubDate>
-      <guid>https://beautycat.kr/#performance-2025-12-30</guid>
+      <title>Beautyket 일일 업데이트 - 2026년 02월 06일</title>
+      <link>https://beautyket.kr/</link>
+      <description>전국 피부관리실 데이터베이스 최신 업데이트. 신규 등록 샵 정보 및 서비스 개선 사항.</description>
+      <pubDate>Fri, 06 Feb 2026 02:28:57 +0000</pubDate>
+      <guid isPermaLink="false">https://beautyket.kr/#update-2026-02-06</guid>
     </item>
 
-    <!-- 서비스 소개 -->
     <item>
-      <title>BeautyCat - 전국 피부관리실 견적 비교 서비스</title>
-      <link>https://beautycat.kr/</link>
-      <description>피부관리실 찾기가 쉬워집니다. 지역별 피부관리실 정보, 실시간 견적 비교, 고객 리뷰 확인. 전국 30,000개 피부관리실 데이터베이스 보유.</description>
-      <pubDate>Mon, 30 Dec 2025 00:00:00 +0900</pubDate>
-      <guid>https://beautycat.kr/#service-intro</guid>
+      <title>Beautyket - 전국 피부관리실 견적 비교 서비스</title>
+      <link>https://beautyket.kr/</link>
+      <description>피부관리실 찾기가 쉬워집니다. 지역별 피부관리실 정보, 실시간 견적 비교, 고객 리뷰 확인.</description>
+      <pubDate>Fri, 06 Feb 2026 02:28:57 +0000</pubDate>
+      <guid isPermaLink="false">https://beautyket.kr/#service-intro</guid>
     </item>
 
-    <!-- 샵 등록 안내 -->
     <item>
       <title>피부관리실 업주님께 - 무료 샵 등록 혜택</title>
-      <link>https://beautycat.kr/shop-registration.html</link>
-      <description>BeautyCat에 샵을 무료로 등록하고 지역 고객에게 노출하세요. 견적 신청 자동 매칭, 고객 관리 대시보드 제공.</description>
-      <pubDate>Mon, 30 Dec 2025 00:00:00 +0900</pubDate>
-      <guid>https://beautycat.kr/shop-registration.html</guid>
+      <link>https://beautyket.kr/shop-registration.html</link>
+      <description>Beautyket에 샵을 무료로 등록하고 지역 고객에게 노출하세요. 견적 신청 자동 매칭, 고객 관리 대시보드 제공.</description>
+      <pubDate>Fri, 06 Feb 2026 02:28:57 +0000</pubDate>
+      <guid>https://beautyket.kr/shop-registration.html</guid>
     </item>
-
-    <!-- 
-    ⚠️ 중요: 이 RSS 피드는 정적 버전입니다.
-    
-    전국 피부관리실 데이터 업로드 후:
-    - 최신 등록 샵 20개가 자동으로 추가됩니다
-    - GitHub Actions를 통해 매일 자동 갱신됩니다
-    
-    자동 갱신 설정:
-    1. generate-rss.js 스크립트 실행 (수동)
-    2. GitHub Actions 워크플로우 설정 (자동, 매일 오전 9시)
-    
-    RSS 피드 자동 생성 로직:
-    - public_skincare_data 테이블에서 최신 20개 샵 조회
-    - created_at 기준 내림차순 정렬
-    - RSS XML 형식으로 변환
-    - rss.xml 파일 업데이트
-    
-    네이버/구글 검색봇이 매일 RSS를 크롤링하여
-    신규 샵 페이지를 24시간 이내 색인합니다.
-    -->
-
   </channel>
 </rss>
