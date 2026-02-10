@@ -8,7 +8,7 @@ window.PPOSHOP_CONFIG = {
     // 무료 서비스 기간
     FREE_PERIOD: {
         START_DATE: new Date('2024-01-01'), // 서비스 시작일
-        END_DATE: new Date('2026-05-30'),   // 무료 기간 종료일 (2026년 5월 30일)
+        END_DATE: new Date('2026-06-30'),   // 무료 기간 종료일 (2026년 6월 30일)
         IS_FREE_PERIOD: true
     },
     
@@ -26,7 +26,7 @@ window.PPOSHOP_CONFIG = {
     // 무료 기간 관련 메시지
     FREE_PERIOD_MESSAGES: {
         HEADER: '🎉 런칭 기념 무료 서비스',
-        DESCRIPTION: '2026년 5월 30일까지 모든 기능을 무료로 이용하세요!',
+        DESCRIPTION: '2026년 6월 30일까지 모든 기능을 무료로 이용하세요!',
         REMAINING_DAYS_TEXT: '무료 기간 남은 일수',
         DAYS_LEFT_SUFFIX: '일',
         EXPIRED_MESSAGE: '무료 기간이 종료되었습니다.'
