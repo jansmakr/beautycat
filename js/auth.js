@@ -1201,28 +1201,52 @@ function clearSession() {
     currentUser = null;
     sessionToken = null;
     
-    // 🔒 보안 개선 v2.8.8.1.80: 모든 세션 관련 데이터 삭제
-    localStorage.removeItem('session_data');
-    localStorage.removeItem('session_token');
-    localStorage.removeItem('user_type');
-    localStorage.removeItem('user_data');
-    localStorage.removeItem('session_expires');
-    localStorage.removeItem('currentUser'); // 레거시
-    localStorage.removeItem('authToken'); // 레거시
+    // 🔒 보안 개선 v2.8.8.1.82.12: 모든 세션 관련 데이터 완전 삭제
+    const keysToRemove = [
+        'session_data',
+        'session_token',
+        'user_type',
+        'user_data',
+        'session_expires',
+        'currentUser',
+        'authToken',
+        'isLoggedIn',
+        'adminAccess',
+        'user_name',
+        'user_email',
+        'loginTime',
+        'user_intent',
+        'redirectIntent',
+        'return_url'
+    ];
+    
+    keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+    });
     
     // 메모리 정리
     if (window.currentUser) {
         delete window.currentUser;
     }
+    if (window.sessionToken) {
+        delete window.sessionToken;
+    }
     
-    console.log('🧹 세션 정리 완료');
+    console.log('🧹 세션 완전 정리 완료');
 }
 
 // 로그아웃
 function logout() {
-    clearSession();
-    showNotification('로그아웃되었습니다.', 'info');
-    window.location.href = 'index.html';
+    if (confirm('로그아웃 하시겠습니까?')) {
+        console.log('🚪 로그아웃 실행');
+        clearSession();
+        showNotification('로그아웃되었습니다.', 'info');
+        // 메인 페이지로 리다이렉트
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 500);
+    }
 }
 
 // 대시보드로 리다이렉트

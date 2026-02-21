@@ -1375,26 +1375,41 @@ function toggleProfileMenu() {
     }
 }
 
-// 로그아웃 함수 (v2.8.13.6.73 - 완전 초기화)
+// 로그아웃 함수 (통합 버전 v2.8.8.1.82.12)
 function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-        console.log('🚪 로그아웃 실행 - localStorage 완전 초기화');
+        console.log('🚪 고객 로그아웃 실행');
         
-        // 모든 세션 데이터 제거
-        localStorage.removeItem('session_token');
-        localStorage.removeItem('user_type');
-        localStorage.removeItem('user_data');
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('adminAccess');
-        localStorage.removeItem('user_name');
-        localStorage.removeItem('user_email');
-        localStorage.removeItem('session_expires');
-        localStorage.removeItem('loginTime');
+        // 모든 세션 데이터 완전 삭제
+        const keysToRemove = [
+            'session_data',
+            'session_token',
+            'user_type',
+            'user_data',
+            'session_expires',
+            'currentUser',
+            'authToken',
+            'isLoggedIn',
+            'adminAccess',
+            'user_name',
+            'user_email',
+            'loginTime',
+            'user_intent',
+            'redirectIntent'
+        ];
         
-        console.log('✅ localStorage 초기화 완료');
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
         
-        // 홈페이지로 리디렉션
+        // 전역 변수 초기화
+        window.currentUser = null;
+        window.sessionToken = null;
+        
+        console.log('✅ 로그아웃 완료 - localStorage/sessionStorage 완전 초기화');
+        
+        // 메인 페이지로 리다이렉트
         window.location.href = 'index.html';
     }
 }

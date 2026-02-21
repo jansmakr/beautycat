@@ -1463,46 +1463,47 @@ function redirectToDashboard() {
     }
 }
 
-// 로그아웃 함수
-function logout() {
-    // 세션 데이터 정리
-    localStorage.removeItem('session_token');
-    localStorage.removeItem('user_type');
-    localStorage.removeItem('user_data');
-    localStorage.removeItem('currentUser');
-    
-    // 전역 변수 초기화
-    window.currentUser = null;
-    window.sessionToken = null;
-    
-    // UI 업데이트
-    updateAuthUI();
-    
-    // 메인 페이지로 리다이렉트
-    window.location.href = 'index.html';
-}
-
-// 현재 로그인한 사용자 가져오기 (간단 버전)
-function getCurrentUser() {
-    try {
-        const userData = localStorage.getItem('currentUser');
-        return userData ? JSON.parse(userData) : null;
-    } catch (error) {
-        console.error('사용자 데이터 파싱 오류:', error);
-        return null;
-    }
-}
-
-// 로그아웃 함수
+// 로그아웃 함수 (통합 버전 v2.8.8.1.82.12)
 function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('session_token');
-        localStorage.removeItem('user_type');
-        localStorage.removeItem('user_data');
+        console.log('🚪 로그아웃 실행');
+        
+        // 모든 세션 데이터 완전 삭제
+        const keysToRemove = [
+            'session_data',
+            'session_token',
+            'user_type',
+            'user_data',
+            'session_expires',
+            'currentUser',
+            'authToken',
+            'isLoggedIn',
+            'adminAccess',
+            'user_name',
+            'user_email',
+            'loginTime',
+            'user_intent',
+            'redirectIntent'
+        ];
+        
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
+        
+        // 전역 변수 초기화
+        window.currentUser = null;
+        window.sessionToken = null;
+        
+        // UI 업데이트
+        updateAuthUI();
+        
         showNotification('로그아웃되었습니다.', 'info');
-        updateAuthUI(); // UI 업데이트
+        
+        // 메인 페이지로 리다이렉트
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 500);
     }
 }
 

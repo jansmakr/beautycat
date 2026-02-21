@@ -3496,11 +3496,38 @@ function exportData() {
     showNotification('데이터 내보내기 기능은 준비중입니다.', 'info');
 }
 
-// Logout
+// 로그아웃 (통합 버전 v2.8.8.1.82.12)
 function logout() {
     if (confirm('로그아웃 하시겠습니까?')) {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
+        console.log('🚪 관리자 로그아웃 실행');
+        
+        // 모든 세션 데이터 완전 삭제
+        const keysToRemove = [
+            'session_data',
+            'session_token',
+            'user_type',
+            'user_data',
+            'session_expires',
+            'currentUser',
+            'authToken',
+            'isLoggedIn',
+            'adminAccess',
+            'user_name',
+            'user_email',
+            'loginTime'
+        ];
+        
+        keysToRemove.forEach(key => {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
+        
+        // 전역 변수 초기화
+        window.currentUser = null;
+        window.sessionToken = null;
+        
+        // 메인 페이지로 리다이렉트
+        window.location.href = 'index.html';
     }
 }
 
