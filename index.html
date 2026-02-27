@@ -2682,7 +2682,7 @@
                     
                     <div class="beautyket-sub-btn" onclick="handleDiagnosisClick('color')" style="background: #FFFFFF; border: 1px solid #E5E7EB; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 8px; min-height: 70px; border-radius: 12px; color: #374151; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s; cursor: pointer; position: relative;">
                         <div style="font-size: 24px; margin-bottom: 4px;">💅</div>
-                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">나의컬러</span>
+                        <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">퍼스널컬러</span>
                     </div>
                 </div>
                 
@@ -4369,18 +4369,11 @@
         function handleDiagnosisClick(diagnosisType) {
             console.log('🎯 자가진단 클릭:', diagnosisType);
             
-            // 로그인 상태 확인
-            const token = localStorage.getItem('session_token') || localStorage.getItem('beautyket_token');
-            const userDataStr = localStorage.getItem('user_data') || localStorage.getItem('beautyket_user');
-            const userType = localStorage.getItem('user_type');
-            
-            const isLoggedIn = token && userDataStr && userType;
-            
             // 진단 타입별 pposhop.kr URL 매핑
             const diagnosisUrlMap = {
                 'skin': 'https://pposhop.kr/diagnosis#skin-test',           // 피부진단
                 'ingredient': 'https://pposhop.kr/diagnosis#ingredient',    // 성분분석
-                'color': 'https://pposhop.kr/diagnosis#personal-color',     // 나의컬러 (퍼스널컬러)
+                'color': 'https://pposhop.kr/diagnosis#personal-color',     // 퍼스널컬러
                 'inner': 'https://pposhop.kr/diagnosis#inner-care',         // 이너케어
                 'timemachine': 'https://pposhop.kr/diagnosis#time-machine', // 타임머신
                 'diary': 'https://pposhop.kr/diagnosis#health-diary'        // 건강일기
@@ -4388,11 +4381,15 @@
             
             const targetUrl = diagnosisUrlMap[diagnosisType] || 'https://pposhop.kr/diagnosis';
             
+            // 무료진단은 게스트도 이용 가능 - 로그인 체크 제거
+            console.log('✅ 진단 페이지 이동:', targetUrl);
+            
+            // 로그인 상태인 경우 사용자 정보 전달
+            const token = localStorage.getItem('session_token') || localStorage.getItem('beautyket_token');
+            const userDataStr = localStorage.getItem('user_data') || localStorage.getItem('beautyket_user');
+            const isLoggedIn = token && userDataStr;
+            
             if (isLoggedIn) {
-                // 로그인 상태: 바로 pposhop.kr 진단 페이지로 이동
-                console.log('✅ 로그인 상태 - 진단 페이지 이동:', targetUrl);
-                
-                // 사용자 정보를 pposhop.kr에 전달하기 위해 세션 스토리지에 저장
                 try {
                     const userData = JSON.parse(userDataStr);
                     sessionStorage.setItem('beautyket_referrer', 'beautyket.kr');
@@ -4401,20 +4398,10 @@
                 } catch (e) {
                     console.error('사용자 정보 저장 실패:', e);
                 }
-                
-                // 새 창에서 열기
-                window.open(targetUrl, '_blank');
-            } else {
-                // 비로그인 상태: 로그인 안내 후 로그인 페이지로 이동
-                console.log('❌ 비로그인 상태 - 로그인 안내');
-                
-                // 로그인 후 돌아올 URL 저장
-                sessionStorage.setItem('diagnosis_redirect_type', diagnosisType);
-                sessionStorage.setItem('diagnosis_redirect_url', targetUrl);
-                
-                alert('무료 자가진단 서비스는 로그인 후 이용하실 수 있습니다.\n로그인 페이지로 이동합니다.');
-                window.location.href = 'login.html?redirect=diagnosis&type=' + diagnosisType;
             }
+            
+            // 새 창에서 열기 (게스트/회원 모두 가능)
+            window.open(targetUrl, '_blank');
         }
         
         // 🔥 로그인 상태 확인 및 메뉴 표시
@@ -4778,27 +4765,21 @@
         }
         
         function showPhoneForm(skipLoginCheck = false) {
-            console.log('📞 [전화상담] 버튼 클릭됨');
-            // v2.8.13.6.24: skipLoginCheck 파라미터 추가
+            console.log('📞 [전화상담] 버튼 클릭됨 - 게스트/회원 모두 이용 가능');
+            // v2.8.13.6.24: 전화상담은 게스트도 이용 가능하도록 변경
             
-            // 로그인 확인 (skipLoginCheck가 true면 건너뛰기)
-            if (!skipLoginCheck) {
-                const user = JSON.parse(
-                    localStorage.getItem('currentUser') || 
-                    localStorage.getItem('user_data') || 
-                    'null'
-                );
-                const isLoggedIn = user && user.email;
-                
-                if (!isLoggedIn) {
-                    // 미로그인 시 authModal 표시
-                    const authModal = document.getElementById('authModal');
-                    if (authModal) {
-                        authModal.style.display = 'flex';
-                        document.body.style.overflow = 'hidden';
-                    }
-                    return;
-                }
+            // 로그인 체크 제거 - 모든 사용자가 이용 가능
+            const user = JSON.parse(
+                localStorage.getItem('currentUser') || 
+                localStorage.getItem('user_data') || 
+                'null'
+            );
+            const isLoggedIn = user && user.email;
+            
+            if (isLoggedIn) {
+                console.log('✅ 로그인 상태:', user.email);
+            } else {
+                console.log('👤 게스트 모드 - 전화상담 이용 가능');
             }
             
             try {
@@ -5484,28 +5465,24 @@
         
         // 전화 상담 버튼 처리
         function handlePhoneIntent() {
-            // v2.8.13.6.24: currentUser 또는 user_data에서 사용자 정보 가져오기
+            // v2.8.13.6.24: 전화상담은 게스트도 이용 가능 - 로그인 체크 제거
+            // 바로 대표샵 섹션 또는 전화 폼으로 이동
+            console.log('📞 전화상담 클릭 - 게스트/회원 모두 이용 가능');
+            
+            // 사용자 정보가 있으면 저장 (선택사항)
             const user = JSON.parse(
                 localStorage.getItem('currentUser') || 
                 localStorage.getItem('user_data') || 
                 '{}'
             );
             
-            if (!user.email) {
-                // 비로그인 상태: 의도 저장 후 로그인 페이지로
-                localStorage.setItem('user_intent', JSON.stringify({
-                    action: 'phone',
-                    section: 'representative-shop',
-                    timestamp: Date.now()
-                }));
-                
-                sessionStorage.setItem('return_url', window.location.href);
-                
-                window.location.href = 'login.html';
-                return false;
+            if (user.email) {
+                console.log('✅ 로그인 상태:', user.email);
+            } else {
+                console.log('👤 게스트 모드');
             }
             
-            // 로그인 상태: 대표샵 섹션으로 스크롤
+            // 대표샵 섹션으로 스크롤 (게스트/회원 모두)
             scrollToRepresentativeShop();
             return true;
         }
