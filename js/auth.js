@@ -828,6 +828,38 @@ async function processRegister(registerData) {
         }
         console.log('✅ 이메일 중복 없음');
         
+        // 사업자등록번호 중복 확인 (v2.8.8.1.82.21)
+        if (registerData.business_number) {
+            console.log('🔍 사업자등록번호 중복 확인 중...');
+            const businessNumberExists = await checkBusinessNumberExists(registerData.business_number);
+            if (businessNumberExists) {
+                console.warn('⚠️ 사업자번호 중복:', registerData.business_number);
+                return {
+                    success: false,
+                    message: '이미 등록된 사업자등록번호입니다.\n다른 계정으로 가입된 샵일 수 있습니다.'
+                };
+            }
+            console.log('✅ 사업자번호 중복 없음');
+        }
+        
+        // 샵 정보 중복 확인 (v2.8.8.1.82.21)
+        // 주의: 회원가입 시점에는 샵명/주소가 없으므로 대시보드에서 체크
+        if (registerData.shop_name && registerData.address) {
+            console.log('🔍 샵 정보 중복 확인 중...');
+            const shopExists = await checkShopNameAndAddressExists(
+                registerData.shop_name, 
+                registerData.address
+            );
+            if (shopExists) {
+                console.warn('⚠️ 샵 정보 중복:', registerData.shop_name);
+                return {
+                    success: false,
+                    message: '이미 등록된 샵 정보입니다.\n샵명과 주소를 확인해주세요.'
+                };
+            }
+            console.log('✅ 샵 정보 중복 없음');
+        }
+        
         // 사용자 데이터 생성
         let userData;
         
@@ -1124,6 +1156,87 @@ async function checkEmailExists(email) {
     } catch (error) {
         console.error('❌ 이메일 존재 확인 오류:', error);
         return false; // 오류 시 중복 없음으로 처리 (회원가입 허용)
+    }
+}
+
+// 사업자등록번호 중복 확인 (v2.8.8.1.82.21)
+async function checkBusinessNumberExists(businessNumber) {
+    try {
+        console.log(`🏢 사업자등록번호 중복 확인: ${businessNumber}`);
+        
+        // 사업자번호가 없으면 건너뛰기
+        if (!businessNumber) {
+            console.log('✅ 사업자번호 미입력 (개인 샵)');
+            return false;
+        }
+        
+        // shops 테이블에서 중복 확인
+        const response = await fetch(`tables/shops?search=${encodeURIComponent(businessNumber)}`);
+        
+        if (!response.ok) {
+            console.warn('⚠️ 샵 조회 실패, 중복 없음으로 처리');
+            return false;
+        }
+        
+        const shopsData = await response.json();
+        
+        if (!shopsData.data || !Array.isArray(shopsData.data)) {
+            console.warn('⚠️ 샵 데이터 형식 오류, 중복 없음으로 처리');
+            return false;
+        }
+        
+        const exists = shopsData.data.some(shop => 
+            shop.business_number === businessNumber
+        );
+        
+        console.log(`🏢 사업자번호 중복 확인: ${businessNumber} → ${exists ? '중복' : '사용 가능'}`);
+        return exists;
+        
+    } catch (error) {
+        console.error('❌ 사업자번호 확인 오류:', error);
+        return false; // 오류 시 중복 없음으로 처리
+    }
+}
+
+// 샵 이름 + 주소 중복 확인 (v2.8.8.1.82.21)
+async function checkShopNameAndAddressExists(shopName, address) {
+    try {
+        console.log(`🏪 샵 정보 중복 확인: ${shopName} / ${address}`);
+        
+        // 샵명이나 주소가 없으면 건너뛰기
+        if (!shopName || !address) {
+            console.log('✅ 샵 정보 미입력 (가입 후 등록)');
+            return false;
+        }
+        
+        // shops 테이블에서 샵명으로 조회
+        const response = await fetch(`tables/shops?search=${encodeURIComponent(shopName)}`);
+        
+        if (!response.ok) {
+            console.warn('⚠️ 샵 조회 실패, 중복 없음으로 처리');
+            return false;
+        }
+        
+        const shopsData = await response.json();
+        
+        if (!shopsData.data || !Array.isArray(shopsData.data)) {
+            console.warn('⚠️ 샵 데이터 형식 오류, 중복 없음으로 처리');
+            return false;
+        }
+        
+        // 샵명 + 주소 일치 확인
+        const exists = shopsData.data.some(shop => {
+            const nameMatch = shop.shop_name === shopName;
+            const addressMatch = shop.address && shop.address.includes(address.substring(0, 10));
+            return nameMatch && addressMatch;
+        });
+        
+        console.log(`🏪 샵 정보 중복 확인: ${shopName} → ${exists ? '중복' : '사용 가능'}`);
+        return exists;
+        
+    } catch (error) {
+        console.error('❌ 샵 정보 확인 오류:', error);
+        return false; // 오류 시 중복 없음으로 처리
     }
 }
 
