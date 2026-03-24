@@ -4,8 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- v2.8.13.6.163.2: 데이터 캐싱으로 503 에러 방지 -->
-    <title id="page-title">지역별 피부관리실 - BeautyCat</title>
-    <meta name="description" id="page-description" content="지역별 피부관리실 찾기 - 전국 30,000개 피부관리실">
+    <title id="page-title">지역별 피부관리실 - 뷰티켓 | 전국 30,000개 피부관리실 견적 비교</title>
+    <meta name="description" id="page-description" content="전국 30,000개 피부관리실 실시간 견적 비교. 지역별 피부과, 스킨케어샵 정보, 가격, 리뷰 제공. 무료 상담 신청.">
+    <meta name="keywords" id="page-keywords" content="피부관리실, 피부과, 스킨케어, 지역별 피부관리실, 견적 비교">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" id="canonical-url" href="https://beautycat.kr/region.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="뷰티켓">
+    <meta property="og:title" id="og-title" content="지역별 피부관리실 - 뷰티켓">
+    <meta property="og:description" id="og-description" content="전국 30,000개 피부관리실 실시간 견적 비교">
+    <meta property="og:url" id="og-url" content="https://beautycat.kr/region.html">
+    <meta property="og:image" content="https://beautycat.kr/images/beautycat-logo-v3.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="지역별 피부관리실 - 뷰티켓">
+    <meta name="twitter:description" id="twitter-description" content="전국 30,000개 피부관리실 실시간 견적 비교">
+    <meta name="twitter:image" content="https://beautycat.kr/images/beautycat-logo-v3.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -509,6 +527,8 @@
                 displayShops(paginatedShops);
                 displayPagination(totalShops);
                 updatePageTitle();
+                // v2.8.8.1.82.24: Schema.org 구조화 데이터 추가
+                updateStructuredData(filteredShops);
                 
                 document.getElementById('loading').style.display = 'none';
             } catch (error) {
@@ -635,32 +655,102 @@
             history.pushState({}, '', newURL);
         }
         
+        // v2.8.8.1.82.24: SEO 최적화 - 동적 메타 태그 업데이트
         function updatePageTitle() {
             let title = '지역별 피부관리실';
             let heading = '지역별 피부관리실';
+            let description = '전국 30,000개 피부관리실 실시간 견적 비교. 지역별 피부과, 스킨케어샵 정보, 가격, 리뷰 제공. 무료 상담 신청.';
+            let keywords = '피부관리실, 피부과, 스킨케어, 지역별 피부관리실, 견적 비교';
+            let canonicalURL = 'https://beautycat.kr/region.html';
             
             if (currentRegion) {
                 title = `${currentRegion} 피부관리실`;
                 heading = `${currentRegion}`;
+                description = `${currentRegion} 피부관리실 실시간 견적 비교. ${currentRegion} 지역 피부과, 스킨케어샵 정보, 가격, 리뷰 제공. 무료 상담 신청.`;
+                keywords = `${currentRegion} 피부관리실, ${currentRegion} 피부과, ${currentRegion} 스킨케어, 피부관리실 견적`;
+                canonicalURL = `https://beautycat.kr/region.html?region=${encodeURIComponent(currentRegion)}`;
                 
                 if (currentDistrict) {
                     title = `${currentRegion} ${currentDistrict} 피부관리실`;
                     heading = `${currentRegion} ${currentDistrict}`;
+                    description = `${currentRegion} ${currentDistrict} 피부관리실 실시간 견적 비교. ${currentDistrict} 지역 피부과, 스킨케어샵 정보, 가격, 리뷰 제공. 무료 상담 신청.`;
+                    keywords = `${currentRegion} ${currentDistrict} 피부관리실, ${currentDistrict} 피부과, ${currentDistrict} 스킨케어, ${currentRegion} ${currentDistrict} 견적`;
+                    canonicalURL = `https://beautycat.kr/region.html?region=${encodeURIComponent(currentRegion)}&district=${encodeURIComponent(currentDistrict)}`;
                 }
                 
-                title += ' - BeautyCat';
+                title += ' - 뷰티켓';
             } else {
-                title = '지역별 피부관리실 - BeautyCat';
+                title = '지역별 피부관리실 - 뷰티켓 | 전국 30,000개 피부관리실 견적 비교';
             }
             
+            // Update all SEO meta tags
             document.getElementById('page-title').textContent = title;
             document.getElementById('page-heading').textContent = heading;
+            document.getElementById('page-description').setAttribute('content', description);
+            document.getElementById('page-keywords').setAttribute('content', keywords);
+            document.getElementById('canonical-url').setAttribute('href', canonicalURL);
+            
+            // Update Open Graph tags
+            document.getElementById('og-title').setAttribute('content', title);
+            document.getElementById('og-description').setAttribute('content', description);
+            document.getElementById('og-url').setAttribute('content', canonicalURL);
+            
+            // Update Twitter Card tags
+            document.getElementById('twitter-title').setAttribute('content', title);
+            document.getElementById('twitter-description').setAttribute('content', description);
         }
         
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+        
+        // v2.8.8.1.82.24: Schema.org JSON-LD 구조화 데이터 추가
+        function updateStructuredData(shops) {
+            // Remove existing structured data if any
+            const existingScript = document.getElementById('structured-data');
+            if (existingScript) {
+                existingScript.remove();
+            }
+            
+            if (!shops || shops.length === 0) return;
+            
+            // Create ItemList with LocalBusiness items
+            const structuredData = {
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                "name": currentDistrict ? `${currentRegion} ${currentDistrict} 피부관리실` : currentRegion ? `${currentRegion} 피부관리실` : "전국 피부관리실",
+                "description": currentDistrict ? `${currentRegion} ${currentDistrict} 지역의 피부관리실 목록` : currentRegion ? `${currentRegion} 지역의 피부관리실 목록` : "전국 피부관리실 목록",
+                "numberOfItems": Math.min(shops.length, 100), // Limit to 100 items for performance
+                "itemListElement": shops.slice(0, 100).map((shop, index) => ({
+                    "@type": "ListItem",
+                    "position": index + 1,
+                    "item": {
+                        "@type": "LocalBusiness",
+                        "@id": `https://beautycat.kr/shop-detail.html?shop_id=${shop.id}`,
+                        "name": shop.name || shop.shop_name || "피부관리실",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": shop.district || currentDistrict || "",
+                            "addressRegion": shop.region || currentRegion || "",
+                            "addressCountry": "KR",
+                            "streetAddress": shop.address || ""
+                        },
+                        "telephone": shop.phone || shop.tel || "",
+                        "url": `https://beautycat.kr/shop-detail.html?shop_id=${shop.id}`
+                    }
+                }))
+            };
+            
+            // Insert structured data script
+            const script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.id = 'structured-data';
+            script.textContent = JSON.stringify(structuredData);
+            document.head.appendChild(script);
+            
+            console.log('✅ Schema.org JSON-LD 구조화 데이터 추가:', structuredData.numberOfItems, '개 업체');
         }
         
         document.addEventListener('DOMContentLoaded', loadRegionFilters);
