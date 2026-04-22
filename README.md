@@ -27,7 +27,35 @@
 
 ---
 
-## 🚀 현재 버전: v2.8.8.1.82.25 📅 구글 애드센스 메타 태그 추가 (2026-03-24) 💰
+## 🚀 현재 버전: v2.8.8.1.82.26 📅 무료 진단 링크 도메인 변경 (2026-03-24) 🔗
+
+### 🔗 v2.8.8.1.82.26: 무료 진단 링크 도메인 업데이트
+
+#### 📋 주요 변경사항
+**무료 자가진단 링크를 beautyket.shop으로 변경**
+
+#### ✨ 변경 내용
+1. **index.html 수정**
+   - ✅ pposhop.kr → beautyket.shop
+   - ✅ 모든 진단 타입 URL 업데이트:
+     - 피부진단: `https://beautyket.shop/diagnosis#skin-test`
+     - 성분분석: `https://beautyket.shop/diagnosis#ingredient`
+     - 퍼스널컬러: `https://beautyket.shop/diagnosis#personal-color`
+     - 이너케어: `https://beautyket.shop/diagnosis#inner-care`
+     - 타임머신: `https://beautyket.shop/diagnosis#time-machine`
+     - 건강일기: `https://beautyket.shop/diagnosis#health-diary`
+
+2. **기본 URL**
+   - ✅ 기본 진단 페이지: `https://beautyket.shop/diagnosis`
+
+#### 🎯 개선 효과
+- 🔗 **통합 브랜딩**: beautyket 도메인으로 통일
+- 🎨 **사용자 경험**: 일관된 도메인 사용
+- 📊 **트래픽 집중**: beautyket.shop으로 트래픽 유도
+
+---
+
+## 🚀 이전 버전: v2.8.8.1.82.25 📅 구글 애드센스 메타 태그 추가 (2026-03-24) 💰
 
 ### 💰 v2.8.8.1.82.25: 구글 애드센스 계정 연동
 

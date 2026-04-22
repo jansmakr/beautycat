@@ -4298,21 +4298,21 @@
         document.addEventListener('touchstart', function() {}, { passive: true });
         document.addEventListener('touchmove', function() {}, { passive: true });
         
-        // 🎯 무료 자가진단 버튼 클릭 핸들러 (v2.8.8.1.33 - pposhop.kr 진단 연동)
+        // 🎯 무료 자가진단 버튼 클릭 핸들러 (v2.8.8.1.82.26 - beautyket.shop 진단 연동)
         function handleDiagnosisClick(diagnosisType) {
             console.log('🎯 자가진단 클릭:', diagnosisType);
             
-            // 진단 타입별 pposhop.kr URL 매핑
+            // 진단 타입별 beautyket.shop URL 매핑
             const diagnosisUrlMap = {
-                'skin': 'https://pposhop.kr/diagnosis#skin-test',           // 피부진단
-                'ingredient': 'https://pposhop.kr/diagnosis#ingredient',    // 성분분석
-                'color': 'https://pposhop.kr/diagnosis#personal-color',     // 퍼스널컬러
-                'inner': 'https://pposhop.kr/diagnosis#inner-care',         // 이너케어
-                'timemachine': 'https://pposhop.kr/diagnosis#time-machine', // 타임머신
-                'diary': 'https://pposhop.kr/diagnosis#health-diary'        // 건강일기
+                'skin': 'https://beautyket.shop/diagnosis#skin-test',           // 피부진단
+                'ingredient': 'https://beautyket.shop/diagnosis#ingredient',    // 성분분석
+                'color': 'https://beautyket.shop/diagnosis#personal-color',     // 퍼스널컬러
+                'inner': 'https://beautyket.shop/diagnosis#inner-care',         // 이너케어
+                'timemachine': 'https://beautyket.shop/diagnosis#time-machine', // 타임머신
+                'diary': 'https://beautyket.shop/diagnosis#health-diary'        // 건강일기
             };
             
-            const targetUrl = diagnosisUrlMap[diagnosisType] || 'https://pposhop.kr/diagnosis';
+            const targetUrl = diagnosisUrlMap[diagnosisType] || 'https://beautyket.shop/diagnosis';
             
             // 무료진단은 게스트도 이용 가능 - 로그인 체크 제거
             console.log('✅ 진단 페이지 이동:', targetUrl);
