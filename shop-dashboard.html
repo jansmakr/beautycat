@@ -185,6 +185,49 @@
         </div>
     </header>
 
+    <!-- 🔔 실시간 문의 알림 바 (v2.9.0) -->
+    <div id="inquiry-notification-bar" class="hidden bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl animate-bounce">🔔</span>
+                    <div>
+                        <h3 class="font-bold text-lg">
+                            새 문의 <span id="inquiry-count" class="bg-white text-pink-600 px-3 py-1 rounded-full ml-2">0</span>건
+                        </h3>
+                        <p class="text-sm opacity-90">빠른 응답으로 고객을 확보하세요!</p>
+                    </div>
+                </div>
+                <button onclick="showInquiryModal()" class="bg-white text-pink-600 font-bold px-6 py-3 rounded-full hover:bg-gray-100 transition-colors flex items-center gap-2">
+                    <span>확인하기</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 문의 목록 모달 -->
+    <div id="inquiry-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4" style="backdrop-filter: blur(8px);">
+        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden shadow-2xl">
+            <div class="sticky top-0 bg-white z-10 p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">내 지역 신규 문의</h2>
+                        <p class="text-sm text-gray-600 mt-1">가장 먼저 응답하면 고객 확보 확률이 높습니다!</p>
+                    </div>
+                    <button onclick="closeInquiryModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="inquiry-list" class="p-6 overflow-y-auto" style="max-height: calc(85vh - 120px);">
+                <!-- 문의 카드들이 동적으로 표시됩니다 -->
+            </div>
+        </div>
+    </div>
+
     <!-- Announcement Alert Bar -->
     <div id="announcement-alert" class="hidden bg-gradient-to-r from-green-500 to-blue-600 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -973,6 +1016,24 @@
                             <button onclick="cancelSubscription()" class="flex-1 border border-red-300 text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-colors">
                                 <i class="fas fa-times mr-2"></i>구독 해지
                             </button>
+                        </div>
+
+                        <!-- 환불 정책 안내 -->
+                        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-blue-900 mb-2">환불 정책 안내</h3>
+                                    <p class="text-blue-800 text-sm mb-3">
+                                        구독 서비스 환불은 결제일로부터 7일 이내 전액 환불 가능하며, 
+                                        8일 이후에는 사용 기간에 따라 일할 계산됩니다.
+                                    </p>
+                                    <a href="legal/refund-policy.html" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium hover:underline">
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        상세 환불 정책 보기
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1941,6 +2002,273 @@ window.logout = function() {
         window.location.href = 'index.html';
     }
 };
+</script>
+
+<!-- 🔔 실시간 문의 알림 시스템 (v2.9.0) -->
+<script>
+class InquiryNotificationSystem {
+    constructor() {
+        this.shopId = null;
+        this.shopRegion = null;
+        this.shopDistrict = null;
+        this.lastCheckTime = Date.now();
+        this.checkInterval = 15000; // 15초마다 체크
+        this.init();
+    }
+    
+    async init() {
+        // 샵 정보 가져오기
+        await this.loadShopInfo();
+        
+        // 브라우저 알림 권한 요청
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        
+        // 주기적으로 새 문의 체크
+        setInterval(() => this.checkNewInquiries(), this.checkInterval);
+        
+        // 초기 체크
+        this.checkNewInquiries();
+        
+        console.log('🔔 문의 알림 시스템 시작됨');
+    }
+    
+    async loadShopInfo() {
+        try {
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userEmail = userData.email;
+            
+            if (!userEmail) {
+                console.log('⚠️ 사용자 이메일 없음');
+                return;
+            }
+            
+            // skincare_shops 테이블에서 샵 정보 가져오기
+            const response = await fetch(`tables/skincare_shops?limit=1000&search=${userEmail}`);
+            const data = await response.json();
+            
+            if (data.data && data.data.length > 0) {
+                const shop = data.data[0];
+                this.shopId = shop.id;
+                this.shopRegion = shop.state;
+                this.shopDistrict = shop.district;
+                console.log('✅ 샵 정보 로드됨:', {region: this.shopRegion, district: this.shopDistrict});
+            }
+        } catch (error) {
+            console.error('❌ 샵 정보 로드 실패:', error);
+        }
+    }
+    
+    async checkNewInquiries() {
+        if (!this.shopRegion) return;
+        
+        try {
+            // 지역 기반으로 최근 10분 이내 문의 가져오기
+            const tenMinutesAgo = Date.now() - (10 * 60 * 1000);
+            
+            const response = await fetch(`tables/consultations?limit=50&sort=-created_at`);
+            const data = await response.json();
+            
+            if (!data.data) return;
+            
+            // 필터링: 내 지역 + 최근 10분 + 미응답
+            const newInquiries = data.data.filter(inquiry => {
+                const createdTime = inquiry.created_at || inquiry.submission_date;
+                const isRecent = createdTime >= tenMinutesAgo;
+                const isMyRegion = inquiry.state === this.shopRegion;
+                const isUnresponded = !inquiry.shop_responded;
+                
+                return isRecent && isMyRegion && isUnresponded;
+            });
+            
+            if (newInquiries.length > 0) {
+                this.showNotification(newInquiries);
+            } else {
+                this.hideNotification();
+            }
+        } catch (error) {
+            console.error('❌ 문의 체크 실패:', error);
+        }
+    }
+    
+    showNotification(inquiries) {
+        const count = inquiries.length;
+        
+        // 알림 바 표시
+        const notificationBar = document.getElementById('inquiry-notification-bar');
+        const countSpan = document.getElementById('inquiry-count');
+        
+        if (notificationBar && countSpan) {
+            notificationBar.classList.remove('hidden');
+            countSpan.textContent = count;
+        }
+        
+        // 헤더 벨 아이콘 배지
+        const badge = document.getElementById('notification-badge');
+        if (badge) {
+            badge.textContent = count;
+            badge.classList.remove('hidden');
+        }
+        
+        // 브라우저 알림 (첫 번째 문의만)
+        if (Notification.permission === 'granted' && inquiries.length > 0) {
+            const inquiry = inquiries[0];
+            new Notification('🔔 새 문의가 도착했어요!', {
+                body: `${inquiry.customer_name || '고객'}님 - ${inquiry.state} ${inquiry.district}`,
+                icon: '/images/beautycat-logo-v3.png',
+                tag: inquiry.id,
+                requireInteraction: true
+            });
+        }
+        
+        // 문의 목록 저장 (모달에서 사용)
+        this.currentInquiries = inquiries;
+    }
+    
+    hideNotification() {
+        const notificationBar = document.getElementById('inquiry-notification-bar');
+        const badge = document.getElementById('notification-badge');
+        
+        if (notificationBar) notificationBar.classList.add('hidden');
+        if (badge) badge.classList.add('hidden');
+    }
+    
+    renderInquiryCard(inquiry) {
+        const timeAgo = this.getTimeAgo(inquiry.created_at || inquiry.submission_date);
+        const occasionText = this.getOccasionText(inquiry.special_occasion);
+        
+        return `
+            <div class="border-2 border-pink-500 rounded-xl p-6 mb-4 bg-gradient-to-r from-pink-50 to-purple-50 animate-pulse">
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h4 class="text-lg font-bold text-gray-900">${inquiry.customer_name || '고객'}님</h4>
+                        <p class="text-sm text-gray-600">${inquiry.state || ''} ${inquiry.district || ''}</p>
+                    </div>
+                    <span class="text-xs bg-red-500 text-white px-3 py-1 rounded-full font-bold">
+                        ${timeAgo}
+                    </span>
+                </div>
+                
+                <div class="space-y-2 mb-4">
+                    ${occasionText ? `<p class="text-sm"><span class="font-semibold text-pink-600">🎯 ${occasionText}</span></p>` : ''}
+                    ${inquiry.concern_area ? `<p class="text-sm"><strong>고민 부위:</strong> ${Array.isArray(inquiry.concern_area) ? inquiry.concern_area.join(', ') : inquiry.concern_area}</p>` : ''}
+                    ${inquiry.skin_concerns ? `<p class="text-sm"><strong>피부 고민:</strong> ${Array.isArray(inquiry.skin_concerns) ? inquiry.skin_concerns.join(', ') : inquiry.skin_concerns}</p>` : ''}
+                    ${inquiry.budget_range ? `<p class="text-sm"><strong>예산:</strong> ${inquiry.budget_range}</p>` : ''}
+                    ${inquiry.diagnosis_score ? `<p class="text-sm"><strong>피부 고민 지수:</strong> ${inquiry.diagnosis_score}점</p>` : ''}
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="inquirySystem.respondToInquiry('${inquiry.id}', 'kakao')" 
+                            class="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+                        <span>💬</span>
+                        <span>카카오톡 응답</span>
+                    </button>
+                    ${inquiry.customer_phone ? `
+                        <button onclick="inquirySystem.respondToInquiry('${inquiry.id}', 'phone', '${inquiry.customer_phone}')" 
+                                class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <span>📞</span>
+                            <span>전화 연결</span>
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+    
+    async respondToInquiry(inquiryId, method, phone = '') {
+        try {
+            // 응답 처리 중임을 DB에 기록
+            await fetch(`tables/consultations/${inquiryId}`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    shop_responded: true,
+                    responding_shop_id: this.shopId,
+                    responded_at: Date.now()
+                })
+            });
+            
+            // 응답 방법에 따라 처리
+            if (method === 'kakao') {
+                // 샵의 카카오 채널 열기 (또는 메인 채널)
+                alert('카카오톡 채널이 열립니다.\n고객에게 직접 메시지를 보내주세요.');
+                // 실제로는 Kakao.Channel.chat() 호출
+            } else if (method === 'phone' && phone) {
+                window.location.href = `tel:${phone}`;
+            }
+            
+            // 알림 다시 체크
+            this.checkNewInquiries();
+            
+            // 모달 닫기
+            closeInquiryModal();
+            
+        } catch (error) {
+            console.error('❌ 응답 처리 실패:', error);
+            alert('응답 처리 중 오류가 발생했습니다.');
+        }
+    }
+    
+    getTimeAgo(timestamp) {
+        const now = Date.now();
+        const diff = now - timestamp;
+        const minutes = Math.floor(diff / 60000);
+        
+        if (minutes < 1) return '방금 전';
+        if (minutes < 60) return `${minutes}분 전`;
+        
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}시간 전`;
+        
+        return '1일 전';
+    }
+    
+    getOccasionText(occasion) {
+        const occasions = {
+            'wedding_30days': '웨딩 D-30 (긴급)',
+            'wedding_90days': '웨딩 D-90',
+            'postpartum': '산후 케어',
+            'pregnancy': '임신 중',
+            'interview': '면접/중요한 약속'
+        };
+        return occasions[occasion] || '';
+    }
+}
+
+// 모달 함수들
+function showInquiryModal() {
+    const modal = document.getElementById('inquiry-modal');
+    const listContainer = document.getElementById('inquiry-list');
+    
+    if (!inquirySystem.currentInquiries || inquirySystem.currentInquiries.length === 0) {
+        listContainer.innerHTML = `
+            <div class="text-center py-12">
+                <p class="text-gray-600 text-lg">현재 새로운 문의가 없습니다</p>
+                <p class="text-gray-500 text-sm mt-2">새 문의가 오면 자동으로 알려드립니다</p>
+            </div>
+        `;
+    } else {
+        listContainer.innerHTML = inquirySystem.currentInquiries
+            .map(inquiry => inquirySystem.renderInquiryCard(inquiry))
+            .join('');
+    }
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeInquiryModal() {
+    const modal = document.getElementById('inquiry-modal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// 시스템 초기화
+let inquirySystem;
+document.addEventListener('DOMContentLoaded', function() {
+    inquirySystem = new InquiryNotificationSystem();
+});
 </script>
 
 </body>

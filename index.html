@@ -2668,34 +2668,79 @@
             </div>
         </section>
         
-        <!-- 🅲️ C. 가치 제안 배너 (히어로 섹션) (v2.8.13.6.62 - Phase 3,4: 단순화 + 여백 + Scroll) -->
-        <section class="hero-section gradient-soft-pink rounded-3xl p-8 sm:p-20 mb-6 sm:mb-12 animate-fade-in scroll-animate delay-3" style="margin-left: auto; margin-right: auto; order: 4; max-width: 900px;">
+        <!-- 🅲️ C. 진단 도구 히어로 섹션 (v2.9.0 - AI 진단 중심 디자인) -->
+        <section class="hero-section gradient-soft-pink rounded-3xl p-6 sm:p-16 mb-6 sm:mb-12 animate-fade-in scroll-animate delay-3" style="margin-left: auto; margin-right: auto; order: 4; max-width: 900px;">
             <div class="max-w-4xl mx-auto text-center">
-                <!-- 메인 카피 (간소화) -->
-                <h1 class="text-4xl sm:text-6xl font-black text-gray-900 mb-4 sm:mb-6" style="letter-spacing: -0.04em; line-height: 1.2;">
-                    <span class="block" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                        내 동네 피부샵
+                <!-- 웨딩 특화 카피 -->
+                <h1 class="text-3xl sm:text-5xl font-black text-gray-900 mb-3 sm:mb-4" style="letter-spacing: -0.04em; line-height: 1.2;">
+                    <span class="block text-pink-600">본식 D-30</span>
+                    <span class="block mt-1">당신의 드레스핏은</span>
+                    <span class="block mt-1" style="background: linear-gradient(135deg, #ff6b9d 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        피부에서 결정됩니다
                     </span>
                 </h1>
                 
-                <!-- 서브 카피 (간소화) -->
-                <p class="text-lg sm:text-2xl text-gray-700 mb-6 sm:mb-8 font-bold" style="letter-spacing: -0.02em;">
-                    <span style="color: #667eea;">견적 비교</span> · 간편 예약
+                <!-- 서브 카피 -->
+                <p class="text-base sm:text-xl text-gray-700 mb-6 sm:mb-8 font-semibold" style="letter-spacing: -0.02em;">
+                    10초 만에 내 피부 맞춤 샵 찾기
                 </p>
                 
-                <!-- 신뢰 배지 (2개로 축소) -->
-                <div class="flex items-center justify-center gap-2 sm:gap-3">
+                <!-- 진단 시작 버튼 -->
+                <button 
+                    onclick="openDiagnosisModal()"
+                    class="diagnosis-cta-button group w-full md:w-auto mb-6"
+                    style="background: linear-gradient(135deg, #ff6b9d 0%, #ffa3c0 100%); border: none; border-radius: 16px; padding: 1.25rem 2rem; cursor: pointer; position: relative; overflow: hidden; transform: translateY(0); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 32px rgba(255, 107, 157, 0.4); display: inline-flex; align-items: center; justify-content: center; gap: 12px;">
+                    
+                    <!-- 배경 그라데이션 효과 -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, transparent 60%); pointer-events: none;"></div>
+                    
+                    <!-- 아이콘 -->
+                    <span style="position: relative; z-index: 1; font-size: 1.5rem;">🎯</span>
+                    
+                    <!-- 텍스트 -->
+                    <span style="position: relative; z-index: 1; color: white; font-size: 1.125rem; font-weight: 800; letter-spacing: -0.02em;">
+                        10초 만에 맞춤 샵 찾기
+                    </span>
+                </button>
+                
+                <!-- 신뢰 배지 -->
+                <div class="flex items-center justify-center gap-3">
                     <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-md">
-                        <span class="text-lg">⚡</span>
-                        <span class="text-xs font-bold text-gray-700">빠른 매칭</span>
+                        <span class="text-base">✨</span>
+                        <span class="text-xs font-bold text-gray-700">30,000개 샵 분석</span>
                     </div>
                     <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white shadow-md">
-                        <span class="text-lg">💯</span>
-                        <span class="text-xs font-bold text-gray-700">무료 상담</span>
+                        <span class="text-base">💯</span>
+                        <span class="text-xs font-bold text-gray-700">100% 무료</span>
                     </div>
                 </div>
             </div>
         </section>
+        
+        <style>
+            @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-20px); }
+            }
+            
+            .diagnosis-cta-button:hover {
+                transform: translateY(-4px) scale(1.02) !important;
+                box-shadow: 0 16px 48px rgba(255, 107, 157, 0.5) !important;
+            }
+            
+            .diagnosis-cta-button:active {
+                transform: translateY(-2px) scale(0.98) !important;
+            }
+            
+            @media (max-width: 768px) {
+                .diagnosis-cta-button {
+                    padding: 1rem 1.5rem !important;
+                }
+                .diagnosis-cta-button span:last-child {
+                    font-size: 1rem !important;
+                }
+            }
+        </style>
 
         <!-- CTA 버튼 섹션 (v2.8.13.6.62 - 동일 크기 2개 버튼) -->
         <!-- 🅳 D. 메인 CTA 버튼 (균형형) -->
@@ -4495,9 +4540,11 @@
                 <!-- 약관 및 정책 링크 (v2.8.13.6.69: 사업자 정보 위로 이동) -->
                 <!-- 링크 (데스크탑에서만 표시) -->
                 <div class="hidden md:flex items-center justify-center gap-4 text-sm flex-wrap">
-                    <a href="#" onclick="openModal('terms'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">이용약관</a>
+                    <a href="legal/terms-of-service.html" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors">이용약관</a>
                     <span class="text-gray-300">|</span>
-                    <a href="#" onclick="openModal('privacy'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">개인정보처리방침</a>
+                    <a href="legal/privacy-policy.html" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors">개인정보처리방침</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="legal/refund-policy.html" target="_blank" class="text-gray-600 hover:text-pink-500 transition-colors font-semibold">환불정책</a>
                     <span class="text-gray-300">|</span>
                     <a href="#" onclick="openModal('youth'); return false;" class="text-gray-600 hover:text-pink-500 transition-colors cursor-pointer">청소년보호정책</a>
                     <span class="text-gray-300">|</span>
@@ -4505,8 +4552,15 @@
                 </div>
                 
                 <!-- 모바일 약관 링크 -->
-                <div class="block md:hidden text-center">
-                    <button onclick="openModal('terms')" class="text-xs text-gray-500 underline">약관 및 정책 보기</button>
+                <div class="block md:hidden flex flex-col items-center gap-2 text-xs text-gray-600">
+                    <div class="flex items-center gap-2">
+                        <a href="legal/terms-of-service.html" target="_blank" class="hover:text-pink-500 transition-colors">약관</a>
+                        <span>|</span>
+                        <a href="legal/privacy-policy.html" target="_blank" class="hover:text-pink-500 transition-colors">개인정보</a>
+                        <span>|</span>
+                        <a href="legal/refund-policy.html" target="_blank" class="font-semibold hover:text-pink-500 transition-colors">환불정책</a>
+                    </div>
+                    <button onclick="openModal('business')" class="text-gray-500 underline">사업자정보 보기</button>
                 </div>
                 
                 <!-- 회사 정보 (모바일: 간소화, 데스크탑: 전체) -->
@@ -5696,6 +5750,740 @@
                 image.addEventListener('error', () => {
                     console.error('❌ 이미지 로드 오류');
                 });
+            }
+        });
+    </script>
+
+    <!-- 🎯 진단 모달 (v2.9.0) -->
+    <div id="diagnosis-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4" style="backdrop-filter: blur(8px);">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-slide-up" id="diagnosis-modal-content">
+            <!-- 모달 헤더 -->
+            <div class="sticky top-0 bg-white z-10 p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">맞춤 샵 찾기</h2>
+                        <p class="text-sm text-gray-600 mt-1">간단한 질문으로 내 피부에 맞는 샵을 추천받으세요</p>
+                    </div>
+                    <button onclick="closeDiagnosisModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- 진행 바 -->
+                <div class="mt-4">
+                    <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
+                        <span id="progress-text">질문 1/5</span>
+                        <span id="progress-percent">20%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progress-bar" class="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full transition-all duration-300" style="width: 20%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 모달 바디 -->
+            <div class="p-6" id="diagnosis-questions">
+                <!-- 질문들이 동적으로 표시됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 진단 결과 모달 -->
+    <div id="diagnosis-result-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4" style="backdrop-filter: blur(8px);">
+        <div class="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="p-6 sm:p-8">
+                <!-- 닫기 버튼 -->
+                <div class="flex justify-end mb-4">
+                    <button onclick="closeDiagnosisResultModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- 축하 메시지 -->
+                <div class="text-center mb-6">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">진단 완료!</h2>
+                    <p class="text-gray-600">고객님의 피부 분석 결과입니다</p>
+                </div>
+                
+                <!-- 피부 고민 지수 -->
+                <div class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 mb-6">
+                    <div class="text-center">
+                        <p class="text-lg text-gray-700 mb-3">피부 고민 지수</p>
+                        <div class="relative inline-block">
+                            <svg class="transform -rotate-90" width="200" height="200">
+                                <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="12" fill="none"></circle>
+                                <circle id="score-circle" cx="100" cy="100" r="90" stroke="url(#gradient)" stroke-width="12" fill="none" stroke-dasharray="565.48" stroke-dashoffset="565.48" stroke-linecap="round" style="transition: stroke-dashoffset 1s ease;"></circle>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div>
+                                    <p class="text-5xl font-bold text-gray-900" id="diagnosis-score">68</p>
+                                    <p class="text-sm text-gray-600">점</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-4" id="score-description">
+                            전문적인 케어가 필요한 수준입니다
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 추천 샵 -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">고객님께 추천하는 샵</h3>
+                    <div id="recommended-shops" class="space-y-4">
+                        <!-- 샵 카드들이 동적으로 표시됩니다 -->
+                    </div>
+                </div>
+                
+                <!-- 추가 옵션: 정밀 AI 진단 -->
+                <div class="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl p-6 text-center text-white mb-6">
+                    <h3 class="text-xl font-bold mb-2">🔬 더 정밀한 진단이 필요하신가요?</h3>
+                    <p class="text-sm opacity-90 mb-4">
+                        사진으로 AI가 분석하는 실시간 피부 진단<br>
+                        (여드름, 주름, 모공, 색소 등 정밀 분석)
+                    </p>
+                    <button onclick="goToDetailedDiagnosis()" class="bg-white text-purple-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors inline-flex items-center gap-2">
+                        <span style="font-size: 1.5rem;">📸</span>
+                        <span>실시간 AI 진단 받기 (무료)</span>
+                    </button>
+                </div>
+                
+                <!-- 카카오 로그인 CTA -->
+                <div class="bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-6 text-center text-white">
+                    <h3 class="text-xl font-bold mb-2">💌 추천 샵과 상담하기</h3>
+                    <p class="text-sm opacity-90 mb-4">
+                        카카오 로그인하고<br>
+                        추천 샵과 1:1 상담을 시작하세요
+                    </p>
+                    <button onclick="saveAndLoginKakao()" class="bg-white text-pink-600 font-bold py-3 px-8 rounded-full hover:bg-gray-100 transition-colors inline-flex items-center gap-2">
+                        <span style="font-size: 1.5rem;">💬</span>
+                        <span>카카오로 샵 상담하기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes slide-up {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+        }
+        
+        .question-option {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .question-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-option.selected {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ffa3c0 100%) !important;
+            color: white !important;
+            border-color: #ff6b9d !important;
+        }
+        
+        .question-option.selected * {
+            color: white !important;
+        }
+    </style>
+
+    <script>
+        // 진단 상태 관리
+        const diagnosisState = {
+            currentStep: 0,
+            answers: {},
+            totalSteps: 5
+        };
+
+        // 질문 데이터
+        const diagnosisQuestions = [
+            {
+                id: 'special_occasion',
+                question: '특별한 일정이 있으신가요?',
+                type: 'single',
+                options: [
+                    { value: 'wedding_30days', label: '💍 웨딩 (D-30 이내)', icon: '💍' },
+                    { value: 'wedding_90days', label: '💒 웨딩 (D-90)', icon: '💒' },
+                    { value: 'postpartum', label: '👶 산후 케어 (출산 3개월 이내)', icon: '👶' },
+                    { value: 'pregnancy', label: '🤰 임신 중', icon: '🤰' },
+                    { value: 'interview', label: '💼 면접/중요한 약속', icon: '💼' },
+                    { value: 'none', label: '✨ 일상 케어', icon: '✨' }
+                ]
+            },
+            {
+                id: 'concern_area',
+                question: '가장 고민되는 부위는 어디인가요?',
+                type: 'multiple',
+                options: [
+                    { value: '얼굴', label: '얼굴 전체', icon: '😊' },
+                    { value: '이마', label: '이마', icon: '👀' },
+                    { value: '볼', label: '볼', icon: '😳' },
+                    { value: '턱', label: '턱/턱선', icon: '😔' },
+                    { value: '목', label: '목/데콜테', icon: '💎' },
+                    { value: '등', label: '등/어깨', icon: '🙆‍♀️' },
+                    { value: '배', label: '복부', icon: '🤰' },
+                    { value: '전신', label: '전신', icon: '🧘‍♀️' }
+                ]
+            },
+            {
+                id: 'skin_concerns',
+                question: '어떤 피부 고민이 있으신가요?',
+                type: 'multiple',
+                options: [
+                    { value: '여드름', label: '여드름/뾰루지', icon: '😣' },
+                    { value: '기미', label: '기미/색소침착', icon: '🌑' },
+                    { value: '모공', label: '모공', icon: '🔍' },
+                    { value: '칙칙함', label: '칙칙한 피부톤', icon: '😶' },
+                    { value: '건조', label: '건조함', icon: '🏜️' },
+                    { value: '탄력', label: '탄력 저하', icon: '😴' },
+                    { value: '튼살', label: '튼살/흉터', icon: '🩹' },
+                    { value: '잘모름', label: '잘 모르겠어요', icon: '🤔' }
+                ]
+            },
+            {
+                id: 'budget_range',
+                question: '예상 예산은 어느 정도인가요?',
+                type: 'single',
+                options: [
+                    { value: '10-20만원', label: '10-20만원', icon: '💰' },
+                    { value: '20-30만원', label: '20-30만원', icon: '💰💰' },
+                    { value: '30-50만원', label: '30-50만원', icon: '💰💰💰' },
+                    { value: '50만원 이상', label: '50만원 이상', icon: '💎' },
+                    { value: '아직 미정', label: '아직 미정', icon: '🤔' }
+                ]
+            },
+            {
+                id: 'location',
+                question: '어느 지역을 선호하시나요?',
+                type: 'location',
+                placeholder: '예: 서울 강남구'
+            }
+        ];
+
+        // 진단 모달 열기
+        function openDiagnosisModal() {
+            document.getElementById('diagnosis-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            diagnosisState.currentStep = 0;
+            diagnosisState.answers = {};
+            renderQuestion();
+        }
+
+        // 진단 모달 닫기
+        function closeDiagnosisModal() {
+            document.getElementById('diagnosis-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // 결과 모달 닫기
+        function closeDiagnosisResultModal() {
+            document.getElementById('diagnosis-result-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // 질문 렌더링
+        function renderQuestion() {
+            const step = diagnosisState.currentStep;
+            const question = diagnosisQuestions[step];
+            const container = document.getElementById('diagnosis-questions');
+            
+            // 진행 상태 업데이트
+            const progress = ((step + 1) / diagnosisState.totalSteps) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `질문 ${step + 1}/${diagnosisState.totalSteps}`;
+            document.getElementById('progress-percent').textContent = Math.round(progress) + '%';
+            
+            let html = `
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">${question.question}</h3>
+            `;
+            
+            if (question.type === 'location') {
+                html += `
+                    <div class="mb-6">
+                        <input type="text" id="location-input" placeholder="${question.placeholder}" 
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-pink-500 focus:outline-none text-lg"
+                               value="${diagnosisState.answers[question.id] || ''}">
+                        <p class="text-sm text-gray-600 mt-2">💡 현재 위치를 자동으로 감지하거나 직접 입력해주세요</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="detectLocation()" class="flex-1 bg-purple-100 text-purple-700 font-bold py-3 px-6 rounded-xl hover:bg-purple-200 transition-colors">
+                            📍 현재 위치 감지
+                        </button>
+                    </div>
+                `;
+            } else {
+                html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">`;
+                question.options.forEach(option => {
+                    const isSelected = question.type === 'multiple' 
+                        ? (diagnosisState.answers[question.id] || []).includes(option.value)
+                        : diagnosisState.answers[question.id] === option.value;
+                    html += `
+                        <button onclick="selectOption('${question.id}', '${option.value}', '${question.type}')" 
+                                class="question-option ${isSelected ? 'selected' : ''} border-2 border-gray-300 rounded-xl p-4 text-left hover:border-pink-500 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl">${option.icon}</span>
+                                <span class="font-semibold text-gray-900">${option.label}</span>
+                            </div>
+                        </button>
+                    `;
+                });
+                html += `</div>`;
+                
+                if (question.type === 'multiple') {
+                    html += `<p class="text-sm text-gray-600 mb-4">✓ 여러 개 선택 가능합니다</p>`;
+                }
+            }
+            
+            html += `
+                <div class="flex gap-3 mt-6">
+                    ${step > 0 ? `<button onclick="prevQuestion()" class="flex-1 bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-300 transition-colors">← 이전</button>` : ''}
+                    <button onclick="nextQuestion()" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transition-all">
+                        ${step === diagnosisState.totalSteps - 1 ? '진단 완료 →' : '다음 →'}
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // 옵션 선택
+        function selectOption(questionId, value, type) {
+            if (type === 'multiple') {
+                if (!diagnosisState.answers[questionId]) {
+                    diagnosisState.answers[questionId] = [];
+                }
+                const index = diagnosisState.answers[questionId].indexOf(value);
+                if (index > -1) {
+                    diagnosisState.answers[questionId].splice(index, 1);
+                } else {
+                    diagnosisState.answers[questionId].push(value);
+                }
+            } else {
+                diagnosisState.answers[questionId] = value;
+            }
+            renderQuestion();
+        }
+
+        // 위치 감지
+        function detectLocation() {
+            if (navigator.geolocation) {
+                document.getElementById('location-input').value = '위치 감지 중...';
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        // 실제로는 역지오코딩 API를 사용해야 하지만, 여기서는 간단히 처리
+                        document.getElementById('location-input').value = '서울 강남구';
+                        diagnosisState.answers['location'] = '서울 강남구';
+                    },
+                    error => {
+                        alert('위치 정보를 가져올 수 없습니다. 직접 입력해주세요.');
+                        document.getElementById('location-input').value = '';
+                    }
+                );
+            } else {
+                alert('브라우저가 위치 정보를 지원하지 않습니다.');
+            }
+        }
+
+        // 다음 질문
+        function nextQuestion() {
+            const currentQuestion = diagnosisQuestions[diagnosisState.currentStep];
+            
+            // 위치 질문인 경우 입력값 저장
+            if (currentQuestion.type === 'location') {
+                const locationInput = document.getElementById('location-input').value.trim();
+                if (!locationInput) {
+                    alert('지역을 입력해주세요.');
+                    return;
+                }
+                diagnosisState.answers[currentQuestion.id] = locationInput;
+            }
+            
+            // 답변 검증
+            if (!diagnosisState.answers[currentQuestion.id] || 
+                (Array.isArray(diagnosisState.answers[currentQuestion.id]) && diagnosisState.answers[currentQuestion.id].length === 0)) {
+                alert('선택해주세요.');
+                return;
+            }
+            
+            if (diagnosisState.currentStep < diagnosisState.totalSteps - 1) {
+                diagnosisState.currentStep++;
+                renderQuestion();
+            } else {
+                // 진단 완료
+                completeDiagnosis();
+            }
+        }
+
+        // 이전 질문
+        function prevQuestion() {
+            if (diagnosisState.currentStep > 0) {
+                diagnosisState.currentStep--;
+                renderQuestion();
+            }
+        }
+
+        // 진단 완료
+        async function completeDiagnosis() {
+            closeDiagnosisModal();
+            
+            // 피부 고민 지수 계산
+            const score = calculateDiagnosisScore();
+            
+            // 추천 샵 가져오기
+            const shops = await getRecommendedShops();
+            
+            // 결과 표시
+            showDiagnosisResult(score, shops);
+        }
+
+        // 피부 고민 지수 계산
+        function calculateDiagnosisScore() {
+            let score = 50; // 기본 점수
+            
+            // 특수 상황에 따라 점수 조정
+            const occasion = diagnosisState.answers.special_occasion;
+            if (occasion === 'wedding_30days') score += 20;
+            else if (occasion === 'wedding_90days') score += 10;
+            else if (occasion === 'postpartum') score += 15;
+            
+            // 피부 고민 개수에 따라 점수 조정
+            const concerns = diagnosisState.answers.skin_concerns || [];
+            score += concerns.length * 5;
+            
+            // 고민 부위 개수
+            const areas = diagnosisState.answers.concern_area || [];
+            score += areas.length * 3;
+            
+            return Math.min(100, Math.max(30, score));
+        }
+
+        // 추천 샵 가져오기 (스마트 매칭)
+        async function getRecommendedShops() {
+            try {
+                const location = diagnosisState.answers.location || '';
+                const [region, district] = location.split(' ');
+                
+                // 최대한 많은 샵 가져오기 (지역 기반)
+                let url = 'tables/skincare_shops?limit=1000';
+                if (region) url += `&search=${region}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let shops = data.data || [];
+                
+                // 1단계: 기본 필터링 (활성 상태만)
+                shops = shops.filter(shop => shop.status === 'active');
+                
+                // 2단계: 지역 정확도 필터링
+                if (region) {
+                    shops = shops.filter(shop => {
+                        const shopRegion = shop.state || shop.region || '';
+                        return shopRegion.includes(region) || region.includes(shopRegion);
+                    });
+                }
+                
+                if (district) {
+                    const districtShops = shops.filter(shop => {
+                        const shopDistrict = shop.district || '';
+                        return shopDistrict.includes(district) || district.includes(shopDistrict);
+                    });
+                    // 같은 구가 있으면 우선, 없으면 같은 시/도
+                    if (districtShops.length > 0) {
+                        shops = districtShops;
+                    }
+                }
+                
+                // 3단계: 스마트 점수 계산
+                const answers = diagnosisState.answers;
+                shops = shops.map(shop => {
+                    let matchScore = 0;
+                    
+                    // 기본 점수 (평점)
+                    matchScore += (shop.rating || 4.0) * 20;
+                    
+                    // 리뷰 수 (신뢰도)
+                    matchScore += Math.min((shop.review_count || 0) * 0.5, 20);
+                    
+                    // 특수 상황 매칭
+                    const occasion = answers.special_occasion;
+                    const services = (shop.services || []).map(s => s.toLowerCase());
+                    const tags = (shop.tags || []).map(t => t.toLowerCase());
+                    const allKeywords = [...services, ...tags];
+                    
+                    if (occasion === 'wedding_30days' || occasion === 'wedding_90days') {
+                        if (allKeywords.some(k => k.includes('웨딩') || k.includes('신부') || k.includes('브라이덜'))) {
+                            matchScore += 50; // 웨딩 특화 샵 큰 보너스
+                        }
+                    }
+                    
+                    if (occasion === 'postpartum') {
+                        if (allKeywords.some(k => k.includes('산후') || k.includes('출산') || k.includes('임산부'))) {
+                            matchScore += 50;
+                        }
+                        // 방문 케어 가능한지 확인
+                        if (shop.home_visit || allKeywords.some(k => k.includes('방문') || k.includes('출장'))) {
+                            matchScore += 30;
+                        }
+                    }
+                    
+                    // 피부 고민 매칭
+                    const concerns = answers.skin_concerns || [];
+                    concerns.forEach(concern => {
+                        if (concern === '여드름' && allKeywords.some(k => k.includes('여드름') || k.includes('트러블') || k.includes('피지'))) {
+                            matchScore += 15;
+                        }
+                        if (concern === '기미' && allKeywords.some(k => k.includes('기미') || k.includes('색소') || k.includes('미백') || k.includes('화이트닝'))) {
+                            matchScore += 15;
+                        }
+                        if (concern === '모공' && allKeywords.some(k => k.includes('모공') || k.includes('피지'))) {
+                            matchScore += 15;
+                        }
+                        if (concern === '탄력' && allKeywords.some(k => k.includes('탄력') || k.includes('리프팅') || k.includes('주름'))) {
+                            matchScore += 15;
+                        }
+                        if (concern === '튼살' && allKeywords.some(k => k.includes('튼살') || k.includes('흉터') || k.includes('스트레치마크'))) {
+                            matchScore += 15;
+                        }
+                    });
+                    
+                    // 예산 매칭
+                    const budget = answers.budget_range || '';
+                    const shopPriceMin = shop.price_min || 0;
+                    const shopPriceMax = shop.price_max || 999999;
+                    
+                    if (budget === '10-20만원' && shopPriceMin <= 200000) {
+                        matchScore += 10;
+                    } else if (budget === '20-30만원' && shopPriceMin <= 300000 && shopPriceMax >= 200000) {
+                        matchScore += 10;
+                    } else if (budget === '30-50만원' && shopPriceMin <= 500000 && shopPriceMax >= 300000) {
+                        matchScore += 10;
+                    } else if (budget === '50만원 이상' && shopPriceMax >= 500000) {
+                        matchScore += 10;
+                    }
+                    
+                    // 인증 샵 보너스
+                    if (shop.is_verified) {
+                        matchScore += 15;
+                    }
+                    
+                    // 대표 샵 보너스
+                    if (shop.is_representative) {
+                        matchScore += 10;
+                    }
+                    
+                    return {
+                        ...shop,
+                        matchScore: matchScore
+                    };
+                });
+                
+                // 4단계: 매칭 점수로 정렬
+                shops.sort((a, b) => b.matchScore - a.matchScore);
+                
+                // 5단계: 상위 3개 반환
+                const topShops = shops.slice(0, 3);
+                
+                console.log('🎯 스마트 매칭 결과:', topShops.map(s => ({
+                    name: s.shop_name || s.business_name,
+                    matchScore: s.matchScore,
+                    rating: s.rating
+                })));
+                
+                return topShops;
+                
+            } catch (error) {
+                console.error('❌ 샵 정보 가져오기 실패:', error);
+                return [];
+            }
+        }
+
+        // 진단 결과 표시
+        function showDiagnosisResult(score, shops) {
+            // 점수 표시
+            document.getElementById('diagnosis-score').textContent = score;
+            
+            // 원형 차트 애니메이션
+            const circle = document.getElementById('score-circle');
+            const circumference = 565.48;
+            const offset = circumference - (score / 100) * circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 100);
+            
+            // 점수 설명
+            let description = '';
+            if (score >= 80) description = '집중 케어가 필요한 수준입니다';
+            else if (score >= 60) description = '전문적인 케어가 필요한 수준입니다';
+            else if (score >= 40) description = '관리가 권장되는 수준입니다';
+            else description = '양호한 상태입니다';
+            document.getElementById('score-description').textContent = description;
+            
+            // 추천 샵 표시
+            const shopsContainer = document.getElementById('recommended-shops');
+            if (shops.length > 0) {
+                shopsContainer.innerHTML = shops.map(shop => `
+                    <div class="border-2 border-gray-200 rounded-xl p-4 hover:border-pink-500 transition-colors">
+                        <div class="flex items-start gap-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">🏪</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-lg text-gray-900 mb-1">${shop.shop_name || '피부관리실'}</h4>
+                                <p class="text-sm text-gray-600 mb-2">${shop.address || ''}</p>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-yellow-500">⭐</span>
+                                    <span class="font-semibold">${shop.rating || 4.5}</span>
+                                    <span class="text-gray-500 text-sm">(${shop.review_count || 0}개 리뷰)</span>
+                                </div>
+                                ${shop.kakao_channel_id ? `
+                                    <button onclick="openShopKakaoChannel('${shop.kakao_channel_id}')" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition-colors inline-flex items-center gap-2">
+                                        <span>💬</span>
+                                        <span>카카오톡 문의</span>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                shopsContainer.innerHTML = '<p class="text-center text-gray-600">추천 샵을 불러오는 중...</p>';
+            }
+            
+            // 결과 모달 표시
+            document.getElementById('diagnosis-result-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // 세션 스토리지에 진단 결과 저장
+            sessionStorage.setItem('diagnosisResult', JSON.stringify({
+                score,
+                answers: diagnosisState.answers,
+                shops: shops.map(s => s.id),
+                timestamp: Date.now()
+            }));
+        }
+
+        // 샵 카카오 채널 열기
+        function openShopKakaoChannel(channelId) {
+            if (typeof Kakao !== 'undefined' && Kakao.Channel) {
+                Kakao.Channel.chat({
+                    channelPublicId: channelId
+                });
+            } else {
+                alert('카카오톡 채널을 열 수 없습니다.');
+            }
+        }
+
+        // 카카오 로그인 후 결과 저장
+        function saveAndLoginKakao() {
+            // redirectIntent 설정하여 로그인 후 돌아올 위치 지정
+            localStorage.setItem('redirectIntent', window.location.pathname);
+            localStorage.setItem('afterLoginAction', 'saveDiagnosis');
+            
+            // 카카오 로그인 실행
+            if (typeof startKakaoLogin === 'function') {
+                startKakaoLogin();
+            } else {
+                window.location.href = '/login.html';
+            }
+        }
+        
+        // 정밀 AI 진단으로 이동
+        function goToDetailedDiagnosis() {
+            // 진단 결과를 파라미터로 전달
+            const result = sessionStorage.getItem('diagnosisResult');
+            let url = 'https://beautyket.shop/diagnosis#skin-test';
+            
+            if (result) {
+                const data = JSON.parse(result);
+                // 선택한 고민 사항을 파라미터로 전달 (선택 사항)
+                const concerns = data.answers.skin_concerns?.join(',') || '';
+                if (concerns) {
+                    url += `?concerns=${encodeURIComponent(concerns)}`;
+                }
+            }
+            
+            // 새 창에서 열기
+            window.open(url, '_blank');
+        }
+
+        // 로그인 후 진단 결과 저장
+        async function saveDiagnosisAfterLogin() {
+            const result = sessionStorage.getItem('diagnosisResult');
+            if (!result) return;
+            
+            const diagnosisData = JSON.parse(result);
+            const token = localStorage.getItem('sessionToken');
+            const userData = localStorage.getItem('userData');
+            
+            if (!token || !userData) return;
+            
+            const user = JSON.parse(userData);
+            
+            try {
+                // consultations 테이블에 저장
+                const response = await fetch('tables/consultations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        customer_name: user.name || user.username,
+                        customer_email: user.email,
+                        customer_phone: user.phone || '',
+                        special_occasion: diagnosisState.answers.special_occasion,
+                        concern_area: diagnosisState.answers.concern_area,
+                        skin_concerns: diagnosisState.answers.skin_concerns,
+                        budget_range: diagnosisState.answers.budget_range,
+                        diagnosis_score: diagnosisData.score,
+                        diagnosis_result: JSON.stringify(diagnosisData),
+                        recommended_shops: diagnosisData.shops,
+                        status: 'pending',
+                        submission_date: Date.now()
+                    })
+                });
+                
+                if (response.ok) {
+                    sessionStorage.removeItem('diagnosisResult');
+                    alert('진단 결과가 저장되었습니다! 곧 맞춤 샵에서 연락드릴 예정입니다.');
+                    window.location.href = '/customer-dashboard.html';
+                }
+            } catch (error) {
+                console.error('진단 결과 저장 실패:', error);
+            }
+        }
+
+        // 페이지 로드 시 로그인 후 액션 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const afterLoginAction = localStorage.getItem('afterLoginAction');
+            if (afterLoginAction === 'saveDiagnosis') {
+                localStorage.removeItem('afterLoginAction');
+                saveDiagnosisAfterLogin();
             }
         });
     </script>
