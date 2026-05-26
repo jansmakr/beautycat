@@ -1006,16 +1006,20 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button onclick="setupAutoPayment()" class="flex-1 bg-primary-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors">
-                                <i class="fas fa-credit-card mr-2"></i>자동 결제 설정
-                            </button>
-                            <button onclick="postponePayment()" class="flex-1 border border-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
-                                <i class="fas fa-pause mr-2"></i>결제 연기 신청
-                            </button>
-                            <button onclick="cancelSubscription()" class="flex-1 border border-red-300 text-red-600 px-6 py-3 rounded-lg font-semibold hover:bg-red-50 transition-colors">
-                                <i class="fas fa-times mr-2"></i>구독 해지
-                            </button>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-gray-400 mt-1 mr-3"></i>
+                                <div>
+                                    <h3 class="font-semibold text-gray-700 mb-2">💳 결제 안내</h3>
+                                    <p class="text-gray-600 text-sm mb-3">
+                                        현재 <strong>2026년 6월 30일까지</strong> 무료 서비스 기간입니다.<br>
+                                        유료 전환 시 일반결제(단건결제) 방식으로 진행되며, 별도 안내 후 결제가 진행됩니다.
+                                    </p>
+                                    <p class="text-gray-500 text-xs">
+                                        ※ 자동결제(정기결제)는 지원하지 않으며, 매월 수동 결제 방식으로 운영됩니다.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- 환불 정책 안내 -->
